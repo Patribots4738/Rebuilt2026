@@ -713,6 +713,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
+
+        public static final double CIRCUMFERENCE_METERS = 0.0;
     }
 
     public static final class HoodConstants {
