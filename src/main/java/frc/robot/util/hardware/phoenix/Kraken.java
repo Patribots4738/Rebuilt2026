@@ -39,6 +39,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -906,13 +907,27 @@ public class Kraken extends TalonFX {
         sim.setSupplyVoltage(RobotController.getBatteryVoltage());
 
         double motorVoltage = sim.getMotorVoltage();
-  
+
         motorSimModel.setInputVoltage(motorVoltage);
         motorSimModel.update(0.020);
 
         sim.setRawRotorPosition(motorSimModel.getAngularPositionRotations());
         sim.setRotorVelocity(Units.radiansToRotations(motorSimModel.getAngularVelocityRadPerSec()));
 
+    }
+
+    public StatusCode configureMotionMagic(double cruiseVelocity, double acceleration, double jerk) {
+        motionMagicConfigs.MotionMagicCruiseVelocity = cruiseVelocity / unitConversionFactor;
+        motionMagicConfigs.MotionMagicAcceleration = acceleration / unitConversionFactor;
+        motionMagicConfigs.MotionMagicJerk = jerk / unitConversionFactor;
+        return applyParameter(
+            () -> configurator.apply(motionMagicConfigs, timeoutSeconds),
+            () -> configurator.refresh(motionMagicConfigs, timeoutSeconds),
+            () -> (motionMagicConfigs.MotionMagicCruiseVelocity != 0 ^ cruiseVelocity == 0)
+                && (motionMagicConfigs.MotionMagicAcceleration != 0 ^ acceleration == 0)
+                && (motionMagicConfigs.MotionMagicJerk != 0 ^ jerk == 0),
+            "Motion Magic Configuration"
+        );
     }
 
     /**
@@ -923,9 +938,7 @@ public class Kraken extends TalonFX {
      * @return the status code indicating the success or failure of the operation
      */
     private StatusCode applyGains(GainConstants appliedGains, int slot) {
-        if (slot < 0 || slot > 2) {
-            slot = 0;
-        }
+        slot = MathUtil.clamp(slot, 0, 2);
         gains[slot] = appliedGains;
         slotConfigs.SlotNumber = slot;
         slotConfigs.kP = appliedGains.getP();
