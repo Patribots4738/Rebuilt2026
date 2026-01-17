@@ -1,23 +1,23 @@
 package frc.robot.subsystems.superstructure.intake;
 
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
 public class IntakeIONeo implements IntakeIO {
 
-    private final Neo leader;
-    private final Neo follower;
+    private final Neo motor;
+
 
     public IntakeIONeo() {
-        leader = new Neo(IntakeConstants.LEADER_CAN_ID, false);
-        follower = new Neo(IntakeConstants.FOLLOWER_CAN_ID, false);
+        motor = new Neo(IntakeConstants.MOTOR_CAN_ID, false);
+
         configMotors();
     }
 
     private void configMotor(Neo motor) {
         motor.setPID(IntakeConstants.GAINS);
-        motor.setOutputInverted(IntakeConstants.MOTOR_INVERTED);
+        motor.setInverted(IntakeConstants.MOTOR_INVERTED);
         motor.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
         motor.setVelocityConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
         motor.setSmartCurrentLimit((int) IntakeConstants.CURRENT_LIMIT);
@@ -25,8 +25,8 @@ public class IntakeIONeo implements IntakeIO {
 
     private void configMotors() {
         resetEncoders(0);
-        configMotor(leader);
-        configMotor(follower);
+        configMotor(motor);
+
         setBrakeMode(IntakeConstants.BRAKE_MOTOR);
     }
 
@@ -37,37 +37,37 @@ public class IntakeIONeo implements IntakeIO {
 
     @Override
     public void setPosition(double position) {
-        leader.setTargetPosition(position);
-        follower.setTargetPosition(position);
+        motor.setTargetPosition(position);
+
     }
 
     @Override
     public void runCharacterization(double input) {
-        leader.setVoltage(input);
-        follower.setVoltage(input);
+        motor.setVoltage(input);
+
     }
 
     @Override
     public void setBrakeMode(boolean brake) {
         if (brake) {
-            leader.setBrakeMode();
-            follower.setBrakeMode();
+            motor.setBrakeMode();
+ 
         } else {
-            leader.setCoastMode();
-            follower.setCoastMode();
+            motor.setCoastMode();
+
         }
     }
 
     @Override
     public void resetEncoders(double position) {
-        leader.resetEncoder(position);
-        follower.resetEncoder(position);
+        motor.resetEncoder(position);
+
     }
 
     @Override
     public void setGains(GainConstants constants) {
-        leader.setPID(constants);
-        follower.setPID(constants);
+        motor.setPID(constants);
+
     }
 
     

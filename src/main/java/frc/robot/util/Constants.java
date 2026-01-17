@@ -727,6 +727,50 @@ public final class Constants {
         public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?       
     }
 
+        public static final class IntakeConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+        public static final double GEAR_RATIO = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 0;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?  
+        
+        public static final int MOTOR_CAN_ID = 0;
+
+
+        public static final double POSITION_CONVERSION_FACTOR = 0.0;
+        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+
+        public static final int MAX_DISPLACEMENT_METERS = 0;
+        public static final int DEADBAND_METERS = 0;
+
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+
+
+    }
+
+
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;
         public static final double TIMEOUT_SECONDS = 1.0;

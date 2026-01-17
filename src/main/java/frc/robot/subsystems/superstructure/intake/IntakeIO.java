@@ -8,7 +8,13 @@ public interface IntakeIO {
     
     @AutoLog
     class IntakeIOInputs {
-        
+        public boolean MotorConnected = false;
+        public double motorPositionMeters = 0.0;
+        public double motorTargetPositionMeters = 0.0;
+        public double motorVelocityMetersPerSecond = 0.0;
+        public double motorAppliedOutputVolts = 0.0;
+        public double motorTorqueCurrentAmps = 0.0;
+        public double motorTemperatureCelsius = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}

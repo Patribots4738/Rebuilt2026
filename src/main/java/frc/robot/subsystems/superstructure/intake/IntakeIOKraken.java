@@ -1,19 +1,17 @@
 package frc.robot.subsystems.superstructure.intake;
 
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.OIConstants;
+import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 
 public class IntakeIOKraken implements IntakeIO {
 
-    private final Kraken leader;
-    private final Kraken follower;
+    private final Kraken motor;
 
     public IntakeIOKraken() {
-        leader = new Kraken(IntakeConstants.LEADER_CAN_ID, true, true, ControlPreference.TORQUE_CURRENT);
-        follower = new Kraken(IntakeConstants.FOLLOWER_CAN_ID, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(IntakeConstants.MOTOR_CAN_ID, IntakeConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         configMotors();
     }
 
@@ -28,10 +26,9 @@ public class IntakeIOKraken implements IntakeIO {
 
     private void configMotors() {
         resetEncoders(0);
-        leader.setMotorInverted(IntakeConstants.MOTOR_INVERTED);
-        follower.setMotorInverted(!IntakeConstants.MOTOR_INVERTED);
-        configMotor(leader);
-        configMotor(follower);
+        motor.setMotorInverted(IntakeConstants.MOTOR_INVERTED);
+
+        configMotor(motor);
         setBrakeMode(IntakeConstants.BRAKE_MOTOR);
     }
 
@@ -42,44 +39,44 @@ public class IntakeIOKraken implements IntakeIO {
 
     @Override
     public void setNeutral() {
-        leader.setNeutral();
-        follower.setNeutral();
+        motor.setNeutral();
+
     }
 
     @Override
     public void setPosition(double position) {
-        leader.setTargetPosition(position);
-        follower.setTargetPosition(position);
+        motor.setTargetPosition(position);
+
     }
 
     @Override
     public void runCharacterization(double input) {
-        leader.setTorqueCurrentOutput(input);
-        follower.setTorqueCurrentOutput(input);
+        motor.setTorqueCurrentOutput(input);
+
     }
     
     @Override
     public void setBrakeMode(boolean brake) {
-        leader.setBrakeMode(brake);
-        follower.setBrakeMode(brake);
+        motor.setBrakeMode(brake);
+
     }
 
     @Override
     public void resetEncoders(double position) {
-        leader.resetEncoder(position);
-        follower.resetEncoder(position);
+        motor.resetEncoder(position);
+
     }
     
     @Override
     public void setGains(GainConstants constants) {
-        leader.setGains(constants);
-        follower.setGains(constants);
+        motor.setGains(constants);
+
     }
 
     @Override
     public void configureProfile(double velocity, double acceleration, double jerk) {
-        leader.configureMotionMagic(velocity, acceleration, jerk);
-        follower.configureMotionMagic(velocity, acceleration, jerk);
+        motor.configureMotionMagic(velocity, acceleration, jerk);
+
     }
 
 }

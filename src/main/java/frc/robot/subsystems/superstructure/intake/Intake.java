@@ -5,7 +5,7 @@
 package frc.robot.subsystems.superstructure.intake;
 
 import frc.robot.RobotContainer;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 
@@ -71,8 +71,8 @@ public class Intake extends SubsystemBase {
         if (shouldRunSetpoint) {
             io.setPosition(setpoint.position);
         } else {
-            setpoint.position = inputs.leaderPositionMeters;
-            setpoint.velocity = inputs.leaderVelocityMetersPerSecond;
+            setpoint.position = inputs.motorPositionMeters;
+            setpoint.velocity = inputs.motorVelocityMetersPerSecond;
             io.setNeutral();
         }
 
@@ -81,8 +81,8 @@ public class Intake extends SubsystemBase {
     public void setPosition(double position, boolean runFast) {
         position = MathUtil.clamp(position, 0, IntakeConstants.MAX_DISPLACEMENT_METERS);
         if (position != targetState.position) {
-            setpoint.position = inputs.leaderPositionMeters;
-            setpoint.velocity = inputs.leaderVelocityMetersPerSecond;
+            setpoint.position = inputs.motorPositionMeters;
+            setpoint.velocity = inputs.motorVelocityMetersPerSecond;
         }
         targetState.position = position;
         shouldRunSetpoint = true;
@@ -110,7 +110,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.leaderPositionMeters, IntakeConstants.DEADBAND_METERS) || MathUtil.isNear(position, inputs.followerPositionMeters, IntakeConstants.DEADBAND_METERS);
+        return MathUtil.isNear(position, inputs.motorPositionMeters, IntakeConstants.DEADBAND_METERS);
     }
 
     public boolean atTargetPosition() {
@@ -118,15 +118,15 @@ public class Intake extends SubsystemBase {
     }
 
     public double getPosition() {
-        return inputs.leaderPositionMeters;
+        return inputs.motorPositionMeters;
     }
 
     public double getCharacterizationVelocity() {
-        return inputs.leaderVelocityMetersPerSecond / IntakeConstants.VELOCITY_CONVERSION_FACTOR;
+        return inputs.motorVelocityMetersPerSecond / IntakeConstants.VELOCITY_CONVERSION_FACTOR;
     }
 
     public double getVelocity() {
-        return (inputs.leaderVelocityMetersPerSecond + inputs.followerVelocityMetersPerSecond) / 2;
+        return (inputs.motorVelocityMetersPerSecond);
     }
 
     public void runCharacterization(double input) {
