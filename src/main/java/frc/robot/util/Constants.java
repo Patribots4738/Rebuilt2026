@@ -85,6 +85,8 @@ public final class Constants {
         // the robot, rather the allowed maximum speeds
         public static double MAX_SPEED_METERS_PER_SECOND = 4.5;
 
+        public static double SKID_THRESHOLD = 0.1;
+
         public static final double MAX_ANGULAR_SPEED_RADS_PER_SECOND = Units.degreesToRadians(1137.21); // radians per second
 
         public static final double ODOMETRY_FREQUENCY = 250.0;
@@ -357,12 +359,14 @@ public final class Constants {
         public static final int REAR_LEFT_DRIVING_CAN_ID = 5;
         public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
         public static final int REAR_RIGHT_DRIVING_CAN_ID = 7;
+        public static final int DRIVE_MOTOR_TYPE = 60;
 
         // Turning motors CAN IDs
         public static final int FRONT_LEFT_TURNING_CAN_ID = 4;
         public static final int REAR_LEFT_TURNING_CAN_ID = 6;
         public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
         public static final int REAR_RIGHT_TURNING_CAN_ID = 8;
+        public static final int TURN_MOTOR_TYPE = 44;
 
         // CANcoders CAN IDs
         public static final int FRONT_LEFT_CANCODER_CAN_ID = 0;
@@ -639,7 +643,8 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = new CANBus("rio");
-        public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
+        public static final CANBus DRIVEBASE_BUS =  new CANBus("drivebase");
+        public static final CANBus SUPERSTRUCTURE_BUS = new CANBus("superstructure");
     }
 
     public static final class CANCoderConstants {
@@ -654,8 +659,77 @@ public final class Constants {
 
     }
 
+    public static final class TurretConstants {
+        public static final int MOTOR_CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final int ENCODER_CAN_ID = 0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 50;
+
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 4.71239; // turret moves from 0 to 270 degrees
+
+        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+        public static final double FAST_VELOCITY = 1.6;
+        public static final double FAST_ACCELERATION = 4d;
+        public static final double SLOW_VELOCITY = 1.6;
+        public static final double SLOW_ACCELERATION = 2d;
+        public static final double JERK = 40d;
+    }
+
+    public static final class FlywheelConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final boolean BRAKE_MOTOR = false;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 50;
+    }
+
+    public static final class HoodConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 40;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?       
+    }
+
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;
+        public static final double TIMEOUT_SECONDS = 1.0;
     }
 
     public static final class FieldConstants {
