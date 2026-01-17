@@ -5,8 +5,9 @@
 package frc.robot.subsystems.superstructure.intake;
 
 import frc.robot.RobotContainer;
-import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.Constants.LoggingConstants;
+
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
@@ -68,9 +69,6 @@ public class Intake extends SubsystemBase {
         Logger.recordOutput("Subsystems/Intake/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
-            setpoint = (shouldRunFast ? fastProfile : slowProfile).calculate(0.02, setpoint, targetState);
-            // Logger.recordOutput("Subsystems/Intake/Step/Velocity", setpoint.velocity);
-            // Logger.recordOutput("Subsystems/Intake/Step/Position", setpoint.position);
             io.setPosition(setpoint.position);
         } else {
             setpoint.position = inputs.leaderPositionMeters;

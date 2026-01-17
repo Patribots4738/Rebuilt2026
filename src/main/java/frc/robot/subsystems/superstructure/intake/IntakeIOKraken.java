@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure.intake;
 
-import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.OIConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
@@ -22,7 +23,7 @@ public class IntakeIOKraken implements IntakeIO {
         motor.setSoftLimits(0.0, IntakeConstants.MAX_DISPLACEMENT_METERS);
         motor.setGains(IntakeConstants.GAINS);
         motor.setStatorCurrentLimit(IntakeConstants.CURRENT_LIMIT);
-        motor.setTorqueCurrentLimits(-IntakeConstants.CURRENT_LIMIT, ElevatorConstants.CURRENT_LIMIT);
+        motor.setTorqueCurrentLimits(-IntakeConstants.CURRENT_LIMIT, IntakeConstants.CURRENT_LIMIT);
     }
 
     private void configMotors() {

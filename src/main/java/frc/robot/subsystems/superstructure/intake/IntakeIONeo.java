@@ -1,6 +1,6 @@
 package frc.robot.subsystems.superstructure.intake;
 
-import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
