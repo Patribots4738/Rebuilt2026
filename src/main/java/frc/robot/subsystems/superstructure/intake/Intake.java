@@ -41,8 +41,6 @@ public class Intake extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunFastProfile")
     private boolean shouldRunFast = true;
 
-    private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(IntakeConstants.FAST_VELOCITY, IntakeConstants.FAST_ACCELERATION));
-    private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(IntakeConstants.SLOW_VELOCITY, IntakeConstants.SLOW_ACCELERATION));
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
@@ -80,24 +78,6 @@ public class Intake extends SubsystemBase {
             io.setNeutral();
         }
 
-        RobotContainer.components3d[LoggingConstants.INTAKE_FIRST_STAGE_INDEX] = new Pose3d(
-            0, 
-            0, 
-            inputs.leaderPositionMeters, 
-            new Rotation3d()
-        );
-        RobotContainer.components3d[LoggingConstants.INTAKE_SECOND_STAGE_INDEX] = new Pose3d(
-            0, 
-            0, 
-            inputs.leaderPositionMeters * 2.0, 
-            new Rotation3d()
-        );
-        RobotContainer.components3d[LoggingConstants.WRIST_INDEX] = new Pose3d(
-            LoggingConstants.WRIST_OFFSET.getX(),
-            LoggingConstants.WRIST_OFFSET.getY(),
-            LoggingConstants.WRIST_OFFSET.getZ() + inputs.leaderPositionMeters * 2.0,
-            RobotContainer.components3d[LoggingConstants.WRIST_INDEX].getRotation()
-        );
     }
 
     public void setPosition(double position, boolean runFast) {
@@ -109,25 +89,6 @@ public class Intake extends SubsystemBase {
         targetState.position = position;
         shouldRunSetpoint = true;
         shouldRunFast = runFast;
-
-        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_FIRST_STAGE_INDEX] = new Pose3d(
-            0, 
-            0, 
-            position, 
-            new Rotation3d()
-        );
-        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_SECOND_STAGE_INDEX] = new Pose3d(
-            0, 
-            0, 
-            position * 2.0, 
-            new Rotation3d()
-        );
-        RobotContainer.desiredComponents3d[LoggingConstants.WRIST_INDEX] = new Pose3d(
-            LoggingConstants.WRIST_OFFSET.getX(),
-            LoggingConstants.WRIST_OFFSET.getY(),
-            LoggingConstants.WRIST_OFFSET.getZ() + position * 2.0,
-            RobotContainer.desiredComponents3d[LoggingConstants.WRIST_INDEX].getRotation()
-        );
     }
 
     public void setNeutral() {

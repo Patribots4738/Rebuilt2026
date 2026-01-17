@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.util;
+package frc.robot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,12 +48,13 @@ import frc.robot.util.hardware.rev.Neo;
  * wherever the
  * constants are needed, to reduce verbosity.
  */   
-   public static final class IntakeConstants {
+  public static final class IntakeConstants {
 
-        public static final int CAD_ID = 0;
-        public static final double CURRENT_LIMIT = 0.0;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final boolean BRAKE_MOTOR = true;
+      public static final int CAD_ID = 0;
+      public static final double CURRENT_LIMIT = 0.0;
+      public static final boolean MOTOR_INVERTED = false;
+      public static final boolean BRAKE_MOTOR = true;
+      
 
         
     }
