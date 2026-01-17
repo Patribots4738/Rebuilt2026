@@ -152,6 +152,76 @@ public final class Constants {
         public static final int REAR_RIGHT_INDEX = 3;
 
     }
+    
+    public static final class ClimbConstants {
+        
+        public static final int CAN_ID = 13;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 422.4;
+        
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 120.0;
+        public static final boolean BRAKE_MOTOR = true;
+        
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 2.814;
+        
+        public static final double P_SLOW = FieldConstants.IS_REAL ? 120d : 1000d; // Chef Cushman
+        public static final double I_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_SLOW = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_SLOW = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        
+        public static final double P_FAST = FieldConstants.IS_REAL ? 120d : 1000d;
+        public static final double I_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_FAST = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_FAST = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_FAST = FieldConstants.IS_REAL ? -30d : 0d;
+        
+        public static final double VELOCITY = Math.PI;
+        public static final double ACCELERATION = 20d;
+        public static final double JERK = 200d;
+        
+        public static final GainConstants SLOW_GAINS = new GainConstants(
+                P_SLOW,
+                I_SLOW,
+                D_SLOW,
+                A_SLOW,
+                S_SLOW,
+                V_SLOW,
+                G_SLOW
+        );
+        
+        public static final GainConstants FAST_GAINS = new GainConstants(
+                P_FAST,
+                I_FAST,
+                D_FAST,
+                A_FAST,
+                S_FAST,
+                V_FAST,
+                G_FAST
+        );
+        
+        // public static final LoggedGainConstants LOGGED_SLOW_GAINS = new LoggedGainConstants(ClimbConstants.SLOW_GAINS, "Climb/SlowGains");
+        // public static final LoggedGainConstants LOGGED_FAST_GAINS = new LoggedGainConstants(ClimbConstants.FAST_GAINS, "Climb/FastGains");
+        
+        public static final double STOW_POSITION_RADIANS = 0.0;
+        public static final double READY_POSITION_RADIANS = 2.814;
+        public static final double FINAL_POSITION_RADIANS = 0.814;
+        
+        public static final double Y_CHASSIS_OFFSET = 0.0508;
+        
+        public static final double DEADBAND_RADIANS = Units.degreesToRadians(10.0);
+        
+    }
 
     public static final class AutoConstants {
 
