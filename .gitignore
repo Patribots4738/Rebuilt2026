@@ -2,7 +2,7 @@
 # If you remove items from this file, intellisense might break.
 
 # Add BuildConstants.java to .gitignore
-BuildConstants.java
+src/main/java/**/BuildConstants.java
 
 ### C++ ###
 # Prerequisites

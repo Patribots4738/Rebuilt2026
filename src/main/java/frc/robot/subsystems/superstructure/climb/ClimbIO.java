@@ -17,20 +17,20 @@ public interface ClimbIO {
         public double temperatureCelsius = 0.0;
     }
 
-    public default void updateInputs(ClimbIOInputs inputs) {}
+    default void updateInputs(ClimbIOInputs inputs) {}
 
-    public default void setNeutral() {}
+    default void setNeutral() {}
 
-    public default void setPosition(double position, int slot) {}
+    default void setPosition(double position, int slot) {}
 
-    public default void runCharacterization(double input) {}
+    default void runCharacterization(double input) {}
 
-    public default void setBrakeMode(boolean brake) {}
+    default void setBrakeMode(boolean brake) {}
 
-    public default void resetEncoder(double position) {}
+    default void resetEncoder(double position) {}
 
-    public default void setGains(GainConstants constants, int slot) {}
+    default void setGains(GainConstants constants, int slot) {}
 
-    public default void configureProfile(double velocity, double acceleration, double jerk) {}
+    default void configureProfile(double velocity, double acceleration, double jerk) {}
 
 }
