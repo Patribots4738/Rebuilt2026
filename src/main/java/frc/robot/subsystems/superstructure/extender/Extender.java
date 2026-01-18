@@ -42,8 +42,6 @@ public class Extender extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Extender/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Extender/ShouldRunFastProfile")
-    private boolean shouldRunFast = true;
 
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
@@ -89,7 +87,6 @@ public class Extender extends SubsystemBase {
         }
         targetState.position = position;
         shouldRunSetpoint = true;
-        shouldRunFast = runFast;
     }
 
 
