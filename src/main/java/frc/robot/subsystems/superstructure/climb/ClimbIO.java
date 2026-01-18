@@ -14,7 +14,7 @@ public interface ClimbIO {
         public double targetPositionRads = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
-        public double temperatureCelcius = 0.0;
+        public double temperatureCelsius = 0.0;
     }
 
     public default void updateInputs(ClimbIOInputs inputs) {}
