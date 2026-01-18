@@ -101,6 +101,18 @@ public final class Constants {
             ROBOT_OFFSET.getY() + 0.0, 
             ROBOT_OFFSET.getZ() + 0.0
         );
+
+        public static final Translation3d TURRET_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d HOOD_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
     }
 
     public static final class DriveConstants {

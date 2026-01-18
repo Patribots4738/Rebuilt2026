@@ -68,9 +68,7 @@ public class Turret extends SubsystemBase {
         shouldRunFast = runFast;
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getX(), 
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getY(),
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getZ(),
+            LoggingConstants.TURRET_OFFSET,
             new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
         );
     }

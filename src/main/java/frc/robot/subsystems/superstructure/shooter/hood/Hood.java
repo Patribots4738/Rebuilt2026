@@ -63,9 +63,7 @@ public class Hood extends SubsystemBase {
         }
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getX(), 
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getY(),
-            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getZ(),
+            LoggingConstants.HOOD_OFFSET,
             new Rotation3d(0, inputs.encoderAbsPositionRads, yaw)
         );
     }
