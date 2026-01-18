@@ -1,0 +1,52 @@
+public class SpindexerIOKraken implements SpindexerIO {
+    
+    private final Kraken motor;
+    
+        public CoralClawIOKraken() {
+        motor = new Kraken(SpindexerConstants.CAN_ID, true, true, ControlPreference.VOLTAGE);
+        configMotor();
+    }
+
+    private void configMotor() {
+        motor.setMotorInverted(CoralClawConstants.MOTOR_INVERTED);
+        motor.setSupplyCurrentLimit(CoralClawConstants.CURRENT_LIMIT);
+        motor.setStatorCurrentLimit(CoralClawConstants.CURRENT_LIMIT);
+        setBrakeMode(CoralClawConstants.BRAKE_MOTOR);
+    }
+
+    @Override
+    public void updateInputs(ClawIOInputs inputs) {
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.percentOutput = motor.getPercentAsDouble();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
+    }
+
+    @Override
+    public void setNeutral() {
+        motor.setNeutral();
+    }
+
+    @Override
+    public void setBrakeMode(boolean brake) {
+        motor.setBrakeMode(brake);
+    }
+
+    @Override
+    public void setPercent(double percent) {
+        motor.setPercentOutput(percent);
+    }
+
+    @Override
+    public void setVoltage(double volts) {
+        motor.setVoltageOutput(volts);
+    }
+
+    @Override
+    public void setCurrent(double amps) {
+        motor.setTorqueCurrentOutput(amps);
+    }
+}
