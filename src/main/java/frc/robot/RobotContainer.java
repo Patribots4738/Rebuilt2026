@@ -54,18 +54,24 @@ public class RobotContainer {
     private static HDCTuner HDCTuner;
 
     // Draggables
-    @AutoLogOutput(key = "Draggables/FreshCode")
+    @AutoLogOutput (key = "Draggables/Components3d")
+    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/DesiredComponents3d")
+    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/FreshCode")
     public static boolean freshCode = true;
-    @AutoLogOutput(key = "Draggables/RobotPose2d")
-    public static Pose2d robotPose2d = new Pose2d();
+    @AutoLogOutput (key = "Draggables/RobotPose2d")
+    public static Pose2d robotPose2d = Pose2d.kZero;
+    @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
+    public static SwerveModuleState[] swerveMeasuredStates;
+    @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
+    public static SwerveModuleState[] swerveDesiredStates;
+    @AutoLogOutput (key = "Draggables/GameModeStart")
+    public static double gameModeStart = 0;
+    @AutoLogOutput (key = "Draggables/AutoStartingPose")
+    public static Pose2d autoStartingPose = Pose2d.kZero;
     @AutoLogOutput(key = "Draggables/RobotPose3d")
     public static Pose3d robotPose3d = new Pose3d();
-    @AutoLogOutput(key = "Draggables/SwerveMeasuredStates")
-    public static SwerveModuleState[] swerveMeasuredStates;
-    @AutoLogOutput(key = "Draggables/SwerveDesiredStates")
-    public static SwerveModuleState[] swerveDesiredStates;
-    @AutoLogOutput(key = "Draggables/GameModeStart")
-    public static double gameModeStart = 0;
 
     public RobotContainer() {
 
