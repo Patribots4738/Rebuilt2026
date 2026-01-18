@@ -7,6 +7,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -17,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
 public class Turret extends SubsystemBase {
@@ -63,7 +67,12 @@ public class Turret extends SubsystemBase {
         shouldRunSetpoint = true;
         shouldRunFast = runFast;
 
-        //TODO: create components3d for sim
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getX(), 
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getY(),
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getZ(),
+            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
+        );
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {

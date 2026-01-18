@@ -7,6 +7,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -17,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.LoggingConstants;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
@@ -25,6 +29,7 @@ public class Hood extends SubsystemBase {
 
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
+    private double yaw;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunFastProfile")
@@ -33,9 +38,9 @@ public class Hood extends SubsystemBase {
     private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(HoodConstants.FAST_VELOCITY, HoodConstants.FAST_ACCELERATION)); // use for tracking
     private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(HoodConstants.SLOW_VELOCITY, HoodConstants.SLOW_ACCELERATION)); // use to snap to the target
 
-
-    public Hood(HoodIO io) {
+    public Hood(HoodIO io, double yaw) { // the yaw should be the same as the turret's yaw
         this.io = io;
+        this.yaw = yaw;
     }
 
     @Override
@@ -45,6 +50,24 @@ public class Hood extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Flywheel/Hood", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Flywheel/Hood", targetState.position);
+
+        if (shouldRunSetpoint) {
+            setpoint = (shouldRunFast ? fastProfile : slowProfile).calculate(0.02, setpoint, targetState);
+            // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
+            // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
+            io.setPosition(setpoint.position, 0);
+        } else {
+            setpoint.position = inputs.internalPositionRads;
+            setpoint.velocity = inputs.internalVelocityRadsPerSec;
+            io.setNeutral();
+        }
+
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getX(), 
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getY(),
+            RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getZ(),
+            new Rotation3d(0, inputs.encoderAbsPositionRads, yaw)
+        );
     }
 
     /**

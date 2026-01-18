@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -78,6 +79,28 @@ public final class Constants {
             SIMBOT
         }
 
+        public static final int CLIMB_INDEX = 0;
+        public static final int EXTENDER_INDEX = 1;
+        public static final int TURRET_INDEX = 2;
+        public static final int HOOD_INDEX = 3;
+
+        public static final Translation3d ROBOT_OFFSET = new Translation3d(
+            0.0,
+            0.0,
+            0.0
+        );
+
+        public static final Translation3d EXTENDER_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d WRIST_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
     }
 
     public static final class DriveConstants {
