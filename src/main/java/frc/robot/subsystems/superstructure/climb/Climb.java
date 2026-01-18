@@ -82,7 +82,7 @@ public class Climb extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.positionRads, ClimbConstants.DEADBAND_RADIANS);
+        return MathUtil.isNear(position, inputs.positionRads, ClimbConstants.DEADBAND_METERS);
     }
 
     public boolean atTargetPosition() {

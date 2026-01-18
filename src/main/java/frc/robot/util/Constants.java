@@ -227,17 +227,7 @@ public final class Constants {
                 G_FAST
         );
         
-        // public static final LoggedGainConstants LOGGED_SLOW_GAINS = new LoggedGainConstants(ClimbConstants.SLOW_GAINS, "Climb/SlowGains");
-        // public static final LoggedGainConstants LOGGED_FAST_GAINS = new LoggedGainConstants(ClimbConstants.FAST_GAINS, "Climb/FastGains");
-        
-        public static final double STOW_POSITION_RADIANS = 0.0;
-        public static final double READY_POSITION_RADIANS = 2.814;
-        public static final double FINAL_POSITION_RADIANS = 0.814;
-        
-        public static final double Y_CHASSIS_OFFSET = 0.0508;
-        
-        public static final double DEADBAND_RADIANS = Units.degreesToRadians(10.0);
-        
+        public static final double DEADBAND_METERS = 0.0;
     }
 
     public static final class AutoConstants {
