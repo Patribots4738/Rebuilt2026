@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -77,6 +78,21 @@ public final class Constants {
             COMPBOT,
             SIMBOT
         }
+        
+        public static final int CLIMB_INDEX = 0;
+        public static final int WRIST_INDEX = 3;
+        
+        public static final Translation3d ROBOT_OFFSET = new Translation3d(
+                0.0,
+                0.0,
+                0.0
+        );
+        
+        public static final Translation3d CLIMB_OFFSET = new Translation3d(
+                ROBOT_OFFSET.getX() + 0.056,
+                ROBOT_OFFSET.getY() + 0.241,
+                ROBOT_OFFSET.getZ() + 0.2735
+        );
 
     }
 
@@ -156,6 +172,7 @@ public final class Constants {
     public static final class ClimbConstants {
         
         public static final int CAN_ID = 13;
+        public static final int MOTOR_TYPE = 60;
         
         public static final boolean MOTOR_INVERTED = false;
         

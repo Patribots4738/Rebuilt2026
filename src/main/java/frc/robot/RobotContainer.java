@@ -38,6 +38,11 @@ public class RobotContainer {
     private PowerDistribution pdh;
 
     private EventLoop testButtonBindingLoop = new EventLoop();
+    
+    @AutoLogOutput (key = "Draggables/Components3d")
+    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/DesiredComponents3d")
+    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
 
     private final PatriBoxController driver;
     @SuppressWarnings("unused")
