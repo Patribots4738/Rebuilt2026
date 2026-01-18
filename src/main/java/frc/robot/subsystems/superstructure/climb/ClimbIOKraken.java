@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure.climb;
 
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
+import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.custom.GainConstants;
 
@@ -10,7 +11,7 @@ public class ClimbIOKraken implements ClimbIO {
     private final Kraken motor;
 
     public ClimbIOKraken() {
-        motor = new Kraken(ClimbConstants.CAN_ID, ClimbConstants.MOTOR_TYPE, true, false, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(ClimbConstants.CAN_ID, ClimbConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS, true, false, ControlPreference.TORQUE_CURRENT);
         
         configMotor();
     }
