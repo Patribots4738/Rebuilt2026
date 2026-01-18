@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.Constants.BallConstants;
 
 public final class BallPhysics {
-    public static final double GRAVITY = 9.81;
 
     public record ShotSolution(
             double launchPitchRad,
@@ -33,7 +32,7 @@ public final class BallPhysics {
     }
 
     private static Translation3d magnusForce(
-            Translation3d v, Translation3d omega, BallConstants c) {
+            Translation3d v, Translation3d omega) {
 
         double speed = v.getNorm();
         double wMag = omega.getNorm();
@@ -65,22 +64,21 @@ public final class BallPhysics {
         return current.plus(delta);
     }
 
-    public static void step(
-            BallState s, BallConstants c, double dt) {
+    public static void step(double dt, Translation3d velocity, Translation3d omega, Pose3d ballPose) {
 
         Translation3d force = gravityForce()
-                .plus(dragForce(s.velocity, c))
-                .plus(magnusForce(s.velocity, s.omega, c));
+                .plus(dragForce(velocity))
+                .plus(magnusForce(velocity, omega));
 
         Translation3d accel = force.div(BallConstants.BALL_MASS_KILOGRAMS);
 
         double decay = Math.exp(-dt / BallConstants.SPIN_DECAY);
-        s.omega = s.omega.times(decay);
+        omega = omega.times(BallConstants.SPIN_DECAY);
 
-        s.velocity = s.velocity.plus(accel.times(dt));
+        velocity = velocity.plus(accel.times(dt));
 
-        s.pose = new Pose3d(s.pose.getTranslation().plus(s.velocity.times(dt)),
-                integrateRotation(s.pose.getRotation(), s.omega, dt));
+        ballPose = new Pose3d(ballPose.getTranslation().plus(velocity.times(dt)),
+                integrateRotation(ballPose.getRotation(), omega, dt));
     }
 
     public static ShotSolution solveBallisticWithIncomingAngle(
@@ -108,10 +106,10 @@ public final class BallPhysics {
                     "No physical solution: dz - d*tan(thetaT) must be > 0");
         }
 
-        double T = Math.sqrt(2.0 * rhs / GRAVITY);
+        double T = Math.sqrt(2.0 * rhs / BallConstants.GRAVITY);
 
         double vHoriz = d / T;
-        double vZ0 = vHoriz * tanThetaT + GRAVITY * T;
+        double vZ0 = vHoriz * tanThetaT + BallConstants.GRAVITY * T;
 
         double launchSpeed = Math.hypot(vHoriz, vZ0);
         double launchPitch = Math.atan2(vZ0, vHoriz);
@@ -137,7 +135,7 @@ public final class BallPhysics {
         }
 
         double v2 = launchSpeed * launchSpeed;
-        double g = GRAVITY;
+        double g = BallConstants.GRAVITY;
 
         double discriminant = v2 * v2 - g * (g * d * d + 2.0 * dz * v2);
         if (discriminant < 0) {
@@ -169,6 +167,6 @@ public final class BallPhysics {
         double d = Math.hypot(dx, dy);
 
         return Math.sqrt(
-                GRAVITY * (Math.hypot(d, dz) + dz));
+                BallConstants.GRAVITY * (Math.hypot(d, dz) + dz));
     }
 }

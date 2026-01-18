@@ -10,15 +10,13 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
+import frc.robot.util.calc.BallPhysics.ShotSolution;
+
 /**
  * Provides static methods to calculate the effective target position to aim for
  * when shooting on the fly.
  */
 public class ShooterCalculations {
-
-    static double xAcceleration = 10; //TODO
-    static double yAcceleration = 10; //TODO
-    static double thetaAcceleration = 10; //TODO
 
     /**
      * Calculates the time it will take for a projectile to reach a target given the
@@ -168,7 +166,9 @@ public class ShooterCalculations {
             ChassisSpeeds fieldRelRobotVelocity,
             Function<Double, Double> xyDistanceToProjectileVelocity,
             double goalPositionIterations,
-            double accelerationCompensationFactor) {
+            double accelerationCompensationFactor,
+            double xAcceleration,
+            double yAcceleration) {
 
         double shotTime = getTimeToShoot(robotPose, targetPose, xyDistanceToProjectileVelocity);
 

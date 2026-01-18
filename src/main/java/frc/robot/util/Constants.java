@@ -19,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -675,5 +676,9 @@ public final class Constants {
         public static double CL_MAX = 1.0; //TODO
         public static double SPIN_DECAY = 1.0; //TODO
         public static double BALL_AREA = Math.PI * BALL_RADIUS_METERS * BALL_RADIUS_METERS;
+
+        public static InterpolatingDoubleTreeMap flyWheelRPMtoVelocity = new InterpolatingDoubleTreeMap();
+        
+        public static InterpolatingDoubleTreeMap flyWheelRPMtoBallRPM = new InterpolatingDoubleTreeMap();
     }
 }
