@@ -35,45 +35,45 @@ import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
 
-        private PowerDistribution pdh;
+    private PowerDistribution pdh;
 
-        private EventLoop testButtonBindingLoop = new EventLoop();
+    private EventLoop testButtonBindingLoop = new EventLoop();
 
-        private final PatriBoxController driver;
-        @SuppressWarnings("unused")
-        private final PatriBoxController operator;
+    private final PatriBoxController driver;
+    @SuppressWarnings("unused")
+    private final PatriBoxController operator;
 
-        private boolean fieldRelativeToggle = true;
-        private final BooleanSupplier robotRelativeSupplier;
+    private boolean fieldRelativeToggle = true;
+    private final BooleanSupplier robotRelativeSupplier;
 
-        private final Swerve swerve;
+    private final Swerve swerve;
 
-        public static Field2d field2d = new Field2d();
+    public static Field2d field2d = new Field2d();
 
-        private PathPlannerStorage pathPlannerStorage;
-        private static HDCTuner HDCTuner;
+    private PathPlannerStorage pathPlannerStorage;
+    private static HDCTuner HDCTuner;
 
     // Draggables
-        @AutoLogOutput (key = "Draggables/Components3d")
-        public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
-        @AutoLogOutput (key = "Draggables/DesiredComponents3d")
-        public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
-        @AutoLogOutput (key = "Draggables/FreshCode")
-        public static boolean freshCode = true;
-        @AutoLogOutput (key = "Draggables/RobotPose2d")
-        public static Pose2d robotPose2d = Pose2d.kZero;
-        @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
-        public static SwerveModuleState[] swerveMeasuredStates;
-        @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
-        public static SwerveModuleState[] swerveDesiredStates;
-        @AutoLogOutput (key = "Draggables/GameModeStart")
-        public static double gameModeStart = 0;
-        @AutoLogOutput (key = "Draggables/AutoStartingPose")
-        public static Pose2d autoStartingPose = Pose2d.kZero;
-        @AutoLogOutput(key = "Draggables/RobotPose3d")
-        public static Pose3d robotPose3d = new Pose3d();
+    @AutoLogOutput (key = "Draggables/Components3d")
+    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/DesiredComponents3d")
+    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/FreshCode")
+    public static boolean freshCode = true;
+    @AutoLogOutput (key = "Draggables/RobotPose2d")
+    public static Pose2d robotPose2d = Pose2d.kZero;
+    @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
+    public static SwerveModuleState[] swerveMeasuredStates;
+    @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
+    public static SwerveModuleState[] swerveDesiredStates;
+    @AutoLogOutput (key = "Draggables/GameModeStart")
+    public static double gameModeStart = 0;
+    @AutoLogOutput (key = "Draggables/AutoStartingPose")
+    public static Pose2d autoStartingPose = Pose2d.kZero;
+    @AutoLogOutput(key = "Draggables/RobotPose3d")
+    public static Pose3d robotPose3d = new Pose3d();
 
-        public RobotContainer() {
+    public RobotContainer() {
 
         System.out.println("Constructing Robot Container...");
 
