@@ -315,6 +315,24 @@ public class Neo extends SafeSpark {
         return targetPercent;
     }
 
+    /**
+     * Adds a follower to the Neo motor.
+     * 
+     * @param follower the Neo motor to be added as a follower
+     */
+    public void addFollower(Neo follower) {
+        addFollower(follower, false);
+    }
+
+    /**
+     * Adds a follower to the Neo motor.
+     * 
+     * @param follower The Neo motor to be added as a follower.
+     * @param invert   Specifies whether the follower should be inverted or not.
+     */
+    public void addFollower(Neo follower, boolean invert) {
+        follower.follow(this, invert);
+    }
 
     /**
      * Sets the PID values and output limits for the Neo motor controller.
