@@ -664,4 +664,16 @@ public final class Constants {
         public static boolean IS_REAL = !IS_SIMULATION;
 
     }
+
+    public static final class BallConstants {
+        public static double BALL_MASS_KILOGRAMS = 0.21456;
+        public static double BALL_RADIUS_METERS = 0.4719;
+        public static double AIR_DENSITY = 1.0; //TODO
+        public static double GRAVITY = 9.81;
+        public static double DRAG_COEFFICEINT = 1.0; //TODO
+        public static double CL_GAIN = 1.0; //TODO
+        public static double CL_MAX = 1.0; //TODO
+        public static double SPIN_DECAY = 1.0; //TODO
+        public static double BALL_AREA = Math.PI * BALL_RADIUS_METERS * BALL_RADIUS_METERS;
+    }
 }
