@@ -7,12 +7,20 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
 public class Turret extends SubsystemBase {
@@ -21,7 +29,7 @@ public class Turret extends SubsystemBase {
 
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
-    @AutoLogOutput (key = "Subsystems/Elevator/ShouldRunSetpoint")
+    @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunFastProfile")
     private boolean shouldRunFast = true;
@@ -37,7 +45,7 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("SubsystemInputs/Elevator", inputs);
+        Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
@@ -59,7 +67,10 @@ public class Turret extends SubsystemBase {
         shouldRunSetpoint = true;
         shouldRunFast = runFast;
 
-        //TODO: create components3d for sim
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+            LoggingConstants.TURRET_OFFSET,
+            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
+        );
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
@@ -105,10 +116,38 @@ public class Turret extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
-    
 
-    public Command resetEncodersCommand() {
-        return runOnce(() -> io.resetEncoders(0));
+    // TODO: make this work :D
+    public SysIdRoutine getSysIdRoutine() {
+        return new SysIdRoutine(
+            new SysIdRoutine.Config(
+                // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
+                Volts.of(0.5).per(Second),
+                null, 
+                Seconds.of(2),
+                (state) -> Logger.recordOutput("TurretSysIdState", state.toString())
+            ),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> io.runCharacterization(voltage.in(Volts)), 
+                null, 
+                this
+            )
+        );
     }
 
+    public Command sysIdQuasistaticForward() {
+        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdQuasistaticReverse() {
+        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command sysIdDynamicForward() {
+        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdDynamicReverse() {
+        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse);
+    }
 }

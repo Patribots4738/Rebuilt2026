@@ -1,18 +1,15 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
-import frc.robot.subsystems.drive.module.ModuleIO.ModuleIOInputs;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIO.TurretIOInputs;
-import frc.robot.util.Constants;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.util.hardware.phoenix.Kraken;
-import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
+import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class TurretIOKraken implements TurretIO {
     private final Kraken motor;
@@ -26,7 +23,7 @@ public class TurretIOKraken implements TurretIO {
         configEncoder();
     }
 
-    public void configMotor() {
+    private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
@@ -47,7 +44,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     /**
-     * Updates the inputs sent to the Mk4c module.
+     * Updates the inputs sent to the turret motor
      */
     @Override
     public void updateInputs(TurretIOInputs inputs) {
@@ -71,10 +68,14 @@ public class TurretIOKraken implements TurretIO {
     }
 
     @Override
-    public void setPosition(double position, double feedForward) {}
+    public void setPosition(double position, double feedforward) {
+        motor.setTargetPosition(position, feedforward);
+    }
 
     @Override
-    public void setNeutral() {}
+    public void setNeutral() {
+        motor.setNeutral();
+    }
 
     @Override
     public void runCharacterization(double input) {}
@@ -82,11 +83,6 @@ public class TurretIOKraken implements TurretIO {
     @Override
     public void setBrakeMode(boolean brake) {
         motor.setBrakeMode(brake);
-    }
-
-    @Override
-    public void resetEncoders(double position) {
-        
     }
 
     @Override
