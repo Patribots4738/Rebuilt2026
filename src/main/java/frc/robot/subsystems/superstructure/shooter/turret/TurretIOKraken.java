@@ -44,7 +44,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     /**
-     * Updates the inputs sent to the Mk4c module.
+     * Updates the inputs sent to the turret motor
      */
     @Override
     public void updateInputs(TurretIOInputs inputs) {
@@ -68,10 +68,14 @@ public class TurretIOKraken implements TurretIO {
     }
 
     @Override
-    public void setPosition(double position, double feedForward) {}
+    public void setPosition(double position, double feedforward) {
+        motor.setTargetPosition(position, feedforward);
+    }
 
     @Override
-    public void setNeutral() {}
+    public void setNeutral() {
+        motor.setNeutral();
+    }
 
     @Override
     public void runCharacterization(double input) {}
@@ -79,11 +83,6 @@ public class TurretIOKraken implements TurretIO {
     @Override
     public void setBrakeMode(boolean brake) {
         motor.setBrakeMode(brake);
-    }
-
-    @Override
-    public void resetEncoders(double position) {
-        
     }
 
     @Override

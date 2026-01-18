@@ -17,6 +17,7 @@ public class FlywheelIOKraken implements FlywheelIO {
         motor.setMotorInverted(FlywheelConstants.MOTOR_INVERTED);
         motor.setSupplyCurrentLimit(FlywheelConstants.CURRENT_LIMIT);
         motor.setStatorCurrentLimit(FlywheelConstants.CURRENT_LIMIT);
+        motor.setGains(FlywheelConstants.GAINS);
         setBrakeMode(FlywheelConstants.BRAKE_MOTOR);
     }
 
@@ -46,7 +47,7 @@ public class FlywheelIOKraken implements FlywheelIO {
     public void setVelocity(double velocity) {
         motor.setTargetVelocity(velocity);
     }
-    
+
     @Override
     public void setPercent(double percent) {
         motor.setPercentOutput(percent);

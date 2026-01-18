@@ -20,6 +20,8 @@ public interface FlywheelIO {
 
     public default void setNeutral() {}
 
+    public default void runCharacterization(double input) {}
+
     public default void setBrakeMode(boolean brake) {}
 
     public default void setVelocity(double velocity) {}
