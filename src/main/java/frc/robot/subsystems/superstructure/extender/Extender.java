@@ -82,7 +82,7 @@ public class Extender extends SubsystemBase {
     }
 
     public void setPosition(double position, boolean runFast) {
-        position = MathUtil.clamp(position, 0, ExtenderConstants.MAX_DISPLACEMENT_METERS);
+        position = MathUtil.clamp(position, ExtenderConstants.RETRACT_POSITION_METERS, ExtenderConstants.MAX_DISPLACEMENT_METERS);
         if (position != targetState.position) {
             setpoint.position = inputs.motorPositionMeters;
             setpoint.velocity = inputs.motorVelocityMetersPerSecond;

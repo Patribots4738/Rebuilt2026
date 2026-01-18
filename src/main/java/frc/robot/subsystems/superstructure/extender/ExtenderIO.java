@@ -8,7 +8,7 @@ public interface ExtenderIO {
     
     @AutoLog
     class ExtenderIOInputs {
-        public boolean MotorConnected = false;
+        public boolean motorConnected = false;
         public double motorPositionMeters = 0.0;
         public double motorTargetPositionMeters = 0.0;
         public double motorVelocityMetersPerSecond = 0.0;

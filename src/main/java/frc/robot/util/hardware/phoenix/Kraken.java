@@ -20,6 +20,7 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
@@ -703,7 +704,22 @@ public class Kraken extends TalonFX {
             "PID Wrapping Enabled"
         );
     }
-    
+        public StatusCode setFollowing(Kraken motor, boolean invert) {
+        MotorAlignmentValue alignment = invert ? MotorAlignmentValue.Opposed : MotorAlignmentValue.Aligned;
+        StatusCode status = setControl(new Follower(motor.getDeviceID(), alignment));
+        targetPosition = motor.getTargetPosition();
+        targetVelocity = motor.getTargetVelocity();
+        targetPercent = motor.getTargetPercent();
+        if (status.isError()) {
+            System.err.println("Failure to set following");
+            System.err.println("Error Code " + status.value + " - " + status.getDescription());
+        }
+        return status;
+    }
+
+    public StatusCode setFollowing(Kraken motor) {
+        return setFollowing(motor, false);
+    }
     /**
      * Obtains unit conversion factor of the Kraken.
      * 
