@@ -746,7 +746,7 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
 
         public static final int MAX_DISPLACEMENT_METERS = 0;
-        public static final int DEADBAND_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
 
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
@@ -790,7 +790,7 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
 
         public static final int MAX_DISPLACEMENT_METERS = 0;
-        public static final int DEADBAND_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
 
         public static final double RETRACT_POSITION_METERS = 0.0;
 

@@ -110,7 +110,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.motorPositionMeters, IntakeConstants.DEADBAND_METERS);
+        return MathUtil.isNear(position, inputs.motorPositionMeters, IntakeConstants.DEADBAND_RADIANS);
     }
 
     public boolean atTargetPosition() {
