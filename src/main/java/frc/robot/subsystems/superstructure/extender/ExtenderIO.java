@@ -15,6 +15,7 @@ public interface ExtenderIO {
         public double motorAppliedOutputVolts = 0.0;
         public double motorTorqueCurrentAmps = 0.0;
         public double motorTemperatureCelsius = 0.0;
+        public double positionRads = 0.0;
     }
 
     public default void updateInputs(ExtenderIOInputs inputs) {}

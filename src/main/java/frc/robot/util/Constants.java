@@ -18,7 +18,9 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -44,7 +46,11 @@ import frc.robot.util.hardware.rev.Neo;
 public final class Constants {
 
     public static final class LoggingConstants {
-
+        
+        public static final int EXTENDER_INDEX = 0;
+        public static final Rotation3d EXTENDER_ROTATION = new Rotation3d(0.0, 0.0, 0.0);
+        public static final Translation3d EXTENDER_OFFSET = new Translation3d(0.0, EXTENDER_ROTATION);
+        
         private static RobotType robotType = RobotType.DEVBOT;
 
         public static RobotType getRobot() {

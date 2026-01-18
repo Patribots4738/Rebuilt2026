@@ -76,7 +76,8 @@ public class Extender extends SubsystemBase {
             setpoint.velocity = inputs.motorVelocityMetersPerSecond;
             io.setNeutral();
         }
-
+        
+        RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(LoggingConstants.EXTENDER_OFFSET,  new Rotation3d(0, -inputs.positionRads, 0) );
     }
 
     public void setPosition(double position, boolean runFast) {
