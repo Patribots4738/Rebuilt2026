@@ -79,21 +79,6 @@ public final class Constants {
             COMPBOT,
             SIMBOT
         }
-        
-        public static final int CLIMB_INDEX = 0;
-        public static final int WRIST_INDEX = 3;
-        
-        public static final Translation3d ROBOT_OFFSET = new Translation3d(
-                0.0,
-                0.0,
-                0.0
-        );
-        
-        public static final Translation3d CLIMB_OFFSET = new Translation3d(
-                ROBOT_OFFSET.getX() + 0.056,
-                ROBOT_OFFSET.getY() + 0.241,
-                ROBOT_OFFSET.getZ() + 0.2735
-        );
 
         public static final int CLIMB_INDEX = 0;
         public static final int EXTENDER_INDEX = 1;
@@ -104,6 +89,12 @@ public final class Constants {
             0.0,
             0.0,
             0.0
+        );
+
+        public static final Translation3d CLIMB_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.056,
+            ROBOT_OFFSET.getY() + 0.241,
+            ROBOT_OFFSET.getZ() + 0.2735
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
