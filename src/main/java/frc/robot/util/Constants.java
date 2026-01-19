@@ -91,6 +91,12 @@ public final class Constants {
             0.0
         );
 
+        public static final Translation3d CLIMB_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.056,
+            ROBOT_OFFSET.getY() + 0.241,
+            ROBOT_OFFSET.getZ() + 0.2735
+        );
+
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
             ROBOT_OFFSET.getX() + 0.0, 
             ROBOT_OFFSET.getY() + 0.0, 
@@ -187,6 +193,67 @@ public final class Constants {
         public static final int REAR_LEFT_INDEX = 2;
         public static final int REAR_RIGHT_INDEX = 3;
 
+    }
+    
+    public static final class ClimbConstants {
+        
+        public static final int CAN_ID = 13;
+        public static final int MOTOR_TYPE = 60;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 422.4;
+        
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 120.0;
+        public static final boolean BRAKE_MOTOR = true;
+        
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 2.814;
+        
+        public static final double P_SLOW = FieldConstants.IS_REAL ? 120d : 1000d; // Chef Cushman
+        public static final double I_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_SLOW = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_SLOW = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        
+        public static final double P_FAST = FieldConstants.IS_REAL ? 120d : 1000d;
+        public static final double I_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_FAST = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_FAST = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_FAST = FieldConstants.IS_REAL ? -30d : 0d;
+        
+        public static final double VELOCITY = Math.PI;
+        public static final double ACCELERATION = 20d;
+        public static final double JERK = 200d;
+        
+        public static final GainConstants SLOW_GAINS = new GainConstants(
+                P_SLOW,
+                I_SLOW,
+                D_SLOW,
+                A_SLOW,
+                S_SLOW,
+                V_SLOW,
+                G_SLOW
+        );
+        
+        public static final GainConstants FAST_GAINS = new GainConstants(
+                P_FAST,
+                I_FAST,
+                D_FAST,
+                A_FAST,
+                S_FAST,
+                V_FAST,
+                G_FAST
+        );
+        
+        public static final double DEADBAND_METERS = 0.0;
     }
 
     public static final class AutoConstants {
