@@ -47,10 +47,6 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        public static final int EXTENDER_INDEX = 0;
-        public static final Rotation3d EXTENDER_ROTATION = new Rotation3d(0.0, 0.0, 0.0);
-        public static final Translation3d EXTENDER_OFFSET = new Translation3d(0.0, EXTENDER_ROTATION);
-        
         private static RobotType robotType = RobotType.DEVBOT;
 
         public static RobotType getRobot() {
