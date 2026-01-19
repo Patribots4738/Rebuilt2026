@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -45,7 +46,7 @@ import frc.robot.util.hardware.rev.Neo;
 public final class Constants {
 
     public static final class LoggingConstants {
-
+        
         private static RobotType robotType = RobotType.DEVBOT;
 
         public static RobotType getRobot() {
@@ -94,6 +95,40 @@ public final class Constants {
                 ROBOT_OFFSET.getZ() + 0.2735
         );
 
+        public static final int CLIMB_INDEX = 0;
+        public static final int EXTENDER_INDEX = 1;
+        public static final int TURRET_INDEX = 2;
+        public static final int HOOD_INDEX = 3;
+
+        public static final Translation3d ROBOT_OFFSET = new Translation3d(
+            0.0,
+            0.0,
+            0.0
+        );
+
+        public static final Translation3d EXTENDER_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d WRIST_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d TURRET_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d HOOD_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0, 
+            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getZ() + 0.0
+        );
     }
 
     public static final class DriveConstants {
@@ -790,19 +825,159 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
+
+        public static final double CIRCUMFERENCE_METERS = 0.0;
+
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
     }
 
     public static final class HoodConstants {
         public static final int CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
 
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0.0;
+
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 40;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?       
+        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees? 
+        
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+
+        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+        
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+        public static final double FAST_VELOCITY = 1.6;
+        public static final double FAST_ACCELERATION = 4d;
+        public static final double SLOW_VELOCITY = 1.6;
+        public static final double SLOW_ACCELERATION = 2d;
+        public static final double JERK = 40d;
     }
+
+        public static final class IntakeConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+        public static final double GEAR_RATIO = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 0;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?  
+        
+        public static final int MOTOR_CAN_ID = 0;
+
+
+        public static final double POSITION_CONVERSION_FACTOR = 0.0;
+        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+
+        public static final int MAX_DISPLACEMENT_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
+
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+
+
+    }
+
+    public static final class ExtenderConstants {
+
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+        public static final double GEAR_RATIO = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 0;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?  
+        
+        public static final int MOTOR_CAN_ID = 0;
+
+
+        public static final double POSITION_CONVERSION_FACTOR = 0.0;
+        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+
+        public static final int MAX_DISPLACEMENT_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
+
+        public static final double RETRACT_POSITION_METERS = 0.0;
+
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+    }
+
 
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;

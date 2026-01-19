@@ -1,8 +1,8 @@
 # This gitignore has been specially created by the WPILib team.
 # If you remove items from this file, intellisense might break.
 
-# Add BuildConstants.java to .gitignore
-src/main/java/**/BuildConstants.java
+# build constant
+src/main/java/frc/robot/BuildConstants.java
 
 ### C++ ###
 # Prerequisites
@@ -188,4 +188,3 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
-
