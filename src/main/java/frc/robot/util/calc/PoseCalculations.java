@@ -105,5 +105,24 @@ public class PoseCalculations {
         }
         return newPos;
     }
+
+    public static Pose2d getTowerDimensions(Pose2d pos, String side) {
+        Pose2d newPos = new Pose2d();
+        switch(side) {
+            case "PL":
+                newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
+            break;
+            case "PR":
+                newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
+            break;
+            case "SL":
+                newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
+            break;
+            case "SR":
+                newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
+            break;
+        }
+        return newPos;
+    }
     
 }

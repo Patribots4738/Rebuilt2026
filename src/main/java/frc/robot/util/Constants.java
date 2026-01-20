@@ -679,18 +679,81 @@ public final class Constants {
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
 
         public static final Pose3d HUB_RED = new Pose3d(4.6209, 4.041, 1.8288, zeroRotation);
-        public static final Pose3d HUB_BLUE = PoseCalculations.flipPose3dX(HUB_RED);
+        public static final List<Pose3d> HUBS = new ArrayList<Pose3d>() {{
+            Pose3d RedHub = HUB_RED;
+            //RED Hub
+            add(RedHub);
+            //BLUE Hub
+            add(PoseCalculations.mirrorPose3d(RedHub));
+        }};
+
+        public static final List<Pose3d> GET_HUB() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return HUBS.subList(startindex, startindex + 1);
+        }
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
-        public static final Pose2d OUTPOST_BLUE = PoseCalculations.mirrorPose(OUTPOST_RED);
+        public static final List<Pose2d> OUTPOSTS = new ArrayList<Pose2d>() {{
+            Pose2d OutpostRed = OUTPOST_RED;
+            //RED Outpost
+            add(OutpostRed);
+            //BLUE Outpost
+            add(PoseCalculations.mirrorPose(OutpostRed));
+        }};
+
+        public static final List<Pose2d> GET_OUTPOST() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return OUTPOSTS.subList(startindex, startindex + 1);
+        }
         
         public static final Pose2d DEPOT_CENTER_RED = new Pose2d(0.6958, 5.9371, Rotation2d.fromDegrees(0.0));
-        public static final Pose2d DEPOT_CENTER_BLUE = PoseCalculations.mirrorPose(DEPOT_CENTER_RED);
+        public static final List<Pose2d> DEPOTS = new ArrayList<Pose2d>() {{
+            Pose2d DepotRed = DEPOT_CENTER_RED;
+            //RED Depot
+            add(DepotRed);
+            //BLUE Depot
+            add(PoseCalculations.mirrorPose(DepotRed));
+        }};
+
+        public static final List<Pose2d> GET_DEPOT() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return DEPOTS.subList(startindex, startindex + 1);
+        }
 
         public static final Pose2d TOWER_CENTER_RED = new Pose2d(1.1082, 3.8304, Rotation2d.fromDegrees(0.0));
-        public static final double PEAK = 1.6002;
-        public static final double MID = 1.1430;
-        public static final double BOTTOM_OF_THE_BARREL = 0.6858;
+        public static final double TOWER_WIDTH = 1.1938;
+        public static final double TOWER_POST_DISTANCE = 0.8573;
+        public static final double TOWER_RUNG_3 = 1.6002;
+        public static final double TOWER_RUNG_2 = 1.1430;
+        public static final double TOWER_RUNG_1 = 0.6858;
+        public static final List<Pose2d> TOWERS = new ArrayList<Pose2d>() {{
+            //RED Tower
+            Pose2d TowerRed = TOWER_CENTER_RED;
+            //Posts
+            add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
+            //Sides
+            add(PoseCalculations.getTowerDimensions(TowerRed, "SL"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
+            //BLUE Tower
+            Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
+            //Posts
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
+            //Sides
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "SL"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
+        }};
+
+        public static final List<Pose2d> GET_TOWER_POSTS() {
+            int startindex = Robot.isRedAlliance()? 0 : 4;
+            return TOWERS.subList(startindex, startindex + 2);
+        }
+
+        public static final List<Pose2d> GET_TOWER_SIDES() {
+            int startindex = Robot.isRedAlliance()? 2 : 6;
+            return TOWERS.subList(startindex, startindex + 2);
+        }
 
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
