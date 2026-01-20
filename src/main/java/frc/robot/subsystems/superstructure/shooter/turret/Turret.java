@@ -89,12 +89,13 @@ public class Turret extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.POSITION_DEADBAND_RADIANS);
+    // deadband is greater for passing 
+    public boolean atPosition(double position, double deadband) {
+        return MathUtil.isNear(position, inputs.internalPositionRads, deadband);
     }
 
-    public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+    public boolean atTargetPosition(double deadband) {
+        return atPosition(targetState.position, deadband);
     }
 
     public double getPosition() {
