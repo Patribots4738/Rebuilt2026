@@ -14,17 +14,22 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
+import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
@@ -658,10 +663,97 @@ public final class Constants {
         public static final boolean SAFE_HARDWARE_MODE = false;
     }
 
+    // All Field constants in meters
     public static final class FieldConstants {
 
         public static boolean IS_SIMULATION = Robot.isSimulation();
         public static boolean IS_REAL = !IS_SIMULATION;
 
+        public static Rotation3d zeroRotation = new Rotation3d();
+
+        public static final double FIELD_LENGTH = 16.5890;
+        public static final double FIELD_WIDTH = 8.0756;
+
+        public static final double CENTER_LINE_X = 8.2499;
+        public static final double ALLIANCE_LINE_RED = 4.0271;
+        public static final double ALLIANCE_LINE_BLUE = 12.5488;
+
+        public static final Pose3d HUB_RED = new Pose3d(4.6209, 4.041, 1.8288, zeroRotation);
+        public static final Pose3d HUB_BLUE = PoseCalculations.flipPose3dX(HUB_RED);
+
+        public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d OUTPOST_BLUE = PoseCalculations.mirrorPose(OUTPOST_RED);
+        
+        public static final Pose2d DEPOT_CENTER_RED = new Pose2d(0.6958, 5.9371, Rotation2d.fromDegrees(0.0));
+        public static final Pose2d DEPOT_CENTER_BLUE = PoseCalculations.mirrorPose(DEPOT_CENTER_RED);
+
+        public static final Pose2d TOWER_CENTER_RED = new Pose2d(1.1082, 3.8304, Rotation2d.fromDegrees(0.0));
+        public static final double PEAK = 1.6002;
+        public static final double MID = 1.1430;
+        public static final double BOTTOM_OF_THE_BARREL = 0.6858;
+
+        public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
+        public static final double TRENCH_LENGTH = 1.1859;
+        public static final double TRENCH_WIDTH = 1.5772;
+        public static final List<Pose2d> TRENCHS = new ArrayList<Pose2d>() {{
+            //RED Trenchs
+            //Side 1
+            Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'D'));
+            //Side 2
+            Pose3d trenchRed2 = PoseCalculations.flipPose3dY(TRENCH_CENTER_SIDE1_RED);
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'D'));
+            //Blue Trenchs
+            //Side 1
+            Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'D'));
+            //Side 2
+            Pose3d trenchBlue2 = PoseCalculations.flipPose3dY(trenchBlue1);
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
+        }};
+
+        public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
+        public static final double BUMP_LENGTH = 1.1276;
+        public static final double BUMP_WIDTH = 1.8436;
+        public static final List<Pose2d> BUMPS = new ArrayList<Pose2d>() {{
+            //RED Bumps
+            //Side 1
+            Pose3d bumpRed1 = BUMP_CENTER_SIDE1_RED;
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'D'));
+            //Side 2
+            Pose3d bumpRed2 = PoseCalculations.flipPose3dY(BUMP_CENTER_SIDE1_RED);
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'D'));
+            //BLUE Bumps
+            //Side 1
+            Pose3d bumpBlue1 = PoseCalculations.mirrorPose3d(BUMP_CENTER_SIDE1_RED);
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'D'));
+            //Side 2
+            Pose3d bumpBlue2 = PoseCalculations.flipPose3dY(bumpBlue1);
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'D'));
+        }};
     }
 }
