@@ -23,6 +23,8 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -49,7 +51,7 @@ import frc.robot.util.hardware.rev.Neo;
 public final class Constants {
 
     public static final class LoggingConstants {
-
+        
         private static RobotType robotType = RobotType.DEVBOT;
 
         public static RobotType getRobot() {
@@ -83,12 +85,54 @@ public final class Constants {
             SIMBOT
         }
 
+        public static final int CLIMB_INDEX = 0;
+        public static final int EXTENDER_INDEX = 1;
+        public static final int TURRET_INDEX = 2;
+        public static final int HOOD_INDEX = 3;
+
+        public static final Translation3d ROBOT_OFFSET = new Translation3d(
+            0.0,
+            0.0,
+            0.0
+        );
+
+        public static final Translation3d CLIMB_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.056,
+            ROBOT_OFFSET.getY() + 0.241,
+            ROBOT_OFFSET.getZ() + 0.2735
+        );
+
+        public static final Translation3d EXTENDER_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d WRIST_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d TURRET_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
+            ROBOT_OFFSET.getZ() + 0.0
+        );
+
+        public static final Translation3d HOOD_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
+            ROBOT_OFFSET.getZ() + 0.0
+        );
     }
 
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
         public static double MAX_SPEED_METERS_PER_SECOND = 4.5;
+
+        public static double SKID_THRESHOLD = 0.1;
 
         public static final double MAX_ANGULAR_SPEED_RADS_PER_SECOND = Units.degreesToRadians(1137.21); // radians per second
 
@@ -154,6 +198,67 @@ public final class Constants {
         public static final int REAR_LEFT_INDEX = 2;
         public static final int REAR_RIGHT_INDEX = 3;
 
+    }
+    
+    public static final class ClimbConstants {
+        
+        public static final int CAN_ID = 13;
+        public static final int MOTOR_TYPE = 60;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 422.4;
+        
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 120.0;
+        public static final boolean BRAKE_MOTOR = true;
+        
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 2.814;
+        
+        public static final double P_SLOW = FieldConstants.IS_REAL ? 120d : 1000d; // Chef Cushman
+        public static final double I_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_SLOW = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_SLOW = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
+        
+        public static final double P_FAST = FieldConstants.IS_REAL ? 120d : 1000d;
+        public static final double I_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D_FAST = FieldConstants.IS_REAL ? 40d : 500d;
+        public static final double A_FAST = FieldConstants.IS_REAL ? 1d : 0d;
+        public static final double S_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V_FAST = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G_FAST = FieldConstants.IS_REAL ? -30d : 0d;
+        
+        public static final double VELOCITY = Math.PI;
+        public static final double ACCELERATION = 20d;
+        public static final double JERK = 200d;
+        
+        public static final GainConstants SLOW_GAINS = new GainConstants(
+                P_SLOW,
+                I_SLOW,
+                D_SLOW,
+                A_SLOW,
+                S_SLOW,
+                V_SLOW,
+                G_SLOW
+        );
+        
+        public static final GainConstants FAST_GAINS = new GainConstants(
+                P_FAST,
+                I_FAST,
+                D_FAST,
+                A_FAST,
+                S_FAST,
+                V_FAST,
+                G_FAST
+        );
+        
+        public static final double DEADBAND_METERS = 0.0;
     }
 
     public static final class AutoConstants {
@@ -362,12 +467,14 @@ public final class Constants {
         public static final int REAR_LEFT_DRIVING_CAN_ID = 5;
         public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
         public static final int REAR_RIGHT_DRIVING_CAN_ID = 7;
+        public static final int DRIVE_MOTOR_TYPE = 60;
 
         // Turning motors CAN IDs
         public static final int FRONT_LEFT_TURNING_CAN_ID = 4;
         public static final int REAR_LEFT_TURNING_CAN_ID = 6;
         public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
         public static final int REAR_RIGHT_TURNING_CAN_ID = 8;
+        public static final int TURN_MOTOR_TYPE = 44;
 
         // CANcoders CAN IDs
         public static final int FRONT_LEFT_CANCODER_CAN_ID = 0;
@@ -644,7 +751,8 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = new CANBus("rio");
-        public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
+        public static final CANBus DRIVEBASE_BUS =  new CANBus("drivebase");
+        public static final CANBus SUPERSTRUCTURE_BUS = new CANBus("superstructure");
     }
 
     public static final class CANCoderConstants {
@@ -659,8 +767,217 @@ public final class Constants {
 
     }
 
+    public static final class TurretConstants {
+        public static final int MOTOR_CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final int ENCODER_CAN_ID = 0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 50;
+
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 4.71239; // turret moves from 0 to 270 degrees
+
+        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+        public static final double FAST_VELOCITY = 1.6;
+        public static final double FAST_ACCELERATION = 4d;
+        public static final double SLOW_VELOCITY = 1.6;
+        public static final double SLOW_ACCELERATION = 2d;
+        public static final double JERK = 40d;
+    }
+
+    public static final class FlywheelConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final boolean BRAKE_MOTOR = false;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 50;
+
+        public static final double CIRCUMFERENCE_METERS = 0.0;
+
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+    }
+
+    public static final class HoodConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 40;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
+        
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+
+        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+        
+        // TODO: tune these values
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+        public static final double FAST_VELOCITY = 1.6;
+        public static final double FAST_ACCELERATION = 4d;
+        public static final double SLOW_VELOCITY = 1.6;
+        public static final double SLOW_ACCELERATION = 2d;
+        public static final double JERK = 40d;
+    }
+
+        public static final class IntakeConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+        public static final double GEAR_RATIO = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 0;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
+        
+        public static final int MOTOR_CAN_ID = 0;
+
+
+        public static final double POSITION_CONVERSION_FACTOR = 0.0;
+        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+
+        public static final int MAX_DISPLACEMENT_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
+
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+
+
+
+    }
+
+    public static final class ExtenderConstants {
+
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 44;
+        public static final double GEAR_RATIO = 0.0;
+
+        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double CURRENT_LIMIT = 0;
+
+        public static final double MIN_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
+        
+        public static final int MOTOR_CAN_ID = 0;
+
+
+        public static final double POSITION_CONVERSION_FACTOR = 0.0;
+        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+
+        public static final int MAX_DISPLACEMENT_METERS = 0;
+        public static final int DEADBAND_RADIANS = 0;
+
+        public static final double RETRACT_POSITION_METERS = 0.0;
+
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+    }
+
+
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;
+        public static final double TIMEOUT_SECONDS = 1.0;
     }
 
     // All Field constants in meters

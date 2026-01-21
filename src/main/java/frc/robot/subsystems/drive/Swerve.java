@@ -236,7 +236,7 @@ public class Swerve extends SubsystemBase {
                                         * DriveConstants.ROBOT_LENGTH_METERS / 2.0,
                                 Rotation2d.fromDegrees(pitch).getSin() *
                                         DriveConstants.ROBOT_LENGTH_METERS / 2.0)),
-               rotation3d);
+            rotation3d);
 
         Logger.recordOutput("Subsystems/Swerve/RobotPose3d", RobotContainer.robotPose3d);
         Logger.recordOutput("Subsystems/Swerve/ChassisSpeeds", speeds);
