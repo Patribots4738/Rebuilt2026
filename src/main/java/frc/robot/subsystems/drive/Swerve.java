@@ -12,7 +12,11 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
@@ -28,6 +32,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -45,6 +50,7 @@ import frc.robot.subsystems.drive.module.ModuleIOKraken;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.MK4cSwerveModuleConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.custom.LoggedTunableConstant;
 
@@ -61,9 +67,15 @@ public class Swerve extends SubsystemBase {
 
     private SwerveDrivePoseEstimator poseEstimator;
 
-    private LoggedTunableConstant driveMultiplier = new LoggedTunableConstant("Drive/DriveMultiplier", 1.0);
-    private LoggedTunableConstant driveMaxLinearVelocity = new LoggedTunableConstant("Drive/DriveLinearVelocity", DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    private LoggedTunableConstant driveMaxAngularVelocity = new LoggedTunableConstant("Drive/DriveAngularVelocity", DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND);
+    private RobotConfig config;
+
+    private final SwerveSetpointGenerator setpointGenerator;
+    private SwerveSetpoint previousSetpoint;
+
+    private double maxLinearVelocity;
+    private double maxAngularVelocity;
+    
+    private ChassisSpeeds speeds = new ChassisSpeeds();
 
     /**
      * Creates a new DriveSubsystem.
@@ -112,31 +124,20 @@ public class Swerve extends SubsystemBase {
             rearLeft,
             rearRight
         };
+
+        maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+        maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
             
         gyro = new Gyro(new GyroIOPigeon2(DriveConstants.GYRO_CAN_ID));
 
         resetEncoders();
         setBrakeMode();
 
-        try {
-            AutoBuilder.configure(
-                this::getPose,
-                this::resetOdometryAuto,
-                this::getRobotRelativeVelocity,
-                (speeds, feedforwards) -> drive(speeds),
-                AutoConstants.PPHDC,
-                RobotConfig.fromGUISettings(),
-                Robot::isRedAlliance,
-                this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.DRIVE_KINEMATICS,
             gyro.getYawRotation2D(),
             getModulePositions(),
-            new Pose2d(),
+            Pose2d.kZero,
             // State measurements
             /*
              * See https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-observers.html#process-and-measurement-noise-covariance-matrices
@@ -158,6 +159,51 @@ public class Swerve extends SubsystemBase {
                 Units.degreesToRadians(15)
             )
         );
+
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            config = new RobotConfig(
+                0, 
+                0, 
+                new ModuleConfig(
+                    0, 
+                    0, 
+                    0, 
+                    DCMotor.getKrakenX60Foc(1), 
+                    0, 
+                    1
+                ), 
+                0
+            );
+            e.printStackTrace();
+        }
+
+        setpointGenerator = new SwerveSetpointGenerator(
+            config, 
+            MK5nSwerveModuleConstants.MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC
+        );
+
+        previousSetpoint = new SwerveSetpoint(
+            getRobotRelativeVelocity(), 
+            getModuleStates(), 
+            DriveFeedforwards.zeros(config.numModules)
+        );
+
+        configureAutoBuilder();
+    }
+
+    private void configureAutoBuilder() {
+        AutoBuilder.configure(
+            this::getPose,
+            this::resetOdometryAuto,
+            this::getRobotRelativeVelocity,
+            (speeds, feedforwards) -> driveWithSetpoints(speeds),
+            AutoConstants.AUTO_HDC,
+            config,
+            Robot::isRedAlliance,
+            this
+        );
     }
 
     @Override
@@ -176,19 +222,16 @@ public class Swerve extends SubsystemBase {
             poseEstimator.updateWithTime(Timer.getFPGATimestamp(), gyroRotation2d, getModulePositions());
         }
         
-        logPositions();
+        logData();
     }
 
-    @AutoLogOutput(key = "Subsystems/Swerve/CurrentPose2d")
-    Pose2d currentPose = new Pose2d();
+    Pose2d currentPose = Pose2d.kZero;
 
-    public void logPositions() {
+    public void logData() {
 
         currentPose = getPose();
 
-        RobotContainer.swerveMeasuredStates = new SwerveModuleState[] {
-            frontLeft.getState(), frontRight.getState(), rearLeft.getState(), rearRight.getState()
-        };
+        RobotContainer.swerveMeasuredStates = getModuleStates();
 
         ChassisSpeeds speeds = DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(RobotContainer.swerveMeasuredStates);
 
@@ -209,7 +252,6 @@ public class Swerve extends SubsystemBase {
             // Something in our pose was NaN...
             resetOdometry(RobotContainer.robotPose2d);
             resetEncoders();
-            resetHDC();
         } else {
             RobotContainer.robotPose2d = currentPose;
         }
@@ -279,8 +321,17 @@ public class Swerve extends SubsystemBase {
         );
     }
 
+    public void driveWithSetpoints(ChassisSpeeds robotRelativeSpeeds) {
+        previousSetpoint = setpointGenerator.generateSetpoint(
+            previousSetpoint,
+            robotRelativeSpeeds,
+            Timer.getFPGATimestamp() - Robot.previousTimestamp
+        );
+        setModuleStates(previousSetpoint.moduleStates());
+    }
+
+    // Drive method used in teleop
     public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
-        double timeDifference = Timer.getFPGATimestamp() - Robot.previousTimestamp;
         ChassisSpeeds robotRelativeSpeeds;
 
         if (fieldRelative) {
@@ -289,14 +340,11 @@ public class Swerve extends SubsystemBase {
             robotRelativeSpeeds = new ChassisSpeeds(xSpeed, ySpeed, rotSpeed);
         }
 
-        ChassisSpeeds discretizedSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, timeDifference);
-        SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(discretizedSpeeds);
-
-        setModuleStates(swerveModuleStates);
+        drive(robotRelativeSpeeds);
     }
 
     public void stopDriving() {
-        drive(0, 0, 0, false);
+        setWheelsX();
     }
 
     public void runDriveCharacterization(double input) {
@@ -312,7 +360,6 @@ public class Swerve extends SubsystemBase {
 
     public void runTurnCharacterization(double input) {
         for (Module module : swerveModules) {
-            // TODO: CHANGE THIS TO AMPS WHEN PRO!
             module.runTurnCharacterization(input);
         }
     }
@@ -333,30 +380,48 @@ public class Swerve extends SubsystemBase {
         return average / 4.0;
     }
 
+    public void setSpeedsSlow() {
+        this.maxLinearVelocity = 2.25;
+        this.maxAngularVelocity = 568.605;
+    }
+
+    public void setSpeedsNormal() {
+        this.maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+        this.maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
+    }
+
+    public Command setSlowDrive() {
+        return run(this::setSpeedsSlow);
+    }
+
+    public Command setNormalDrive() {
+        return run(this::setSpeedsNormal);
+    }
+
     public double getMaxLinearVelocity() {
-        return driveMaxLinearVelocity.get();
+        return maxLinearVelocity;
     }
 
     public double getMaxAngularVelocity() {
-        return driveMaxAngularVelocity.get();
+        return maxAngularVelocity;
     }
 
     public double getDriveMultiplier() {
-        return driveMultiplier.get();
-    }
-
-    public void toggleDriveMultiplier() {
-        driveMultiplier.set((driveMultiplier.get() == 1.0) ? 0.5 : 1);
+        return 1.0;
     }
     
     @AutoLogOutput (key = "Subsystems/Swerve/DesiredHDCPose")
-    Pose2d desiredHDCPose = new Pose2d();
+    Pose2d desiredHDCPose = Pose2d.kZero;
     public void setDesiredPose(Pose2d pose) {
         desiredHDCPose = pose;
     }
 
+    public Pose2d getDesiredPose() {
+        return desiredHDCPose;
+    }
+
     public ChassisSpeeds getRobotRelativeVelocity() {
-        return DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(getModuleStates());
+        return speeds;
     }
 
     /**
@@ -381,7 +446,7 @@ public class Swerve extends SubsystemBase {
 
     public Command getSetWheelsO() {
         return run(this::setWheelsO);
-    }  
+    }
 
     public void setWheelsZero() {
         for (Module mod : swerveModules) {
@@ -397,6 +462,12 @@ public class Swerve extends SubsystemBase {
         return run(this::setWheelsZero);
     }
 
+    public void setTurnVelocity(double velocity) {
+        for (Module mod : swerveModules) {
+            mod.setTurnVelocity(velocity);
+        }
+    }
+
     /**
      * Sets the swerve ModuleStates.
      *
@@ -404,7 +475,7 @@ public class Swerve extends SubsystemBase {
      */
     public void setModuleStates(SwerveModuleState[] desiredStates, double[] feedforwards) {
         SwerveDriveKinematics.desaturateWheelSpeeds(
-            desiredStates, 
+            desiredStates,
             getMaxLinearVelocity()
         );
         frontLeft.setDesiredState(desiredStates[0], feedforwards[0]);
@@ -415,13 +486,11 @@ public class Swerve extends SubsystemBase {
         RobotContainer.swerveDesiredStates = desiredStates;
     }
 
-
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         setModuleStates(desiredStates, new double[] { 0, 0, 0, 0 });
     }
 
     public void resetOdometry(Pose2d pose) {
-
         if (Double.isNaN(pose.getX()) || Double.isNaN(pose.getY()) || Double.isNaN(pose.getRotation().getRadians())) {
             return;
         }
@@ -433,10 +502,9 @@ public class Swerve extends SubsystemBase {
     }
 
     private void resetOdometryAuto(Pose2d pose) {
-        if (getPose().getTranslation().getNorm() > 1 && DriverStation.isFMSAttached()) {
-            return;
+        if (FieldConstants.IS_SIMULATION) {
+            resetOdometry(pose);
         }
-        resetOdometry(pose);
     }
 
     public Command resetOdometryCommand(Supplier<Pose2d> pose) {
@@ -516,32 +584,26 @@ public class Swerve extends SubsystemBase {
         return new DriveHDC(this, speeds, fieldRelative, () -> false);
     }
 
-    public void resetHDC() {
-        AutoConstants.HDC.getThetaController().reset(getPose().getRotation().getRadians());
-    }
+    // public boolean atPose(Pose2d position) {
+    //     // More lenient on x axis, less lenient on y axis and rotation
+    //     Pose2d currentPose = getPose();
+    //     return PoseCalculations.isPoseNear(currentPose, desiredHDCPose) && !desiredHDCPose.equals(Pose2d.kZero);
+    // }
 
-    public Command resetHDCCommand() {
-        return Commands.runOnce(() -> resetHDC());
-    }
+    // @AutoLogOutput (key = "Subsystems/Swerve/AtHDCPose")
+    // public boolean atHDCPose() {
+    //     return atPose(desiredHDCPose);
+    // }
 
-    public boolean atPose(Pose2d position) {
-        // More lenient on x axis, less lenient on y axis and rotation
-        Pose2d currentPose = getPose();
-        double angleDiff = currentPose.getRotation().minus(position.getRotation()).getRadians();
-		double distance = currentPose.relativeTo(position).getTranslation().getNorm();
-        return 
-            MathUtil.isNear(0, distance, AutoConstants.AUTO_POSITION_TOLERANCE_METERS)
-            && MathUtil.isNear(0, angleDiff, AutoConstants.AUTO_ROTATION_TOLERANCE_RADIANS);
-    }
-
-    public boolean atHDCPose() {
-        return atPose(desiredHDCPose);
-    }
+    // public boolean onHDCAxis() {
+    //     return PoseCalculations.isPoseOnAxis(getPose(), desiredHDCPose);
+    // }
 
     public boolean atHDCAngle() {
         return MathUtil.isNear(
             desiredHDCPose.getRotation().getRadians(), 
             getPose().getRotation().getRadians(),
-            AutoConstants.AUTO_ROTATION_TOLERANCE_RADIANS);
+            AutoConstants.HDC_ROTATION_TOLERANCE_RADIANS
+        );
     }
 }

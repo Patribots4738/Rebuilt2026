@@ -4,17 +4,17 @@
 
 package frc.robot.subsystems.superstructure.climb;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
-
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +28,10 @@ public class Climb extends SubsystemBase {
     private final ClimbIO io;
     private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
-    private double targetPosition = 0.0;
+    private State targetState = new State(0, 0);
+    private State setpoint = new State(0, 0);
+    @AutoLogOutput (key = "Subsystems/Elevator/ShouldRunSetpoint")
+    private boolean shouldRunSetpoint = false;
 
     public Climb(ClimbIO io) {
         this.io = io;
@@ -41,19 +44,23 @@ public class Climb extends SubsystemBase {
         Logger.recordOutput("Subsystems/Climb/AtDesiredPosition", atTargetPosition());
 
         RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-            LoggingConstants.CLIMB_OFFSET, 
-            new Rotation3d(-inputs.positionRads, 0, 0)
+            LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), inputs.positionMeters,
+            new Rotation3d()
         );
     }
 
-    public void setPosition(double position, boolean slam) {
-        position = MathUtil.clamp(position, ClimbConstants.MIN_ANGLE_RADIANS, ClimbConstants.MAX_ANGLE_RADIANS);
-        targetPosition = position;
-        io.setPosition(targetPosition, slam ? 1 : 0);
+    public void setPosition(double position) {
+        position = MathUtil.clamp(position, 0, ClimbConstants.MAX_DISPLACEMENT_METERS);
+        if (position != targetState.position) {
+            setpoint.position = inputs.positionMeters;
+            setpoint.velocity = inputs.velocityMetersPerSec;
+        }
+        targetState.position = position;
+        shouldRunSetpoint = true;
 
-        RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-            LoggingConstants.CLIMB_OFFSET,
-            new Rotation3d(-position, 0, 0)
+        RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+            LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), position,
+            new Rotation3d()
         );
     }
 
@@ -65,12 +72,12 @@ public class Climb extends SubsystemBase {
         io.resetEncoder(0);
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier slamSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), slamSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(DoubleSupplier positionSupplier) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
     }
 
-    public Command setPositionCommand(double position, boolean slam) {
-        return setPositionCommand(() -> position, () -> slam);
+    public Command setPositionCommand(double position) {
+        return setPositionCommand(() -> position);
     }
 
     public Command setNeutralCommand() {
@@ -82,19 +89,19 @@ public class Climb extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.positionRads, ClimbConstants.DEADBAND_METERS);
+        return MathUtil.isNear(position, inputs.positionMeters, ClimbConstants.DEADBAND_METERS);
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetPosition);
+        return atPosition(targetState.position);
     }
 
     public double getPosition() {
-        return inputs.positionRads;
+        return inputs.positionMeters;
     }
 
     public double getCharacterizationVelocity() {
-        return inputs.velocityRadsPerSec / ClimbConstants.VELOCITY_CONVERSION_FACTOR;
+        return inputs.velocityMetersPerSec / ClimbConstants.VELOCITY_CONVERSION_FACTOR;
     }
 
     public void runCharacterization(double input) {

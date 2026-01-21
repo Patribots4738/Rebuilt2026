@@ -8,8 +8,8 @@ public interface FlywheelIO {
 
         public boolean motorConnected = false;
         public double percentOutput = 0.0;
-        public double targetVelocityRotationsPerSec = 0.0;
-        public double velocityRotationsPerSec = 0.0;
+        public double targetVelocityRadsPerSec = 0.0;
+        public double velocityRadsPerSec = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;

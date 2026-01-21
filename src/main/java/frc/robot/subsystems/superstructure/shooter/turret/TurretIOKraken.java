@@ -1,9 +1,7 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
-import frc.robot.subsystems.superstructure.shooter.turret.TurretIO.TurretIOInputs;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
@@ -28,7 +26,7 @@ public class TurretIOKraken implements TurretIO {
         motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
+            motor.setEncoder(encoder.getDeviceID(), TurretConstants.GEAR_RATIO);
         }
         motor.setGains(TurretConstants.GAINS);
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);

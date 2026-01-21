@@ -199,151 +199,87 @@ public final class Constants {
         public static final int REAR_RIGHT_INDEX = 3;
 
     }
-    
-    public static final class ClimbConstants {
-        
-        public static final int CAN_ID = 13;
-        public static final int MOTOR_TYPE = 60;
-        
-        public static final boolean MOTOR_INVERTED = false;
-        
-        public static final double GEAR_RATIO = 422.4;
-        
-        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
-        
-        public static final double CURRENT_LIMIT = 120.0;
-        public static final boolean BRAKE_MOTOR = true;
-        
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 2.814;
-        
-        public static final double P_SLOW = FieldConstants.IS_REAL ? 120d : 1000d; // Chef Cushman
-        public static final double I_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double D_SLOW = FieldConstants.IS_REAL ? 40d : 500d;
-        public static final double A_SLOW = FieldConstants.IS_REAL ? 1d : 0d;
-        public static final double S_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double V_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double G_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        
-        public static final double P_FAST = FieldConstants.IS_REAL ? 120d : 1000d;
-        public static final double I_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double D_FAST = FieldConstants.IS_REAL ? 40d : 500d;
-        public static final double A_FAST = FieldConstants.IS_REAL ? 1d : 0d;
-        public static final double S_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double V_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double G_FAST = FieldConstants.IS_REAL ? -30d : 0d;
-        
-        public static final double VELOCITY = Math.PI;
-        public static final double ACCELERATION = 20d;
-        public static final double JERK = 200d;
-        
-        public static final GainConstants SLOW_GAINS = new GainConstants(
-                P_SLOW,
-                I_SLOW,
-                D_SLOW,
-                A_SLOW,
-                S_SLOW,
-                V_SLOW,
-                G_SLOW
-        );
-        
-        public static final GainConstants FAST_GAINS = new GainConstants(
-                P_FAST,
-                I_FAST,
-                D_FAST,
-                A_FAST,
-                S_FAST,
-                V_FAST,
-                G_FAST
-        );
-        
-        public static final double DEADBAND_METERS = 0.0;
-    }
 
     public static final class AutoConstants {
 
-        // The below values need to be tuned for each new robot.
-        // They are currently set to the values suggested by Choreo
-        public static final double MAX_SPEED_METERS_PER_SECOND = 5;
-        public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5;
-        // Below is gotten from choreo
-        public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Units.degreesToRadians(1137.21);
-        public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Units.degreesToRadians(792.90);
+        //TODO: tune these values
+        public static final double HDC_XY_ACCELERATION = 2.5;
+        public static final double HDC_XY_VELOCITY = 1;
 
-        public static final double AUTO_POSITION_TOLERANCE_METERS = Units.inchesToMeters(1);
-        public static final double AUTO_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
-        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
+        public static final double HDC_THETA_ACCELERATION =  Units.degreesToRadians(450d);
+        public static final double HDC_THETA_VELOCITY =  Units.degreesToRadians(270d);
 
-        public static final double AUTO_ALIGNMENT_DEADBAND = Units.inchesToMeters(3);
+        public static final double HDC_POSITION_TOLERANCE_METERS = Units.inchesToMeters(2);
+        public static final double HDC_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
-        /*
-         * XY:
-         *  P: 5.2
-         *  I: 0.125
-         *  D: 0.0125
-         * 
-         * Theta:
-         *   P: 1.3325
-         *   I: 1 (izone on 20 degrees)
-         *   D: 0.0375
-         */
+        public static final double REEF_ALIGNMENT_MAX_SPEED = 1.0;
+        public static final double INTAKE_ALIGNMENT_MAX_SPEED = 1.0;
+        public static final double PROCESSOR_ALIGNMENT_MAX_SPEED = 0.0;
 
-        public static final double XY_CORRECTION_P = 4;
-        public static final double XY_CORRECTION_I = 0.0125;
-        public static final double XY_CORRECTION_D = 0.0125;
+        public static final double REEF_ALIGNMENT_PREP_DISTANCE = 1.0;
 
-        public static final GainConstants XY_GAINS = 
-            new GainConstants(
-                AutoConstants.XY_CORRECTION_P, 
-                AutoConstants.XY_CORRECTION_I, 
-                AutoConstants.XY_CORRECTION_D);
+
+        public static final GainConstants AUTO_XY_GAINS = new GainConstants(
+            4.0, 
+            0.0, 
+            0.9
+        );
+
+        public static final GainConstants TELE_XY_GAINS = new GainConstants(
+            3.6, 
+            0, 
+            0
+        );
+
+        // public static final LoggedGainConstants LOGGED_TELE_XY_GAINS = new LoggedGainConstants(AutoConstants.TELE_XY_GAINS, "TeleXY");
+
+        public static final GainConstants AUTO_THETA_GAINS = new GainConstants(
+            3.725, 
+            0, 
+            0
+        );
+
+        public static final GainConstants TELE_THETA_GAINS = new GainConstants(
+            5.5, 
+            0, 
+            0
+        );
+
+        // public static final LoggedGainConstants LOGGED_TELE_THETA_GAINS = new LoggedGainConstants(AutoConstants.TELE_THETA_GAINS, "TeleTheta");
 
         public static final PIDController XY_PID = new PIDController(
-                AutoConstants.XY_GAINS.getP(),
-                0,
-                AutoConstants.XY_GAINS.getD());
+            AutoConstants.TELE_XY_GAINS.getP(),
+            AutoConstants.TELE_XY_GAINS.getI(),
+            AutoConstants.TELE_XY_GAINS.getD()
+        );
 
-        public static final double ROTATION_CORRECTION_P = 3.725;
-        public static final double ROTATION_CORRECTION_I = 0;
-        public static final double ROTATION_CORRECTION_D = 0;
-
-        public static final GainConstants THETA_GAINS = 
-            new GainConstants(
-                AutoConstants.ROTATION_CORRECTION_P, 
-                AutoConstants.ROTATION_CORRECTION_I, 
-                AutoConstants.ROTATION_CORRECTION_D);
 
         public static final ProfiledPIDController THETA_PID = new ProfiledPIDController(
-            AutoConstants.THETA_GAINS.getP(),
-            AutoConstants.THETA_GAINS.getI(),
-            AutoConstants.THETA_GAINS.getD(),
+            AutoConstants.TELE_THETA_GAINS.getP(),
+            AutoConstants.TELE_THETA_GAINS.getI(),
+            AutoConstants.TELE_THETA_GAINS.getD(),
             new TrapezoidProfile.Constraints(
-                    AutoConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
-                    AutoConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED)) 
+                AutoConstants.HDC_THETA_VELOCITY,
+                AutoConstants.HDC_THETA_ACCELERATION)) 
             {{
                 setIZone(Units.degreesToRadians(45));
             }};
 
-        // Constraint for the motion-profiled robot angle controller
-        public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS = new TrapezoidProfile.Constraints(
-                MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+        public static HolonomicDriveController TELE_HDC = new HolonomicDriveController(
+            XY_PID,
+            XY_PID,
+            THETA_PID
+        );
 
-        public static HolonomicDriveController HDC = new HolonomicDriveController(
-                XY_PID,
-                XY_PID,
-                THETA_PID
-            );
-
-        public static PPHolonomicDriveController PPHDC = new PPHolonomicDriveController(
+        public static PPHolonomicDriveController AUTO_HDC = new PPHolonomicDriveController(
             new PIDConstants(
-                AutoConstants.XY_GAINS.getP(),
-                AutoConstants.XY_GAINS.getI(),
-                AutoConstants.XY_GAINS.getD()),
+                AutoConstants.AUTO_XY_GAINS.getP(),
+                AutoConstants.AUTO_XY_GAINS.getI(),
+                AutoConstants.AUTO_XY_GAINS.getD()),
             new PIDConstants(
-                AutoConstants.THETA_GAINS.getP(),
-                AutoConstants.THETA_GAINS.getI(),
-                AutoConstants.THETA_GAINS.getD(),
+                AutoConstants.AUTO_THETA_GAINS.getP(),
+                AutoConstants.AUTO_THETA_GAINS.getI(),
+                AutoConstants.AUTO_THETA_GAINS.getD(),
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {};
@@ -504,6 +440,8 @@ public final class Constants {
         public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
+
+        public static final double MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC = 400;
 
         public static final boolean INVERT_TURNING_MOTOR = false;
 
@@ -767,6 +705,48 @@ public final class Constants {
 
     }
 
+    public static final class ClimbConstants {
+        
+        public static final int CAN_ID = 13;
+        public static final int MOTOR_TYPE = 60;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 422.4;
+        public static final double MAX_DISPLACEMENT_METERS = 0.58;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 120.0;
+        public static final boolean BRAKE_MOTOR = true;
+        
+        //TODO: tune these gains
+        public static final double P = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double I = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double D = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double A = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double S = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double V = FieldConstants.IS_REAL ? 0d : 0d;
+        public static final double G = FieldConstants.IS_REAL ? 0d : 0d;
+
+        public static final GainConstants GAINS = new GainConstants(
+            P,
+            I,
+            D,
+            A,
+            S,
+            V,
+            G
+        );
+        
+        public static final double VELOCITY = Math.PI;
+        public static final double ACCELERATION = 20d;
+        public static final double JERK = 200d;
+        
+        public static final double VELOCITY_DEADBAND_MPS = 0.2;
+        public static final double DEADBAND_METERS = 0.2;
+    }
+
     public static final class TurretConstants {
         public static final int MOTOR_CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
@@ -777,16 +757,18 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double GEAR_RATIO = 1.0;
+
+
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 4.71239; // turret moves from 0 to 270 degrees
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // turret moves from 0 to 270 degrees
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.0;
-
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
@@ -822,6 +804,8 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+
         public static final double CIRCUMFERENCE_METERS = 0.0;
 
         // TODO: tune these values
@@ -853,6 +837,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 40;
+
+        public static final double GEAR_RATIO = 1.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
