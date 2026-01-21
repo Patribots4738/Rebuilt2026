@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.45,
-        "y": 7.4991234347048294
+        "x": 4.343102272727272,
+        "y": 7.3537954545454545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.6914012950221515,
-        "y": 7.812680192266821
+        "x": 5.60053409090909,
+        "y": 7.333181818181819
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "1CLR"
     },
     {
       "anchor": {
@@ -44,7 +44,12 @@
       "linkedName": "Center Line Left"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0222804718217569,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -78,7 +83,7 @@
   "folder": "Starting Line",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

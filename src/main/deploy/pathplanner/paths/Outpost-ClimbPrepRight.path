@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6738749999999998,
+        "y": 0.6749772727272727
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.5705681818181816,
+        "y": 0.9841818181818189
+      },
+      "isLocked": false,
+      "linkedName": "Outpost"
+    },
+    {
+      "anchor": {
+        "x": 2.0,
+        "y": 3.0558522727272726
+      },
+      "prevControl": {
+        "x": 1.9484659090909093,
+        "y": 2.6229659090909094
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ClimbPrepRight"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 6.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": "Outpost",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

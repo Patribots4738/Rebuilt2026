@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1-Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot-Outpost"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost-ClimbPrepRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepRight-ClimbRight"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
