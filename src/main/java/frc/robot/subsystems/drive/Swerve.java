@@ -584,20 +584,20 @@ public class Swerve extends SubsystemBase {
         return new DriveHDC(this, speeds, fieldRelative, () -> false);
     }
 
-    public boolean atPose(Pose2d position) {
-        // More lenient on x axis, less lenient on y axis and rotation
-        Pose2d currentPose = getPose();
-        return PoseCalculations.isPoseNear(currentPose, desiredHDCPose) && !desiredHDCPose.equals(Pose2d.kZero);
-    }
+    // public boolean atPose(Pose2d position) {
+    //     // More lenient on x axis, less lenient on y axis and rotation
+    //     Pose2d currentPose = getPose();
+    //     return PoseCalculations.isPoseNear(currentPose, desiredHDCPose) && !desiredHDCPose.equals(Pose2d.kZero);
+    // }
 
-    @AutoLogOutput (key = "Subsystems/Swerve/AtHDCPose")
-    public boolean atHDCPose() {
-        return atPose(desiredHDCPose);
-    }
+    // @AutoLogOutput (key = "Subsystems/Swerve/AtHDCPose")
+    // public boolean atHDCPose() {
+    //     return atPose(desiredHDCPose);
+    // }
 
-    public boolean onHDCAxis() {
-        return PoseCalculations.isPoseOnAxis(getPose(), desiredHDCPose);
-    }
+    // public boolean onHDCAxis() {
+    //     return PoseCalculations.isPoseOnAxis(getPose(), desiredHDCPose);
+    // }
 
     public boolean atHDCAngle() {
         return MathUtil.isNear(

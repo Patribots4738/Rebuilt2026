@@ -715,9 +715,6 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 120.0;
         public static final boolean BRAKE_MOTOR = true;
         
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 2.814;
-        
         //TODO: tune these gains
         public static final double P = FieldConstants.IS_REAL ? 0d : 0d;
         public static final double I = FieldConstants.IS_REAL ? 0d : 0d;
@@ -755,6 +752,10 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double GEAR_RATIO = 1.0;
+
+
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
@@ -762,10 +763,7 @@ public final class Constants {
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // turret moves from 0 to 270 degrees
 
-        public static final double SHOT_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
-        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10); 
-
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
@@ -832,6 +830,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 40;
+
+        public static final double GEAR_RATIO = 1.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees? 

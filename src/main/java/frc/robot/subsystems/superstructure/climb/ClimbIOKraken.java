@@ -1,10 +1,10 @@
 package frc.robot.subsystems.superstructure.climb;
 
-import frc.robot.util.hardware.phoenix.Kraken;
-import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.hardware.phoenix.Kraken;
+import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 
 public class ClimbIOKraken implements ClimbIO {
     
@@ -19,22 +19,21 @@ public class ClimbIOKraken implements ClimbIO {
     private void configMotor() {
         motor.setGearRatio(ClimbConstants.GEAR_RATIO);
         motor.setUnitConversionFactor(ClimbConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(ClimbConstants.MIN_ANGLE_RADIANS, ClimbConstants.MAX_ANGLE_RADIANS);
+        motor.setSoftLimits(0.0, ClimbConstants.MAX_DISPLACEMENT_METERS);
         motor.setMotorInverted(ClimbConstants.MOTOR_INVERTED);
         motor.resetEncoder(0);
-        motor.setGains(ClimbConstants.SLOW_GAINS, 0);
-        motor.setGains(ClimbConstants.FAST_GAINS, 1);
+        motor.setGains(ClimbConstants.GAINS);
         motor.setStatorCurrentLimit(ClimbConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-ClimbConstants.CURRENT_LIMIT, ClimbConstants.CURRENT_LIMIT);
-        configureProfile(ClimbConstants.VELOCITY, ClimbConstants.ACCELERATION, ClimbConstants.JERK);
         setBrakeMode(ClimbConstants.BRAKE_MOTOR);
     }
 
     @Override
     public void updateInputs(ClimbIOInputs inputs) {
         inputs.motorConnected = motor.refreshSignals().isOK();
-        inputs.positionRads = motor.getPositionAsDouble();
-        inputs.velocityRadsPerSec = motor.getVelocityAsDouble();
+        inputs.positionMeters = motor.getPositionAsDouble();
+        inputs.targetPositionMeters = motor.getTargetPosition();
+        inputs.velocityMetersPerSec = motor.getVelocityAsDouble();
         inputs.targetPositionRads = motor.getTargetPosition();
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
@@ -47,8 +46,8 @@ public class ClimbIOKraken implements ClimbIO {
     }
 
     @Override
-    public void setPosition(double position, int slot) {
-        motor.setTargetPosition(position, slot);
+    public void setPosition(double position) {
+        motor.setTargetPosition(position);
     }
 
     @Override
@@ -67,8 +66,8 @@ public class ClimbIOKraken implements ClimbIO {
     }
 
     @Override
-    public void setGains(GainConstants constants, int slot) {
-        motor.setGains(constants, slot);
+    public void setGains(GainConstants constants) {
+        motor.setGains(constants);
     }
 
     @Override
