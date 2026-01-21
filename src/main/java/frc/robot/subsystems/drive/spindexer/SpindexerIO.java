@@ -9,6 +9,8 @@ public interface SpindexerIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelcius = 0.0;
+        public double percentOutput = 0.0;
+        public double targetPercentOutput = 0.0;
 
     }
 

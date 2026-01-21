@@ -659,7 +659,7 @@ public final class Constants {
     }
 
     public static final class SpindexerConstants {
-        public static final boolean SPINDEXER_SPIN = 1.0;
+        public static final double SPINDEXER_SPIN = 1.0;
         public static final int CAN_ID = 11;
 
         public static final boolean BRAKE_MOTOR = true;

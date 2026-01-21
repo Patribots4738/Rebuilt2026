@@ -2,20 +2,20 @@ public class SpindexerIOKraken implements SpindexerIO {
     
     private final Kraken motor;
     
-        public CoralClawIOKraken() {
+        public SpindexerIOKraken() {
         motor = new Kraken(SpindexerConstants.CAN_ID, true, true, ControlPreference.VOLTAGE);
         configMotor();
     }
 
     private void configMotor() {
-        motor.setMotorInverted(CoralClawConstants.MOTOR_INVERTED);
-        motor.setSupplyCurrentLimit(CoralClawConstants.CURRENT_LIMIT);
-        motor.setStatorCurrentLimit(CoralClawConstants.CURRENT_LIMIT);
-        setBrakeMode(CoralClawConstants.BRAKE_MOTOR);
+        motor.setMotorInverted(SpindexerConstants.MOTOR_INVERTED);
+        motor.setSupplyCurrentLimit(SpindexerConstants.CURRENT_LIMIT);
+        motor.setStatorCurrentLimit(SpindexerConstants.CURRENT_LIMIT);
+        setBrakeMode(SpindexerConstants.BRAKE_MOTOR);
     }
 
     @Override
-    public void updateInputs(ClawIOInputs inputs) {
+    public void updateInputs(SpindexerIOInputs inputs) {
         inputs.motorConnected = motor.refreshSignals().isOK();
         inputs.percentOutput = motor.getPercentAsDouble();
         inputs.targetPercentOutput = motor.getTargetPercent();

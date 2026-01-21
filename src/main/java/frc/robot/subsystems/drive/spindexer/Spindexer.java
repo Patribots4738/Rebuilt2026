@@ -7,6 +7,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Spindexer extends SubsystemBase {
 
+    private final SpindexerIO io;
+
+    @Override
+    public void periodic(){
+        io.updateInputs(inputs);
+    }
+
     private double percentOutput = 0.0;
     private boolean shouldRunSetpoint = false;
 
