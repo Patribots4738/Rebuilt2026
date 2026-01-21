@@ -42,7 +42,7 @@ public class Robot extends LoggedRobot {
 
     public static double currentTimestamp = 0;
     public static double previousTimestamp = 0;
-
+    public static boolean exitAuto = false;
     private Command autonomousCommand;
 
     private RobotContainer robotContainer;
@@ -145,6 +145,7 @@ public class Robot extends LoggedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
+        exitAuto = true;
     }
 
     @Override
