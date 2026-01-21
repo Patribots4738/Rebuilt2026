@@ -55,6 +55,15 @@ public class Flywheel extends SubsystemBase {
         shouldRunSetpoint = true;
     }
 
+    /**
+     * Returns the linear velocity of the flywheel
+     * 
+     * @return the linear velocity of the flywheel
+     */
+    public double getVelocity() {
+        return inputs.velocityRadsPerSec * FlywheelConstants.CIRCUMFERENCE_METERS;
+    }
+
     public Command setVelocityCommand(DoubleSupplier velocitySupplier) {
         return runOnce(() -> setVelocity(velocitySupplier.getAsDouble()));
     }

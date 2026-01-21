@@ -799,6 +799,8 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+
         public static final double CIRCUMFERENCE_METERS = 0.0;
 
         // TODO: tune these values
