@@ -995,6 +995,16 @@ public final class Constants {
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
 
+        public static final double FREND_LINE() {
+            double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
+            return line;
+        }
+
+        public static final double FOW_LINE() {
+            double line = Robot.isRedAlliance()? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
+            return line;
+        }
+
         public static final Pose3d HUB_RED = new Pose3d(4.6209, 4.041, 1.8288, zeroRotation);
         public static final List<Pose3d> HUBS = new ArrayList<Pose3d>() {{
             Pose3d RedHub = HUB_RED;

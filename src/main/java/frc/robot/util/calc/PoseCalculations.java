@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.subsystems.drive.Swerve;
+import frc.robot.RobotContainer;
 import frc.robot.Robot;
 import frc.robot.util.Constants.FieldConstants;
 
@@ -123,6 +125,26 @@ public class PoseCalculations {
             break;
         }
         return newPos;
+    }
+
+    
+
+    public static enum ZONE {
+        inAllianceZone,
+        inNeutralZone,
+        inOppZone
+    }
+
+    public static ZONE getZone(Pose2d pos) {
+        ZONE currentZone = ZONE.inAllianceZone;
+        if (pos.getX() < FieldConstants.FREND_LINE()) {
+            currentZone = ZONE.inAllianceZone;
+        } else if (pos.getX() > FieldConstants.FREND_LINE() && pos.getX() < FieldConstants.FOW_LINE()) {
+            currentZone = ZONE.inNeutralZone;
+        } else if (pos.getX() > FieldConstants.FOW_LINE()) {
+            currentZone = ZONE.inOppZone;
+        }
+        return currentZone;
     }
     
 }
