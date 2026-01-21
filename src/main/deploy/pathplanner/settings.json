@@ -9,7 +9,9 @@
     "Outpost",
     "Starting Line"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Drive Only"
+  ],
   "defaultMaxVel": 4.0,
   "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 540.0,
