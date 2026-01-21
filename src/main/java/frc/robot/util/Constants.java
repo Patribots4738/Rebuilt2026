@@ -787,6 +787,16 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
         }};
 
+        public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
+            int startindex = Robot.isRedAlliance()? 0 : 8;
+            return TRENCHS.subList(startindex, startindex + 8);
+        }
+
+        public static final List<Pose2d> GET_ENEMY_TRENCHS() {
+            int startindex = Robot.isRedAlliance()? 8 : 0;
+            return TRENCHS.subList(startindex, startindex + 8);
+        }
+
         public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
         public static final double BUMP_LENGTH = 1.1276;
         public static final double BUMP_WIDTH = 1.8436;
@@ -818,5 +828,15 @@ public final class Constants {
             add(PoseCalculations.getBumpDimension(bumpBlue2, 'U'));
             add(PoseCalculations.getBumpDimension(bumpBlue2, 'D'));
         }};
+
+        public static final List<Pose2d> GET_ALLIANCE_BUMPS() {
+            int startindex = Robot.isRedAlliance()? 0 : 8;
+            return BUMPS.subList(startindex, startindex + 8);
+        }
+
+        public static final List<Pose2d> GET_ENEMY_BUMPS() {
+            int startindex = Robot.isRedAlliance()? 8 : 0;
+            return BUMPS.subList(startindex, startindex + 8);
+        }
     }
 }
