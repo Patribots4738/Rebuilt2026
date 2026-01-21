@@ -14,19 +14,24 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
+import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
@@ -98,26 +103,26 @@ public final class Constants {
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0, 
-            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
             ROBOT_OFFSET.getZ() + 0.0
         );
 
         public static final Translation3d WRIST_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0, 
-            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
             ROBOT_OFFSET.getZ() + 0.0
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0, 
-            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
             ROBOT_OFFSET.getZ() + 0.0
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0, 
-            ROBOT_OFFSET.getY() + 0.0, 
+            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getY() + 0.0,
             ROBOT_OFFSET.getZ() + 0.0
         );
     }
@@ -850,7 +855,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 40;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees? 
+        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
         
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
@@ -893,7 +898,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?  
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
         
         public static final int MOTOR_CAN_ID = 0;
 
@@ -937,7 +942,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?  
+        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
         
         public static final int MOTOR_CAN_ID = 0;
 
@@ -975,10 +980,180 @@ public final class Constants {
         public static final double TIMEOUT_SECONDS = 1.0;
     }
 
+    // All Field constants in meters
     public static final class FieldConstants {
 
         public static boolean IS_SIMULATION = Robot.isSimulation();
         public static boolean IS_REAL = !IS_SIMULATION;
 
+        public static Rotation3d zeroRotation = new Rotation3d();
+
+        public static final double FIELD_LENGTH = 16.5890;
+        public static final double FIELD_WIDTH = 8.0756;
+
+        public static final double CENTER_LINE_X = 8.2499;
+        public static final double ALLIANCE_LINE_RED = 4.0271;
+        public static final double ALLIANCE_LINE_BLUE = 12.5488;
+
+        public static final Pose3d HUB_RED = new Pose3d(4.6209, 4.041, 1.8288, zeroRotation);
+        public static final List<Pose3d> HUBS = new ArrayList<Pose3d>() {{
+            Pose3d RedHub = HUB_RED;
+            //RED Hub
+            add(RedHub);
+            //BLUE Hub
+            add(PoseCalculations.mirrorPose3d(RedHub));
+        }};
+
+        public static final List<Pose3d> GET_HUB() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return HUBS.subList(startindex, startindex + 1);
+        }
+
+        public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
+        public static final List<Pose2d> OUTPOSTS = new ArrayList<Pose2d>() {{
+            Pose2d OutpostRed = OUTPOST_RED;
+            //RED Outpost
+            add(OutpostRed);
+            //BLUE Outpost
+            add(PoseCalculations.mirrorPose(OutpostRed));
+        }};
+
+        public static final List<Pose2d> GET_OUTPOST() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return OUTPOSTS.subList(startindex, startindex + 1);
+        }
+        
+        public static final Pose2d DEPOT_CENTER_RED = new Pose2d(0.6958, 5.9371, Rotation2d.fromDegrees(0.0));
+        public static final List<Pose2d> DEPOTS = new ArrayList<Pose2d>() {{
+            Pose2d DepotRed = DEPOT_CENTER_RED;
+            //RED Depot
+            add(DepotRed);
+            //BLUE Depot
+            add(PoseCalculations.mirrorPose(DepotRed));
+        }};
+
+        public static final List<Pose2d> GET_DEPOT() {
+            int startindex = Robot.isRedAlliance()? 0 : 1;
+            return DEPOTS.subList(startindex, startindex + 1);
+        }
+
+        public static final Pose2d TOWER_CENTER_RED = new Pose2d(1.1082, 3.8304, Rotation2d.fromDegrees(0.0));
+        public static final double TOWER_WIDTH = 1.1938;
+        public static final double TOWER_POST_DISTANCE = 0.8573;
+        public static final double TOWER_RUNG_3 = 1.6002;
+        public static final double TOWER_RUNG_2 = 1.1430;
+        public static final double TOWER_RUNG_1 = 0.6858;
+        public static final List<Pose2d> TOWERS = new ArrayList<Pose2d>() {{
+            //RED Tower
+            Pose2d TowerRed = TOWER_CENTER_RED;
+            //Posts
+            add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
+            //Sides
+            add(PoseCalculations.getTowerDimensions(TowerRed, "SL"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
+            //BLUE Tower
+            Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
+            //Posts
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
+            //Sides
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "SL"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
+        }};
+
+        public static final List<Pose2d> GET_TOWER_POSTS() {
+            int startindex = Robot.isRedAlliance()? 0 : 4;
+            return TOWERS.subList(startindex, startindex + 2);
+        }
+
+        public static final List<Pose2d> GET_TOWER_SIDES() {
+            int startindex = Robot.isRedAlliance()? 2 : 6;
+            return TOWERS.subList(startindex, startindex + 2);
+        }
+
+        public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
+        public static final double TRENCH_LENGTH = 1.1859;
+        public static final double TRENCH_WIDTH = 1.5772;
+        public static final List<Pose2d> TRENCHS = new ArrayList<Pose2d>() {{
+            //RED Trenchs
+            //Side 1
+            Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchRed1, 'D'));
+            //Side 2
+            Pose3d trenchRed2 = PoseCalculations.flipPose3dY(TRENCH_CENTER_SIDE1_RED);
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchRed2, 'D'));
+            //Blue Trenchs
+            //Side 1
+            Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue1, 'D'));
+            //Side 2
+            Pose3d trenchBlue2 = PoseCalculations.flipPose3dY(trenchBlue1);
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'L'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'R'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'U'));
+            add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
+        }};
+
+        public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
+            int startindex = Robot.isRedAlliance()? 0 : 8;
+            return TRENCHS.subList(startindex, startindex + 8);
+        }
+
+        public static final List<Pose2d> GET_ENEMY_TRENCHS() {
+            int startindex = Robot.isRedAlliance()? 8 : 0;
+            return TRENCHS.subList(startindex, startindex + 8);
+        }
+
+        public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
+        public static final double BUMP_LENGTH = 1.1276;
+        public static final double BUMP_WIDTH = 1.8436;
+        public static final List<Pose2d> BUMPS = new ArrayList<Pose2d>() {{
+            //RED Bumps
+            //Side 1
+            Pose3d bumpRed1 = BUMP_CENTER_SIDE1_RED;
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpRed1, 'D'));
+            //Side 2
+            Pose3d bumpRed2 = PoseCalculations.flipPose3dY(BUMP_CENTER_SIDE1_RED);
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpRed2, 'D'));
+            //BLUE Bumps
+            //Side 1
+            Pose3d bumpBlue1 = PoseCalculations.mirrorPose3d(BUMP_CENTER_SIDE1_RED);
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpBlue1, 'D'));
+            //Side 2
+            Pose3d bumpBlue2 = PoseCalculations.flipPose3dY(bumpBlue1);
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'L'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'R'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'U'));
+            add(PoseCalculations.getBumpDimension(bumpBlue2, 'D'));
+        }};
+
+        public static final List<Pose2d> GET_ALLIANCE_BUMPS() {
+            int startindex = Robot.isRedAlliance()? 0 : 8;
+            return BUMPS.subList(startindex, startindex + 8);
+        }
+
+        public static final List<Pose2d> GET_ENEMY_BUMPS() {
+            int startindex = Robot.isRedAlliance()? 8 : 0;
+            return BUMPS.subList(startindex, startindex + 8);
+        }
     }
 }
