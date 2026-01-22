@@ -1,0 +1,105 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6738749999999998,
+        "y": 0.6749772727272727
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.2716704545454545,
+        "y": 1.221238636363637
+      },
+      "isLocked": false,
+      "linkedName": "Outpost"
+    },
+    {
+      "anchor": {
+        "x": 0.5089659090909089,
+        "y": 2.6435795454545463
+      },
+      "prevControl": {
+        "x": 0.5519661649609613,
+        "y": 2.397305352744246
+      },
+      "nextControl": {
+        "x": 0.3955909090909089,
+        "y": 3.2929090909090917
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.47804545454545433,
+        "y": 4.972920454545455
+      },
+      "prevControl": {
+        "x": 0.48835227272727255,
+        "y": 4.632795454545454
+      },
+      "nextControl": {
+        "x": 0.46773863636363616,
+        "y": 5.313045454545455
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.5089659090909089,
+        "y": 6.9930568181818185
+      },
+      "prevControl": {
+        "x": 0.4162045454545454,
+        "y": 5.952068181818181
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "DepotLeft"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1349934469200513,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.2061403508771917,
+      "maxWaypointRelativePos": 2.8377192982456134,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 6.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": "Outpost",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

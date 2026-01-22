@@ -3,7 +3,6 @@ package frc.robot.subsystems.superstructure.shooter.hood;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
@@ -28,7 +27,7 @@ public class HoodIOKraken implements HoodIO {
         motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(HoodConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
+            motor.setEncoder(encoder.getDeviceID(), HoodConstants.GEAR_RATIO);
         }
         motor.setGains(HoodConstants.GAINS);
         motor.setStatorCurrentLimit(HoodConstants.CURRENT_LIMIT);

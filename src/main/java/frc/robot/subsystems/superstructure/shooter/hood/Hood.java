@@ -38,7 +38,7 @@ public class Hood extends SubsystemBase {
     private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(HoodConstants.FAST_VELOCITY, HoodConstants.FAST_ACCELERATION)); // use for tracking
     private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(HoodConstants.SLOW_VELOCITY, HoodConstants.SLOW_ACCELERATION)); // use to snap to the target
 
-    public Hood(HoodIO io, double yaw) { // the yaw should be the same as the turret's yaw
+    public Hood(HoodIO io) { // the yaw should be the same as the turret's yaw
         this.io = io;
         this.yaw = yaw;
     }
@@ -64,7 +64,9 @@ public class Hood extends SubsystemBase {
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.HOOD_OFFSET,
-            new Rotation3d(0, inputs.encoderAbsPositionRads, yaw)
+            new Rotation3d(0.0, 
+                inputs.encoderAbsPositionRads, 
+                RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
         );
     }
 

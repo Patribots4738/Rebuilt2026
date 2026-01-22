@@ -90,7 +90,7 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.POSITION_DEADBAND_RADIANS);
+        return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
     }
 
     public boolean atTargetPosition() {

@@ -9,8 +9,9 @@ public interface ClimbIO {
     @AutoLog
     class ClimbIOInputs {
         public boolean motorConnected = false;
-        public double positionRads = 0.0;
-        public double velocityRadsPerSec = 0.0;
+        public double positionMeters = 0.0;
+        public double targetPositionMeters = 0.0;
+        public double velocityMetersPerSec = 0.0;
         public double targetPositionRads = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
@@ -21,7 +22,7 @@ public interface ClimbIO {
 
     default void setNeutral() {}
 
-    default void setPosition(double position, int slot) {}
+    default void setPosition(double position) {}
 
     default void runCharacterization(double input) {}
 
@@ -29,7 +30,7 @@ public interface ClimbIO {
 
     default void resetEncoder(double position) {}
 
-    default void setGains(GainConstants constants, int slot) {}
+    default void setGains(GainConstants constants) {}
 
     default void configureProfile(double velocity, double acceleration, double jerk) {}
 
