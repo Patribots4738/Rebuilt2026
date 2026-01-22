@@ -31,19 +31,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1CLR-BackHubRIght"
+            "pathName": "1CLR-CLLeft"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BackHubRight-1CLR"
+            "pathName": "CLLeft-ClimbPrepLeft"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "1CLR-ClimbPrepLeft"
+            "waitTime": 3.0
           }
         },
         {

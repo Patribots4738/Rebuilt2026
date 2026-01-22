@@ -31,19 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5CLR-BackHubLeft"
+            "pathName": "5CLR-CLRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BackHubLeft-5CLR"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5CLR-ClimbPrepRIght"
+            "pathName": "CLRight-ClimbPrepRight"
           }
         },
         {
