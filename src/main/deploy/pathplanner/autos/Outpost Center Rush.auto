@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5CLR-CLRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CLRight-Outpost"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 8.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost-ClimbPrepRight"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepRight-ClimbRight"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Drive Only",
+  "choreoAuto": false
+}
