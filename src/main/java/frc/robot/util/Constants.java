@@ -1089,12 +1089,14 @@ public final class Constants {
             //RED Trenchs
             //Side 1
             Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
+            add(trenchRed1.toPose2d());
             add(PoseCalculations.getTrenchDimension(trenchRed1, 'L'));
             add(PoseCalculations.getTrenchDimension(trenchRed1, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchRed1, 'U'));
             add(PoseCalculations.getTrenchDimension(trenchRed1, 'D'));
             //Side 2
             Pose3d trenchRed2 = PoseCalculations.flipPose3dY(TRENCH_CENTER_SIDE1_RED);
+            add(trenchRed2.toPose2d());
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'L'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
@@ -1102,12 +1104,14 @@ public final class Constants {
             //Blue Trenchs
             //Side 1
             Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
+            add(trenchBlue1.toPose2d());
             add(PoseCalculations.getTrenchDimension(trenchBlue1, 'L'));
             add(PoseCalculations.getTrenchDimension(trenchBlue1, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchBlue1, 'U'));
             add(PoseCalculations.getTrenchDimension(trenchBlue1, 'D'));
             //Side 2
             Pose3d trenchBlue2 = PoseCalculations.flipPose3dY(trenchBlue1);
+            add(trenchBlue2.toPose2d());
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'L'));
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'U'));
@@ -1115,8 +1119,8 @@ public final class Constants {
         }};
 
         public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
-            int startindex = Robot.isRedAlliance()? 0 : 8;
-            return TRENCHS.subList(startindex, startindex + 8);
+            int startindex = Robot.isRedAlliance()? 0 : 10;
+            return TRENCHS.subList(startindex, startindex + 10);
         }
 
         public static final List<Pose2d> GET_ENEMY_TRENCHS() {
@@ -1131,12 +1135,14 @@ public final class Constants {
             //RED Bumps
             //Side 1
             Pose3d bumpRed1 = BUMP_CENTER_SIDE1_RED;
+            add(bumpRed1.toPose2d());
             add(PoseCalculations.getBumpDimension(bumpRed1, 'L'));
             add(PoseCalculations.getBumpDimension(bumpRed1, 'R'));
             add(PoseCalculations.getBumpDimension(bumpRed1, 'U'));
             add(PoseCalculations.getBumpDimension(bumpRed1, 'D'));
             //Side 2
             Pose3d bumpRed2 = PoseCalculations.flipPose3dY(BUMP_CENTER_SIDE1_RED);
+            add(bumpRed2.toPose2d());
             add(PoseCalculations.getBumpDimension(bumpRed2, 'L'));
             add(PoseCalculations.getBumpDimension(bumpRed2, 'R'));
             add(PoseCalculations.getBumpDimension(bumpRed2, 'U'));
@@ -1144,12 +1150,14 @@ public final class Constants {
             //BLUE Bumps
             //Side 1
             Pose3d bumpBlue1 = PoseCalculations.mirrorPose3d(BUMP_CENTER_SIDE1_RED);
+            add(bumpBlue1.toPose2d());
             add(PoseCalculations.getBumpDimension(bumpBlue1, 'L'));
             add(PoseCalculations.getBumpDimension(bumpBlue1, 'R'));
             add(PoseCalculations.getBumpDimension(bumpBlue1, 'U'));
             add(PoseCalculations.getBumpDimension(bumpBlue1, 'D'));
             //Side 2
             Pose3d bumpBlue2 = PoseCalculations.flipPose3dY(bumpBlue1);
+            add(bumpBlue2.toPose2d());
             add(PoseCalculations.getBumpDimension(bumpBlue2, 'L'));
             add(PoseCalculations.getBumpDimension(bumpBlue2, 'R'));
             add(PoseCalculations.getBumpDimension(bumpBlue2, 'U'));
