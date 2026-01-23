@@ -2,12 +2,14 @@ package frc.robot.subsystems.drive.module;
 
 import com.ctre.phoenix6.CANBus;
 
+import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
 import frc.robot.util.hardware.phoenix.Kraken;
+import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class ModuleIOKraken implements ModuleIO {
@@ -27,8 +29,8 @@ public class ModuleIOKraken implements ModuleIO {
      */
     public ModuleIOKraken(int drivingCANId, int turningCANId, int canCoderId, double absoluteEncoderOffset) {
         // TODO: CHANGE USETORQUECONTROL TO TRUE ONCE WE HAVE PHOENIX PRO
-        driveMotor = new Kraken(drivingCANId, CANConstants.DRIVEBASE_BUS, true, false);
-        turnMotor = new Kraken(turningCANId, CANConstants.DRIVEBASE_BUS, true, false);
+        driveMotor = new Kraken(drivingCANId, MK5nSwerveModuleConstants.DRIVE_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
+        turnMotor = new Kraken(turningCANId, MK5nSwerveModuleConstants.TURN_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
         turnEncoder = new CANCoderCustom(canCoderId, CANConstants.DRIVEBASE_BUS);
         resetDriveEncoder();
         configEncoder(absoluteEncoderOffset);
@@ -46,14 +48,12 @@ public class ModuleIOKraken implements ModuleIO {
         // Apply position and velocity conversion factors for the driving encoder. The
         // native units for position and velocity are rotations and RPM, respectively,
         // but we want meters and meters per second to use with WPILib's swerve APIs.
-        driveMotor.setPositionConversionFactor(MK5nSwerveModuleConstants.DRIVING_ENCODER_POSITION_FACTOR);
-        driveMotor.setVelocityConversionFactor(MK5nSwerveModuleConstants.DRIVING_ENCODER_VELOCITY_FACTOR);
+        driveMotor.setUnitConversionFactor(MK5nSwerveModuleConstants.DRIVING_ENCODER_POSITION_FACTOR);
 
         // Apply position and velocity conversion factors for the turning encoder. We
         // want these in radians and radians per second to use with WPILib's swerve
         // APIs.
-        turnMotor.setPositionConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR);
-        turnMotor.setVelocityConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR);
+        turnMotor.setUnitConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR);
 
         // Set status signal update frequencies, optimized for swerve
         driveMotor.setTelemetryPreference(TelemetryPreference.SWERVE);

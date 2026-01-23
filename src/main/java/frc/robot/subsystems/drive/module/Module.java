@@ -5,9 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
-import frc.robot.util.custom.GainConstants;
 
 public class Module {
 
@@ -54,6 +52,14 @@ public class Module {
         io.setTurnPosition(this.desiredState.angle.getRadians());
     }
 
+    public void setDesiredState(SwerveModuleState desiredState) {
+        setDesiredState(desiredState, 0);
+    }
+
+    public void setTurnVelocity(double velocity) {
+        io.setTurnVelocity(velocity);
+    }
+    
     public void setTurnZero() {
         io.setTurnPosition(0);
     }
