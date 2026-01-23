@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -593,6 +594,15 @@ public final class Constants {
 
     }
 
+   
+
+        
+
+        
+
+    
+
+        
     public static final class OIConstants {
 
         public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -606,6 +616,17 @@ public final class Constants {
         // https://docs.google.com/spreadsheets/d/1Lytrh6q9jkz4u1gmF1Sk8kTpj8DxW-uwRE_QMnTt8Lk
         public static final double CONTROLLER_CORNER_SLOPE_1 = 1 / 0.7;
         public static final double CONTROLLER_CORNER_SLOPE_2 = 0.7;
+
+        public static final double DRIVER_ALIGN_CANCEL_DEADBAND = 0.15;
+
+        public enum DriverMode {
+            DOUBLE,
+            DEV,
+            CALIBRATION
+        }
+
+        public static final DriverMode DRIVER_MODE = DriverMode.DOUBLE;
+
     }
 
     public static final class NeoMotorConstants {
@@ -703,6 +724,36 @@ public final class Constants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
 
+    }
+    public static final class CameraConstants {
+
+          public static final int ENABLED_THROTTLE = 0; // Process every frame
+          public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+
+
+        // UPDATE LATER once we know how many cameras we have and their positions
+     //   public static Pose3d LL3G_POSE = new Pose3d( 
+       //     -0.312655,
+         //   -0.120619,
+     //       0.197874,
+       //     new Rotation3d(
+     //           Units.degreesToRadians(0), // -2.303 
+       //         Units.degreesToRadians(15), 
+         //       Units.degreesToRadians(-141.77)
+      //      )
+       /// );
+       
+        // UPDATE LATER once we know how many cameras we have and their positions
+      //  public static Pose3d LL4_POSE = new Pose3d(
+        //    -0.312655,
+          //  0.120619,
+       //     0.197874,
+         //   new Rotation3d(
+           //     Units.degreesToRadians(0), // 2.303
+             //   Units.degreesToRadians(15),
+               // Units.degreesToRadians(141.77)
+         //   )
+       // );
     }
 
     public static final class ClimbConstants {
@@ -959,6 +1010,8 @@ public final class Constants {
             G
         );
     }
+
+    
 
 
     public static final class GeneralHardwareConstants {
