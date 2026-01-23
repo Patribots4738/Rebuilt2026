@@ -754,6 +754,8 @@ public final class Constants {
                // Units.degreesToRadians(141.77)
          //   )
        // );
+    }
+
     public static final class ClimbConstants {
         
         public static final int CAN_ID = 13;
