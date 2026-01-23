@@ -181,6 +181,13 @@ public class Kraken extends TalonFX {
         SWERVE // Swerve module motors
     }
 
+    public enum ControlPreference {
+        VOLTAGE,
+        TORQUE_CURRENT,
+        MM_VOLTAGE,
+        MM_TORQUE_CURRENT
+    }
+
     /**
      * Sets the telemetry preference for the Kraken motor.
      * 

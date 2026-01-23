@@ -1,3 +1,10 @@
+package frc.robot.subsystems.spindexer;
+
+import frc.robot.subsystems.spindexer.SpindexerIO;
+import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.hardware.phoenix.Kraken;
+import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
+
 public class SpindexerIOKraken implements SpindexerIO {
     
     private final Kraken motor;
