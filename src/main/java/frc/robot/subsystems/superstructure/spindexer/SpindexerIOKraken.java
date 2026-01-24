@@ -1,4 +1,4 @@
-package frc.robot.subsystems.spindexer;
+package frc.robot.subsystems.superstructure.spindexer;
 
 import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.hardware.phoenix.Kraken;

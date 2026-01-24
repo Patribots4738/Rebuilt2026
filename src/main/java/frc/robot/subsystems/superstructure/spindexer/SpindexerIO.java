@@ -1,4 +1,4 @@
-package frc.robot.subsystems.spindexer;
+package frc.robot.subsystems.superstructure.spindexer;
 import org.littletonrobotics.junction.AutoLog;
 public interface SpindexerIO {
     
