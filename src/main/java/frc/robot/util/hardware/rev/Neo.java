@@ -333,7 +333,6 @@ public class Neo extends SafeSpark {
     public void addFollower(Neo follower, boolean invert) {
         follower.follow(this, invert);
     }
-
     /**
      * Sets the PID values and output limits for the Neo motor controller.
      * 

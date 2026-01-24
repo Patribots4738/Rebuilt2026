@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-//import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
@@ -91,7 +90,7 @@ public class DriveHDC extends Command {
 
 
         swerve.drive(
-            AutoConstants.HDC.calculate(swerve.getPose(), desiredPose, 0, desiredPose.getRotation())
+            AutoConstants.TELE_HDC.calculate(swerve.getPose(), desiredPose, 0, desiredPose.getRotation())
         );
 
         swerve.setDesiredPose(desiredPose);

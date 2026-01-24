@@ -4,14 +4,10 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -20,7 +16,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Robot.GameMode;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -28,7 +23,18 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.util.Constants.AutoConstants;
+import frc.robot.subsystems.superstructure.climb.Climb;
+import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
+import frc.robot.subsystems.superstructure.extender.Extender;
+import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
+import frc.robot.subsystems.superstructure.intake.Intake;
+import frc.robot.subsystems.superstructure.intake.IntakeIOKraken;
+import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
+import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
+import frc.robot.subsystems.superstructure.shooter.hood.Hood;
+import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
+import frc.robot.subsystems.superstructure.shooter.turret.Turret;
+import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.custom.PatriBoxController;
@@ -38,6 +44,11 @@ public class RobotContainer {
     private PowerDistribution pdh;
 
     private EventLoop testButtonBindingLoop = new EventLoop();
+    
+    @AutoLogOutput (key = "Draggables/Components3d")
+    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    @AutoLogOutput (key = "Draggables/DesiredComponents3d")
+    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
 
     private final PatriBoxController driver;
     @SuppressWarnings("unused")
@@ -47,6 +58,13 @@ public class RobotContainer {
     private final BooleanSupplier robotRelativeSupplier;
 
     private final Swerve swerve;
+    @SuppressWarnings("unused")
+    private final Climb climb;
+    private final Flywheel flywheel;
+    private final Turret turret;
+    private final Hood hood;
+    private final Intake intake;
+    private final Extender extender;
 
     public static Field2d field2d = new Field2d();
 
@@ -54,18 +72,20 @@ public class RobotContainer {
     private static HDCTuner HDCTuner;
 
     // Draggables
-    @AutoLogOutput(key = "Draggables/FreshCode")
+    @AutoLogOutput (key = "Draggables/FreshCode")
     public static boolean freshCode = true;
-    @AutoLogOutput(key = "Draggables/RobotPose2d")
-    public static Pose2d robotPose2d = new Pose2d();
+    @AutoLogOutput (key = "Draggables/RobotPose2d")
+    public static Pose2d robotPose2d = Pose2d.kZero;
+    @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
+    public static SwerveModuleState[] swerveMeasuredStates;
+    @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
+    public static SwerveModuleState[] swerveDesiredStates;
+    @AutoLogOutput (key = "Draggables/GameModeStart")
+    public static double gameModeStart = 0;
+    @AutoLogOutput (key = "Draggables/AutoStartingPose")
+    public static Pose2d autoStartingPose = Pose2d.kZero;
     @AutoLogOutput(key = "Draggables/RobotPose3d")
     public static Pose3d robotPose3d = new Pose3d();
-    @AutoLogOutput(key = "Draggables/SwerveMeasuredStates")
-    public static SwerveModuleState[] swerveMeasuredStates;
-    @AutoLogOutput(key = "Draggables/SwerveDesiredStates")
-    public static SwerveModuleState[] swerveDesiredStates;
-    @AutoLogOutput(key = "Draggables/GameModeStart")
-    public static double gameModeStart = 0;
 
     public RobotContainer() {
 
@@ -78,6 +98,12 @@ public class RobotContainer {
         pdh.setSwitchableChannel(false);
 
         swerve = new Swerve();
+        climb = new Climb(new ClimbIOKraken());
+        flywheel = new Flywheel(new FlywheelIOKraken());
+        turret = new Turret(new TurretIOKraken());
+        hood = new Hood(new HoodIOKraken());
+        extender = new Extender(new ExtenderIOKraken());
+        intake = new Intake(new IntakeIOKraken());
 
         SmartDashboard.putData(field2d);
 
@@ -94,10 +120,6 @@ public class RobotContainer {
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
         ));
-
-        HDCTuner = new HDCTuner(
-                AutoConstants.HDC.getXController(),
-                AutoConstants.HDC.getThetaController());
 
         configureButtonBindings();
         configureTimedEvents();
@@ -172,58 +194,6 @@ public class RobotContainer {
         //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
     }
 
-    public void updateNTGains() {
-        double PPHDCP = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/0-P").getDouble(-1);
-        double PPHDCI = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/1-I").getDouble(-1);
-        double PPHDCD = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/2-D").getDouble(-1);
-        double PPHDCP2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/0-P").getDouble(-1);
-        double PPHDCI2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/1-I").getDouble(-1);
-        double PPHDCD2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/2-D").getDouble(-1);
-
-        double HDCP = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/0-P").getDouble(-1);
-        double HDCI = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/1-I").getDouble(-1);
-        double HDCD = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/2-D").getDouble(-1);
-        double HDCP2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/0-P").getDouble(-1);
-        double HDCI2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/1-I").getDouble(-1);
-        double HDCD2 = NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/2-D").getDouble(-1);
-
-        if (PPHDCP == -1 || PPHDCI == -1 || PPHDCD == -1 || PPHDCP2 == -1 || PPHDCI2 == -1 || PPHDCD2 == -1
-                || HDCP == -1 || HDCI == -1 || HDCD == -1 || HDCP2 == -1 || HDCI2 == -1 || HDCD2 == -1) {
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/0-P").setDouble(AutoConstants.XY_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/1-I").setDouble(AutoConstants.XY_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Translation/2-D").setDouble(AutoConstants.XY_CORRECTION_D);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/0-P").setDouble(AutoConstants.ROTATION_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/1-I").setDouble(AutoConstants.ROTATION_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("Auto/Rotation/2-D").setDouble(AutoConstants.ROTATION_CORRECTION_D);
-
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/0-P").setDouble(AutoConstants.XY_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/1-I").setDouble(AutoConstants.XY_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Translation/2-D").setDouble(AutoConstants.XY_CORRECTION_D);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/0-P").setDouble(AutoConstants.ROTATION_CORRECTION_P);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/1-I").setDouble(AutoConstants.ROTATION_CORRECTION_I);
-            NetworkTableInstance.getDefault().getTable("Calibration").getEntry("HDC/Rotation/2-D").setDouble(AutoConstants.ROTATION_CORRECTION_D);
-            return;
-        } else {
-            AutoConstants.PPHDC = new PPHolonomicDriveController(
-                    new PIDConstants(
-                            PPHDCP,
-                            PPHDCI,
-                            PPHDCD),
-                    new PIDConstants(
-                            PPHDCP2,
-                            PPHDCI2,
-                            PPHDCD2));
-
-            AutoConstants.XY_PID.setP(HDCP);
-            AutoConstants.XY_PID.setI(HDCI);
-            AutoConstants.XY_PID.setD(HDCD);
-            AutoConstants.THETA_PID.setP(HDCP2);
-            AutoConstants.THETA_PID.setI(HDCI2);
-            AutoConstants.THETA_PID.setD(HDCD2);
-
-        }
-    }
-
     public Command getAutonomousCommand() {
         return pathPlannerStorage.getSelectedAuto();
     }
@@ -261,13 +231,6 @@ public class RobotContainer {
         swerve.stopDriving();
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
-
-        // TODO: Extract this into a command file
-        CommandScheduler.getInstance().schedule(
-                Commands.run(this::updateNTGains)
-                .until(() -> Robot.gameMode != GameMode.DISABLED)
-                .ignoringDisable(true)
-                );
     }
 
     public void onEnabled() {
