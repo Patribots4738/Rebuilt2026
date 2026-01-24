@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.kicker;
 
+import com.revrobotics.REVLibError;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
@@ -29,7 +30,6 @@ public class KickerIONeo implements KickerIO {
 
     @Override
     public void updateInputs(KickerIOInputs inputs) {
-        inputs.motorConnected = motor.isFollower();
         inputs.motorPositionMeters = motor.getPosition();
         inputs.motorTargetPositionMeters = motor.getTargetPosition();
         inputs.motorVelocityMetersPerSecond = motor.getVelocity();

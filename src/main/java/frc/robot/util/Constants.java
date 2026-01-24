@@ -1227,8 +1227,8 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 40.0;
         public static final boolean BRAKE_MOTOR = true;
         
-        public static final int MAX_DISPLACEMENT_METERS = 0;
-        public static final int DEADBAND_RADIANS = 0;
+        public static final double MAX_DISPLACEMENT_METERS = 0.0;
+        public static final double DEADBAND_RADIANS = 0.0;
         
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;

@@ -21,8 +21,7 @@ public class ModuleIOKraken implements ModuleIO {
      * @param drivingCANId CAN ID of the driving motor
      * @param turningCANId CAN ID of the turning motor
      * @param canCoderId CAN ID of the modules encoder
-     * @param chassisAngularOffset angular offset of module to the chasis
-     * @param index
+     * @param absoluteEncoderOffset absolute encoder offset used to zero the module
      */
     public ModuleIOKraken(int drivingCANId, int turningCANId, int canCoderId, double absoluteEncoderOffset) {
         // TODO: CHANGE USETORQUECONTROL TO TRUE ONCE WE HAVE PHOENIX PRO

@@ -57,7 +57,7 @@ public class Kicker extends SubsystemBase {
 	}
 	
 	public void setPosition(double position, boolean runFast) {
-		double clampedPosition = MathUtil.clamp(position, 0, IntakeConstants.MAX_DISPLACEMENT_METERS);
+		double clampedPosition = MathUtil.clamp(position, 0, KickerConstants.MAX_DISPLACEMENT_METERS);
 		if (clampedPosition != targetState.position) {
 			setpoint.position = inputs.motorPositionMeters;
 			setpoint.velocity = inputs.motorVelocityMetersPerSecond;
@@ -118,7 +118,7 @@ public class Kicker extends SubsystemBase {
 						Volts.of(0.5).per(Second),
 						null,
 						Seconds.of(2),
-						(state) -> Logger.recordOutput("IntakeSysIdState", state.toString())
+						(state) -> Logger.recordOutput("KickerSysIdState", state.toString())
 				),
 				new SysIdRoutine.Mechanism(
 						(voltage) -> io.runCharacterization(voltage.in(Volts)),
