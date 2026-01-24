@@ -221,28 +221,28 @@ public final class Constants {
 
 
         public static final GainConstants AUTO_XY_GAINS = new GainConstants(
-            4.0, 
-            0.0, 
+            4.0,
+            0.0,
             0.9
         );
 
         public static final GainConstants TELE_XY_GAINS = new GainConstants(
-            3.6, 
-            0, 
+            3.6,
+            0,
             0
         );
 
         // public static final LoggedGainConstants LOGGED_TELE_XY_GAINS = new LoggedGainConstants(AutoConstants.TELE_XY_GAINS, "TeleXY");
 
         public static final GainConstants AUTO_THETA_GAINS = new GainConstants(
-            3.725, 
-            0, 
+            3.725,
+            0,
             0
         );
 
         public static final GainConstants TELE_THETA_GAINS = new GainConstants(
-            5.5, 
-            0, 
+            5.5,
+            0,
             0
         );
 
@@ -261,7 +261,7 @@ public final class Constants {
             AutoConstants.TELE_THETA_GAINS.getD(),
             new TrapezoidProfile.Constraints(
                 AutoConstants.HDC_THETA_VELOCITY,
-                AutoConstants.HDC_THETA_ACCELERATION)) 
+                AutoConstants.HDC_THETA_ACCELERATION))
             {{
                 setIZone(Units.degreesToRadians(45));
             }};
@@ -596,13 +596,13 @@ public final class Constants {
 
    
 
-        
-
-        
+    
 
     
 
-        
+    
+
+    
     public static final class OIConstants {
 
         public static final int DRIVER_CONTROLLER_PORT = 0;
@@ -732,13 +732,13 @@ public final class Constants {
 
 
         // UPDATE LATER once we know how many cameras we have and their positions
-     //   public static Pose3d LL3G_POSE = new Pose3d( 
+     //   public static Pose3d LL3G_POSE = new Pose3d(
        //     -0.312655,
          //   -0.120619,
      //       0.197874,
        //     new Rotation3d(
-     //           Units.degreesToRadians(0), // -2.303 
-       //         Units.degreesToRadians(15), 
+     //           Units.degreesToRadians(0), // -2.303
+       //         Units.degreesToRadians(15),
          //       Units.degreesToRadians(-141.77)
       //      )
        /// );
@@ -1019,7 +1019,18 @@ public final class Constants {
         public static final double TIMEOUT_SECONDS = 1.0;
     }
 
-    // All Field constants in meters
+    public static final class SpindexerConstants {
+        public static final double SPINDEXER_SPIN = 1.0;
+        public static final int CAN_ID = 11;
+
+        public static final boolean BRAKE_MOTOR = true;
+
+        public static final double CURRENT_LIMIT = 45.0;
+
+        public static final boolean MOTOR_INVERTED = false;
+        public static final int MOTOR_TYPE = 44;
+    }
+
     public static final class FieldConstants {
 
         public static boolean IS_SIMULATION = Robot.isSimulation();
