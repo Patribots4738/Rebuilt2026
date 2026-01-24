@@ -1,3 +1,4 @@
-public class SpindexerIONeo {
-    //TODO: DO THSI BUT ITS NOT MY PROBLEM NOW
+package frc.robot.subsystems.spindexer;
+public class SpindexerIONeo implements SpindexerIO {
+    //TODO: MAKE IT WORK SOMETIME LATER
 }
