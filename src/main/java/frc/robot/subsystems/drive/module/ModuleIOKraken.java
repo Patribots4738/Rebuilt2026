@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure.drive.module;
+package frc.robot.subsystems.drive.module;
 
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;

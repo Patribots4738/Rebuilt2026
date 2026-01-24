@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure.drive.gyro;
+package frc.robot.subsystems.drive.gyro;
 
 import org.littletonrobotics.junction.Logger;
 

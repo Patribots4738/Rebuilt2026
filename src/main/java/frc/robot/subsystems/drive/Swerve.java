@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.superstructure.drive;
+package frc.robot.subsystems.drive;
 
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
@@ -41,10 +41,10 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.DriveHDC;
-import frc.robot.subsystems.superstructure.drive.gyro.Gyro;
-import frc.robot.subsystems.superstructure.drive.gyro.GyroIOPigeon2;
-import frc.robot.subsystems.superstructure.drive.module.Module;
-import frc.robot.subsystems.superstructure.drive.module.ModuleIOKraken;
+import frc.robot.subsystems.drive.gyro.Gyro;
+import frc.robot.subsystems.drive.gyro.GyroIOPigeon2;
+import frc.robot.subsystems.drive.module.Module;
+import frc.robot.subsystems.drive.module.ModuleIOKraken;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;

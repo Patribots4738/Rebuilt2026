@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
-import frc.robot.subsystems.superstructure.drive.Swerve;
+import frc.robot.subsystems.drive.Swerve;
 
 public class Drive extends Command {
 

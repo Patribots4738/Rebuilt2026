@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure.drive.module;
+package frc.robot.subsystems.drive.module;
 
 import org.littletonrobotics.junction.AutoLog;
 

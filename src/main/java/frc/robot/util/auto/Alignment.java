@@ -9,7 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
-import frc.robot.subsystems.superstructure.drive.Swerve;
+import frc.robot.subsystems.drive.Swerve;
 
 public class Alignment {
 

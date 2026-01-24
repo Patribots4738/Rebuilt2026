@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure.drive.gyro;
+package frc.robot.subsystems.drive.gyro;
 
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.hardware.phoenix.Pigeon2Custom;
