@@ -1028,6 +1028,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 45.0;
 
         public static final boolean MOTOR_INVERTED = false;
+        public static final int MOTOR_TYPE = 44;
     }
 
     public static final class FieldConstants {

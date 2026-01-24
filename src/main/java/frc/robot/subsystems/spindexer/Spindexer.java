@@ -19,8 +19,12 @@ public class Spindexer extends SubsystemBase {
 
     private final SpindexerIO io;
     private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
-
-    @Override
+	
+	public Spindexer(SpindexerIO io) {
+		this.io = io;
+	}
+	
+	@Override
     public void periodic(){
         io.updateInputs(inputs);
     }
