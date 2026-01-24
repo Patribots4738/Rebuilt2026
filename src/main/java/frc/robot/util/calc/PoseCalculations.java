@@ -156,8 +156,8 @@ public class PoseCalculations {
         double angleDiff = pos1.getRotation().minus(pos2.getRotation()).getRadians();
 		double distance = pos1.relativeTo(pos2).getTranslation().getNorm();
         return 
-            MathUtil.isNear(0, distance, AutoConstants.AUTO_POSITION_TOLERANCE_METERS)
-            && MathUtil.isNear(0, angleDiff, AutoConstants.AUTO_ROTATION_TOLERANCE_RADIANS);
+            MathUtil.isNear(0, distance, AutoConstants.HDC_POSITION_TOLERANCE_METERS)
+            && MathUtil.isNear(0, angleDiff, AutoConstants.HDC_ROTATION_TOLERANCE_RADIANS);
     }
 
     public static boolean isPoseOnAxis(Pose2d pos1, Pose2d pos2) {
