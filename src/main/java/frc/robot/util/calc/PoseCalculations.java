@@ -12,7 +12,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.subsystems.drive.Swerve;
+import frc.robot.RobotContainer;
 import frc.robot.Robot;
+import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
 
 public class PoseCalculations {
@@ -124,5 +127,97 @@ public class PoseCalculations {
         }
         return newPos;
     }
+
     
+
+    public static enum ZONE {
+        inAllianceZone,
+        inNeutralZone,
+        inOppZone
+    }
+
+    public static ZONE getZone(Pose2d pos) {
+        ZONE currentZone = ZONE.inAllianceZone;
+        if (pos.getX() < FieldConstants.FREND_LINE()) {
+            currentZone = ZONE.inAllianceZone;
+        } else if (pos.getX() > FieldConstants.FREND_LINE() && pos.getX() < FieldConstants.FOW_LINE()) {
+            currentZone = ZONE.inNeutralZone;
+        } else if (pos.getX() > FieldConstants.FOW_LINE()) {
+            currentZone = ZONE.inOppZone;
+        }
+        return currentZone;
+    }
+
+    public static Pose2d getPoseWithDistance(Pose2d pos, double distance) {
+        return new Pose2d(pos.getX() + distance * pos.getRotation().getCos(), pos.getY() + distance * pos.getRotation().getSin(), pos.getRotation());
+    }
+    
+    public static boolean isPoseNear(Pose2d pos1, Pose2d pos2) {
+        double angleDiff = pos1.getRotation().minus(pos2.getRotation()).getRadians();
+		double distance = pos1.relativeTo(pos2).getTranslation().getNorm();
+        return 
+            MathUtil.isNear(0, distance, AutoConstants.AUTO_POSITION_TOLERANCE_METERS)
+            && MathUtil.isNear(0, angleDiff, AutoConstants.AUTO_ROTATION_TOLERANCE_RADIANS);
+    }
+
+    public static boolean isPoseOnAxis(Pose2d pos1, Pose2d pos2) {
+        double distance = pos1.getTranslation().getDistance(pos2.getTranslation());
+        Pose2d addedAxisPose = getPoseWithDistance(new Pose2d(pos1.getX(), pos1.getY(), pos2.getRotation().minus(Rotation2d.fromRadians(Math.PI))), distance);
+        addedAxisPose = new Pose2d(addedAxisPose.getX(), addedAxisPose.getY(), pos2.getRotation());
+        return isPoseNear(addedAxisPose, pos2);
+    }
+
+    public static Pose2d nearest(Pose2d pos, List<Pose2d> poses) {
+        return Collections.min(poses,
+            Comparator.comparing(
+                    (Pose2d other) -> pos.getTranslation().getDistance(other.getTranslation()))
+                .thenComparing(
+                    (Pose2d other) ->
+                        Math.abs(pos.getRotation().minus(other.getRotation()).getRadians())));
+    }
+
+    public static Pose3d nearestPose3d(Pose3d pos, List<Pose3d> poses) {
+        return Collections.min(poses,
+            Comparator.comparing(
+                    (Pose3d other) -> pos.getTranslation().getDistance(other.getTranslation()))
+                .thenComparing(
+                    (Pose3d other) ->
+                        Math.abs(pos.getRotation().toRotation2d().minus(other.getRotation().toRotation2d()).getRadians())));
+    }
+
+    public static Pose2d getClosestPost(Pose2d pos) {
+        return nearest(pos, FieldConstants.GET_TOWER_POSTS());
+    }
+
+    public static boolean inTrench(Pose2d pos) {
+        boolean ans = false;
+        if (
+            (pos.getY() > FieldConstants.TRENCHS.get(3).getY() && pos.getY() < FieldConstants.TRENCHS.get(9).getY()) 
+            && 
+            (
+                (pos.getX() > FieldConstants.TRENCHS.get(1).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX()) 
+                || 
+                (pos.getX() > FieldConstants.TRENCHS.get(11).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX())
+            )
+            ) {
+            ans = true;
+        }
+        return ans;
+    }
+
+    public static boolean onRamp(Pose2d pos) {
+        boolean ans = false;
+        if (
+            (pos.getY() > FieldConstants.BUMPS.get(3).getY() && pos.getY() < FieldConstants.BUMPS.get(9).getY()) 
+            && 
+            (
+                (pos.getX() > FieldConstants.BUMPS.get(1).getX() && pos.getX() < FieldConstants.BUMPS.get(2).getX()) 
+                || 
+                (pos.getX() > FieldConstants.BUMPS.get(11).getX() && pos.getX() < FieldConstants.BUMPS.get(2).getX())
+            )
+            ) {
+            ans = true;
+        }
+        return ans;
+    }
 }
