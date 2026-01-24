@@ -165,7 +165,8 @@ bin/
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea/*
+!.idea/runConfigurations
 out/
 
 # Fleet
