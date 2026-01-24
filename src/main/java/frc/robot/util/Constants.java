@@ -1215,7 +1215,7 @@ public final class Constants {
     }
     
     public static final class KickerConstants {
-        public static final int CAN_ID = 14;
+        public static final int CAN_ID = 0;
         public static final int MOTOR_TYPE = 60;
         
         public static final boolean MOTOR_INVERTED = false;
