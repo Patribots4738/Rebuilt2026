@@ -1,8 +1,7 @@
-package frc.robot.subsystems.superstructure.shooter;
+package frc.robot.util.calc;
 
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -14,12 +13,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.TurretConstants;
-import frc.robot.util.Constants.LoggingConstants;
 
 public class ShotCalculations {
-    private static ShotCalculations instance;
 
     private final LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
     private final LinearFilter hAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
