@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -26,6 +27,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -837,6 +839,13 @@ public final class Constants {
         public static final double SLOW_VELOCITY = 1.6;
         public static final double SLOW_ACCELERATION = 2d;
         public static final double JERK = 40d;
+
+        public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
+        public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(
+            TURRET_TO_ROBOT_TRANSFORM3D.getX(),
+            TURRET_TO_ROBOT_TRANSFORM3D.getY(),
+            TURRET_TO_ROBOT_TRANSFORM3D.getRotation().toRotation2d()
+        );
     }
 
     public static final class FlywheelConstants {
