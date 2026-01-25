@@ -593,15 +593,6 @@ public final class Constants {
         );
 
     }
-
-   
-
-    
-
-    
-
-    
-
     
     public static final class OIConstants {
 
@@ -725,6 +716,7 @@ public final class Constants {
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
 
     }
+    
     public static final class CameraConstants {
 
           public static final int ENABLED_THROTTLE = 0; // Process every frame
@@ -925,7 +917,7 @@ public final class Constants {
         public static final double JERK = 40d;
     }
 
-        public static final class IntakeConstants {
+    public static final class IntakeConstants {
         public static final int CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
         public static final double GEAR_RATIO = 0.0;
@@ -1010,9 +1002,6 @@ public final class Constants {
             G
         );
     }
-
-    
-
 
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;
@@ -1223,5 +1212,40 @@ public final class Constants {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }
+    }
+    
+    public static final class KickerConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 60;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 1.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 40.0;
+        public static final boolean BRAKE_MOTOR = true;
+        
+        public static final double MAX_DISPLACEMENT_METERS = 0.0;
+        public static final double DEADBAND_RADIANS = 0.0;
+        
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+        
+        public static final GainConstants GAINS = new GainConstants(
+                P,
+                I,
+                D,
+                A,
+                S,
+                V,
+                G
+        );
     }
 }

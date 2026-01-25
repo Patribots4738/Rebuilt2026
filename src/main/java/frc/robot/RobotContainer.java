@@ -35,6 +35,8 @@ import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
+import frc.robot.subsystems.superstructure.kicker.Kicker;
+import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.custom.PatriBoxController;
@@ -65,6 +67,7 @@ public class RobotContainer {
     private final Hood hood;
     private final Intake intake;
     private final Extender extender;
+    private final Kicker kicker;
 
     public static Field2d field2d = new Field2d();
 
@@ -104,6 +107,7 @@ public class RobotContainer {
         hood = new Hood(new HoodIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
+        kicker = new Kicker(new KickerIOKraken());
 
         SmartDashboard.putData(field2d);
 
@@ -145,7 +149,6 @@ public class RobotContainer {
         CommandScheduler.getInstance().schedule(new NTGainTuner());
 
         prepareNamedCommands();
-
     }
 
     private void configureButtonBindings() {
@@ -153,8 +156,7 @@ public class RobotContainer {
         configureOperatorBindings(operator);
     }
 
-    private void configureTimedEvents() {
-    }
+    private void configureTimedEvents() {}
 
     private void configureDriverBindings(PatriBoxController controller) {
 
@@ -239,7 +241,5 @@ public class RobotContainer {
         freshCode = false;
     }
 
-    private void prepareNamedCommands() {
-    }
-
+    private void prepareNamedCommands() {}
 }

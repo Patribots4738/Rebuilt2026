@@ -1,30 +1,15 @@
 package frc.robot.util.auto;
 
-import java.util.List;
-import java.util.Set;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.util.Constants.AutoConstants;
-import frc.robot.util.Constants.ClimbConstants;
-import frc.robot.util.Constants.DriveConstants;
-import frc.robot.util.Constants.FieldConstants;
 
 public class Alignment {
 
