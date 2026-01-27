@@ -176,6 +176,11 @@ public class PoseCalculations {
                         Math.abs(pos.getRotation().minus(other.getRotation()).getRadians())));
     }
 
+    public static Rotation2d nearestRotation(Rotation2d pos, List<Rotation2d> poses) {
+        return Collections.min(poses, 
+            Comparator.comparing((Rotation2d other) -> Math.abs(pos.minus(other).getRadians())));
+    }
+
     public static Pose3d nearestPose3d(Pose3d pos, List<Pose3d> poses) {
         return Collections.min(poses,
             Comparator.comparing(
@@ -187,6 +192,10 @@ public class PoseCalculations {
 
     public static Pose2d getClosestPost(Pose2d pos) {
         return nearest(pos, FieldConstants.GET_TOWER_POSTS());
+    }
+
+    public static Rotation2d getClosestBumpRotation(Pose2d pos) {
+        return nearestRotation(pos.getRotation(), AutoConstants.BUMP_ROTATIONS);
     }
 
     public static boolean inTrench(Pose2d pos) {
