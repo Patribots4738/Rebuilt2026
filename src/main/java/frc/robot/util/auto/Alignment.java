@@ -176,22 +176,35 @@ public class Alignment {
     }
 
     public ChassisSpeeds getTowerAlignmentSpeeds() {
-        Pose2d towerCenter = new Pose2d(
+        Pose2d towerCenter = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
+            (FieldConstants.GET_TOWER_CENTER().getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET), 
+            FieldConstants.GET_TOWER_CENTER().getY(), 
+            FieldConstants.GET_TOWER_CENTER().getRotation()
+        ) : new Pose2d(
             (FieldConstants.GET_TOWER_CENTER().getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET), 
             FieldConstants.GET_TOWER_CENTER().getY(), 
             FieldConstants.GET_TOWER_CENTER().getRotation()
         );
-        Pose2d postLeft = new Pose2d(
+        Pose2d postLeft = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
+            (FieldConstants.GET_TOWER_POSTS().get(2).getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET),
+            (FieldConstants.GET_TOWER_POSTS().get(2).getY() - AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
+            FieldConstants.GET_TOWER_POSTS().get(2).getRotation()
+        ) : new Pose2d(
             (FieldConstants.GET_TOWER_POSTS().get(2).getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET),
             (FieldConstants.GET_TOWER_POSTS().get(2).getY() - AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
             FieldConstants.GET_TOWER_POSTS().get(2).getRotation()
         );
-        Pose2d postRight = new Pose2d(
+        Pose2d postRight = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
+            (FieldConstants.GET_TOWER_POSTS().get(1).getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET),
+            (FieldConstants.GET_TOWER_POSTS().get(1).getY() + AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
+            FieldConstants.GET_TOWER_POSTS().get(1).getRotation()
+        ) : new Pose2d(
             (FieldConstants.GET_TOWER_POSTS().get(1).getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET),
             (FieldConstants.GET_TOWER_POSTS().get(1).getY() + AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
             FieldConstants.GET_TOWER_POSTS().get(1).getRotation()
         );
         Pose2d node;
+
         switch(alignmentIndex) {
             case 1:
                 node = postLeft;
@@ -270,5 +283,12 @@ public class Alignment {
         return Commands.runOnce(() -> this.alignmentMode = AlignmentMode.BUMP).andThen(Commands.run(() -> swerve.setDesiredPose(desiredPos)));
     }
 
-
+    public Command towerAlignmentCommand(Pose2d robotPos) {
+        return
+            autoAlignmentCommand(
+                AlignmentMode.TOWER, 
+                this::getTowerAlignmentSpeeds,
+                true
+            );
+    }
 }

@@ -229,4 +229,12 @@ public class PoseCalculations {
         }
         return ans;
     }
+
+    public static boolean behindTower(Pose2d pos) {
+        boolean ans = false;
+        if (pos.getX() < FieldConstants.GET_TOWER_CENTER().getX()) {
+            ans = true;
+        }
+        return ans;
+    }
 }
