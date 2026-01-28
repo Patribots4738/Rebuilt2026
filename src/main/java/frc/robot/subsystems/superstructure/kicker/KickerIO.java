@@ -8,29 +8,23 @@ public interface KickerIO {
     @AutoLog
     class KickerIOInputs {
         public boolean motorConnected = false;
-        public double motorPositionMeters;
-        public double motorTargetPositionMeters;
-        public double motorVelocityMetersPerSecond;
-        public double motorAppliedOutputVolts;
-        public double motorTorqueCurrentAmps;
-        public double motorTemperatureCelsius;
-        public double positionRads;
+        public double percentOutput  = 0.0;
+        public double targetPercentOutput = 0.0;
+        public double velocityRotationsPerSec = 0.0;    
+        public double appliedOutputVolts = 0.0;
+        public double torqueCurrentAmps = 0.0;
+        public double temperatureCelsius = 0.0;
     }
 
     public default void updateInputs(KickerIOInputs inputs) {}
 
-    public default void setPosition(double position) {}
-
     public default void setNeutral() {}
-
-    public default void runCharacterization(double input) {}
 
     public default void setBrakeMode(boolean brake) {}
 
-    public default void resetEncoders(double position) {}
+    public default void setPercent(double percent) {}
 
-    public default void setGains(GainConstants constants) {}
+    public default void setVoltage(double volts) {}
 
-    public default void configureProfile(double velocity, double acceleration, double jerk) {}
-
+    public default void setCurrent(double amps) {}
 }

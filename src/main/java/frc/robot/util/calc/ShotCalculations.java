@@ -14,6 +14,8 @@ import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.TurretConstants;
+import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.FieldConstants;
 
 public class ShotCalculations {
 
@@ -29,11 +31,19 @@ public class ShotCalculations {
 
     private static double minDistance;
     private static double maxDistance;
-    private static double phaseDelay;
 
     private static final InterpolatingTreeMap<Double, Rotation2d> shotHoodAngleMap = new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
     private static final InterpolatingDoubleTreeMap shotFlywheelSpeedMap = new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+
+    public Target target;
+
+    public enum Target {
+            HUB,
+            PASS_A,
+            PASS_B,
+            EJECT;
+    }
 
     public record ShootingParameters(
         boolean isValid,
@@ -52,7 +62,6 @@ public class ShotCalculations {
         //TODO: tune on our robot
         minDistance = 1.34;
         maxDistance = 5.60;
-        phaseDelay = 0.03;
 
         shotHoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
         shotHoodAngleMap.put(1.78, Rotation2d.fromDegrees(19.0));
@@ -83,16 +92,18 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public ShootingParameters getParameters(Swerve swerve, Translation3d target) {
+    public ShootingParameters getParameters(Swerve swerve, Target aim) {
+        Translation3d target = getTarget(aim);
+
         // Calculate estimated pose while accounting for phase delay
         Pose2d estimatedPose = swerve.getPose();
         ChassisSpeeds robotRelativeVelocity = swerve.getRobotRelativeVelocity();
         estimatedPose =
             estimatedPose.exp(
                 new Twist2d(
-                    robotRelativeVelocity.vxMetersPerSecond * phaseDelay,
-                    robotRelativeVelocity.vyMetersPerSecond * phaseDelay,
-                    robotRelativeVelocity.omegaRadiansPerSecond * phaseDelay));
+                    robotRelativeVelocity.vxMetersPerSecond * LoggingConstants.PHASE_DELAY,
+                    robotRelativeVelocity.vyMetersPerSecond * LoggingConstants.PHASE_DELAY,
+                    robotRelativeVelocity.omegaRadiansPerSecond * LoggingConstants.PHASE_DELAY));
 
         // Calculate distance from turret to target
         Pose2d turretPosition = estimatedPose.transformBy(TurretConstants.TURRET_TO_ROBOT_TRANSFORM2D);
@@ -158,5 +169,16 @@ public class ShotCalculations {
 
     public void clearShootingParameters() {
         latestParameters = null;
+    }
+
+    public Translation3d getTarget(Target target) {
+        switch (target) {
+            case HUB:
+                return FieldConstants.GET_HUB();
+            case PASS_A:
+                return FieldConstants.GET_PASS_A();
+            default:
+                return FieldConstants.GET_PASS_B();
+        }
     }
 }

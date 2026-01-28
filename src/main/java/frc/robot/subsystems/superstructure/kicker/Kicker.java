@@ -5,6 +5,7 @@
 package frc.robot.subsystems.superstructure.kicker;
 
 import frc.robot.util.Constants.KickerConstants;
+import frc.robot.subsystems.superstructure.intake.IntakeIO;
 import frc.robot.util.Constants.IntakeConstants;
 
 import static edu.wpi.first.units.Units.Second;
@@ -29,118 +30,57 @@ public class Kicker extends SubsystemBase {
 	private final KickerIO io;
 	private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
 	
-	private final State targetState = new State(0, 0);
-	private final State setpoint = new State(0, 0);
-	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunSetpoint")
-	private boolean shouldRunSetpoint = false;
-	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunFastProfile")
-	private boolean shouldRunFast = true;
-	public Kicker(KickerIO io) {
-		this.io = io;
-	}
-	
-	@Override
-	public void periodic() {
-		io.updateInputs(inputs);
-		Logger.processInputs("SubsystemInputs/Kicker", inputs);
-		
-		Logger.recordOutput("Subsystems/Kicker/AtTargetPosition", atTargetPosition());
-		Logger.recordOutput("Subsystems/Kicker/TargetPosition", targetState.position);
-		
-		if (shouldRunSetpoint) {
-			io.setPosition(setpoint.position);
-		} else {
-			setpoint.position = inputs.motorPositionMeters;
-			setpoint.velocity = inputs.motorVelocityMetersPerSecond;
-			io.setNeutral();
-		}
-	}
-	
-	public void setPosition(double position, boolean runFast) {
-		double clampedPosition = MathUtil.clamp(position, 0, KickerConstants.MAX_DISPLACEMENT_METERS);
-		if (clampedPosition != targetState.position) {
-			setpoint.position = inputs.motorPositionMeters;
-			setpoint.velocity = inputs.motorVelocityMetersPerSecond;
-		}
-		targetState.position = clampedPosition;
-		shouldRunSetpoint = true;
-		shouldRunFast = runFast;
-	}
-	
-	public void setNeutral() {
-		shouldRunSetpoint = false;
-	}
-	
-	public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
-		return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFastSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
-	}
-	
-	public Command setPositionCommand(double position, BooleanSupplier runFastSupplier) {
-		return setPositionCommand(() -> position, runFastSupplier);
-	}
-	
-	public Command setNeutralCommand() {
-		return runOnce(this::setNeutral);
-	}
-	
-	public Command resetEncodersCommand() {
-		return runOnce(() -> io.resetEncoders(0));
-	}
-	
-	public boolean atPosition(double position) {
-		return MathUtil.isNear(position, inputs.motorPositionMeters, KickerConstants.DEADBAND_RADIANS);
-	}
-	
-	public boolean atTargetPosition() {
-		return atPosition(targetState.position);
-	}
-	
-	public double getPosition() {
-		return inputs.motorPositionMeters;
-	}
-	
-	public double getCharacterizationVelocity() {
-		return inputs.motorVelocityMetersPerSecond / KickerConstants.VELOCITY_CONVERSION_FACTOR;
-	}
-	
-	public double getVelocity() {
-		return (inputs.motorVelocityMetersPerSecond);
-	}
-	
-	public void runCharacterization(double input) {
-		io.runCharacterization(input);
-	}
-	
-	public SysIdRoutine getSysIdRoutine() {
-		return new SysIdRoutine(
-				new SysIdRoutine.Config(
-						// Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-						Volts.of(0.5).per(Second),
-						null,
-						Seconds.of(2),
-						(state) -> Logger.recordOutput("KickerSysIdState", state.toString())
-				),
-				new SysIdRoutine.Mechanism(
-						(voltage) -> io.runCharacterization(voltage.in(Volts)),
-						null,
-						this
-				)
-		);
-	}
-	
-	public Command sysIdQuasistaticForward() {
-		return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
-	}
-	
-	public Command sysIdQuasistaticReverse() {
-		return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse);
-	}
-	
-	public Command sysIdDynamicForward() {
-		return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward);
-	}
-	
-	public Command sysIdDynamicReverse() {
-		return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse);
-	}
+	private double percentOutput = 0.0;
+    @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
+    private boolean shouldRunSetpoint = false;
+
+    // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
+    // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
+    // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
+    // private LoggedTunableNumber slowAcceleration = new LoggedTunableNumber("Intake/SlowProfile/Acceleration", IntakeConstants.SLOW_ACCELERATION);
+
+    // private final LoggedTunableBoolean brakeMotor = new LoggedTunableBoolean("Intake/BrakeMotor", IntakeConstants.BRAKE_MOTOR);
+    
+    public Kicker(KickerIO io) {
+        this.io = io;
+
+        // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
+        // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
+
+        // IntakeConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(IntakeConstants.LOGGED_GAINS.get())).ignoringDisable(true));
+        // brakeMotor.onChanged(Commands.runOnce(() -> io.setBrakeMode(brakeMotor.get())).ignoringDisable(true));
+    }
+
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+
+        if (shouldRunSetpoint) {
+            io.setPercent(percentOutput);
+        } else {
+            io.setNeutral();
+        }
+
+    }
+
+    public void setPercent(double percent) {
+        percentOutput = percent;
+        shouldRunSetpoint = true;
+    }
+
+    public void setNeutral() {
+        shouldRunSetpoint = false;
+    }
+
+    public Command setPercentCommand(DoubleSupplier percentSupplier) {
+        return runOnce(() -> setPercent(percentSupplier.getAsDouble()));
+    }
+
+    public Command setPercentCommand(double percent) {
+        return setPercentCommand(() -> percent);
+    }
+
+    public Command setNeutralCommand() {
+        return runOnce(this::setNeutral);
+    }
 }
