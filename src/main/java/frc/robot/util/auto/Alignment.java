@@ -22,10 +22,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.AutoConstants;
-import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.auto.Alignment.AlignmentMode;
 import frc.robot.util.calc.PoseCalculations;
 
 public class Alignment {
