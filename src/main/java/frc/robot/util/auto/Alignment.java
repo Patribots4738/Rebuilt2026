@@ -1,5 +1,6 @@
 package frc.robot.util.auto;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.MathUtil;
@@ -15,6 +16,8 @@ import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.calc.PoseCalculations;
 
+import java.util.function.Supplier;
+
 public class Alignment {
 
     private final Swerve swerve;
@@ -27,8 +30,7 @@ public class Alignment {
     private State targetXY = new State(0, 0);
 
     private Pose2d profileStartingPose = Pose2d.kZero;
-    private TrapezoidProfile xyProfile = new TrapezoidProfile(new Constraints(AutoConstants.HDC_XY_VELOCITY, AutoConstants.HDC_XY_ACCELERATION));
-
+    private TrapezoidProfile xyProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(AutoConstants.HDC_XY_VELOCITY, AutoConstants.HDC_XY_ACCELERATION));
     // private LoggedTunableNumber translationVelocity = new LoggedTunableNumber("Alignment/TranslationVelocity", AutoConstants.HDC_XY_VELOCITY);
     // private LoggedTunableNumber translationAcceleration = new LoggedTunableNumber("Alignment/TranslationAcceleration", AutoConstants.HDC_XY_ACCELERATION);
 
