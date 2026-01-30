@@ -23,6 +23,7 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
 import frc.robot.subsystems.superstructure.extender.Extender;
@@ -35,10 +36,13 @@ import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
+import frc.robot.subsystems.superstructure.spindexer.Spindexer;
+import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.PathPlannerStorage;
+import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -68,6 +72,9 @@ public class RobotContainer {
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
+    private final Spindexer spindexer;
+
+    private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -107,7 +114,9 @@ public class RobotContainer {
         hood = new Hood(new HoodIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
+        spindexer = new Spindexer(new SpindexerIOKraken());
         kicker = new Kicker(new KickerIOKraken());
+        superstructure = new Superstructure(extender, intake, climb, turret, hood, flywheel, spindexer, kicker, swerve::getPose);
 
         SmartDashboard.putData(field2d);
 
@@ -171,8 +180,11 @@ public class RobotContainer {
         ), swerve)
         );
 
-        controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        controller.rightBumper().whileTrue(swerve.getSetWheelsO());
+        controller.leftBumper().onTrue(Commands.runOnce(() -> superstructure.updatePassIndex(0)));
+
+
+        // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
+        // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
         controller.b().whileTrue(swerve.driveCharacterization());
         controller.y().whileTrue(swerve.getSetWheelsZero());
     }

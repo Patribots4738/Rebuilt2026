@@ -454,7 +454,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
 
         // **********************************************************************MK5n SWERVE**********************
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(0 * 2); //TODO: run wheel radius characterization
+        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(2 * 2); //TODO: run wheel radius characterization
         // **********************************************************************MK5n SWERVE**********************
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
@@ -856,11 +856,9 @@ public final class Constants {
             G
         );
 
-        public static final double FAST_VELOCITY = 1.6;
-        public static final double FAST_ACCELERATION = 4d;
-        public static final double SLOW_VELOCITY = 1.6;
-        public static final double SLOW_ACCELERATION = 2d;
-        public static final double JERK = 40d;
+        public static final double VELOCITY = 1.6;
+        public static final double ACCELERATION = 4d;
+        public static final double JERK = 20d;
 
         public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
         public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(
@@ -946,10 +944,8 @@ public final class Constants {
             G
         );
 
-        public static final double FAST_VELOCITY = 1.6;
-        public static final double FAST_ACCELERATION = 4d;
-        public static final double SLOW_VELOCITY = 1.6;
-        public static final double SLOW_ACCELERATION = 2d;
+        public static final double VELOCITY = 1.6;
+        public static final double ACCELERATION = 3d;
         public static final double JERK = 40d;
     }
 
@@ -962,17 +958,10 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 0;
 
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
-        
-        public static final int MOTOR_CAN_ID = 0;
-
+        public static final double INTAKE_PERCENT = 0.5;
 
         public static final double POSITION_CONVERSION_FACTOR = 0.0;
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
-
-        public static final int MAX_DISPLACEMENT_METERS = 0;
-        public static final int DEADBAND_RADIANS = 0;
 
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
@@ -997,28 +986,24 @@ public final class Constants {
     }
 
     public static final class ExtenderConstants {
-
         public static final int CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
         public static final double GEAR_RATIO = 0.0;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 0;
+        public static final double CURRENT_LIMIT = 0.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
 
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double INTAKE_POSITION_RADIANS = Units.degreesToRadians(110);
-        
-        public static final int MOTOR_CAN_ID = 0;
 
         public static final double POSITION_CONVERSION_FACTOR = 0.0;
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
 
-        public static final int MAX_DISPLACEMENT_METERS = 0;
-        public static final int DEADBAND_RADIANS = 0;
+        public static final double DEADBAND_RADIANS = 0.0;
 
 
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
@@ -1136,27 +1121,27 @@ public final class Constants {
             return HUBS.get(index);
         }
         
-        public static final Translation3d PASS_A = new Translation3d();
-        public static final Translation3d PASS_B = new Translation3d();
+        public static final Translation3d PASS_LEFT = new Translation3d(4.0566, 5.5642, 0);
+        public static final Translation3d PASS_RIGHT = PoseCalculations.flipTranslation3dY(PASS_LEFT);
 
-        public static final List<Translation3d> PASS_A_LOCATIONS = new ArrayList<Translation3d>() {{
-            add(PASS_A);
-            add(PoseCalculations.mirrorTranslation3d(PASS_A));
+        public static final List<Translation3d> PASS_LEFT_LOCATIONS = new ArrayList<Translation3d>() {{
+            add(PASS_LEFT);
+            add(PoseCalculations.mirrorTranslation3d(PASS_LEFT));
         }};
 
-        public static final List<Translation3d> PASS_B_LOCATIONS = new ArrayList<Translation3d>() {{
-            add(PASS_B);
-            add(PoseCalculations.mirrorTranslation3d(PASS_B));
+        public static final List<Translation3d> PASS_RIGHT_LOCATIONS = new ArrayList<Translation3d>() {{
+            add(PASS_RIGHT);
+            add(PoseCalculations.mirrorTranslation3d(PASS_RIGHT));
         }};
 
-        public static final Translation3d GET_PASS_A() {
+        public static final Translation3d GET_PASS_LEFT() {
             int index = Robot.isRedAlliance()? 0 : 1;
-            return PASS_A_LOCATIONS.get(index);
+            return PASS_LEFT_LOCATIONS.get(index);
         }
 
-        public static final Translation3d GET_PASS_B() {
+        public static final Translation3d GET_PASS_RIGHT() {
             int index = Robot.isRedAlliance()? 0 : 1;
-            return PASS_B_LOCATIONS.get(index);
+            return PASS_RIGHT_LOCATIONS.get(index);
         }
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));

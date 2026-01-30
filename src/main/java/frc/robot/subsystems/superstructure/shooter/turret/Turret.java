@@ -31,12 +31,8 @@ public class Turret extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunFastProfile")
-    private boolean shouldRunFast = true;
 
-    private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(TurretConstants.FAST_VELOCITY, TurretConstants.FAST_ACCELERATION)); // use for tracking
-    private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(TurretConstants.SLOW_VELOCITY, TurretConstants.SLOW_ACCELERATION)); // use to snap to the target
-
+    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
     public Turret(TurretIO io) {
         this.io = io;
@@ -57,7 +53,7 @@ public class Turret extends SubsystemBase {
      * @param position 
      * @param runFast
      */
-    public void setPosition(double position, boolean runFast) {
+    public void setPosition(double position) {
         position = MathUtil.clamp(position, TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         if (position != targetState.position) {
             setpoint.position = inputs.internalPositionRads;
@@ -65,7 +61,6 @@ public class Turret extends SubsystemBase {
         }
         targetState.position = position;
         shouldRunSetpoint = true;
-        shouldRunFast = runFast;
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
@@ -73,12 +68,12 @@ public class Turret extends SubsystemBase {
         );
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFastSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(DoubleSupplier positionSupplier) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
     }
 
-    public Command setPositionCommand(double position, BooleanSupplier runFastSupplier) {
-        return setPositionCommand(() -> position, runFastSupplier);
+    public Command setPositionCommand(double position) {
+        return setPositionCommand(() -> position);
     }
 
     public void setNeutral() {

@@ -28,6 +28,15 @@ public class PoseCalculations {
         return new Translation2d(FieldConstants.FIELD_LENGTH - pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY());
     }
 
+    public static Translation3d flipTranslation3dX(Translation2d pos) {
+        return new Translation3d(FieldConstants.FIELD_LENGTH - pos.getX(), pos.getY(), 0);
+    }
+
+    public static Translation3d flipTranslation3dY(Translation3d pos) {
+        return new Translation3d(pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY(), 0);
+    }
+
+
     public static Translation3d mirrorTranslation3d(Translation3d pos) {
         return new Translation3d(FieldConstants.FIELD_LENGTH - pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY(), pos.getZ());
     }

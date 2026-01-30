@@ -17,6 +17,7 @@ import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.FieldConstants;
 
+
 public class ShotCalculations {
 
     private final LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
@@ -36,14 +37,7 @@ public class ShotCalculations {
     private static final InterpolatingDoubleTreeMap shotFlywheelSpeedMap = new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
-    public Target target;
-
-    public enum Target {
-            HUB,
-            PASS_A,
-            PASS_B,
-            EJECT;
-    }
+    public Translation3d target = FieldConstants.GET_HUB();
 
     public record ShootingParameters(
         boolean isValid,
@@ -56,9 +50,8 @@ public class ShotCalculations {
 
     private ShootingParameters latestParameters = null;
 
-
-
     static {
+
         //TODO: tune on our robot
         minDistance = 1.34;
         maxDistance = 5.60;
@@ -92,8 +85,8 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public ShootingParameters getParameters(Swerve swerve, Target aim) {
-        Translation3d target = getTarget(aim);
+    public static ShootingParameters getParameters(Swerve swerve, int passIndex) {
+        target = getTarget(swerve, passIndex);
 
         // Calculate estimated pose while accounting for phase delay
         Pose2d estimatedPose = swerve.getPose();
@@ -163,6 +156,7 @@ public class ShotCalculations {
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
         Logger.recordOutput("ShotCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
+        Logger.recordOutput("ShotCalculator/TargetTranslation3d", getTarget());
 
         return latestParameters;
     }
@@ -171,14 +165,14 @@ public class ShotCalculations {
         latestParameters = null;
     }
 
-    public Translation3d getTarget(Target target) {
-        switch (target) {
-            case HUB:
-                return FieldConstants.GET_HUB();
-            case PASS_A:
-                return FieldConstants.GET_PASS_A();
-            default:
-                return FieldConstants.GET_PASS_B();
-        }
+    public Translation3d setTarget(Swerve swerve, int passIndex) {
+        Translation3d target = PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.isAllianceZone 
+                        ? FieldConstants.GET_HUB() 
+                        : passIndex == 0 ? FieldConstants.GET_PASS_LEFT() 
+                        : FieldConstants.GET_PASS_RIGHT();
+    }
+
+    public Translation3d getTarget() {
+        return target;
     }
 }

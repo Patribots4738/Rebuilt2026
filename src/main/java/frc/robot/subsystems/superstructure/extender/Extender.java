@@ -81,7 +81,7 @@ public class Extender extends SubsystemBase {
     }
 
     public void setPosition(double position, boolean runFast) {
-        position = MathUtil.clamp(position, ExtenderConstants.RETRACT_POSITION_METERS, ExtenderConstants.MAX_DISPLACEMENT_METERS);
+        position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         if (position != targetState.position) {
             setpoint.position = inputs.motorPositionMeters;
             setpoint.velocity = inputs.motorVelocityMetersPerSecond;
@@ -112,11 +112,11 @@ public class Extender extends SubsystemBase {
     }
 
     public Command retractExtender(){
-        return setPositionCommand(ExtenderConstants.RETRACT_POSITION_METERS, () -> true).andThen(() -> setNeutral());
+        return setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS, () -> true).andThen(() -> setNeutral());
     }
 
     public Command extendExtender(){
-        return setPositionCommand(ExtenderConstants.MAX_DISPLACEMENT_METERS, () -> true).andThen(() -> setNeutral());
+        return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, () -> true).andThen(() -> setNeutral());
     }
 
     public boolean atPosition(double position) {
