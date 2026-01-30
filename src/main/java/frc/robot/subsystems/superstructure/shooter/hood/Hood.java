@@ -48,8 +48,8 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Hood", inputs);
 
-        Logger.recordOutput("Subsystems/Shooter/Flywheel/Hood", atTargetPosition());
-        Logger.recordOutput("Subsystems/Shooter/Flywheel/Hood", targetState.position);
+        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
+        Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
             setpoint = (shouldRunFast ? fastProfile : slowProfile).calculate(0.02, setpoint, targetState);

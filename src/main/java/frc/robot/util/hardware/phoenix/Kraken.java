@@ -141,6 +141,7 @@ public class Kraken extends TalonFX {
         }
 
         this.useFOC = useFOC;
+        this.controlPreference = controlPreference;
 
         double updateFrequency = useOneShot ? 0.0 : 100.0;
 
