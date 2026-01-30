@@ -870,7 +870,7 @@ public final class Constants {
 
     public static final class FlywheelConstants {
         public static final int CAN_ID = 0;
-        public static final int MOTOR_TYPE = 44;
+        public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
@@ -951,7 +951,7 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final int CAN_ID = 0;
-        public static final int MOTOR_TYPE = 44;
+        public static final int MOTOR_TYPE = 60;
         public static final double GEAR_RATIO = 0.0;
 
         public static final boolean BRAKE_MOTOR = true;

@@ -98,8 +98,10 @@ public class PathPlannerStorage {
     public Command updatePathViewerCommand() {
         return Commands.either(
             Commands.runOnce(() -> {
-                RobotContainer.field2d.getObject("path")
-                    .setPoses(getAutoPoses(getSelectedAutoName()));
+                List<Pose2d> autoPoses = getAutoPoses(getSelectedAutoName());
+                RobotContainer.field2d.getObject("path").setPoses(getAutoPoses(getSelectedAutoName()));
+                    if (autoPoses.size() > 0)
+                    RobotContainer.autoStartingPose = autoPoses.get(0);
             }),
             Commands.runOnce(() -> {
                 RobotContainer.field2d.getObject("path").setPoses(new ArrayList<>());
