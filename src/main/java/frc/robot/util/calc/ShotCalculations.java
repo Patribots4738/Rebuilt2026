@@ -16,6 +16,7 @@ import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.calc.PoseCalculations.ZONE;
 
 
 public class ShotCalculations {
@@ -85,8 +86,8 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public static ShootingParameters getParameters(Swerve swerve, int passIndex) {
-        target = getTarget(swerve, passIndex);
+    public ShootingParameters getParameters(Swerve swerve, int passIndex) {
+        target = setTarget(swerve, passIndex);
 
         // Calculate estimated pose while accounting for phase delay
         Pose2d estimatedPose = swerve.getPose();

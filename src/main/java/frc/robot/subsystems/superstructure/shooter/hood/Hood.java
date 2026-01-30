@@ -49,7 +49,7 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
-            setpoint = (shouldRunFast ? fastProfile : slowProfile).calculate(0.02, setpoint, targetState);
+            setpoint = profile.calculate(0.02, setpoint, targetState);
             // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
             // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
             io.setPosition(setpoint.position, 0);

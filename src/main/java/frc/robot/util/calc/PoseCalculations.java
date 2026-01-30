@@ -139,7 +139,7 @@ public class PoseCalculations {
 
     
 
-    public static enum ZONE {
+    public enum ZONE {
         inAllianceZone,
         inNeutralZone,
         inOppZone
