@@ -1,5 +1,7 @@
 package frc.robot.util.calc;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,26 +12,23 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import org.littletonrobotics.junction.Logger;
-
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.util.Constants.TurretConstants;
-import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.calc.PoseCalculations.ZONE;
+import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.TurretConstants;
 
 
 public class ShotCalculations {
 
-    private final LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
-    private final LinearFilter hAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
+    private final static LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
+    private final static LinearFilter hAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
 
-    private Rotation2d lastTurretAngle;
-    private double lastHoodAngleRadians;
-    private Rotation2d turretAngle;
-    private double hoodAngleRadians = Double.NaN;
-    private double turretVelocity;
-    private double hoodVelocity;
+    private static Rotation2d lastTurretAngle;
+    private static double lastHoodAngleRadians;
+    private static Rotation2d turretAngle;
+    private static double hoodAngleRadians = Double.NaN;
+    private static double turretVelocity;
+    private static double hoodVelocity;
 
     private static double minDistance;
     private static double maxDistance;
@@ -38,9 +37,9 @@ public class ShotCalculations {
     private static final InterpolatingDoubleTreeMap shotFlywheelSpeedMap = new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
-    public Translation3d target = FieldConstants.GET_HUB();
+    public static Translation3d target = FieldConstants.GET_HUB();
 
-    public record ShootingParameters(
+    public static record ShootingParameters(
         boolean isValid,
         Rotation2d turretAngle,
         double turretVelocity,
@@ -49,7 +48,7 @@ public class ShotCalculations {
         double flywheelSpeed) 
     {}
 
-    private ShootingParameters latestParameters = null;
+    private static ShootingParameters latestParameters = null;
 
     static {
 
@@ -86,7 +85,7 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public ShootingParameters getParameters(Swerve swerve, int passIndex) {
+    public static ShootingParameters getParameters(Swerve swerve, int passIndex) {
         target = setTarget(swerve, passIndex);
 
         // Calculate estimated pose while accounting for phase delay
@@ -162,18 +161,31 @@ public class ShotCalculations {
         return latestParameters;
     }
 
-    public void clearShootingParameters() {
+    public static void clearShootingParameters() {
         latestParameters = null;
     }
 
-    public Translation3d setTarget(Swerve swerve, int passIndex) {
-        Translation3d target = PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.isAllianceZone 
+    public static Translation3d setTarget(Swerve swerve, int passIndex) {
+        Translation3d target = PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone 
                         ? FieldConstants.GET_HUB() 
                         : passIndex == 0 ? FieldConstants.GET_PASS_LEFT() 
                         : FieldConstants.GET_PASS_RIGHT();
+        return target;
     }
 
-    public Translation3d getTarget() {
+    public static Translation3d getTarget() {
         return target;
+    }
+
+    public static double getFlywheelSpeed() {
+        return latestParameters.flywheelSpeed;
+    }
+
+    public static Rotation2d getTurretAngle() {
+        return latestParameters.turretAngle;
+    }
+
+    public static double getHoodAngle() {
+        return latestParameters.hoodAngle;
     }
 }
