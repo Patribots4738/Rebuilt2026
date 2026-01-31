@@ -42,4 +42,16 @@ public class Spindexer extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+    
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
+    
+    public double getVelocity() {
+        return inputs.velocityRotationsPerSec;
+    }
+    
+    public void setVoltage(double volts) {
+        io.setVoltage(volts);
+    }
 }

@@ -19,7 +19,7 @@ public class SysIdFlywheel {
 				),
 				new SysIdRoutine.Mechanism(
 						(Voltage volts) -> flywheel.runCharacterization(volts.in(Volts)),
-						log -> log.motor("drive")
+						log -> log.motor("flywheel")
 							.voltage(Volts.of(flywheel.getVoltage()))
 							.linearVelocity(MetersPerSecond.of(flywheel.getVelocity())),
 						flywheel
@@ -27,11 +27,11 @@ public class SysIdFlywheel {
 		);
 	}
 	
-	public Command quasistaticFlywheelCommand(SysIdRoutine.Direction direction) {
+	public Command quasistatic(SysIdRoutine.Direction direction) {
 		return flywheelRoutine.quasistatic(direction);
 	}
 	
-	public Command dynamicFlywheelCommand(SysIdRoutine.Direction direction) {
+	public Command dynamic(SysIdRoutine.Direction direction) {
 		return flywheelRoutine.dynamic(direction);
 	}
 }

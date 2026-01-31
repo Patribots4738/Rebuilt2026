@@ -142,6 +142,10 @@ public class Extender extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
+    
+    public double getVoltage() {
+        return inputs.motorAppliedOutputVolts;
+    }
 
     public SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(

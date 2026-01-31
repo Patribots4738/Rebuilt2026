@@ -43,19 +43,19 @@ public class SysIdSwerve {
 		);
 	}
 	
-	public Command quasistaticDriveCommand(SysIdRoutine.Direction direction) {
+	public Command quasistaticDrive(SysIdRoutine.Direction direction) {
 		return driveRoutine.quasistatic(direction);
 	}
 	
-	public Command dynamicDriveCommand(SysIdRoutine.Direction direction) {
+	public Command dynamicDrive(SysIdRoutine.Direction direction) {
 		return driveRoutine.dynamic(direction);
 	}
 	
-	public Command quasistaticTurnCommand(SysIdRoutine.Direction direction) {
+	public Command quasistaticTurn(SysIdRoutine.Direction direction) {
 		return turnRoutine.quasistatic(direction);
 	}
 	
-	public Command dynamicTurnCommand(SysIdRoutine.Direction direction) {
+	public Command dynamicTurn(SysIdRoutine.Direction direction) {
 		return turnRoutine.dynamic(direction);
 	}
 }

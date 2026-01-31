@@ -107,6 +107,10 @@ public class Climb extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
+    
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
 
     public SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(

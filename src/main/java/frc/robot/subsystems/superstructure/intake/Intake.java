@@ -133,6 +133,10 @@ public class Intake extends SubsystemBase {
         io.runCharacterization(input);
     }
 
+    public double getVoltage() {
+        return inputs.motorAppliedOutputVolts;
+    }
+    
     public SysIdRoutine getSysIdRoutine() {
         return new SysIdRoutine(
             new SysIdRoutine.Config(

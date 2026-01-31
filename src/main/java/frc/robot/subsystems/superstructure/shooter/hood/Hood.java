@@ -124,6 +124,10 @@ public class Hood extends SubsystemBase {
     public double getTargetPosition() {
         return targetState.position;
     }
+    
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
 
     public double getCharacterizationVelocity() {
         return inputs.internalVelocityRadsPerSec / HoodConstants.VELOCITY_CONVERSION_FACTOR;

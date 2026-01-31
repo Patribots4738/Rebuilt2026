@@ -108,6 +108,10 @@ public class Turret extends SubsystemBase {
     public double getTargetPosition() {
         return targetState.position;
     }
+    
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
 
     public double getCharacterizationVelocity() {
         return inputs.internalVelocityRadsPerSec / TurretConstants.VELOCITY_CONVERSION_FACTOR;
