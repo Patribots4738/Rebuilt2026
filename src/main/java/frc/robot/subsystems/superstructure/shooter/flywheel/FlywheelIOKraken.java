@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.flywheel;
 
+import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
@@ -9,7 +10,7 @@ public class FlywheelIOKraken implements FlywheelIO {
     private final Kraken motor;
 
     public FlywheelIOKraken() {
-        motor = new Kraken(FlywheelConstants.CAN_ID, FlywheelConstants.MOTOR_TYPE, true, true, ControlPreference.VOLTAGE);
+        motor = new Kraken(FlywheelConstants.CAN_ID, FlywheelConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS,true, true, ControlPreference.VOLTAGE);
         configMotor();
     }
 
@@ -56,6 +57,11 @@ public class FlywheelIOKraken implements FlywheelIO {
     @Override
     public void setVoltage(double volts) {
         motor.setVoltageOutput(volts);
+    }
+    
+    @Override
+    public void runCharacterization(double input) {
+        motor.setVoltage(input);
     }
 
     @Override

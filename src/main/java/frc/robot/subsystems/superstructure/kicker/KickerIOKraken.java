@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.kicker;
 
+import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
@@ -10,7 +11,7 @@ public class KickerIOKraken implements KickerIO {
     private final Kraken motor;
 
     public KickerIOKraken() {
-        motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS,true, true, ControlPreference.TORQUE_CURRENT);
         configMotors();
     }
 

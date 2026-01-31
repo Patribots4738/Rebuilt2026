@@ -367,6 +367,14 @@ public class Swerve extends SubsystemBase {
         }
         return average / 4.0;
     }
+    
+    public double getDriveCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getDriveVoltage();
+        }
+        return totalVoltage / swerveModules.length;
+    }
 
     public double getTurnCharacterizationVelocity() {
         double average = 0.0;
@@ -374,6 +382,14 @@ public class Swerve extends SubsystemBase {
             average += module.getTurnCharacterizationVelocity();
         }
         return average / 4.0;
+    }
+    
+    public double getTurnCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getTurnVoltage();
+        }
+        return totalVoltage / swerveModules.length;
     }
 
     public void setSpeedsSlow() {

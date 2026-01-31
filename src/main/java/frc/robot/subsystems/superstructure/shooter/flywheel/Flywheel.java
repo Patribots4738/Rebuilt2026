@@ -93,6 +93,13 @@ public class Flywheel extends SubsystemBase {
         );
     }
 
+    public Command runCharacterization(double volts) {
+        return runOnce(() -> io.runCharacterization(volts));
+    }
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
+    
     public Command sysIdQuasistaticForward() {
         return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
     }
