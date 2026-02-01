@@ -1,5 +1,7 @@
 package frc.robot.subsystems.superstructure.spindexer;
 import org.littletonrobotics.junction.AutoLog;
+
+import frc.robot.util.custom.GainConstants;
 public interface SpindexerIO {
     
     @AutoLog
@@ -24,9 +26,17 @@ public interface SpindexerIO {
 
     public default void setBrakeMode(boolean brake) {}
 
+    public default void setPosition(double position) {}
+
+    public default void runCharacterization(double input) {}
+
+    public default void resetEncoders(double position) {}
+
     public default void setPercent(double percent) {}
 
     public default void setVoltage(double volts) {}
 
     public default void setCurrent(double amps) {}
+
+    public default void setGains(GainConstants constants) {}
 }
