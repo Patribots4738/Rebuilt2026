@@ -49,6 +49,13 @@ public class RobotContainer {
 
     private PowerDistribution pdh;
 
+    @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
+    private double totalCurrent;
+    @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
+    private double totalPower;
+    @AutoLogOutput (key = "PowerDistributionHub/Voltage")
+    private double voltage;
+
     private EventLoop testButtonBindingLoop = new EventLoop();
     
     @AutoLogOutput (key = "Draggables/Components3d")
@@ -106,6 +113,13 @@ public class RobotContainer {
 
         pdh = new PowerDistribution(30, ModuleType.kRev);
         pdh.setSwitchableChannel(false);
+
+        totalCurrent = pdh.getTotalCurrent();
+        SmartDashboard.putNumber("Total Current", totalCurrent);
+        totalPower = pdh.getTotalPower();
+        SmartDashboard.putNumber("Total Power", totalPower);
+        voltage = pdh.getVoltage();
+        SmartDashboard.putNumber("Voltage", voltage);
 
         swerve = new Swerve();
         climb = new Climb(new ClimbIOKraken());
