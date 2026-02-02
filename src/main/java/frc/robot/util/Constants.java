@@ -705,9 +705,8 @@ public final class Constants {
     }
 
     public static final class CANConstants {
-        public static final CANBus RIO_BUS = new CANBus("rio");
-        public static final CANBus DRIVEBASE_BUS =  new CANBus("drivebase");
-        public static final CANBus SUPERSTRUCTURE_BUS = new CANBus("superstructure");
+        public static final CANBus RIO_BUS = CANBus.roboRIO();
+        public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
     }
 
     public static final class CANCoderConstants {
