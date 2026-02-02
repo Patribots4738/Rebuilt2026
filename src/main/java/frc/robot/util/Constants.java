@@ -419,10 +419,10 @@ public final class Constants {
         public static final int TURN_MOTOR_TYPE = 44;
 
         // CANcoders CAN IDs
-        public static final int FRONT_LEFT_CANCODER_CAN_ID = 0;
-        public static final int REAR_LEFT_CANCODER_CAN_ID = 0;
-        public static final int FRONT_RIGHT_CANCODER_CAN_ID = 0;
-        public static final int REAR_RIGHT_CANCODER_CAN_ID = 0;
+        public static final int FRONT_LEFT_CANCODER_CAN_ID = 10;
+        public static final int REAR_LEFT_CANCODER_CAN_ID = 11;
+        public static final int FRONT_RIGHT_CANCODER_CAN_ID = 9;
+        public static final int REAR_RIGHT_CANCODER_CAN_ID = 12;
 
         private enum SwerveGearing {
 
@@ -760,7 +760,7 @@ public final class Constants {
         
         public static final boolean MOTOR_INVERTED = false;
         
-        public static final double GEAR_RATIO = 422.4;
+        public static final double GEAR_RATIO = 9.0;
         public static final double MAX_DISPLACEMENT_METERS = 0.58;
         public static final double STOW_POSITION_METERS = 0.0;
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -825,7 +825,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 50;
 
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
-        public static final double GEAR_RATIO = 1.0;
+        public static final double GEAR_RATIO = 9.0;
 
 
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
@@ -833,7 +833,7 @@ public final class Constants {
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // turret moves from 0 to 270 degrees
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
