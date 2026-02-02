@@ -26,8 +26,6 @@ public interface SpindexerIO {
 
     public default void setBrakeMode(boolean brake) {}
 
-    public default void setPosition(double position) {}
-
     public default void runCharacterization(double input) {}
 
     public default void resetEncoders(double position) {}
@@ -38,5 +36,4 @@ public interface SpindexerIO {
 
     public default void setCurrent(double amps) {}
 
-    public default void setGains(GainConstants constants) {}
 }

@@ -36,12 +36,6 @@ public class SpindexerIONeo implements SpindexerIO {
     }
 
     @Override
-    public void setPosition(double position) {
-        motor.setTargetPosition(position);
-
-    }
-
-    @Override
     public void runCharacterization(double input) {
         motor.setVoltage(input);
 
@@ -65,8 +59,12 @@ public class SpindexerIONeo implements SpindexerIO {
     }
 
     @Override
-    public void setGains(GainConstants constants) {
-        motor.setPID(constants);
+    public void setPercent(double percent){
+        motor.setTargetPercent(percent);
+    }
 
-    }    
+    @Override
+    public void setVoltage(double volts) {
+        motor.setVoltage(volts);
+    }
 }
