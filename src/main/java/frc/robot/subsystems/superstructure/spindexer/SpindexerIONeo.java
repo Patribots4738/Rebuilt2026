@@ -1,7 +1,7 @@
 package frc.robot.subsystems.superstructure.spindexer;
 
-import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.custom.GainConstants;
+
+import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.hardware.rev.Neo;
 
 public class SpindexerIONeo implements SpindexerIO {
@@ -10,29 +10,24 @@ public class SpindexerIONeo implements SpindexerIO {
 
 
     public SpindexerIONeo() {
-        motor = new Neo(IntakeConstants.MOTOR_CAN_ID, false);
+        motor = new Neo(SpindexerConstants.CAN_ID, false);
 
         configMotors();
     }
 
-    private void configMotor(Neo motor) {
-        motor.setPID(IntakeConstants.GAINS);
-        motor.setInverted(IntakeConstants.MOTOR_INVERTED);
-        motor.setPositionConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
-        motor.setVelocityConversionFactor(IntakeConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
-        motor.setSmartCurrentLimit((int) IntakeConstants.CURRENT_LIMIT);
-    }
-
     private void configMotors() {
         resetEncoders(0);
-        configMotor(motor);
-
-        setBrakeMode(IntakeConstants.BRAKE_MOTOR);
+        setBrakeMode(SpindexerConstants.BRAKE_MOTOR);
+        motor.setInverted(SpindexerConstants.MOTOR_INVERTED);
+        motor.setSmartCurrentLimit((int) SpindexerConstants.CURRENT_LIMIT);
     }
 
     @Override
     public void updateInputs(SpindexerIOInputs inputs) {
-
+        inputs.motorConnected = true;
+        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.torqueCurrentAmps = motor.getOutputCurrent();
+        inputs.temperatureCelsius = motor.getMotorTemperature();
     }
 
     @Override
