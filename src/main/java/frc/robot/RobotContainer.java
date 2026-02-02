@@ -255,6 +255,12 @@ public class RobotContainer {
                 .onTrue(HDCTuner.multiplyPIDCommand(.5));
     }
 
+    public void refreshPDHData() {
+        totalCurrent = pdh.getTotalCurrent();
+        totalPower = pdh.getTotalPower();
+        voltage = pdh.getVoltage();
+    }
+
     public void onDisabled() {
         swerve.stopDriving();
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
