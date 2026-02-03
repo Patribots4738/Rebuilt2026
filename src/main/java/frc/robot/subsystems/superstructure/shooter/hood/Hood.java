@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.calc.ShotCalculations;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
@@ -32,12 +34,15 @@ public class Hood extends SubsystemBase {
     private double yaw;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    @AutoLogOutput (key = "Subsystems/Shooter/Hood/TrackTarget")
+    private boolean trackTarget = false;
+    private Swerve swerveInstance;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
 
-    public Hood(HoodIO io) { // the yaw should be the same as the turret's yaw
+    public Hood(HoodIO io, Swerve swerve) { 
         this.io = io;
-        this.yaw = yaw;
+        swerveInstance = swerve;
     }
 
     @Override
@@ -47,6 +52,10 @@ public class Hood extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
+
+        if (trackTarget) {
+            setPosition(ShotCalculations.getParameters(swerveInstance).hoodAngle());
+        }
 
         if (shouldRunSetpoint) {
             setpoint = profile.calculate(0.02, setpoint, targetState);
@@ -98,6 +107,14 @@ public class Hood extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+
+    public Command setTrackTargetCommand(boolean track) {
+        return runOnce(() -> setTrackTarget(track));
+    }
+
+    public void setTrackTarget(boolean track) {
+        trackTarget = track;
+    } 
 
     public boolean atPosition(double position) {
         return MathUtil.isNear(position, inputs.internalPositionRads, HoodConstants.POSITION_DEADBAND_RADIANS);

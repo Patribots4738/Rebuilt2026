@@ -11,26 +11,37 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.FlywheelConstants;
+import frc.robot.util.calc.ShotCalculations;
 
 public class Flywheel extends SubsystemBase {
     
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+    private final Swerve swerveInstance;
+    private final int passIndex = 0;
 
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetVelocity")
     private double targetVelocity = 0.0;
+    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TrackTarget")
+    private boolean trackTarget = false;
 
-    public Flywheel(FlywheelIO io) {
+    public Flywheel(FlywheelIO io, Swerve swerve) {
         this.io = io;
+        swerveInstance = swerve;
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
+
+        if (trackTarget) {
+            setVelocity(ShotCalculations.getParameters(swerveInstance).flywheelSpeed());
+        }
 
         // Run setpoint on RIO to minimize CAN utilization
         if (shouldRunSetpoint) {
@@ -45,13 +56,21 @@ public class Flywheel extends SubsystemBase {
         shouldRunSetpoint = false;
     }
 
+    public Command setTrackTargetCommand(boolean track) {
+        return runOnce(() -> setTrackTarget(track));
+    }
+
+    public void setTrackTarget(boolean track) {
+        trackTarget = track;
+    } 
+
     /**
      * Sets the tangential velocity of the wheel
      * 
      * @param velocity tangential velocity
      */
     public void setVelocity(double velocity) {
-        velocity /= FlywheelConstants.CIRCUMFERENCE_METERS;
+        targetVelocity = velocity / FlywheelConstants.CIRCUMFERENCE_METERS;
         shouldRunSetpoint = true;
     }
 

@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
+import frc.robot.util.calc.ShotCalculations;
 
 public class Turret extends SubsystemBase {
     private final TurretIO io;
@@ -31,11 +33,15 @@ public class Turret extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    @AutoLogOutput (key = "Subsystems/Shooter/Turret/TrackTarget")
+    private boolean trackTarget = false;
+    private Swerve swerveInstance;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
-    public Turret(TurretIO io) {
+    public Turret(TurretIO io, Swerve swerve) {
         this.io = io;
+        swerveInstance = swerve;
     }
 
     @Override
@@ -45,6 +51,10 @@ public class Turret extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
+
+        if (trackTarget) {
+            setPosition(ShotCalculations.getParameters(swerveInstance).turretAngle().minus(swerveInstance.getPose().getRotation()).getRadians()); 
+        }
 
         if (shouldRunSetpoint) {
             setpoint = profile.calculate(0.02, setpoint, targetState);
@@ -61,8 +71,7 @@ public class Turret extends SubsystemBase {
     /**
      * Sets the desired rotation of the turret
      * 
-     * @param position 
-     * @param runFast
+     * @param position in radians
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
@@ -94,6 +103,14 @@ public class Turret extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+
+    public Command setTrackTargetCommand(boolean track) {
+        return runOnce(() -> setTrackTarget(track));
+    }
+
+    public void setTrackTarget(boolean track) {
+        trackTarget = track;
+    } 
 
     public boolean atPosition(double position) {
         return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);

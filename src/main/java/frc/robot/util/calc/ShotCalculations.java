@@ -38,6 +38,7 @@ public class ShotCalculations {
     private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
     public static Translation3d target = FieldConstants.GET_HUB();
+    private static int passIndex = 0;
 
     public static record ShootingParameters(
         boolean isValid,
@@ -85,8 +86,8 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public static ShootingParameters getParameters(Swerve swerve, int passIndex) {
-        target = setTarget(swerve, passIndex);
+    public static ShootingParameters getParameters(Swerve swerve) {
+        target = setTarget(swerve);
 
         // Calculate estimated pose while accounting for phase delay
         Pose2d estimatedPose = swerve.getPose();
@@ -165,7 +166,11 @@ public class ShotCalculations {
         latestParameters = null;
     }
 
-    public static Translation3d setTarget(Swerve swerve, int passIndex) {
+    public static void setPassIndex(int index) {
+        passIndex = index;
+    }
+
+    public static Translation3d setTarget(Swerve swerve) {
         Translation3d target = PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone 
                         ? FieldConstants.GET_HUB() 
                         : passIndex == 0 ? FieldConstants.GET_PASS_LEFT() 

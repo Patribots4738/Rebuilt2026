@@ -4,6 +4,8 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -273,5 +275,8 @@ public class RobotContainer {
         freshCode = false;
     }
 
-    private void prepareNamedCommands() {}
+    private void prepareNamedCommands() {
+        NamedCommands.registerCommand("Stow", superstructure.setSuperState(superstructure.IDLE, swerve));
+        NamedCommands.registerCommand("")
+    }
 }

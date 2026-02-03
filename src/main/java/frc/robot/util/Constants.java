@@ -706,6 +706,7 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = CANBus.roboRIO();
+         // TODO: must set the name of the CANivore to "Drivebase" and factory default the swerve modules since they were connected to the rio before
         public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
     }
 
@@ -878,6 +879,8 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double EJECT_VELOCITY = 10;
+
+        public static final double WAIT_TIME_SECONDS = 0.5;
 
         public static final double CIRCUMFERENCE_METERS = 0.0;
 

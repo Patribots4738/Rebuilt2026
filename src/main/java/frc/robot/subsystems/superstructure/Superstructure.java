@@ -52,6 +52,7 @@ public class Superstructure {
     public SuperState IDLE;
     public SuperState INTAKE;
     public SuperState INTAKE_WHILE_SHOOT;
+    public SuperState READY_SHOOTER;
     public SuperState SHOOT;
     public SuperState EJECT;
     public SuperState CLIMB_READY;
@@ -80,6 +81,7 @@ public class Superstructure {
 
         INTAKE = new SuperState("INTAKE", HopperState.OFF, ClimbState.STOW, IntakeState.INTAKE, ShooterState.STOW);
         INTAKE_WHILE_SHOOT = new SuperState("INTAKE_WHILE_SHOOT", HopperState.FORWARD, ClimbState.STOW, IntakeState.INTAKE, ShooterState.SHOOT);
+        READY_SHOOTER = new SuperState("SHOOT", HopperState.OFF, ClimbState.STOW, IntakeState.STOW, ShooterState.SHOOT);
         SHOOT = new SuperState("SHOOT", HopperState.FORWARD, ClimbState.STOW, IntakeState.STOW, ShooterState.SHOOT);
         EJECT = new SuperState("EJECT", HopperState.FORWARD, ClimbState.STOW, IntakeState.STOW, ShooterState.EJECT);
         CLIMB_READY = new SuperState("CLIMB_READY", HopperState.OFF, ClimbState.READY, IntakeState.STOW, ShooterState.STOW);
@@ -178,7 +180,8 @@ public class Superstructure {
             return flywheel.setVelocityCommand(FlywheelConstants.EJECT_VELOCITY);
         }
         else {
-            ShootingParameters shotParam = ShotCalculations.getParameters(swerve, passIndex);
+            ShootingParameters shotParam = ShotCalculations.getParameters(swerve);
+            
             return Commands.sequence(
                 flywheel.setVelocityCommand(shotParam.flywheelSpeed()),
                 Commands.waitSeconds(0.5),
@@ -187,12 +190,30 @@ public class Superstructure {
         }
     }
 
-    public Command ejectCommand() {
-        return Commands.parallel();
+    public Command aimShooter(boolean aim) {
+        return Commands.sequence(
+            flywheel.setTrackTargetCommand(aim),
+            Commands.waitSeconds(FlywheelConstants.WAIT_TIME_SECONDS),
+            turret.setTrackTargetCommand(aim),
+            hood.setTrackTargetCommand(aim)
+        );
+    }
+
+    /**
+     * Returns true if the shooter is at the right speed and angle
+     * @return whether the shooter is at the right state
+     */
+    public boolean shooterReady() {
+        if () {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public void updatePassIndex(int index) {
-        this.passIndex = index;
+        ShotCalculations.setPassIndex(index);
     }
 
     public Command updatePassIndexCommand(int index) {
