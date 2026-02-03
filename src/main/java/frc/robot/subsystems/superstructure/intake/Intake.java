@@ -136,37 +136,4 @@ public class Intake extends SubsystemBase {
     public double getVoltage() {
         return inputs.motorAppliedOutputVolts;
     }
-    
-    public SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(
-            new SysIdRoutine.Config(
-                // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                Volts.of(0.5).per(Second),
-                null, 
-                Seconds.of(2),
-                (state) -> Logger.recordOutput("IntakeSysIdState", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.runCharacterization(voltage.in(Volts)), 
-                null, 
-                this
-            )
-        );
-    }
-
-    public Command sysIdQuasistaticForward() {
-        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
-    }
-
-    public Command sysIdQuasistaticReverse() {
-        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse);
-    }
-
-    public Command sysIdDynamicForward() {
-        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward);
-    }
-
-    public Command sysIdDynamicReverse() {
-        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse);
-    }
 }
