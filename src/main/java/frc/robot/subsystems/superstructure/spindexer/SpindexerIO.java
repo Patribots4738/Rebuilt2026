@@ -1,23 +1,17 @@
 package frc.robot.subsystems.superstructure.spindexer;
 import org.littletonrobotics.junction.AutoLog;
-
-import frc.robot.util.custom.GainConstants;
 public interface SpindexerIO {
     
     @AutoLog
     class SpindexerIOInputs {
-        //It looks like none of the variables need to actually be initialized, so
-        //maybe consider removing the definitions?
         public boolean motorConnected = false;
-        public double internalPositionRads = 0.0;
         public double internalVelocityRadsPerSec = 0.0;
-        public double targetPositionRads = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
         public double percentOutput = 0.0;
         public double targetPercentOutput = 0.0;
-        public double velocityRotationsPerSec;
+        public double velocityRotationsPerSec = 0.0;
     }
 
     public default void updateInputs(SpindexerIOInputs inputs) {}

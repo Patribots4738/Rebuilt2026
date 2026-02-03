@@ -12,22 +12,27 @@ public class SpindexerIONeo implements SpindexerIO {
     public SpindexerIONeo() {
         motor = new Neo(SpindexerConstants.CAN_ID, false);
 
-        configMotors();
+        configMotor();
     }
 
-    private void configMotors() {
+    private void configMotor() {
         resetEncoders(0);
         setBrakeMode(SpindexerConstants.BRAKE_MOTOR);
         motor.setInverted(SpindexerConstants.MOTOR_INVERTED);
         motor.setSmartCurrentLimit((int) SpindexerConstants.CURRENT_LIMIT);
+        motor.setVelocityConversionFactor(SpindexerConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
     }
 
     @Override
     public void updateInputs(SpindexerIOInputs inputs) {
         inputs.motorConnected = true;
+        inputs.internalVelocityRadsPerSec = motor.getVelocityRadsPerSec();
         inputs.appliedOutputVolts = motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
+        inputs.percentOutput = motor.getAppliedOutput();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.velocityRotationsPerSec = motor.getVelocity();
     }
 
     @Override

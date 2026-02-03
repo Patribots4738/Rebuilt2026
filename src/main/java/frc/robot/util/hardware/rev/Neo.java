@@ -266,6 +266,14 @@ public class Neo extends SafeSpark {
 
         return pos;
     }
+    
+    /**
+     * Gets the position of the Neo in radians.
+     * @return The position of the Neo in rotations relative to the last 0 position.
+     */
+    public double getPositionRads() {
+        return getPosition() * getPositionConversionFactor();
+    }
 
     /**
      * Gets the velocity of the Neo in rotations per minute.
@@ -273,6 +281,10 @@ public class Neo extends SafeSpark {
      */
     public double getVelocity() {
         return super.getVelocity(); 
+    }
+
+    public double getVelocityRadsPerSec() {
+        return super.getVelocity() * getVelocityConversionFactor();
     }
 
     /**
@@ -297,6 +309,14 @@ public class Neo extends SafeSpark {
      */
     public double getTargetPosition() {
         return targetPosition;
+    }
+
+    /**
+     * Gets the target position of the Neo in radians.
+     * @return The target position of the Neo in radians.
+     */
+    public double getTargetPositionRads() {
+        return targetPosition * getPositionConversionFactor();
     }
 
     /**
