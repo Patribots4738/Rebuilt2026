@@ -1033,8 +1033,9 @@ public final class Constants {
         public static final int CAN_ID = 11;
 
         public static final boolean BRAKE_MOTOR = true;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 45.0;
+        public static final double CURRENT_LIMIT = 15.0;
 
         public static final boolean MOTOR_INVERTED = false;
         public static final int MOTOR_TYPE = 44;
