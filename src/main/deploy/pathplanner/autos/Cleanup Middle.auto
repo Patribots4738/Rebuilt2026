@@ -31,7 +31,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot-ClimbPrepMiddle"
+            "pathName": "Depot-ClimbPrepLeft"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbPrepMiddle-ClimbMiddle"
+            "pathName": "ClimbPrepLeft-ClimbLeft"
           }
         }
       ]

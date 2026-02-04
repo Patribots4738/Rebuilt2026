@@ -9,19 +9,19 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.933533434320533,
-        "y": 0.7874559644058203
+        "y": 0.7874559644058206
       },
       "isLocked": false,
       "linkedName": "5CLR"
     },
     {
       "anchor": {
-        "x": 1.8,
-        "y": 3.0558522727272726
+        "x": 1.4731484997480384,
+        "y": 2.860506861347286
       },
       "prevControl": {
-        "x": 2.723128351589884,
-        "y": 1.650566694878501
+        "x": 2.3962768513379222,
+        "y": 1.4552212834985143
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Starting Line",

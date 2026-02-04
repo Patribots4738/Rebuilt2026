@@ -149,6 +149,8 @@ public final class Constants {
         public static final double ROBOT_LENGTH_METERS = Units.inchesToMeters(28.5);
         public static final double BUMPER_LENGTH_METERS = Units.inchesToMeters(2.75);
 
+        public static final double FULL_ROBOT_LENGTH_METERS = ROBOT_LENGTH_METERS + (2*BUMPER_LENGTH_METERS);
+
         // Front positive, left positive
         public static final Translation2d FRONT_LEFT_WHEEL_POSITION = new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2);
         public static final Translation2d FRONT_RIGHT_WHEEL_POSITION = new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2);
@@ -285,6 +287,24 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {};
 
+        public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
+        public static final Rotation2d rotation135 = new Rotation2d().fromDegrees(135);
+        public static final Rotation2d rotation225 = new Rotation2d().fromDegrees(225);
+        public static final Rotation2d rotation315 = new Rotation2d().fromDegrees(315);
+
+        public static final List<Rotation2d> BUMP_ROTATIONS = new ArrayList<Rotation2d>() {{
+            Rotation2d rotation1 = rotation45;
+            add(rotation1);
+            Rotation2d rotation2 = rotation135;
+            add(rotation2);
+            Rotation2d rotation3 = rotation225;
+            add(rotation3);
+            Rotation2d rotation4 = rotation315;
+            add(rotation4);
+        }};
+
+        public static final double TOWER_ALIGNMENT_OFFSET = 1;
+        public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
     }
 
     public static final class MAXSwerveModuleConstants {
@@ -1013,8 +1033,9 @@ public final class Constants {
         public static final int CAN_ID = 11;
 
         public static final boolean BRAKE_MOTOR = true;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 45.0;
+        public static final double CURRENT_LIMIT = 15.0;
 
         public static final boolean MOTOR_INVERTED = false;
         public static final int MOTOR_TYPE = 44;
@@ -1095,6 +1116,7 @@ public final class Constants {
         public static final List<Pose2d> TOWERS = new ArrayList<Pose2d>() {{
             //RED Tower
             Pose2d TowerRed = TOWER_CENTER_RED;
+            add(TowerRed);
             //Posts
             add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
             add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
@@ -1103,6 +1125,7 @@ public final class Constants {
             add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
             //BLUE Tower
             Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
+            add(TowerBlue);
             //Posts
             add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
             add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
@@ -1111,14 +1134,19 @@ public final class Constants {
             add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
         }};
 
+        public static final Pose2d GET_TOWER_CENTER() {
+            int index = Robot.isRedAlliance()? 0 : 5;
+            return TOWERS.get(index);
+        }
+
         public static final List<Pose2d> GET_TOWER_POSTS() {
-            int startindex = Robot.isRedAlliance()? 0 : 4;
-            return TOWERS.subList(startindex, startindex + 2);
+            int startindex = Robot.isRedAlliance()? 1 : 6;
+            return TOWERS.subList(startindex, startindex + 1);
         }
 
         public static final List<Pose2d> GET_TOWER_SIDES() {
-            int startindex = Robot.isRedAlliance()? 2 : 6;
-            return TOWERS.subList(startindex, startindex + 2);
+            int startindex = Robot.isRedAlliance()? 3 : 8;
+            return TOWERS.subList(startindex, startindex + 1);
         }
 
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
