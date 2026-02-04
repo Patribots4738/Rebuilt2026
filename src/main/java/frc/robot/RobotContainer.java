@@ -125,9 +125,9 @@ public class RobotContainer {
 
         swerve = new Swerve();
         climb = new Climb(new ClimbIOKraken());
-        flywheel = new Flywheel(new FlywheelIOKraken());
-        turret = new Turret(new TurretIOKraken());
-        hood = new Hood(new HoodIOKraken());
+        flywheel = new Flywheel(new FlywheelIOKraken(), swerve);
+        turret = new Turret(new TurretIOKraken(), swerve);
+        hood = new Hood(new HoodIOKraken(), swerve);
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -275,8 +275,5 @@ public class RobotContainer {
         freshCode = false;
     }
 
-    private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Stow", superstructure.setSuperState(superstructure.IDLE, swerve));
-        NamedCommands.registerCommand("")
-    }
+    private void prepareNamedCommands() {}
 }

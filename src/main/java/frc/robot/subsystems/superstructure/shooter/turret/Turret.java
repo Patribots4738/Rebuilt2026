@@ -120,6 +120,10 @@ public class Turret extends SubsystemBase {
         return atPosition(targetState.position);
     }
 
+    public boolean isTracking() {
+        return trackTarget;
+    }
+
     public double getPosition() {
         return inputs.internalPositionRads;
     }

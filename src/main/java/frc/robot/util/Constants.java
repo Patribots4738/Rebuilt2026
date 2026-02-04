@@ -877,12 +877,14 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 50;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
 
         public static final double EJECT_VELOCITY = 10;
 
-        public static final double WAIT_TIME_SECONDS = 0.5;
+        public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
+        public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
 
-        public static final double CIRCUMFERENCE_METERS = 0.0;
+        public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;

@@ -80,7 +80,7 @@ public class Extender extends SubsystemBase {
         RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(LoggingConstants.EXTENDER_OFFSET,  new Rotation3d(0, -inputs.positionRads, 0) );
     }
 
-    public void setPosition(double position, boolean runFast) {
+    public void setPosition(double position) {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         if (position != targetState.position) {
             setpoint.position = inputs.motorPositionMeters;
@@ -95,12 +95,12 @@ public class Extender extends SubsystemBase {
         shouldRunSetpoint = false;
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFastSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(DoubleSupplier positionSupplier) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
     }
 
-    public Command setPositionCommand(double position, BooleanSupplier runFastSupplier) {
-        return setPositionCommand(() -> position, runFastSupplier);
+    public Command setPositionCommand(double position) {
+        return setPositionCommand(() -> position);
     }
 
     public Command setNeutralCommand() {
@@ -111,12 +111,12 @@ public class Extender extends SubsystemBase {
         return runOnce(() -> io.resetEncoders(0));
     }
 
-    public Command retractExtender(){
-        return setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS, () -> true).andThen(() -> setNeutral());
+    public Command retractExtender() {
+        return setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS);
     }
 
-    public Command extendExtender(){
-        return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, () -> true).andThen(() -> setNeutral());
+    public Command extendExtender() {
+        return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS);
     }
 
     public boolean atPosition(double position) {

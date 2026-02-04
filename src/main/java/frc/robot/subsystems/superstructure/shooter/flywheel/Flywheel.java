@@ -8,6 +8,8 @@ import org.littletonrobotics.junction.Logger;
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -65,7 +67,7 @@ public class Flywheel extends SubsystemBase {
     } 
 
     /**
-     * Sets the tangential velocity of the wheel
+     * Sets the velocity of the wheel using the desired tangential velocity
      * 
      * @param velocity tangential velocity
      */
@@ -74,13 +76,25 @@ public class Flywheel extends SubsystemBase {
         shouldRunSetpoint = true;
     }
 
+    public boolean atTargetVelocity() {
+        return atVelocity(targetVelocity);
+    }
+
+    public boolean atVelocity(double velocity) {
+        return MathUtil.isNear(getVelocity(), velocity, FlywheelConstants.VELOCITY_DEADBAND_METERS_PER_SEC);
+    }
+
     /**
-     * Returns the linear velocity of the flywheel
+     * Returns the tangential velocity of the flywheel
      * 
-     * @return the linear velocity of the flywheel
+     * @return the tangential velocity of the flywheel
      */
     public double getVelocity() {
         return inputs.velocityRadsPerSec * FlywheelConstants.CIRCUMFERENCE_METERS;
+    }
+
+    public double getTargetVelocity() {
+        return targetVelocity * FlywheelConstants.CIRCUMFERENCE_METERS;
     }
 
     public Command setVelocityCommand(DoubleSupplier velocitySupplier) {
@@ -93,6 +107,10 @@ public class Flywheel extends SubsystemBase {
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
+    }
+
+    public boolean isTracking() {
+        return trackTarget;
     }
 
     public SysIdRoutine getSysIdRoutine() {

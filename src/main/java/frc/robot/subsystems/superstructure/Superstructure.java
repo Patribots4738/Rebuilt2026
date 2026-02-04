@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
@@ -28,7 +29,8 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Superstructure {
 
-    private int passIndex = 1;
+    private int passIndex = 0;
+    private boolean shooterIsTracking = true;
 
     public Extender extender;
     public Intake intake;
@@ -45,20 +47,8 @@ public class Superstructure {
 
     public ClimbState targetClimbState;
     public IntakeState targetIntakeState;
-
-    public SuperState currentState;
-    public SuperState targetState;
-
-    public SuperState IDLE;
-    public SuperState INTAKE;
-    public SuperState INTAKE_WHILE_SHOOT;
-    public SuperState READY_SHOOTER;
-    public SuperState SHOOT;
-    public SuperState EJECT;
-    public SuperState CLIMB_READY;
-    public SuperState CLIMB_READY_WHILE_SHOOT;
-    public SuperState CLIMB_UP;
-    public SuperState CLIMB_UP_WHILE_SHOOT;
+    public HopperState targetHopperState;
+    public ShooterState targetShooterState;
 
 
     public Superstructure(Extender extender, Intake intake, Climb climb, Turret turret, Hood hood, Flywheel flywheel, Spindexer spindexer, Kicker kicker, Supplier<Pose2d> robotPoseSupplier) {
@@ -75,19 +65,11 @@ public class Superstructure {
 
         this.robotPoseSupplier = robotPoseSupplier;
 
-        IDLE = new SuperState("IDLE", HopperState.OFF, ClimbState.STOW, IntakeState.STOW, ShooterState.STOW);
+        targetClimbState = ClimbState.STOW;
+        targetIntakeState = IntakeState.STOW;
+        targetHopperState = HopperState.OFF;
+        targetShooterState = ShooterState.STOW;
 
-        targetState = IDLE;
-
-        INTAKE = new SuperState("INTAKE", HopperState.OFF, ClimbState.STOW, IntakeState.INTAKE, ShooterState.STOW);
-        INTAKE_WHILE_SHOOT = new SuperState("INTAKE_WHILE_SHOOT", HopperState.FORWARD, ClimbState.STOW, IntakeState.INTAKE, ShooterState.SHOOT);
-        READY_SHOOTER = new SuperState("SHOOT", HopperState.OFF, ClimbState.STOW, IntakeState.STOW, ShooterState.SHOOT);
-        SHOOT = new SuperState("SHOOT", HopperState.FORWARD, ClimbState.STOW, IntakeState.STOW, ShooterState.SHOOT);
-        EJECT = new SuperState("EJECT", HopperState.FORWARD, ClimbState.STOW, IntakeState.STOW, ShooterState.EJECT);
-        CLIMB_READY = new SuperState("CLIMB_READY", HopperState.OFF, ClimbState.READY, IntakeState.STOW, ShooterState.STOW);
-        CLIMB_READY_WHILE_SHOOT = new SuperState("CLIMB_READY_WHILE_SHOOT", HopperState.OFF, ClimbState.READY, IntakeState.STOW, ShooterState.STOW);
-        CLIMB_UP = new SuperState("CLIMB_UP", HopperState.OFF, ClimbState.UP, IntakeState.STOW, ShooterState.STOW);
-        CLIMB_UP_WHILE_SHOOT = new SuperState("CLIMB_UP_WHILE_SHOOT", HopperState.OFF, ClimbState.UP, IntakeState.STOW, ShooterState.STOW);
     }
 
     public enum ClimbState {
@@ -119,9 +101,14 @@ public class Superstructure {
     }
 
     public enum ShooterState {
-        STOW,
-        EJECT,
-        SHOOT;
+        STOW(false),
+        SHOOT(true);
+
+        public boolean track;
+
+        ShooterState(boolean track) {
+            this.track = track;
+        }
     }
 
     public enum IntakeState {
@@ -137,18 +124,10 @@ public class Superstructure {
         }
     }
 
-    public Command setSuperState(SuperState targetState, Swerve swerve) {
-        return Commands.runOnce(() -> this.targetState = targetState).alongWith(
-            Commands.parallel(
-                fixIntakeAndClimb(targetState.intakeState, targetState.climbState),
-                setHopperState(targetState.hopperState),
-                setShooterState(targetState.shooterState, swerve)
-            ));
-    }
-
     // none of our superstates have both of these subsystems active at the same time 
     // because that would create illegal extension over the frame perimeter in multiple directions
     // so whichever one wants to stow, we stow that first
+    // we will use this if we have an l3
     public Command fixIntakeAndClimb(IntakeState intakeState, ClimbState climbState) {
         return Commands.either(
             Commands.sequence(setIntakeState(intakeState), setClimbState(climbState)),
@@ -159,7 +138,8 @@ public class Superstructure {
 
     public Command setIntakeState(IntakeState state) {
         return Commands.runOnce(() -> targetIntakeState = state)
-                .alongWith(intake.setPercentCommand(() -> state.intakePercent));
+                .alongWith(Commands.sequence(extender.setPositionCommand(state.extenderPosition), 
+                intake.setPercentCommand(() -> state.intakePercent)));
     }
 
     public Command setClimbState(ClimbState state) {
@@ -172,44 +152,50 @@ public class Superstructure {
                                     spindexer.setPercentCommand(() -> state.spindexerPercent));
     }
 
-    public Command setShooterState(ShooterState state, Swerve swerve) {
-        if (state == ShooterState.STOW) {
-            return stowShooter();
+    public Command setShooterState(ShooterState state) {
+        return state == ShooterState.SHOOT ? aimShooterCommand() : stowShooterCommand();
+    }
+
+    // if we are tracking a target and our shooter is ready, we will accept the request to outtake
+    // if we are not tracking a target, we will assume we are trying to eject
+    // if we are tracking and our shooter is not ready, then we will do nothing
+    public Command outtakeCommand() {
+        if (shooterIsTracking && shooterReady()) {
+            return Commands.parallel(
+                spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
+            );
         }
-        else if (state == ShooterState.EJECT) {
-            return flywheel.setVelocityCommand(FlywheelConstants.EJECT_VELOCITY);
+        else if (!shooterIsTracking) {
+            return Commands.sequence(
+                flywheel.setVelocityCommand(FlywheelConstants.EJECT_VELOCITY),
+                Commands.waitSeconds(FlywheelConstants.EJECT_WAIT_TIME_SECONDS),
+                spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
+            );
         }
         else {
-            ShootingParameters shotParam = ShotCalculations.getParameters(swerve);
-            
-            return Commands.sequence(
-                flywheel.setVelocityCommand(shotParam.flywheelSpeed()),
-                Commands.waitSeconds(0.5),
-                hood.setPositionCommand(shotParam.hoodAngle()),
-                turret.setPositionCommand(shotParam.turretAngle().getRadians()));
+            return Commands.none();
         }
     }
 
-    public Command aimShooter(boolean aim) {
-        return Commands.sequence(
-            flywheel.setTrackTargetCommand(aim),
-            Commands.waitSeconds(FlywheelConstants.WAIT_TIME_SECONDS),
-            turret.setTrackTargetCommand(aim),
-            hood.setTrackTargetCommand(aim)
-        );
+    public Command aimShooterCommand() {
+        return Commands.runOnce(() -> shooterIsTracking = true).alongWith(
+            Commands.sequence(
+            flywheel.setTrackTargetCommand(true),
+            Commands.waitSeconds(FlywheelConstants.SHOOT_WAIT_TIME_SECONDS),
+            turret.setTrackTargetCommand(true),
+            hood.setTrackTargetCommand(true)
+            ));
     }
 
     /**
      * Returns true if the shooter is at the right speed and angle
+     * 
      * @return whether the shooter is at the right state
      */
     public boolean shooterReady() {
-        if () {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
     }
 
     public void updatePassIndex(int index) {
@@ -220,8 +206,11 @@ public class Superstructure {
         return Commands.runOnce(() -> updatePassIndex(index));
     }
 
-    public Command stowShooter() {
+    public Command stowShooterCommand() {
         return Commands.parallel(
+            flywheel.setTrackTargetCommand(false),
+            hood.setTrackTargetCommand(false),
+            turret.setTrackTargetCommand(false),
             flywheel.setNeutralCommand(),
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
     }
