@@ -168,9 +168,6 @@ public class ShotCalculations {
         latestParameters = null;
     }
 
-    public static void setPassIndex(int index) {
-        passIndex = index;
-    }
 
     public static Translation3d updateTarget(Pose2d robotPose) {
         Translation3d target = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 

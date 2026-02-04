@@ -1,27 +1,44 @@
 package frc.robot.subsystems.superstructure;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
+import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
+import frc.robot.util.Constants;
+import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.calc.PoseCalculations;
+import frc.robot.util.calc.ShotCalculations;
 
 public class Shooter extends SubsystemBase {
 
     private boolean trackTarget = true;
+    private int passIndex = 0;
 
-    Turret turret;
-    Hood hood;
-    Flywheel flywheel;
+    private Turret turret;
+    private Hood hood;
+    private Flywheel flywheel;
 
-    @AutoLogOutput(key = "")
-    private Target target;
+    private Translation3d targetLocation;
+    @AutoLogOutput(key = "Subsystems/Shooter/Target")
+    private String targetName = "None";
 
-    Supplier<Pose2d> robotRelativePose;
-    Supplier<ChassisSpeeds> robotRelativeVelocity;
+    private Supplier<Pose2d> robotRelativePose;
+    private Supplier<ChassisSpeeds> robotRelativeVelocity;
+
+    
 
     private enum Target {
         
@@ -31,6 +48,8 @@ public class Shooter extends SubsystemBase {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
 
+        targetLocation = FieldConstants.SHOT_TARGETS.get("Hub");
+
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
         flywheel = new Flywheel(new FlywheelIOKraken());
@@ -38,6 +57,54 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (trackTarget) {
+            updateTarget(robotRelativePose.get());
+            
+        }
+    }
 
+    public boolean isTrackingTarget() {
+        return trackTarget;
+    }
+
+    public void setTrackTarget(boolean trackTarget) {
+        if (!trackTarget) {
+            targetName = "None";
+        }
+        this.trackTarget = trackTarget;
+    }
+
+    /**
+     * Returns true if the shooter is at the right speed and angle
+     * 
+     * @return whether the shooter is at the right state
+     */
+    public boolean shooterReady() {
+        return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
+    }
+
+    public void setPassIndex(int index) {
+        passIndex = index;
+    }
+
+    public Command setPassIndexCommand(int index) {
+        return Commands.runOnce(() -> setPassIndex(index));
+    }
+
+    public Command stowShooterCommand() {
+        return Commands.parallel(
+            flywheel.setTrackTargetCommand(false),
+            hood.setTrackTargetCommand(false),
+            turret.setTrackTargetCommand(false),
+            flywheel.setNeutralCommand(),
+            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+    }
+
+    public void updateTarget(Pose2d robotPose) {
+        targetName = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
+                        ? "Hub" 
+                        : passIndex == 0 ? "Pass Left" 
+                        : "Pass Right";
+        targetLocation = FieldConstants.SHOT_TARGETS.get(targetName);
     }
 }
