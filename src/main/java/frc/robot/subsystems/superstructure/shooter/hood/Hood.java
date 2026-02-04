@@ -40,7 +40,7 @@ public class Hood extends SubsystemBase {
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
 
-    public Hood(HoodIO io, Swerve swerve) { 
+    public Hood(HoodIO io, ChassisSpeeds robotRelativeVelocity) { 
         this.io = io;
         swerveInstance = swerve;
     }

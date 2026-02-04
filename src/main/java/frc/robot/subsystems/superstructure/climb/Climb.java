@@ -34,7 +34,7 @@ public class Climb extends SubsystemBase {
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
     private boolean slam = false;
-    @AutoLogOutput (key = "Subsystems/Elevator/ShouldRunSetpoint")
+    @AutoLogOutput (key = "Subsystems/Climb/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
     public Climb(ClimbIO io) {
@@ -47,7 +47,7 @@ public class Climb extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Climb", inputs);
 
         Logger.recordOutput("Subsystems/Climb/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Elevator/TargetPosition", targetState.position);
+        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
             io.setPosition(setpoint.position, slam ? 1 : 0);

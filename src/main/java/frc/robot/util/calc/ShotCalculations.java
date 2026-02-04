@@ -1,5 +1,7 @@
 package frc.robot.util.calc;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.filter.LinearFilter;
@@ -86,12 +88,12 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public static ShootingParameters getParameters(Swerve swerve) {
-        target = setTarget(swerve);
+    public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier) {
+        target = updateTarget(robotPoseSupplier.get());
 
         // Calculate estimated pose while accounting for phase delay
-        Pose2d estimatedPose = swerve.getPose();
-        ChassisSpeeds robotRelativeVelocity = swerve.getRobotRelativeVelocity();
+        Pose2d estimatedPose = robotPoseSupplier.get();
+        ChassisSpeeds robotRelativeVelocity = robotRelativeVelocitySupplier.get();
         estimatedPose =
             estimatedPose.exp(
                 new Twist2d(
@@ -104,7 +106,7 @@ public class ShotCalculations {
         double turretToTargetDistance = target.toTranslation2d().getDistance(turretPosition.getTranslation());
 
         // Calculate field relative turret velocity
-        ChassisSpeeds robotVelocity = swerve.getRobotRelativeVelocity();
+        ChassisSpeeds robotVelocity = robotRelativeVelocitySupplier.get();
         double robotAngle = estimatedPose.getRotation().getRadians();
         double turretVelocityX =
             robotVelocity.vxMetersPerSecond
@@ -170,8 +172,8 @@ public class ShotCalculations {
         passIndex = index;
     }
 
-    public static Translation3d setTarget(Swerve swerve) {
-        Translation3d target = PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone 
+    public static Translation3d updateTarget(Pose2d robotPose) {
+        Translation3d target = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
                         ? FieldConstants.GET_HUB() 
                         : passIndex == 0 ? FieldConstants.GET_PASS_LEFT() 
                         : FieldConstants.GET_PASS_RIGHT();

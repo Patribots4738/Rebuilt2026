@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -29,7 +30,6 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Superstructure {
 
-    private int passIndex = 0;
     private boolean shooterIsTracking = true;
 
     public Extender extender;
@@ -42,8 +42,6 @@ public class Superstructure {
     public Kicker kicker;
 
     private final Set<Subsystem> requirements;
-    
-    private final Supplier<Pose2d> robotPoseSupplier;
 
     public ClimbState targetClimbState;
     public IntakeState targetIntakeState;
@@ -51,19 +49,15 @@ public class Superstructure {
     public ShooterState targetShooterState;
 
 
-    public Superstructure(Extender extender, Intake intake, Climb climb, Turret turret, Hood hood, Flywheel flywheel, Spindexer spindexer, Kicker kicker, Supplier<Pose2d> robotPoseSupplier) {
+    public Superstructure(Extender extender, Intake intake, Climb climb, Shooter shooter, Spindexer spindexer, Kicker kicker) {
         this.extender = extender;
         this.intake = intake;
         this.climb = climb;
-        this.turret = turret;
-        this.hood = hood;
-        this.flywheel = flywheel;
-        this.spindexer = spindexer;
+        this.shooter = shooter;
         this.kicker = kicker;
 
-        this.requirements = Set.of(extender, intake, climb, turret, hood, flywheel, spindexer, kicker);
+        this.requirements = Set.of(extender, intake, climb, shooter, spindexer, kicker);
 
-        this.robotPoseSupplier = robotPoseSupplier;
 
         targetClimbState = ClimbState.STOW;
         targetIntakeState = IntakeState.STOW;

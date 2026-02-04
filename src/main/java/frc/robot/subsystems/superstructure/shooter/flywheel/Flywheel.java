@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -21,8 +22,8 @@ public class Flywheel extends SubsystemBase {
     
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
-    private final Swerve swerveInstance;
-    private final int passIndex = 0;
+    Supplier<Pose2d> robotPoseSupplier;
+    Supplier<ChassisSpeeds> robotRelativeVelocitySupplier;
 
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
@@ -31,9 +32,10 @@ public class Flywheel extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TrackTarget")
     private boolean trackTarget = false;
 
-    public Flywheel(FlywheelIO io, Swerve swerve) {
+    public Flywheel(FlywheelIO io, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier) {
         this.io = io;
-        swerveInstance = swerve;
+        this.robotPoseSupplier = robotPoseSupplier;
+        this.robotRelativeVelocitySupplier = robotRelativeVelocitySupplier;
     }
 
     @Override

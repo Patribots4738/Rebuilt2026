@@ -125,14 +125,12 @@ public class RobotContainer {
 
         swerve = new Swerve();
         climb = new Climb(new ClimbIOKraken());
-        flywheel = new Flywheel(new FlywheelIOKraken(), swerve);
-        turret = new Turret(new TurretIOKraken(), swerve);
-        hood = new Hood(new HoodIOKraken(), swerve);
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
         kicker = new Kicker(new KickerIOKraken());
-        superstructure = new Superstructure(extender, intake, climb, turret, hood, flywheel, spindexer, kicker, swerve::getPose);
+        shooter = new Shooter();
+        superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
 
