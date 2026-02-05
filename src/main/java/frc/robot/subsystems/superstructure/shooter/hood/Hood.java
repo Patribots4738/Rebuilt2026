@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure.shooter.hood;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,9 +13,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+
+import static edu.wpi.first.units.Units.*;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
@@ -34,6 +34,8 @@ public class Hood extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunFastProfile")
     private boolean shouldRunFast = true;
+    
+    private final SysIdRoutine hoodRoutine;
 
     private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(HoodConstants.FAST_VELOCITY, HoodConstants.FAST_ACCELERATION)); // use for tracking
     private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(HoodConstants.SLOW_VELOCITY, HoodConstants.SLOW_ACCELERATION)); // use to snap to the target
@@ -41,6 +43,20 @@ public class Hood extends SubsystemBase {
     public Hood(HoodIO io) { // the yaw should be the same as the turret's yaw
         this.io = io;
         this.yaw = yaw;
+        this.hoodRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        log -> log.motor("hood")
+                                .voltage(Volts.of(inputs.appliedOutputVolts))
+                                .linearVelocity(MetersPerSecond.of(inputs.internalVelocityRadsPerSec)),
+                        this
+                )
+        );
     }
 
     @Override
@@ -135,5 +151,13 @@ public class Hood extends SubsystemBase {
 
     public void runCharacterization(double input) {
         io.runCharacterization(input);
+    }
+    
+    public Command quasistatic(SysIdRoutine.Direction direction) {
+        return hoodRoutine.quasistatic(direction);
+    }
+    
+    public Command dynamic(SysIdRoutine.Direction direction) {
+        return hoodRoutine.dynamic(direction);
     }
 }

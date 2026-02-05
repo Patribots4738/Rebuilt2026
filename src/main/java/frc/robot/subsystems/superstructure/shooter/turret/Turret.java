@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure.shooter.turret;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,9 +13,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
+
+import static edu.wpi.first.units.Units.*;
 
 public class Turret extends SubsystemBase {
     private final TurretIO io;
@@ -33,6 +33,8 @@ public class Turret extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunFastProfile")
     private boolean shouldRunFast = true;
+    
+    private final SysIdRoutine turretRoutine;
 
     private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(TurretConstants.FAST_VELOCITY, TurretConstants.FAST_ACCELERATION)); // use for tracking
     private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(TurretConstants.SLOW_VELOCITY, TurretConstants.SLOW_ACCELERATION)); // use to snap to the target
@@ -40,6 +42,20 @@ public class Turret extends SubsystemBase {
 
     public Turret(TurretIO io) {
         this.io = io;
+        this.turretRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        log -> log.motor("turret")
+                                .voltage(Volts.of(inputs.appliedOutputVolts))
+                                .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
+                        this
+                )
+        );
     }
 
     @Override
@@ -119,5 +135,13 @@ public class Turret extends SubsystemBase {
 
     public void runCharacterization(double input) {
         io.runCharacterization(input);
+    }
+    
+    public Command quasistatic(SysIdRoutine.Direction direction) {
+        return turretRoutine.quasistatic(direction);
+    }
+    
+    public Command dynamic(SysIdRoutine.Direction direction) {
+        return turretRoutine.dynamic(direction);
     }
 }

@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems.superstructure.kicker;
 
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.IntakeConstants;
-
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -24,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+import static edu.wpi.first.units.Units.*;
+
 public class Kicker extends SubsystemBase {
 	
 	private final KickerIO io;
@@ -35,8 +34,25 @@ public class Kicker extends SubsystemBase {
 	private boolean shouldRunSetpoint = false;
 	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunFastProfile")
 	private boolean shouldRunFast = true;
+    
+    private final SysIdRoutine kickerRoutine;
+    
 	public Kicker(KickerIO io) {
 		this.io = io;
+        this.kickerRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        log -> log.motor("kicker")
+                                .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+                                .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
+                        this
+                )
+        );
 	}
 	
 	@Override
@@ -114,4 +130,12 @@ public class Kicker extends SubsystemBase {
 	public double getVoltage() {
 		return inputs.motorAppliedOutputVolts;
 	}
+    
+    public Command quasistatic(SysIdRoutine.Direction direction) {
+        return kickerRoutine.quasistatic(direction);
+    }
+    
+    public Command dynamic(SysIdRoutine.Direction direction) {
+        return kickerRoutine.dynamic(direction);
+    }
 }
