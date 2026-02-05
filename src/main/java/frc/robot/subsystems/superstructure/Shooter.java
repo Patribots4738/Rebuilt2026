@@ -60,7 +60,9 @@ public class Shooter extends SubsystemBase {
         else if (trackTarget) {
             updateTarget(robotRelativePose.get());
             ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
-            
+            flywheel.setVelocity(shotParams.flywheelSpeed());
+            hood.setPosition(shotParams.hoodAngle());     
+            turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());       
         }
     }
 
@@ -96,13 +98,14 @@ public class Shooter extends SubsystemBase {
         return Commands.runOnce(() -> setPassIndex(index));
     }
 
-    public Command stowShooterCommand() {
-        return Commands.parallel(
-            flywheel.setTrackTargetCommand(false),
-            hood.setTrackTargetCommand(false),
-            turret.setTrackTargetCommand(false),
-            flywheel.setNeutralCommand(),
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+    public Command setNeutralCommand() {
+        return Commands.runOnce(() -> this.setNeutral());
+    }
+
+    public void setNeutral() {
+        turret.setNeutral();
+        hood.setNeutral();
+        flywheel.setNeutral();
     }
 
     public void updateTarget(Pose2d robotPose) {
