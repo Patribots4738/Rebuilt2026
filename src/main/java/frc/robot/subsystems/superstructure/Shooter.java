@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -21,9 +22,11 @@ import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
+import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
+    @AutoLogOutput(key = "Susbsytems/Shooter/TrackTarget")
     private boolean trackTarget = true;
     private int passIndex = 0;
 
@@ -38,12 +41,6 @@ public class Shooter extends SubsystemBase {
     private Supplier<Pose2d> robotRelativePose;
     private Supplier<ChassisSpeeds> robotRelativeVelocity;
 
-    
-
-    private enum Target {
-        
-    }
-
     public Shooter(Supplier<Pose2d> robotRelativePose, Supplier<ChassisSpeeds> robotRelativeVelocity) {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
@@ -57,8 +54,12 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (trackTarget) {
+        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+        }
+        else if (trackTarget) {
             updateTarget(robotRelativePose.get());
+            ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
             
         }
     }
@@ -72,6 +73,10 @@ public class Shooter extends SubsystemBase {
             targetName = "None";
         }
         this.trackTarget = trackTarget;
+    }
+
+    public Command setTrackTargetCommand(BooleanSupplier trackTarget) {
+        return Commands.runOnce(() -> setTrackTarget(trackTarget.getAsBoolean()));
     }
 
     /**

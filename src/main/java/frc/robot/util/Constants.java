@@ -1113,7 +1113,7 @@ public final class Constants {
             return line;
         }
 
-        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>{{
+        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
             put("Pass Left", GET_PASS_LEFT());
             put("Pass Right", GET_PASS_RIGHT());
             put("Hub", GET_HUB());

@@ -22,20 +22,14 @@ public class Flywheel extends SubsystemBase {
     
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
-    Supplier<Pose2d> robotPoseSupplier;
-    Supplier<ChassisSpeeds> robotRelativeVelocitySupplier;
 
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetVelocity")
+    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetLinearVelocity")
     private double targetVelocity = 0.0;
-    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TrackTarget")
-    private boolean trackTarget = false;
 
-    public Flywheel(FlywheelIO io, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier) {
+    public Flywheel(FlywheelIO io) {
         this.io = io;
-        this.robotPoseSupplier = robotPoseSupplier;
-        this.robotRelativeVelocitySupplier = robotRelativeVelocitySupplier;
     }
 
     @Override
@@ -59,14 +53,6 @@ public class Flywheel extends SubsystemBase {
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
-
-    public Command setTrackTargetCommand(boolean track) {
-        return runOnce(() -> setTrackTarget(track));
-    }
-
-    public void setTrackTarget(boolean track) {
-        trackTarget = track;
-    } 
 
     /**
      * Sets the velocity of the wheel using the desired tangential velocity
@@ -109,10 +95,6 @@ public class Flywheel extends SubsystemBase {
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
-    }
-
-    public boolean isTracking() {
-        return trackTarget;
     }
 
     public SysIdRoutine getSysIdRoutine() {

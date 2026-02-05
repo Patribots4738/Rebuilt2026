@@ -39,9 +39,6 @@ public class ShotCalculations {
     private static final InterpolatingDoubleTreeMap shotFlywheelSpeedMap = new InterpolatingDoubleTreeMap();
     private static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
-    public static Translation3d target = FieldConstants.GET_HUB();
-    private static int passIndex = 0;
-
     public static record ShootingParameters(
         boolean isValid,
         Rotation2d turretAngle,
@@ -88,9 +85,7 @@ public class ShotCalculations {
         timeOfFlightMap.put(1.38, 0.90);
     }
 
-    public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier) {
-        target = updateTarget(robotPoseSupplier.get());
-
+    public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier, Translation3d target) {
         // Calculate estimated pose while accounting for phase delay
         Pose2d estimatedPose = robotPoseSupplier.get();
         ChassisSpeeds robotRelativeVelocity = robotRelativeVelocitySupplier.get();
@@ -162,34 +157,5 @@ public class ShotCalculations {
         Logger.recordOutput("ShotCalculator/TargetTranslation3d", getTarget());
 
         return latestParameters;
-    }
-
-    public static void clearShootingParameters() {
-        latestParameters = null;
-    }
-
-
-    public static Translation3d updateTarget(Pose2d robotPose) {
-        Translation3d target = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
-                        ? FieldConstants.GET_HUB() 
-                        : passIndex == 0 ? FieldConstants.GET_PASS_LEFT() 
-                        : FieldConstants.GET_PASS_RIGHT();
-        return target;
-    }
-
-    public static Translation3d getTarget() {
-        return target;
-    }
-
-    public static double getFlywheelSpeed() {
-        return latestParameters.flywheelSpeed;
-    }
-
-    public static Rotation2d getTurretAngle() {
-        return latestParameters.turretAngle;
-    }
-
-    public static double getHoodAngle() {
-        return latestParameters.hoodAngle;
     }
 }

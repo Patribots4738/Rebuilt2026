@@ -34,15 +34,11 @@ public class Hood extends SubsystemBase {
     private double yaw;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Hood/TrackTarget")
-    private boolean trackTarget = false;
-    private Swerve swerveInstance;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
 
-    public Hood(HoodIO io, ChassisSpeeds robotRelativeVelocity) { 
+    public Hood(HoodIO io) { 
         this.io = io;
-        swerveInstance = swerve;
     }
 
     @Override
@@ -52,10 +48,6 @@ public class Hood extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
-
-        if (trackTarget) {
-            setPosition(ShotCalculations.getParameters(swerveInstance).hoodAngle());
-        }
 
         if (shouldRunSetpoint) {
             setpoint = profile.calculate(0.02, setpoint, targetState);
@@ -108,24 +100,12 @@ public class Hood extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public Command setTrackTargetCommand(boolean track) {
-        return runOnce(() -> setTrackTarget(track));
-    }
-
-    public void setTrackTarget(boolean track) {
-        trackTarget = track;
-    } 
-
     public boolean atPosition(double position) {
         return MathUtil.isNear(position, inputs.internalPositionRads, HoodConstants.POSITION_DEADBAND_RADIANS);
     }
 
     public boolean atTargetPosition() {
         return atPosition(targetState.position);
-    }
-
-    public boolean isTracking() {
-        return trackTarget;
     }
 
     public double getPosition() {

@@ -33,15 +33,11 @@ public class Turret extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Turret/TrackTarget")
-    private boolean trackTarget = false;
-    private Swerve swerveInstance;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
-    public Turret(TurretIO io, Swerve swerve) {
+    public Turret(TurretIO io) {
         this.io = io;
-        swerveInstance = swerve;
     }
 
     @Override
@@ -51,10 +47,6 @@ public class Turret extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
-
-        if (trackTarget) {
-            setPosition(ShotCalculations.getParameters(swerveInstance).turretAngle().minus(swerveInstance.getPose().getRotation()).getRadians()); 
-        }
 
         if (shouldRunSetpoint) {
             setpoint = profile.calculate(0.02, setpoint, targetState);
@@ -104,24 +96,12 @@ public class Turret extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public Command setTrackTargetCommand(boolean track) {
-        return runOnce(() -> setTrackTarget(track));
-    }
-
-    public void setTrackTarget(boolean track) {
-        trackTarget = track;
-    } 
-
     public boolean atPosition(double position) {
         return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
     }
 
     public boolean atTargetPosition() {
         return atPosition(targetState.position);
-    }
-
-    public boolean isTracking() {
-        return trackTarget;
     }
 
     public double getPosition() {

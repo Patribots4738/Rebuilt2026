@@ -25,6 +25,7 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.subsystems.superstructure.Shooter;
 import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
@@ -78,6 +79,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
+    private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
@@ -129,7 +131,7 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
         kicker = new Kicker(new KickerIOKraken());
-        shooter = new Shooter();
+        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity);
         superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
