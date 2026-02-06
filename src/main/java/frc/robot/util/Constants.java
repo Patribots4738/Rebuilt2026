@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
+import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
@@ -720,9 +721,8 @@ public final class Constants {
     }
 
     public static final class CANConstants {
-        public static final CANBus RIO_BUS = new CANBus("rio");
+        public static final CANBus RIO_BUS = CANBus.roboRIO();
         public static final CANBus DRIVEBASE_BUS =  new CANBus("drivebase");
-        public static final CANBus SUPERSTRUCTURE_BUS = new CANBus("superstructure");
     }
 
     public static final class CANCoderConstants {
@@ -735,6 +735,10 @@ public final class Constants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
 
+    }
+
+    public static final class CANRangeConstants {
+        public static final double UPDATE_FREQUENCY = 0.03;
     }
     
     public static final class CameraConstants {
