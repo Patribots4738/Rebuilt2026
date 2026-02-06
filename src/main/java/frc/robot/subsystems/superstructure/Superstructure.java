@@ -30,16 +30,12 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Superstructure {
 
-    private boolean shooterIsTracking = true;
-
-    public Extender extender;
-    public Intake intake;
-    public Climb climb;
-    public Turret turret;
-    public Hood hood;
-    public Flywheel flywheel;
-    public Spindexer spindexer;
-    public Kicker kicker;
+    private Extender extender;
+    private Intake intake;
+    private Climb climb;
+    private Spindexer spindexer;
+    private Shooter shooter;
+    private Kicker kicker;
 
     private final Set<Subsystem> requirements;
 
@@ -154,13 +150,13 @@ public class Superstructure {
     // if we are not tracking a target, we will assume we are trying to eject
     // if we are tracking and our shooter is not ready, then we will do nothing
     public Command outtakeCommand() {
-        if (shooterIsTracking && shooterReady()) {
+        if (shooter.isTrackingTarget() && shooter.shooterReady()) {
             return Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
                 kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
             );
         }
-        else if (!shooterIsTracking) {
+        else if (!shooter.isTrackingTarget()) {
             return Commands.sequence(
                 flywheel.setVelocityCommand(FlywheelConstants.EJECT_VELOCITY),
                 Commands.waitSeconds(FlywheelConstants.EJECT_WAIT_TIME_SECONDS),
@@ -173,39 +169,5 @@ public class Superstructure {
         }
     }
 
-    public Command aimShooterCommand() {
-        return Commands.runOnce(() -> shooterIsTracking = true).alongWith(
-            Commands.sequence(
-            flywheel.setTrackTargetCommand(true),
-            Commands.waitSeconds(FlywheelConstants.SHOOT_WAIT_TIME_SECONDS),
-            turret.setTrackTargetCommand(true),
-            hood.setTrackTargetCommand(true)
-            ));
-    }
-
-    /**
-     * Returns true if the shooter is at the right speed and angle
-     * 
-     * @return whether the shooter is at the right state
-     */
-    public boolean shooterReady() {
-        return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
-    }
-
-    public void updatePassIndex(int index) {
-        ShotCalculations.setPassIndex(index);
-    }
-
-    public Command updatePassIndexCommand(int index) {
-        return Commands.runOnce(() -> updatePassIndex(index));
-    }
-
-    public Command stowShooterCommand() {
-        return Commands.parallel(
-            flywheel.setTrackTargetCommand(false),
-            hood.setTrackTargetCommand(false),
-            turret.setTrackTargetCommand(false),
-            flywheel.setNeutralCommand(),
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
-    }
+    
 }

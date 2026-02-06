@@ -19,6 +19,7 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
@@ -114,5 +115,9 @@ public class Shooter extends SubsystemBase {
                         : passIndex == 0 ? "Pass Left" 
                         : "Pass Right";
         targetLocation = FieldConstants.SHOT_TARGETS.get(targetName);
+    }
+
+    public void eject() {
+        flywheel.setVelocity(FlywheelConstants.EJECT_VELOCITY);
     }
 }
