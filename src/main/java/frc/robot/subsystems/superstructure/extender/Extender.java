@@ -56,12 +56,14 @@ public class Extender extends SubsystemBase {
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
                         Volts.of(7),
-                        Seconds.of(10)
+                        Seconds.of(10),
+                        (state) -> Logger.recordOutput("Subsystems/Extender/SysIdState", String.valueOf(state))
                 ),
                 new SysIdRoutine.Mechanism(
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("extender")
                                 .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+                                .linearPosition(Meters.of(inputs.motorPositionMeters))
                                 .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
                         this
                 )

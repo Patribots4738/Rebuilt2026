@@ -10,7 +10,7 @@ public class IntakeIONeo implements IntakeIO {
 
 
     public IntakeIONeo() {
-        motor = new Neo(IntakeConstants.MOTOR_CAN_ID, false);
+        motor = new Neo(IntakeConstants.CAN_ID, false);
 
         configMotors();
     }

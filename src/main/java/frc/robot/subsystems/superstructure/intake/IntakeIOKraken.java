@@ -1,7 +1,6 @@
 package frc.robot.subsystems.superstructure.intake;
 
 import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
@@ -11,7 +10,7 @@ public class IntakeIOKraken implements IntakeIO {
     private final Kraken motor;
 
     public IntakeIOKraken() {
-        motor = new Kraken(IntakeConstants.MOTOR_CAN_ID, IntakeConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(IntakeConstants.CAN_ID, IntakeConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         configMotors();
     }
 

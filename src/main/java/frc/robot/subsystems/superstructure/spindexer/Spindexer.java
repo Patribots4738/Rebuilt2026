@@ -6,6 +6,7 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -37,6 +38,7 @@ public class Spindexer extends SubsystemBase {
 	@Override
     public void periodic(){
         io.updateInputs(inputs);
+        Logger.processInputs("SubsystemInputs/Spindexer", inputs);
     }
 
     private double percentOutput = 0.0;

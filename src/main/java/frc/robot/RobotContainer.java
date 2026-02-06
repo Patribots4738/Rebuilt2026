@@ -2,6 +2,9 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.superstructure.spindexer.Spindexer;
+import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -68,6 +71,7 @@ public class RobotContainer {
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
+    private final Spindexer spindexer;
 
     public static Field2d field2d = new Field2d();
 
@@ -108,6 +112,7 @@ public class RobotContainer {
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         kicker = new Kicker(new KickerIOKraken());
+        spindexer = new Spindexer(new SpindexerIOKraken());
 
         SmartDashboard.putData(field2d);
 

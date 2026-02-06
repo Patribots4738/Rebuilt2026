@@ -1,7 +1,6 @@
 package frc.robot.subsystems.superstructure.extender;
 
 import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
@@ -11,7 +10,7 @@ public class ExtenderIOKraken implements ExtenderIO {
     private final Kraken motor;
 
     public ExtenderIOKraken() {
-        motor = new Kraken(ExtenderConstants.MOTOR_CAN_ID, ExtenderConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(ExtenderConstants.CAN_ID, ExtenderConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         configMotors();
     }
 

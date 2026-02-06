@@ -23,9 +23,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -948,9 +945,6 @@ public final class Constants {
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
-        
-        public static final int MOTOR_CAN_ID = 0;
-
 
         public static final double POSITION_CONVERSION_FACTOR = 0.0;
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
@@ -981,7 +975,6 @@ public final class Constants {
     }
 
     public static final class ExtenderConstants {
-
         public static final int CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
         public static final double GEAR_RATIO = 0.0;
@@ -992,9 +985,6 @@ public final class Constants {
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
-        
-        public static final int MOTOR_CAN_ID = 0;
-
 
         public static final double POSITION_CONVERSION_FACTOR = 0.0;
         public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
