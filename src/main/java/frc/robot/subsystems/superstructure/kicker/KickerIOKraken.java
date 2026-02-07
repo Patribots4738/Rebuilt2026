@@ -20,12 +20,10 @@ public class KickerIOKraken implements KickerIO {
     }
 
     private void configMotor(Kraken motor) {
-        motor.setGearRatio(KickerConstants.GEAR_RATIO);
-        motor.setUnitConversionFactor(KickerConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(0.0, KickerConstants.MAX_DISPLACEMENT_METERS);
-        motor.setGains(KickerConstants.GAINS);
+        motor.setMotorInverted(KickerConstants.MOTOR_INVERTED);
         motor.setStatorCurrentLimit(KickerConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-KickerConstants.CURRENT_LIMIT, KickerConstants.CURRENT_LIMIT);
+        motor.setBrakeMode(KickerConstants.BRAKE_MOTOR);
     }
 
     private void configMotors() {

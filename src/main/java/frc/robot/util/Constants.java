@@ -1260,28 +1260,7 @@ public final class Constants {
         
         public static final double CURRENT_LIMIT = 40.0;
         public static final boolean BRAKE_MOTOR = true;
-        
-        public static final double MAX_DISPLACEMENT_METERS = 0.0;
-        public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double DEBOUNCER_TIME = 0.5;
-        
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-        
-        public static final GainConstants GAINS = new GainConstants(
-                P,
-                I,
-                D,
-                A,
-                S,
-                V,
-                G
-        );
     }
 }

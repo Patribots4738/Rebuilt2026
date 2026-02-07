@@ -50,6 +50,7 @@ public class Kicker extends SubsystemBase {
 	@Override
 	public void periodic() {
 		io.updateInputs(inputs);
+		
 		updateEmptyHopper();
 	}
 	
