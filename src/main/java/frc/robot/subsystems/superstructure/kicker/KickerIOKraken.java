@@ -1,16 +1,21 @@
 package frc.robot.subsystems.superstructure.kicker;
 
+import frc.robot.util.Constants.CANConstants;
+import frc.robot.util.Constants.CANRangeConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
+import frc.robot.util.hardware.phoenix.CANRangeCustom;
 
 public class KickerIOKraken implements KickerIO {
 
     private final Kraken motor;
+    private final CANRangeCustom range;
 
     public KickerIOKraken() {
         motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
         configMotors();
     }
 
@@ -41,6 +46,9 @@ public class KickerIOKraken implements KickerIO {
         inputs.motorTorqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.motorTemperatureCelsius = motor.getTemperatureAsDouble();
         inputs.positionRads = motor.getPosition().getValueAsDouble() / KickerConstants.POSITION_CONVERSION_FACTOR * (2.0 * Math.PI);
+        
+        inputs.isRangeTripped = range.getIsDetectedAsBoolean();
+        inputs.rangeDistance = range.getDistanceAsDouble();
     }
 
     @Override

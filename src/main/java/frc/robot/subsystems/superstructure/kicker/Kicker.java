@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
 public class Kicker extends SubsystemBase {
 	
@@ -30,53 +32,42 @@ public class Kicker extends SubsystemBase {
 	private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
 	
 	private final State targetState = new State(0, 0);
-	private final State setpoint = new State(0, 0);
+	private final State setPoint = new State(0, 0);
 	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunSetpoint")
 	private boolean shouldRunSetpoint = false;
-	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunFastProfile")
-	private boolean shouldRunFast = true;
+	private double percentOutput;
+
+	@AutoLogOutput (key = "Subsystems/Kicker/emptyHopper")
+	private boolean emptyHopper = false;
+
+	private Debouncer emptyHopperDebouncer;
+
 	public Kicker(KickerIO io) {
 		this.io = io;
+		emptyHopperDebouncer = new Debouncer(KickerConstants.DEBOUNCER_TIME, DebounceType.kBoth);
 	}
 	
 	@Override
 	public void periodic() {
 		io.updateInputs(inputs);
-		Logger.processInputs("SubsystemInputs/Kicker", inputs);
-		
-		Logger.recordOutput("Subsystems/Kicker/AtTargetPosition", atTargetPosition());
-		Logger.recordOutput("Subsystems/Kicker/TargetPosition", targetState.position);
-		
-		if (shouldRunSetpoint) {
-			io.setPosition(setpoint.position);
-		} else {
-			setpoint.position = inputs.motorPositionMeters;
-			setpoint.velocity = inputs.motorVelocityMetersPerSecond;
-			io.setNeutral();
-		}
+		updateEmptyHopper();
 	}
 	
-	public void setPosition(double position, boolean runFast) {
-		double clampedPosition = MathUtil.clamp(position, 0, KickerConstants.MAX_DISPLACEMENT_METERS);
-		if (clampedPosition != targetState.position) {
-			setpoint.position = inputs.motorPositionMeters;
-			setpoint.velocity = inputs.motorVelocityMetersPerSecond;
-		}
-		targetState.position = clampedPosition;
+	public void setPercent(double percent) {
+		percentOutput = percent;
 		shouldRunSetpoint = true;
-		shouldRunFast = runFast;
 	}
 	
 	public void setNeutral() {
 		shouldRunSetpoint = false;
 	}
 	
-	public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
-		return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFastSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
+	public Command setPercentCommand(DoubleSupplier positionSupplier) {
+		return runOnce(() -> setPercent(positionSupplier.getAsDouble()));
 	}
 	
-	public Command setPositionCommand(double position, BooleanSupplier runFastSupplier) {
-		return setPositionCommand(() -> position, runFastSupplier);
+	public Command setPercentCommand(double percent) {
+		return setPercentCommand(() -> percent);
 	}
 	
 	public Command setNeutralCommand() {
@@ -87,28 +78,12 @@ public class Kicker extends SubsystemBase {
 		return runOnce(() -> io.resetEncoders(0));
 	}
 	
-	public boolean atPosition(double position) {
-		return MathUtil.isNear(position, inputs.motorPositionMeters, KickerConstants.DEADBAND_RADIANS);
-	}
-	
-	public boolean atTargetPosition() {
-		return atPosition(targetState.position);
-	}
-	
-	public double getPosition() {
-		return inputs.motorPositionMeters;
-	}
-	
-	public double getCharacterizationVelocity() {
-		return inputs.motorVelocityMetersPerSecond / KickerConstants.VELOCITY_CONVERSION_FACTOR;
-	}
-	
-	public double getVelocity() {
-		return (inputs.motorVelocityMetersPerSecond);
-	}
-	
 	public void runCharacterization(double input) {
 		io.runCharacterization(input);
+	}
+
+	public void updateEmptyHopper() {
+		emptyHopper = emptyHopperDebouncer.calculate(!(inputs.isRangeTripped));
 	}
 	
 	public SysIdRoutine getSysIdRoutine() {

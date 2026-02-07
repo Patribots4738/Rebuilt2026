@@ -52,7 +52,7 @@ public class CANRangeCustom extends CANrange {
         distance = getDistance();
         isDetected = getIsDetected();
         //Only update the canrange in specific game modes because it might only be useful in auton
-        if (FieldConstants.IS_REAL && (Robot.gameMode == GameMode.AUTONOMOUS || Robot.gameMode == GameMode.TELEOP)) {
+        if (FieldConstants.IS_REAL) {
             applySignalFrequency(
                 CANRangeConstants.UPDATE_FREQUENCY,
                 distance,

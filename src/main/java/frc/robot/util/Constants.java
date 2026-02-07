@@ -739,6 +739,8 @@ public final class Constants {
 
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
+
+        public static final int CANRANGE_ID = 0; //TODO
     }
     
     public static final class CameraConstants {
@@ -1261,6 +1263,8 @@ public final class Constants {
         
         public static final double MAX_DISPLACEMENT_METERS = 0.0;
         public static final double DEADBAND_RADIANS = 0.0;
+
+        public static final double DEBOUNCER_TIME = 0.5;
         
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
