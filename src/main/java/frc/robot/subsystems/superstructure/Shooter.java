@@ -42,15 +42,15 @@ public class Shooter extends SubsystemBase {
     private Supplier<Pose2d> robotRelativePose;
     private Supplier<ChassisSpeeds> robotRelativeVelocity;
 
-    public Shooter(Supplier<Pose2d> robotRelativePose, Supplier<ChassisSpeeds> robotRelativeVelocity) {
+    public Shooter(Supplier<Pose2d> robotRelativePose, Supplier<ChassisSpeeds> robotRelativeVelocity, Turret turret, Flywheel flywheel, Hood hood) {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
 
         targetLocation = FieldConstants.SHOT_TARGETS.get("Hub");
 
-        turret = new Turret(new TurretIOKraken());
-        hood = new Hood(new HoodIOKraken());
-        flywheel = new Flywheel(new FlywheelIOKraken());
+        this.turret = turret;
+        this.hood = hood;
+        this.flywheel = flywheel;
     }
 
     @Override
@@ -119,5 +119,9 @@ public class Shooter extends SubsystemBase {
 
     public void eject() {
         flywheel.setVelocity(FlywheelConstants.EJECT_VELOCITY);
+    }
+
+    public Command ejectCommand() {
+        return Commands.runOnce(() -> this.eject());
     }
 }

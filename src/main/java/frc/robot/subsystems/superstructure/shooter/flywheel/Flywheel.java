@@ -37,10 +37,6 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
 
-        if (trackTarget) {
-            setVelocity(ShotCalculations.getParameters(swerveInstance).flywheelSpeed());
-        }
-
         // Run setpoint on RIO to minimize CAN utilization
         if (shouldRunSetpoint) {
             io.setVelocity(targetVelocity);

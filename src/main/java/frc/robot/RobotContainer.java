@@ -131,7 +131,10 @@ public class RobotContainer {
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
         kicker = new Kicker(new KickerIOKraken());
-        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity);
+        flywheel = new Flywheel(new FlywheelIOKraken());
+        turret = new Turret(new TurretIOKraken());
+        hood = new Hood(new HoodIOKraken());
+        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
@@ -195,8 +198,6 @@ public class RobotContainer {
                                 : 180))
         ), swerve)
         );
-
-        controller.leftBumper().onTrue(Commands.runOnce(() -> superstructure.updatePassIndex(0)));
 
 
         // controller.leftBumper().whileTrue(swerve.getSetWheelsX());

@@ -154,7 +154,6 @@ public class ShotCalculations {
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
         Logger.recordOutput("ShotCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
-        Logger.recordOutput("ShotCalculator/TargetTranslation3d", getTarget());
 
         return latestParameters;
     }

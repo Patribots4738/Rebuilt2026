@@ -142,10 +142,6 @@ public class Superstructure {
                                     spindexer.setPercentCommand(() -> state.spindexerPercent));
     }
 
-    public Command setShooterState(ShooterState state) {
-        return state == ShooterState.SHOOT ? aimShooterCommand() : stowShooterCommand();
-    }
-
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are not tracking a target, we will assume we are trying to eject
     // if we are tracking and our shooter is not ready, then we will do nothing
@@ -157,12 +153,7 @@ public class Superstructure {
             );
         }
         else if (!shooter.isTrackingTarget()) {
-            return Commands.sequence(
-                flywheel.setVelocityCommand(FlywheelConstants.EJECT_VELOCITY),
-                Commands.waitSeconds(FlywheelConstants.EJECT_WAIT_TIME_SECONDS),
-                spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
-            );
+            return shooter.ejectCommand();
         }
         else {
             return Commands.none();
