@@ -5,6 +5,7 @@
 package frc.robot.subsystems.superstructure.kicker;
 
 import frc.robot.util.Constants.KickerConstants;
+import frc.robot.subsystems.superstructure.intake.IntakeIO;
 import frc.robot.util.Constants.IntakeConstants;
 
 import static edu.wpi.first.units.Units.Second;
@@ -31,92 +32,57 @@ public class Kicker extends SubsystemBase {
 	private final KickerIO io;
 	private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
 	
-	private final State targetState = new State(0, 0);
-	private final State setPoint = new State(0, 0);
-	@AutoLogOutput (key = "Subsystems/Kicker/ShouldRunSetpoint")
-	private boolean shouldRunSetpoint = false;
-	private double percentOutput;
+	private double percentOutput = 0.0;
+    @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
+    private boolean shouldRunSetpoint = false;
 
-	@AutoLogOutput (key = "Subsystems/Kicker/emptyHopper")
-	private boolean emptyHopper = false;
+    // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
+    // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
+    // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
+    // private LoggedTunableNumber slowAcceleration = new LoggedTunableNumber("Intake/SlowProfile/Acceleration", IntakeConstants.SLOW_ACCELERATION);
 
-	private Debouncer emptyHopperDebouncer;
+    // private final LoggedTunableBoolean brakeMotor = new LoggedTunableBoolean("Intake/BrakeMotor", IntakeConstants.BRAKE_MOTOR);
+    
+    public Kicker(KickerIO io) {
+        this.io = io;
 
-	public Kicker(KickerIO io) {
-		this.io = io;
-		emptyHopperDebouncer = new Debouncer(KickerConstants.DEBOUNCER_TIME, DebounceType.kBoth);
-	}
-	
-	@Override
-	public void periodic() {
-		io.updateInputs(inputs);
-		
-		updateEmptyHopper();
-	}
-	
-	public void setPercent(double percent) {
-		percentOutput = percent;
-		shouldRunSetpoint = true;
-	}
-	
-	public void setNeutral() {
-		shouldRunSetpoint = false;
-	}
-	
-	public Command setPercentCommand(DoubleSupplier positionSupplier) {
-		return runOnce(() -> setPercent(positionSupplier.getAsDouble()));
-	}
-	
-	public Command setPercentCommand(double percent) {
-		return setPercentCommand(() -> percent);
-	}
-	
-	public Command setNeutralCommand() {
-		return runOnce(this::setNeutral);
-	}
-	
-	public Command resetEncodersCommand() {
-		return runOnce(() -> io.resetEncoders(0));
-	}
-	
-	public void runCharacterization(double input) {
-		io.runCharacterization(input);
-	}
+        // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
+        // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
-	public void updateEmptyHopper() {
-		emptyHopper = emptyHopperDebouncer.calculate(!(inputs.isRangeTripped));
-	}
-	
-	public SysIdRoutine getSysIdRoutine() {
-		return new SysIdRoutine(
-				new SysIdRoutine.Config(
-						// Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-						Volts.of(0.5).per(Second),
-						null,
-						Seconds.of(2),
-						(state) -> Logger.recordOutput("KickerSysIdState", state.toString())
-				),
-				new SysIdRoutine.Mechanism(
-						(voltage) -> io.runCharacterization(voltage.in(Volts)),
-						null,
-						this
-				)
-		);
-	}
-	
-	public Command sysIdQuasistaticForward() {
-		return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
-	}
-	
-	public Command sysIdQuasistaticReverse() {
-		return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse);
-	}
-	
-	public Command sysIdDynamicForward() {
-		return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward);
-	}
-	
-	public Command sysIdDynamicReverse() {
-		return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse);
-	}
+        // IntakeConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(IntakeConstants.LOGGED_GAINS.get())).ignoringDisable(true));
+        // brakeMotor.onChanged(Commands.runOnce(() -> io.setBrakeMode(brakeMotor.get())).ignoringDisable(true));
+    }
+
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+
+        if (shouldRunSetpoint) {
+            io.setPercent(percentOutput);
+        } else {
+            io.setNeutral();
+        }
+
+    }
+
+    public void setPercent(double percent) {
+        percentOutput = percent;
+        shouldRunSetpoint = true;
+    }
+
+    public void setNeutral() {
+        shouldRunSetpoint = false;
+    }
+
+    public Command setPercentCommand(DoubleSupplier percentSupplier) {
+        return runOnce(() -> setPercent(percentSupplier.getAsDouble()));
+    }
+
+    public Command setPercentCommand(double percent) {
+        return setPercentCommand(() -> percent);
+    }
+
+    public Command setNeutralCommand() {
+        return runOnce(this::setNeutral);
+    }
 }

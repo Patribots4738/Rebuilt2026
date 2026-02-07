@@ -15,8 +15,8 @@ public class TurretIOKraken implements TurretIO {
     private boolean encoderUpdated = false;
 
     public TurretIOKraken() {
-        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, CANConstants.RIO_BUS, true, true, ControlPreference.TORQUE_CURRENT);
-        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID, CANConstants.RIO_BUS);
+        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
         configMotor();
         configEncoder();
     }

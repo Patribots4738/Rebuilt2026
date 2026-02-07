@@ -10,7 +10,7 @@ public class ExtenderIONeo implements ExtenderIO {
 
 
     public ExtenderIONeo() {
-        motor = new Neo(ExtenderConstants.MOTOR_CAN_ID, false);
+        motor = new Neo(ExtenderConstants.CAN_ID, false);
 
         configMotors();
     }

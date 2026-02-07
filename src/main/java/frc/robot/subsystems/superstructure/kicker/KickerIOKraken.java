@@ -16,35 +16,27 @@ public class KickerIOKraken implements KickerIO {
     public KickerIOKraken() {
         motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
-        configMotors();
+        configMotor();
     }
 
-    private void configMotor(Kraken motor) {
+    private void configMotor() {
         motor.setMotorInverted(KickerConstants.MOTOR_INVERTED);
+        motor.setGearRatio(KickerConstants.GEAR_RATIO);
+        motor.setSupplyCurrentLimit(KickerConstants.CURRENT_LIMIT);
         motor.setStatorCurrentLimit(KickerConstants.CURRENT_LIMIT);
-        motor.setTorqueCurrentLimits(-KickerConstants.CURRENT_LIMIT, KickerConstants.CURRENT_LIMIT);
-        motor.setBrakeMode(KickerConstants.BRAKE_MOTOR);
-    }
-
-    private void configMotors() {
-        resetEncoders(0);
-        motor.setMotorInverted(KickerConstants.MOTOR_INVERTED);
-
-        configMotor(motor);
         setBrakeMode(KickerConstants.BRAKE_MOTOR);
     }
 
     @Override
     public void updateInputs(KickerIOInputs inputs) {
-        inputs.motorConnected = motor.isConnected();
-        inputs.motorPositionMeters = motor.getPosition().getValueAsDouble();
-        inputs.motorTargetPositionMeters = motor.getTargetPosition();
-        inputs.motorVelocityMetersPerSecond = motor.getVelocity().getValueAsDouble();
-        inputs.motorAppliedOutputVolts = motor.getVoltageAsDouble();
-        inputs.motorTorqueCurrentAmps = motor.getTorqueCurrentAsDouble();
-        inputs.motorTemperatureCelsius = motor.getTemperatureAsDouble();
-        inputs.positionRads = motor.getPosition().getValueAsDouble() / KickerConstants.POSITION_CONVERSION_FACTOR * (2.0 * Math.PI);
-        
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.percentOutput = motor.getPercentAsDouble();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
+
         inputs.isRangeTripped = range.getIsDetectedAsBoolean();
         inputs.rangeDistance = range.getDistanceAsDouble();
     }
@@ -55,32 +47,22 @@ public class KickerIOKraken implements KickerIO {
     }
 
     @Override
-    public void setPosition(double position) {
-        motor.setTargetPosition(position);
-    }
-
-    @Override
-    public void runCharacterization(double input) {
-        motor.setTorqueCurrentOutput(input);
-    }
-    
-    @Override
     public void setBrakeMode(boolean brake) {
         motor.setBrakeMode(brake);
     }
 
     @Override
-    public void resetEncoders(double position) {
-        motor.resetEncoder(position);
-    }
-    
-    @Override
-    public void setGains(GainConstants constants) {
-        motor.setGains(constants);
+    public void setPercent(double percent) {
+        motor.setPercentOutput(percent);
     }
 
     @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
+    public void setVoltage(double volts) {
+        motor.setVoltageOutput(volts);
+    }
+
+    @Override
+    public void setCurrent(double amps) {
+        motor.setTorqueCurrentOutput(amps);
     }
 }
