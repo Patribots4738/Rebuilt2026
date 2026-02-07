@@ -15,10 +15,7 @@ public class KickerIONeo implements KickerIO {
     }
 
     private void configMotor(Neo motor) {
-        motor.setPID(KickerConstants.GAINS);
         motor.setInverted(KickerConstants.MOTOR_INVERTED);
-        motor.setPositionConversionFactor(KickerConstants.POSITION_CONVERSION_FACTOR);
-        motor.setVelocityConversionFactor(KickerConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
         motor.setSmartCurrentLimit((int) KickerConstants.CURRENT_LIMIT);
     }
 

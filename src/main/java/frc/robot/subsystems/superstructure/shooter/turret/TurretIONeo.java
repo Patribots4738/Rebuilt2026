@@ -1,6 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
-import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -8,25 +8,25 @@ public class TurretIONeo implements TurretIO {
     private final Neo motor;
 
     public TurretIONeo() {
-        motor = new Neo(HoodConstants.CAN_ID, false, false, true);
+        motor = new Neo(TurretConstants.MOTOR_CAN_ID, false, false, true);
         configMotor();
     }
 
     private void configMotor() {
-        motor.setPID(HoodConstants.GAINS);
-        motor.setInverted(HoodConstants.MOTOR_INVERTED);
-        motor.setPositionConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
-        motor.setVelocityConversionFactor(HoodConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
-        motor.setSmartCurrentLimit((int) HoodConstants.CURRENT_LIMIT);
-        setBrakeMode(HoodConstants.BRAKE_MOTOR);
+        motor.setPID(TurretConstants.GAINS);
+        motor.setInverted(TurretConstants.MOTOR_INVERTED);
+        motor.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
+        motor.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
+        motor.setSmartCurrentLimit((int) TurretConstants.CURRENT_LIMIT);
+        setBrakeMode(TurretConstants.BRAKE_MOTOR);
     }
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
         inputs.motorConnected = true;
-        inputs.internalPositionRads = motor.getPosition();
-        inputs.internalVelocityRadsPerSec = motor.getVelocity();
-        inputs.targetPositionRads = motor.getTargetPosition();
+        inputs.internalPositionRads = motor.getPositionRads();
+        inputs.internalVelocityRadsPerSec = motor.getVelocityRadsPerSec();
+        inputs.targetPositionRads = motor.getTargetPositionRads();
         inputs.appliedOutputVolts = motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
