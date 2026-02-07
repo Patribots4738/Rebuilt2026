@@ -15,6 +15,7 @@ public class KickerIOKraken implements KickerIO {
 
     public KickerIOKraken() {
         motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
         configMotor();
     }
 
@@ -23,7 +24,6 @@ public class KickerIOKraken implements KickerIO {
         motor.setGearRatio(KickerConstants.GEAR_RATIO);
         motor.setSupplyCurrentLimit(KickerConstants.CURRENT_LIMIT);
         motor.setStatorCurrentLimit(KickerConstants.CURRENT_LIMIT);
-        range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
         setBrakeMode(KickerConstants.BRAKE_MOTOR);
     }
 
@@ -36,7 +36,7 @@ public class KickerIOKraken implements KickerIO {
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
         inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
-      
+
         inputs.isRangeTripped = range.getIsDetectedAsBoolean();
         inputs.rangeDistance = range.getDistanceAsDouble();
     }

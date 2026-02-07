@@ -1068,6 +1068,8 @@ public final class Constants {
         
         public static final double CURRENT_LIMIT = 40.0;
         public static final boolean BRAKE_MOTOR = true;
+
+        public static final double DEBOUNCER_TIME = 0.5;
         
         public static final double DEADBAND_RADIANS = 0.0;
 
@@ -1344,21 +1346,5 @@ public final class Constants {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }
-    }
-    
-    public static final class KickerConstants {
-        public static final int CAN_ID = 0;
-        public static final int MOTOR_TYPE = 60;
-        
-        public static final boolean MOTOR_INVERTED = false;
-        
-        public static final double GEAR_RATIO = 1.0;
-        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
-        
-        public static final double CURRENT_LIMIT = 40.0;
-        public static final boolean BRAKE_MOTOR = true;
-
-        public static final double DEBOUNCER_TIME = 0.5;
     }
 }
