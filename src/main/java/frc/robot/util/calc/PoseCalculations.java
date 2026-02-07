@@ -209,6 +209,7 @@ public class PoseCalculations {
         return ans;
     }
 
+
     public static boolean onRamp(Pose2d pos) {
         boolean ans = false;
         if (
