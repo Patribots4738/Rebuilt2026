@@ -16,8 +16,8 @@ public class HoodIOKraken implements HoodIO {
     private boolean encoderUpdated = false;
 
     public HoodIOKraken() {
-        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
-        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID, CANConstants.SUPERSTRUCTURE_BUS);
+        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, CANConstants.RIO_BUS, true, true, ControlPreference.TORQUE_CURRENT);
+        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID, CANConstants.RIO_BUS);
         configMotor();
         configEncoder();
     }

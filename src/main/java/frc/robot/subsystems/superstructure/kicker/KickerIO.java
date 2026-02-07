@@ -15,6 +15,10 @@ public interface KickerIO {
         public double motorTorqueCurrentAmps;
         public double motorTemperatureCelsius;
         public double positionRads;
+
+        public boolean isRangeTripped;
+        public double rangeDistance;
+
     }
 
     public default void updateInputs(KickerIOInputs inputs) {}
@@ -32,5 +36,7 @@ public interface KickerIO {
     public default void setGains(GainConstants constants) {}
 
     public default void configureProfile(double velocity, double acceleration, double jerk) {}
+
+    public default void updateCANRange() {}
 
 }

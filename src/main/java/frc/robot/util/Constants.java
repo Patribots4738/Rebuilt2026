@@ -32,6 +32,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
+import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
@@ -720,9 +721,8 @@ public final class Constants {
     }
 
     public static final class CANConstants {
-        public static final CANBus RIO_BUS = new CANBus("rio");
+        public static final CANBus RIO_BUS = CANBus.roboRIO();
         public static final CANBus DRIVEBASE_BUS =  new CANBus("drivebase");
-        public static final CANBus SUPERSTRUCTURE_BUS = new CANBus("superstructure");
     }
 
     public static final class CANCoderConstants {
@@ -735,6 +735,12 @@ public final class Constants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
 
+    }
+
+    public static final class CANRangeConstants {
+        public static final double UPDATE_FREQUENCY = 0.03;
+
+        public static final int CANRANGE_ID = 0; //TODO
     }
     
     public static final class CameraConstants {
@@ -1254,26 +1260,7 @@ public final class Constants {
         
         public static final double CURRENT_LIMIT = 40.0;
         public static final boolean BRAKE_MOTOR = true;
-        
-        public static final double MAX_DISPLACEMENT_METERS = 0.0;
-        public static final double DEADBAND_RADIANS = 0.0;
-        
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-        
-        public static final GainConstants GAINS = new GainConstants(
-                P,
-                I,
-                D,
-                A,
-                S,
-                V,
-                G
-        );
+
+        public static final double DEBOUNCER_TIME = 0.5;
     }
 }
