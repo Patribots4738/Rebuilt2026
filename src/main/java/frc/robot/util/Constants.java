@@ -147,13 +147,13 @@ public final class Constants {
 
         // Chassis configuration
         // Distance between centers of right and left wheels on robot
-        public static final double TRACK_WIDTH = Units.inchesToMeters(23.0);
+        public static final double TRACK_WIDTH = Units.inchesToMeters(21.75);
         // Distance between front and back wheels on robot
         // Easiest measured from the center of the bore of the vortex
-        public static final double WHEEL_BASE = Units.inchesToMeters(23.0);
+        public static final double WHEEL_BASE = Units.inchesToMeters(21.75);
 
-        public static final double ROBOT_LENGTH_METERS = Units.inchesToMeters(28.5);
-        public static final double BUMPER_LENGTH_METERS = Units.inchesToMeters(2.75);
+        public static final double ROBOT_LENGTH_METERS = Units.inchesToMeters(27);
+        public static final double BUMPER_LENGTH_METERS = Units.inchesToMeters(2.75); //update
 
         public static final double FULL_ROBOT_LENGTH_METERS = ROBOT_LENGTH_METERS + (2*BUMPER_LENGTH_METERS);
 
@@ -988,6 +988,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 0;
+
+        public static final double EXTENSION_LEMGTH_METERS = Units.inchesToMeters(9.108);
 
         public static final double INTAKE_PERCENT = 0.5;
 
