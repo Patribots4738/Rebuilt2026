@@ -5,7 +5,9 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +19,6 @@ import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
-import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
@@ -27,9 +28,15 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackTarget")
-    private boolean trackTarget = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/TrackTurret")
+    private boolean trackTurret = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/TrackFlywheel")
+    private boolean spinFlywheel = false;
+    @AutoLogOutput(key = "Susbsytems/Shooter/TrackHood")
+    private boolean trackHood = true;
     private int passIndex = 0;
+
+    private ShootingParameters shotParams;
 
     private Turret turret;
     private Hood hood;
@@ -51,6 +58,8 @@ public class Shooter extends SubsystemBase {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
+
+        shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
     }
 
     @Override
@@ -58,28 +67,53 @@ public class Shooter extends SubsystemBase {
         if (PoseCalculations.inTrench(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
-        else if (trackTarget) {
+        else if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
-            flywheel.setVelocity(shotParams.flywheelSpeed());
-            hood.setPosition(shotParams.hoodAngle());     
-            turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());       
+            shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
+            this.setShooterStates();
         }
-    }
-
-    public boolean isTrackingTarget() {
-        return trackTarget;
-    }
-
-    public void setTrackTarget(boolean trackTarget) {
-        if (!trackTarget) {
+        else {
             targetName = "None";
         }
-        this.trackTarget = trackTarget;
     }
 
-    public Command setTrackTargetCommand(BooleanSupplier trackTarget) {
+    public boolean partiallyTracking() {
+        return trackHood || trackTurret || spinFlywheel;
+    }
+
+    public boolean hoodTracking() {
+        return trackHood;
+    }
+
+    public boolean turretTracking() {
+        return trackTurret;
+    }
+
+    public boolean flywheelTracking() {
+        return spinFlywheel;
+    }
+
+    public void setShooterStates() {
+        if (spinFlywheel) flywheel.setVelocity(shotParams.flywheelSpeed());
+        if (trackTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
+        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+        }
+        else if (trackHood){
+            hood.setPosition(shotParams.hoodAngle());
+        }        
+    }
+    
+    public void setSpinFlywheel(boolean spinFlywheel) {
+        this.spinFlywheel = spinFlywheel;
+    }
+
+    public Command trackTargetCommand() {
         return Commands.runOnce(() -> setTrackTarget(trackTarget.getAsBoolean()));
+    }
+
+    public void setTrackTarget(boolean turret, boolean hood, boolean flywheel) {
+        spinFlywheel = flywheel
     }
 
     /**

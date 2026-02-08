@@ -160,5 +160,9 @@ public class Superstructure {
         }
     }
 
+    public Command stopOuttakingCommand() {
+        return Commands.parallel(setHopperState(HopperState.OFF), );
+    }
+
     
 }
