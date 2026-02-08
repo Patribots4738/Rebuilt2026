@@ -223,6 +223,14 @@ public class PoseCalculations {
         return ans;
     }
 
+    //SHOOTER_FORWARD_OFFSET_METERS: represents where the shooter is located relative to the robot’s pose origin.
+    public static final double SHOOTER_FORWARD_OFFSET_METERS = 0.0;
+
+    public static boolean shouldPutHoodDown(Pose2d pos) {
+        Pose2d shooterPose = getPoseWithDistance(pos, SHOOTER_FORWARD_OFFSET_METERS);
+        return inTrench(shooterPose);
+    }
+
     public static boolean onRamp(Pose2d pos) {
         boolean ans = false;
         if (
