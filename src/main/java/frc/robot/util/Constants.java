@@ -1129,6 +1129,9 @@ public final class Constants {
         public static final double FIELD_LENGTH = 16.5890;
         public static final double FIELD_WIDTH = 8.0756;
 
+        public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
+        public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
+
         public static final double CENTER_LINE_X = 8.2499;
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
@@ -1346,5 +1349,12 @@ public final class Constants {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }
+
+        public static final List<Pose2d> ALLIANCE_LINE_LIST = new ArrayList<Pose2d>() {{
+            add(ALLIANCE_LINE_SHOT_RED_LEFT);
+            add(ALLIANCE_LINE_SHOT_RED_RIGHT);
+            add(PoseCalculations.mirrorPose(ALLIANCE_LINE_SHOT_RED_LEFT));
+            add(PoseCalculations.mirrorPose(ALLIANCE_LINE_SHOT_RED_RIGHT));
+        }};
     }
 }
