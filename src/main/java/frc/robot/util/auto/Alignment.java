@@ -216,7 +216,7 @@ public class Alignment {
 
     public ChassisSpeeds getAllianceLineAlignmentSpeeds() {
         Pose2d node = PoseCalculations.nearest(swerve.getPose(), FieldConstants.ALLIANCE_LINE_LIST);
-        
+
         double distance = DriveConstants.FULL_ROBOT_LENGTH_METERS / 2;
         Pose2d desiredPose = PoseCalculations.getPoseWithDistance(node, distance);
 
@@ -291,5 +291,9 @@ public class Alignment {
                 this::getTowerAlignmentSpeeds,
                 true
             );
+    }
+
+    public Command startingLineAlignmentCommand(Pose2d robotPos) {
+        return autoAlignmentCommand(AlignmentMode.STARTING_LINE, this::getAllianceLineAlignmentSpeeds, true);
     }
 }
