@@ -29,6 +29,8 @@ import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
 import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
+import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
+import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
 import frc.robot.subsystems.superstructure.extender.Extender;
@@ -292,5 +294,16 @@ public class RobotContainer {
         freshCode = false;
     }
 
-    private void prepareNamedCommands() {}
+    private void prepareNamedCommands() {
+        NamedCommands.registerCommand("ShootOnTheFly", superstructure.outtakeCommand());
+        NamedCommands.registerCommand("StopShooting", superstructure.);
+        NamedCommands.registerCommand("Track", shooter.setTrackTargetCommand(() -> true).only);
+        NamedCommands.registerCommand("StopTrack", shooter.setTrackTargetCommand(() -> false));
+        NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
+        NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        NamedCommands.registerCommand("AlignStartingLineLeft", alignment.);
+
+    }
 }

@@ -172,4 +172,8 @@ public class Superstructure {
     public Command forceHoodDown() {
         
     }
+
+    public Command stopOuttakingCommand() {
+        return Commands.parallel(setHopperState(HopperState.OFF), );
+    }
 }
