@@ -112,22 +112,16 @@ public final class Constants {
             ROBOT_OFFSET.getZ() + 0.0
         );
 
-        public static final Translation3d WRIST_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
-        );
-
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getX() - 4.5,
+            ROBOT_OFFSET.getY() -4.0,
+            ROBOT_OFFSET.getZ() + 12.594
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getX() + -9.392,
             ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getZ() + 17.156
         );
 
         public static final double PHASE_DELAY = 0.03;

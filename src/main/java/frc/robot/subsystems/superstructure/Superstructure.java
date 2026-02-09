@@ -14,6 +14,7 @@ import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
+import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
@@ -53,7 +54,6 @@ public class Superstructure {
         this.kicker = kicker;
 
         this.requirements = Set.of(extender, intake, climb, shooter, spindexer, kicker);
-
 
         targetClimbState = ClimbState.STOW;
         targetIntakeState = IntakeState.STOW;
@@ -160,5 +160,16 @@ public class Superstructure {
         }
     }
 
-    
+    public Command fullStowCommand() {
+        return Commands.sequence(
+            shooter.stow(),
+            setClimbState(ClimbState.STOW),
+            setHopperState(HopperState.OFF),
+            setIntakeState(IntakeState.STOW);
+        );
+    }
+
+    public Command forceHoodDown() {
+        
+    }
 }
