@@ -49,6 +49,7 @@ public class Kicker extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("kicker")
                                 .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+		                        .linearPosition(Meters.of(inputs.motorPositionMeters))
                                 .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
                         this
                 )

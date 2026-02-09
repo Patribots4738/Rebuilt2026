@@ -50,6 +50,7 @@ public class Climb extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("climb")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
+                                .linearPosition(Meters.of(inputs.positionMeters))
                                 .linearVelocity(MetersPerSecond.of(inputs.velocityMetersPerSec)),
                         this
                 )

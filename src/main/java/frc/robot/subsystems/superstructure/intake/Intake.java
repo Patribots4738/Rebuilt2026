@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("intake")
                                 .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+                                .linearPosition(Meters.of(inputs.motorPositionMeters))
                                 .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
                         this
                 )

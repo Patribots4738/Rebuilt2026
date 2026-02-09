@@ -4,6 +4,8 @@ package frc.robot.subsystems.superstructure.spindexer;
 import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.hardware.rev.Neo;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 public class SpindexerIONeo implements SpindexerIO {
 
     private final Neo motor;
@@ -33,6 +35,7 @@ public class SpindexerIONeo implements SpindexerIO {
         inputs.percentOutput = motor.getAppliedOutput();
         inputs.targetPercentOutput = motor.getTargetPercent();
         inputs.velocityRotationsPerSec = motor.getVelocity();
+        inputs.angularPosition = Degrees.of(motor.getPosition() / 360);
     }
 
     @Override

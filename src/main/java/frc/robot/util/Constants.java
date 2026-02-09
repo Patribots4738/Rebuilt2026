@@ -1022,6 +1022,8 @@ public final class Constants {
         public static final double SPINDEXER_SPIN = 1.0;
         public static final int CAN_ID = 11;
 
+        public static final double SPINDEXER_RADIUS = Units.inchesToMeters(5.5);
+        
         public static final boolean BRAKE_MOTOR = true;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
