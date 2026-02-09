@@ -143,17 +143,16 @@ public class Superstructure {
     }
 
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
-    // if we are not tracking a target, we will assume we are trying to eject
     // if we are tracking and our shooter is not ready, then we will do nothing
-    public Command outtakeCommand() {
-        if (shooter.isTrackingTarget() && shooter.shooterReady()) {
+    public Command fireCommand() {
+        if (shooter.fullyTracking() && shooter.shooterReady()) {
             return Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
                 kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
             );
         }
-        else if (!shooter.isTrackingTarget()) {
-            return shooter.ejectCommand();
+        else if (!shooter.fullyTracking()) {
+            return shooter.trackTargetCommand(true, true, true);
         }
         else {
             return Commands.none();

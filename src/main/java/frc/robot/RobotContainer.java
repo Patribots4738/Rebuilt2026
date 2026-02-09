@@ -51,6 +51,7 @@ import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.ShotCalculations;
+import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -84,7 +85,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    private final Shooter shooter;
+    private final frc.robot.subsystems.superstructure.shooter.Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
@@ -207,14 +208,29 @@ public class RobotContainer {
         controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
         controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
         controller.rightBumper().onTrue(superstructure.fullStowCommand());
-        controller.rightTrigger().whileTrue(superstructure.outtakeCommand());
-        controller.rightTrigger().toggleOnFalse(superstructure.setHopperState(HopperState.OFF));
+        controller.rightTrigger()
+                .whileTrue(
+                        new ActiveConditionalCommand(
+                                superstructure.fireCommand(), 
+                                Commands.sequence(
+                                        shooter.armShooterCommand(), 
+                                        Commands.waitUntil(() -> shooter.isReady()),
+                                        superstructure.fireCommand()),
+                                () -> shooter.isReady()
+                        )
+                );
+        controller.rightTrigger()
+                .toggleOnFalse(
+                        Commands.sequence(
+                                shooter.disarmShooterCommand(), 
+                                superstructure.setHopperState(HopperState.OFF)
+                        )
+                );
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
         controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
         controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(()-> !controller.povRight().getAsBoolean()));
         controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
-        controller.b().onTrue(superstructure.)
 
 
 

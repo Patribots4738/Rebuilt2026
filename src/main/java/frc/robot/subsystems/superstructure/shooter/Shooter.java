@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure;
+package frc.robot.subsystems.superstructure.shooter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -14,11 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
-import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
-import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
@@ -28,12 +25,12 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackTurret")
-    private boolean trackTurret = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
+    private boolean aimTurret = true;
     @AutoLogOutput(key = "Susbsytems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackHood")
-    private boolean trackHood = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
+    private boolean aimHood = true;
     private int passIndex = 0;
 
     private ShootingParameters shotParams;
@@ -78,15 +75,19 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean partiallyTracking() {
-        return trackHood || trackTurret || spinFlywheel;
+        return aimHood || aimTurret || spinFlywheel;
+    }
+
+    public boolean fullyTracking() {
+        return aimHood && aimTurret && spinFlywheel;
     }
 
     public boolean hoodTracking() {
-        return trackHood;
+        return aimHood;
     }
 
     public boolean turretTracking() {
-        return trackTurret;
+        return aimTurret;
     }
 
     public boolean flywheelTracking() {
@@ -95,11 +96,11 @@ public class Shooter extends SubsystemBase {
 
     public void setShooterStates() {
         if (spinFlywheel) flywheel.setVelocity(shotParams.flywheelSpeed());
-        if (trackTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
+        if (aimTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
         if (PoseCalculations.inTrench(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
-        else if (trackHood){
+        else if (aimHood){
             hood.setPosition(shotParams.hoodAngle());
         }        
     }
@@ -108,12 +109,26 @@ public class Shooter extends SubsystemBase {
         this.spinFlywheel = spinFlywheel;
     }
 
-    public Command trackTargetCommand() {
-        return Commands.runOnce(() -> setTrackTarget(trackTarget.getAsBoolean()));
+    public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
+        return Commands.runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
     }
 
-    public void setTrackTarget(boolean turret, boolean hood, boolean flywheel) {
-        spinFlywheel = flywheel
+    public Command trackTargetCommand(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
+        return Commands.runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
+    }
+
+    public void setTrackTarget(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
+        this.spinFlywheel = spinFlywheel;
+        this.aimTurret = aimTurret;
+        this.aimHood = aimHood;
+    }
+
+    public Command armShooterCommand() {
+        return Commands.runOnce(() -> setTrackTarget(true, true, true));
+    }
+
+    public Command disarmShooterCommand() {
+        return Commands.runOnce(() -> setTrackTarget(false, false, false));
     }
 
     /**
@@ -121,7 +136,7 @@ public class Shooter extends SubsystemBase {
      * 
      * @return whether the shooter is at the right state
      */
-    public boolean shooterReady() {
+    public boolean isReady() {
         return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
     }
 
