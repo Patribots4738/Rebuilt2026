@@ -4,13 +4,10 @@
 
 package frc.robot.subsystems.superstructure.kicker;
 
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.subsystems.superstructure.intake.IntakeIO;
 import frc.robot.util.Constants.IntakeConstants;
-
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -27,6 +24,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
+import static edu.wpi.first.units.Units.*;
+
 public class Kicker extends SubsystemBase {
 	
 	private final KickerIO io;
@@ -35,8 +34,10 @@ public class Kicker extends SubsystemBase {
 	private double percentOutput = 0.0;
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-
-    // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
+	
+	private final SysIdRoutine kickerRoutine;
+	
+	// private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
     // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
     // private LoggedTunableNumber slowAcceleration = new LoggedTunableNumber("Intake/SlowProfile/Acceleration", IntakeConstants.SLOW_ACCELERATION);
@@ -45,6 +46,21 @@ public class Kicker extends SubsystemBase {
     
     public Kicker(KickerIO io) {
         this.io = io;
+	    this.kickerRoutine = new SysIdRoutine(
+			    new SysIdRoutine.Config(
+					    Volts.per(Seconds).of(1),
+					    Volts.of(7),
+					    Seconds.of(10)
+			    ),
+			    new SysIdRoutine.Mechanism(
+					    (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+					    log -> log.motor("kicker")
+							    .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+							    .linearPosition(Meters.of(inputs.motorPositionMeters))
+							    .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
+					    this
+			    )
+	    );
 
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
@@ -85,4 +101,12 @@ public class Kicker extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+	
+	public Command quasistatic(SysIdRoutine.Direction direction) {
+		return kickerRoutine.quasistatic(direction);
+	}
+	
+	public Command dynamic(SysIdRoutine.Direction direction) {
+		return kickerRoutine.dynamic(direction);
+	}
 }

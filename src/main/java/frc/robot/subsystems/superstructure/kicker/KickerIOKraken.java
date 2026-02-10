@@ -14,7 +14,7 @@ public class KickerIOKraken implements KickerIO {
     private final CANRangeCustom range;
 
     public KickerIOKraken() {
-        motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS,true, true, ControlPreference.TORQUE_CURRENT);
         range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
         configMotor();
     }

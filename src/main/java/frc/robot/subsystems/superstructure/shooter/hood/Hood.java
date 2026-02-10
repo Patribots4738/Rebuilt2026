@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure.shooter.hood;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,9 +13,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +22,8 @@ import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.calc.ShotCalculations;
+
+import static edu.wpi.first.units.Units.*;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
@@ -36,9 +36,26 @@ public class Hood extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
-
-    public Hood(HoodIO io) { 
+	
+	private final SysIdRoutine hoodRoutine;
+	
+    public Hood(HoodIO io) {
         this.io = io;
+        this.yaw = yaw;
+        this.hoodRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        log -> log.motor("hood")
+                                .voltage(Volts.of(inputs.appliedOutputVolts))
+                                .linearVelocity(MetersPerSecond.of(inputs.internalVelocityRadsPerSec)),
+                        this
+                )
+        );
     }
 
     @Override
@@ -71,7 +88,7 @@ public class Hood extends SubsystemBase {
     /**
      * Sets the desired rotation of the turret
      * 
-     * @param position 
+     * @param position
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
@@ -119,6 +136,10 @@ public class Hood extends SubsystemBase {
     public double getTargetPosition() {
         return targetState.position;
     }
+    
+    public double getVoltage() {
+        return inputs.appliedOutputVolts;
+    }
 
     public double getCharacterizationVelocity() {
         return inputs.internalVelocityRadsPerSec / HoodConstants.VELOCITY_CONVERSION_FACTOR;
@@ -127,38 +148,12 @@ public class Hood extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
-
-    // TODO: make this work :D
-    public SysIdRoutine getSysIdRoutine() {
-        return new SysIdRoutine(
-            new SysIdRoutine.Config(
-                // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                Volts.of(0.5).per(Second),
-                null, 
-                Seconds.of(2),
-                (state) -> Logger.recordOutput("TurretSysIdState", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.runCharacterization(voltage.in(Volts)), 
-                null, 
-                this
-            )
-        );
+    
+    public Command quasistatic(SysIdRoutine.Direction direction) {
+        return hoodRoutine.quasistatic(direction);
     }
-
-    public Command sysIdQuasistaticForward() {
-        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kForward);
-    }
-
-    public Command sysIdQuasistaticReverse() {
-        return getSysIdRoutine().quasistatic(SysIdRoutine.Direction.kReverse);
-    }
-
-    public Command sysIdDynamicForward() {
-        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kForward);
-    }
-
-    public Command sysIdDynamicReverse() {
-        return getSysIdRoutine().dynamic(SysIdRoutine.Direction.kReverse);
+    
+    public Command dynamic(SysIdRoutine.Direction direction) {
+        return hoodRoutine.dynamic(direction);
     }
 }
