@@ -26,6 +26,7 @@ public class FlywheelIONeo implements FlywheelIO {
         inputs.appliedOutputVolts = motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
+        inputs.positionRotations = motor.getPosition();
     }
 
     @Override

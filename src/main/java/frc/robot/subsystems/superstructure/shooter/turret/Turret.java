@@ -50,6 +50,7 @@ public class Turret extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("turret")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
+                                .angularPosition(Radians.of(inputs.internalPositionRads))
                                 .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
                         this
                 )

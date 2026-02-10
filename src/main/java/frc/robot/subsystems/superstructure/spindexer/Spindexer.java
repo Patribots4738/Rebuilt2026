@@ -30,7 +30,7 @@ public class Spindexer extends SubsystemBase {
                         (Voltage volts) -> io.setVoltage(volts.in(Volts)),
                         log -> log.motor("spindexer")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(inputs.angularPosition)
+                                .angularPosition(Rotations.of(inputs.positionRotations))
                                 .linearVelocity(MetersPerSecond.of(inputs.velocityRotationsPerSec * SpindexerConstants.SPINDEXER_RADIUS * 2 * Math.PI)),
                         this
                 )

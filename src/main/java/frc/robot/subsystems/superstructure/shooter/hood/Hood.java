@@ -31,7 +31,6 @@ public class Hood extends SubsystemBase {
 
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
-    private double yaw;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
@@ -41,7 +40,6 @@ public class Hood extends SubsystemBase {
 	
     public Hood(HoodIO io) {
         this.io = io;
-        this.yaw = yaw;
         this.hoodRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -52,7 +50,8 @@ public class Hood extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("hood")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .linearVelocity(MetersPerSecond.of(inputs.internalVelocityRadsPerSec)),
+                                .angularPosition(Radians.of(inputs.internalPositionRads))
+                                .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
                         this
                 )
         );
@@ -135,10 +134,6 @@ public class Hood extends SubsystemBase {
 
     public double getTargetPosition() {
         return targetState.position;
-    }
-    
-    public double getVoltage() {
-        return inputs.appliedOutputVolts;
     }
 
     public double getCharacterizationVelocity() {

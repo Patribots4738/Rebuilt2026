@@ -2,9 +2,6 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.superstructure.spindexer.Spindexer;
-import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.pathplanner.lib.auto.NamedCommands;
