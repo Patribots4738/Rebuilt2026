@@ -173,4 +173,11 @@ public class Shooter extends SubsystemBase {
     public Command ejectCommand() {
         return Commands.runOnce(() -> this.eject());
     }
+
+    public void stowCommand() {
+        Commands.sequence(
+            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+            this.setNeutralCommand()
+        );
+    }
 }

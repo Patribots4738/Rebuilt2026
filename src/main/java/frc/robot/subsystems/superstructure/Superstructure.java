@@ -159,6 +159,14 @@ public class Superstructure {
         }
     }
 
+    public Command ceaseFireCommand() {
+        return Commands.parallel(
+                    shooter.disarmShooterCommand(),
+                    shooter.stowCommand(),
+                    setHopperState(HopperState.OFF)
+                );
+    }
+
     public Command fullStowCommand() {
         return Commands.sequence(
             shooter.stow(),

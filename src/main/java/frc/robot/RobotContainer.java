@@ -219,13 +219,7 @@ public class RobotContainer {
                                 () -> shooter.isReady()
                         )
                 );
-        controller.rightTrigger()
-                .toggleOnFalse(
-                        Commands.sequence(
-                                shooter.disarmShooterCommand(), 
-                                superstructure.setHopperState(HopperState.OFF)
-                        )
-                );
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
         controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
