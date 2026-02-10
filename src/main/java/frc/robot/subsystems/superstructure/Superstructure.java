@@ -103,6 +103,7 @@ public class Superstructure {
 
     public enum IntakeState {
         STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0),
+        NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
         INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT);
 
         public double extenderPosition;
