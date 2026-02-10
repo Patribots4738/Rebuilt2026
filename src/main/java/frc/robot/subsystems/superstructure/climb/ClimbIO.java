@@ -22,7 +22,7 @@ public interface ClimbIO {
 
     default void setNeutral() {}
 
-    default void setPosition(double position) {}
+    default void setPosition(double position, int slot) {}
 
     default void runCharacterization(double input) {}
 
@@ -30,8 +30,7 @@ public interface ClimbIO {
 
     default void resetEncoder(double position) {}
 
-    default void setGains(GainConstants constants) {}
+    default void setGains(GainConstants constants, int slot) {}
 
-    default void configureProfile(double velocity, double acceleration, double jerk) {}
-
+    public default void configureProfile(double velocity, double acceleration, double jerk) {}
 }

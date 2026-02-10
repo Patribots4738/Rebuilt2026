@@ -265,7 +265,7 @@ public class Swerve extends SubsystemBase {
 
         RobotContainer.swerveMeasuredStates = getModuleStates();
 
-        ChassisSpeeds speeds = DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(RobotContainer.swerveMeasuredStates);
+        speeds = DriveConstants.DRIVE_KINEMATICS.toChassisSpeeds(RobotContainer.swerveMeasuredStates);
 
         if (FieldConstants.IS_SIMULATION) {
             resetOdometry(

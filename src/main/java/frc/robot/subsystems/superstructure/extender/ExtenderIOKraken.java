@@ -17,7 +17,7 @@ public class ExtenderIOKraken implements ExtenderIO {
     private void configMotor(Kraken motor) {
         motor.setGearRatio(ExtenderConstants.GEAR_RATIO);
         motor.setUnitConversionFactor(ExtenderConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(0.0, ExtenderConstants.MAX_DISPLACEMENT_METERS);
+        motor.setSoftLimits(ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         motor.setGains(ExtenderConstants.GAINS);
         motor.setStatorCurrentLimit(ExtenderConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-ExtenderConstants.CURRENT_LIMIT, ExtenderConstants.CURRENT_LIMIT);

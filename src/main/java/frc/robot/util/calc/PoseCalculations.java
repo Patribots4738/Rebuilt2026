@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
 
@@ -23,8 +24,21 @@ public class PoseCalculations {
         return new Translation2d(pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY());
     }
 
-    public static Translation2d mirrorTranslation(Translation2d pos) {
+    public static Translation2d mirrorTranslation2d(Translation2d pos) {
         return new Translation2d(FieldConstants.FIELD_LENGTH - pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY());
+    }
+
+    public static Translation3d flipTranslation3dX(Translation2d pos) {
+        return new Translation3d(FieldConstants.FIELD_LENGTH - pos.getX(), pos.getY(), 0);
+    }
+
+    public static Translation3d flipTranslation3dY(Translation3d pos) {
+        return new Translation3d(pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY(), 0);
+    }
+
+
+    public static Translation3d mirrorTranslation3d(Translation3d pos) {
+        return new Translation3d(FieldConstants.FIELD_LENGTH - pos.getX(), FieldConstants.FIELD_WIDTH - pos.getY(), pos.getZ());
     }
 
     public static Rotation2d flipFieldRotation(Rotation2d rotation) {
@@ -44,7 +58,7 @@ public class PoseCalculations {
     }
 
     public static Pose2d mirrorPose(Pose2d pos) {
-        return new Pose2d(mirrorTranslation(pos.getTranslation()), mirrorFieldRotation(pos.getRotation()));
+        return new Pose2d(mirrorTranslation2d(pos.getTranslation()), mirrorFieldRotation(pos.getRotation()));
     }
 
     public static Pose3d flipPose3dX(Pose3d pos) {
@@ -125,7 +139,7 @@ public class PoseCalculations {
 
     
 
-    public static enum ZONE {
+    public enum ZONE {
         inAllianceZone,
         inNeutralZone,
         inOppZone

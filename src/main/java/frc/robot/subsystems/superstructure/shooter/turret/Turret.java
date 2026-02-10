@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
+import frc.robot.util.calc.ShotCalculations;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -31,14 +33,10 @@ public class Turret extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunFastProfile")
-    private boolean shouldRunFast = true;
     
     private final SysIdRoutine turretRoutine;
 
-    private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(TurretConstants.FAST_VELOCITY, TurretConstants.FAST_ACCELERATION)); // use for tracking
-    private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(TurretConstants.SLOW_VELOCITY, TurretConstants.SLOW_ACCELERATION)); // use to snap to the target
-
+    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
     public Turret(TurretIO io) {
         this.io = io;
@@ -65,15 +63,25 @@ public class Turret extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
+
+        if (shouldRunSetpoint) {
+            setpoint = profile.calculate(0.02, setpoint, targetState);
+            // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
+            // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
+            io.setPosition(setpoint.position, 0);
+        } else {
+            setpoint.position = inputs.internalPositionRads;
+            setpoint.velocity = inputs.internalVelocityRadsPerSec;
+            io.setNeutral();
+        }
     }
 
     /**
      * Sets the desired rotation of the turret
      * 
-     * @param position 
-     * @param runFast
+     * @param position in radians
      */
-    public void setPosition(double position, boolean runFast) {
+    public void setPosition(double position) {
         position = MathUtil.clamp(position, TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         if (position != targetState.position) {
             setpoint.position = inputs.internalPositionRads;
@@ -81,7 +89,6 @@ public class Turret extends SubsystemBase {
         }
         targetState.position = position;
         shouldRunSetpoint = true;
-        shouldRunFast = runFast;
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
@@ -89,12 +96,12 @@ public class Turret extends SubsystemBase {
         );
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFastSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFastSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(DoubleSupplier positionSupplier) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
     }
 
-    public Command setPositionCommand(double position, BooleanSupplier runFastSupplier) {
-        return setPositionCommand(() -> position, runFastSupplier);
+    public Command setPositionCommand(double position) {
+        return setPositionCommand(() -> position);
     }
 
     public void setNeutral() {

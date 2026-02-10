@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems.superstructure.climb;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -33,7 +36,8 @@ public class Climb extends SubsystemBase {
 
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
-    @AutoLogOutput (key = "Subsystems/Elevator/ShouldRunSetpoint")
+    private boolean slam = false;
+    @AutoLogOutput (key = "Subsystems/Climb/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
     private final SysIdRoutine climbRoutine;
@@ -61,7 +65,17 @@ public class Climb extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Climb", inputs);
-        Logger.recordOutput("Subsystems/Climb/AtDesiredPosition", atTargetPosition());
+
+        Logger.recordOutput("Subsystems/Climb/AtTargetPosition", atTargetPosition());
+        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState.position);
+
+        if (shouldRunSetpoint) {
+            io.setPosition(setpoint.position, slam ? 1 : 0);
+        } else {
+            setpoint.position = inputs.positionMeters;
+            setpoint.velocity = inputs.velocityMetersPerSec;
+            io.setNeutral();
+        }
 
         RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
             LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), inputs.positionMeters,
@@ -69,13 +83,14 @@ public class Climb extends SubsystemBase {
         );
     }
 
-    public void setPosition(double position) {
+    public void setPosition(double position, boolean slam) {
         position = MathUtil.clamp(position, 0, ClimbConstants.MAX_DISPLACEMENT_METERS);
         if (position != targetState.position) {
             setpoint.position = inputs.positionMeters;
             setpoint.velocity = inputs.velocityMetersPerSec;
         }
         targetState.position = position;
+        this.slam = slam;
         shouldRunSetpoint = true;
 
         RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
@@ -92,12 +107,12 @@ public class Climb extends SubsystemBase {
         io.resetEncoder(0);
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier slamSupplier) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), slamSupplier.getAsBoolean())).andThen(Commands.waitUntil(this::atTargetPosition));
     }
 
-    public Command setPositionCommand(double position) {
-        return setPositionCommand(() -> position);
+    public Command setPositionCommand(double position, boolean slam) {
+        return setPositionCommand(() -> position, () -> slam);
     }
 
     public Command setNeutralCommand() {

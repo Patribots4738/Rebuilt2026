@@ -16,24 +16,26 @@ public class IntakeIOKraken implements IntakeIO {
 
     private void configMotor(Kraken motor) {
         motor.setGearRatio(IntakeConstants.GEAR_RATIO);
-        motor.setUnitConversionFactor(IntakeConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(0.0, IntakeConstants.MAX_DISPLACEMENT_METERS);
-        motor.setGains(IntakeConstants.GAINS);
+        motor.setSupplyCurrentLimit(IntakeConstants.CURRENT_LIMIT);
         motor.setStatorCurrentLimit(IntakeConstants.CURRENT_LIMIT);
-        motor.setTorqueCurrentLimits(-IntakeConstants.CURRENT_LIMIT, IntakeConstants.CURRENT_LIMIT);
+        setBrakeMode(IntakeConstants.BRAKE_MOTOR);
     }
 
     private void configMotors() {
-        resetEncoders(0);
         motor.setMotorInverted(IntakeConstants.MOTOR_INVERTED);
-
         configMotor(motor);
-        setBrakeMode(IntakeConstants.BRAKE_MOTOR);
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-  
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.percentOutput = motor.getPercentAsDouble();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
+        inputs.positionRotations = motor.getPositionAsDouble();
     }
 
     @Override
@@ -43,39 +45,23 @@ public class IntakeIOKraken implements IntakeIO {
     }
 
     @Override
-    public void setPosition(double position) {
-        motor.setTargetPosition(position);
-
+    public void setPercent(double percent) {
+        motor.setPercentOutput(percent);
+    }
+    
+    @Override
+    public void setVoltage(double volts) {
+        motor.setVoltageOutput(volts);
     }
 
     @Override
-    public void runCharacterization(double input) {
-        motor.setTorqueCurrentOutput(input);
-
+    public void setCurrent(double amps) {
+        motor.setTorqueCurrentOutput(amps);
     }
-    
+
     @Override
     public void setBrakeMode(boolean brake) {
         motor.setBrakeMode(brake);
 
     }
-
-    @Override
-    public void resetEncoders(double position) {
-        motor.resetEncoder(position);
-
-    }
-    
-    @Override
-    public void setGains(GainConstants constants) {
-        motor.setGains(constants);
-
-    }
-
-    @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
-
-    }
-
 }
