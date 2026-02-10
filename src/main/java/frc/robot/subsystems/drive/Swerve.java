@@ -204,6 +204,7 @@ public class Swerve extends SubsystemBase {
                         (Voltage volts) -> runDriveCharacterization(volts.in(Volts)),
                         log -> log.motor("drive")
                                 .voltage(Volts.of(getDriveCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getDriveAveragePosition()))
                                 .linearVelocity(MetersPerSecond.of(getDriveCharacterizationVelocity())),
                         this
                 )
@@ -219,6 +220,7 @@ public class Swerve extends SubsystemBase {
                         (Voltage volts) -> runTurnCharacterization(volts.in(Volts)),
                         log -> log.motor("turn")
                                 .voltage(Volts.of(getTurnCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getTurnAveragePosition()))
                                 .linearVelocity(MetersPerSecond.of(getTurnCharacterizationVelocity())),
                         this
                 )
@@ -404,6 +406,14 @@ public class Swerve extends SubsystemBase {
         return average / 4.0;
     }
     
+    public double getDriveAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getDrivePositionRadians();
+        }
+        return average / 4.0;
+    }
+    
     public double getDriveCharacterizationVoltage() {
         double totalVoltage = 0;
         for (Module module : swerveModules) {
@@ -416,6 +426,14 @@ public class Swerve extends SubsystemBase {
         double average = 0.0;
         for (Module module : swerveModules) {
             average += module.getTurnCharacterizationVelocity();
+        }
+        return average / 4.0;
+    }
+    
+    public double getTurnAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getPosition().angle.getRadians();
         }
         return average / 4.0;
     }
