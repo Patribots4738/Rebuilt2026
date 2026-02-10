@@ -26,6 +26,8 @@ public class IntakeIONeo implements IntakeIO {
         inputs.appliedOutputVolts = motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
+        inputs.positionRotations = motor.getPosition();
+        inputs.velocityRotationsPerSec = motor.getVelocity() / 60;
     }
 
     @Override

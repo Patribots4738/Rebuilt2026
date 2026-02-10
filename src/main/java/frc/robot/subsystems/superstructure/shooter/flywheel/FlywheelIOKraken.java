@@ -10,7 +10,7 @@ public class FlywheelIOKraken implements FlywheelIO {
     private final Kraken motor;
 
     public FlywheelIOKraken() {
-        motor = new Kraken(FlywheelConstants.CAN_ID, FlywheelConstants.MOTOR_TYPE, CANConstants.SUPERSTRUCTURE_BUS,true, true, ControlPreference.VOLTAGE);
+        motor = new Kraken(FlywheelConstants.CAN_ID, FlywheelConstants.MOTOR_TYPE, CANConstants.RIO_BUS,true, true, ControlPreference.VOLTAGE);
         configMotor();
     }
 

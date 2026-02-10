@@ -35,6 +35,7 @@ public class IntakeIOKraken implements IntakeIO {
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
         inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
+        inputs.positionRotations = motor.getPositionAsDouble();
     }
 
     @Override

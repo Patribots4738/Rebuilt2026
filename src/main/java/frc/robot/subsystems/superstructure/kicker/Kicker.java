@@ -53,11 +53,11 @@ public class Kicker extends SubsystemBase {
 					    Seconds.of(10)
 			    ),
 			    new SysIdRoutine.Mechanism(
-					    (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+					    (Voltage volts) -> io.setVoltage(volts.in(Volts)),
 					    log -> log.motor("kicker")
-							    .voltage(Volts.of(inputs.motorAppliedOutputVolts))
-							    .linearPosition(Meters.of(inputs.motorPositionMeters))
-							    .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
+							    .voltage(Volts.of(inputs.appliedOutputVolts))
+							    .angularPosition(Rotations.of(inputs.positionRotations))
+							    .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec)),
 					    this
 			    )
 	    );
