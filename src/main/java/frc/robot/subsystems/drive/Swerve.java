@@ -205,7 +205,7 @@ public class Swerve extends SubsystemBase {
                         log -> log.motor("drive")
                                 .voltage(Volts.of(getDriveCharacterizationVoltage()))
                                 .angularPosition(Radians.of(getDriveAveragePosition()))
-                                .angularVelocity(RotationsPerSecond.of(getDriveCharacterizationVelocity())),
+                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
                         this
                 )
         );
