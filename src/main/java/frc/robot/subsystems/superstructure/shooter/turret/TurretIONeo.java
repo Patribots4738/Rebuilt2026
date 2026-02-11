@@ -27,7 +27,7 @@ public class TurretIONeo implements TurretIO {
         inputs.internalPositionRads = motor.getPositionRads();
         inputs.internalVelocityRadsPerSec = motor.getVelocityRadsPerSec();
         inputs.targetPositionRads = motor.getTargetPositionRads();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
         inputs.encoderAbsPositionRads = inputs.internalPositionRads;
