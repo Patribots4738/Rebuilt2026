@@ -43,6 +43,7 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
+import frc.robot.util.Constants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.ShotCalculations;
@@ -180,11 +181,23 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        configureDriverBindings(driver);
-        configureOperatorBindings(operator);
+        switch(OIConstants.DRIVER_MODE) {
+                case DEV:
+                        configureDevBindings(driver);
+                        break;
+                case SINGLE:
+                        configureDriverBindings(driver);
+                        break;
+        }
     }
 
     private void configureTimedEvents() {}
+
+    private void configureDevBindings(PatriBoxController controller) {
+        controller.leftBumper().onTrue(swerve.setWheelsOCommand());
+        controller.rightBumper().onTrue(swerve.getSetWheelsX());
+        controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+    }
 
     private void configureDriverBindings(PatriBoxController controller) {
 
