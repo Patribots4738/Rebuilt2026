@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
                         log -> log.motor("flywheel")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
                                 .angularPosition(Rotations.of(inputs.positionRotations))
-                                .angularVelocity(RadiansPerSecond.of(inputs.velocityRadsPerSec)),
+                                .angularVelocity(RotationsPerSecond.of(inputs.velocityRadsPerSec)),
                         this
                 )
         );

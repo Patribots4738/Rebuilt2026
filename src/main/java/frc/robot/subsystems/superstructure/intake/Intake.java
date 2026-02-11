@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
                         (Voltage volts) -> io.setVoltage(volts.in(Volts)),
                         log -> log.motor("intake")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotation.of(inputs.positionRotations))
+                                .angularPosition(Rotations.of(inputs.positionRotations))
                                 .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec)),
                         this
                 )
