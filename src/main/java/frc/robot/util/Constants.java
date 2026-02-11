@@ -37,6 +37,7 @@ import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -461,10 +462,10 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = 0;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205566;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367676;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.280273;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.000244;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
@@ -509,6 +510,8 @@ public final class Constants {
             0.0
         );
 
+        public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
+
         public static final double TURNING_P = 0.0;
         public static final double TURNING_I = 0.0;
         public static final double TURNING_D = 0.0;
@@ -522,6 +525,8 @@ public final class Constants {
             0.0,
             0.0
         );
+
+        public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
     }
 
     public static final class MK4cSwerveModuleConstants {
@@ -747,7 +752,7 @@ public final class Constants {
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
 
-        public static final int CANRANGE_ID = 0; //TODO
+        public static final int CANRANGE_ID = 30; //TODO
     }
     
     public static final class CameraConstants {

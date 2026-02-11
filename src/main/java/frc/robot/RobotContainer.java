@@ -51,14 +51,14 @@ import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
 
-    private PowerDistribution pdh;
+//     private PowerDistribution pdh;
 
-    @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
-    private double totalCurrent;
-    @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
-    private double totalPower;
-    @AutoLogOutput (key = "PowerDistributionHub/Voltage")
-    private double voltage;
+//     @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
+//     private double totalCurrent;
+//     @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
+//     private double totalPower;
+//     @AutoLogOutput (key = "PowerDistributionHub/Voltage")
+//     private double voltage;
 
     private EventLoop testButtonBindingLoop = new EventLoop();
     
@@ -76,17 +76,17 @@ public class RobotContainer {
 
     private final Swerve swerve;
     @SuppressWarnings("unused")
-    private final Climb climb;
-    private final Flywheel flywheel;
-    private final Turret turret;
-    private final Hood hood;
-    private final Shooter shooter;
-    private final Intake intake;
-    private final Extender extender;
-    private final Kicker kicker;
-    private final Spindexer spindexer;
+//     private final Climb climb;
+//     private final Flywheel flywheel;
+//     private final Turret turret;
+//     private final Hood hood;
+//     private final Shooter shooter;
+//     private final Intake intake;
+//     private final Extender extender;
+//     private final Kicker kicker;
+//     private final Spindexer spindexer;
 
-    private final Superstructure superstructure;
+//     private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -116,27 +116,27 @@ public class RobotContainer {
         driver = new PatriBoxController(OIConstants.DRIVER_CONTROLLER_PORT, OIConstants.DRIVER_DEADBAND);
         operator = new PatriBoxController(OIConstants.OPERATOR_CONTROLLER_PORT, OIConstants.OPERATOR_DEADBAND);
 
-        pdh = new PowerDistribution(30, ModuleType.kRev);
-        pdh.setSwitchableChannel(false);
+        // pdh = new PowerDistribution(30, ModuleType.kRev);
+        // pdh.setSwitchableChannel(false);
 
-        totalCurrent = pdh.getTotalCurrent();
-        SmartDashboard.putNumber("Total Current", totalCurrent);
-        totalPower = pdh.getTotalPower();
-        SmartDashboard.putNumber("Total Power", totalPower);
-        voltage = pdh.getVoltage();
-        SmartDashboard.putNumber("Voltage", voltage);
+        // totalCurrent = pdh.getTotalCurrent();
+        // SmartDashboard.putNumber("Total Current", totalCurrent);
+        // totalPower = pdh.getTotalPower();
+        // SmartDashboard.putNumber("Total Power", totalPower);
+        // voltage = pdh.getVoltage();
+        // SmartDashboard.putNumber("Voltage", voltage);
 
         swerve = new Swerve();
-        climb = new Climb(new ClimbIOKraken());
-        extender = new Extender(new ExtenderIOKraken());
-        intake = new Intake(new IntakeIOKraken());
-        spindexer = new Spindexer(new SpindexerIOKraken());
-        kicker = new Kicker(new KickerIOKraken());
-        flywheel = new Flywheel(new FlywheelIOKraken());
-        turret = new Turret(new TurretIOKraken());
-        hood = new Hood(new HoodIOKraken());
-        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
-        superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
+        // climb = new Climb(new ClimbIOKraken());
+        // extender = new Extender(new ExtenderIOKraken());
+        // intake = new Intake(new IntakeIOKraken());
+        // spindexer = new Spindexer(new SpindexerIOKraken());
+        // kicker = new Kicker(new KickerIOKraken());
+        // flywheel = new Flywheel(new FlywheelIOKraken());
+        // turret = new Turret(new TurretIOKraken());
+        // hood = new Hood(new HoodIOKraken());
+        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
 
@@ -181,14 +181,15 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        switch(OIConstants.DRIVER_MODE) {
-                case DEV:
-                        configureDevBindings(driver);
-                        break;
-                case SINGLE:
-                        configureDriverBindings(driver);
-                        break;
-        }
+        configureDevBindings(driver);
+        // switch(OIConstants.DRIVER_MODE) {
+        //         case DEV:
+        //                 configureDevBindings(driver);
+        //                 break;
+        //         case SINGLE:
+        //                 configureDriverBindings(driver);
+        //                 break;
+        // }
     }
 
     private void configureTimedEvents() {}
@@ -271,11 +272,11 @@ public class RobotContainer {
                 .onTrue(HDCTuner.multiplyPIDCommand(.5));
     }
 
-    public void refreshPDHData() {
-        totalCurrent = pdh.getTotalCurrent();
-        totalPower = pdh.getTotalPower();
-        voltage = pdh.getVoltage();
-    }
+//     public void refreshPDHData() {
+//         totalCurrent = pdh.getTotalCurrent();
+//         totalPower = pdh.getTotalPower();
+//         voltage = pdh.getVoltage();
+//     }
 
     public void onDisabled() {
         swerve.stopDriving();

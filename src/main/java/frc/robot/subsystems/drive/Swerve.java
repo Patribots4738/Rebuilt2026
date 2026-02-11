@@ -68,9 +68,6 @@ public class Swerve extends SubsystemBase {
     private final SwerveSetpointGenerator setpointGenerator;
     private SwerveSetpoint previousSetpoint;
 
-    private double maxLinearVelocity;
-    private double maxAngularVelocity;
-    
     private ChassisSpeeds speeds = new ChassisSpeeds();
 
     /**
@@ -121,9 +118,6 @@ public class Swerve extends SubsystemBase {
             rearRight
         };
 
-        maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
-        maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
-            
         gyro = new Gyro(new GyroIOPigeon2(DriveConstants.GYRO_CAN_ID));
 
         resetEncoders();
@@ -233,10 +227,12 @@ public class Swerve extends SubsystemBase {
 
         if (FieldConstants.IS_SIMULATION) {
             resetOdometry(
-                    currentPose.exp(
-                            new Twist2d(
-                                    0, 0,
-                                    speeds.omegaRadiansPerSecond * .02)));
+                currentPose.exp(
+                    new Twist2d(
+                        0, 0,
+                        speeds.omegaRadiansPerSecond * .02)
+                )
+            );
         }
 
         RobotContainer.field2d.setRobotPose(currentPose);
@@ -252,31 +248,6 @@ public class Swerve extends SubsystemBase {
             RobotContainer.robotPose2d = currentPose;
         }
 
-        double pitch = gyro.getPitch();
-        double roll = gyro.getRoll();
-
-        Rotation3d rotation3d = FieldConstants.IS_SIMULATION 
-            ?  new Rotation3d(
-                Units.degreesToRadians(0), 
-                Units.degreesToRadians(0), 
-                currentPose.getRotation().getRadians())
-            :  new Rotation3d(
-                Units.degreesToRadians(-roll), 
-                Units.degreesToRadians(-pitch+Math.PI), 
-                currentPose.getRotation().getRadians()+Math.PI);
-
-        RobotContainer.robotPose3d = new Pose3d(
-                new Translation3d(
-                        currentPose.getX(),
-                        currentPose.getY(),
-                        Math.hypot(
-                                Rotation2d.fromDegrees(roll).getSin()
-                                        * DriveConstants.ROBOT_LENGTH_METERS / 2.0,
-                                Rotation2d.fromDegrees(pitch).getSin() *
-                                        DriveConstants.ROBOT_LENGTH_METERS / 2.0)),
-            rotation3d);
-
-        Logger.recordOutput("Subsystems/Swerve/RobotPose3d", RobotContainer.robotPose3d);
         Logger.recordOutput("Subsystems/Swerve/ChassisSpeeds", speeds);
 
         Logger.recordOutput("Subsystems/Swerve/Modules/FrontLeft/DesiredState", frontLeft.getDesiredState());
@@ -376,30 +347,12 @@ public class Swerve extends SubsystemBase {
         return average / 4.0;
     }
 
-    public void setSpeedsSlow() {
-        this.maxLinearVelocity = 2.25;
-        this.maxAngularVelocity = 568.605;
-    }
-
-    public void setSpeedsNormal() {
-        this.maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
-        this.maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
-    }
-
-    public Command setSlowDrive() {
-        return run(this::setSpeedsSlow);
-    }
-
-    public Command setNormalDrive() {
-        return run(this::setSpeedsNormal);
-    }
-
     public double getMaxLinearVelocity() {
-        return maxLinearVelocity;
+        return DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     }
 
     public double getMaxAngularVelocity() {
-        return maxAngularVelocity;
+        return DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
     }
 
     public double getDriveMultiplier() {
