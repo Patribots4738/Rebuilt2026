@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -174,10 +173,10 @@ public class Shooter extends SubsystemBase {
         return Commands.runOnce(() -> this.eject());
     }
 
-    public void stowCommand() {
-        Commands.sequence(
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
-            this.setNeutralCommand()
-        );
+    public Command stowCommand() {
+        return Commands.sequence(
+                    hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+                    this.setNeutralCommand()
+                );
     }
 }

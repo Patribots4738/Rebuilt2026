@@ -1,33 +1,22 @@
 package frc.robot.subsystems.superstructure;
 
 import java.util.Set;
-import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.shooter.Shooter;
-import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.superstructure.shooter.hood.Hood;
-import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.FlywheelConstants;
-import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.SpindexerConstants;
-import frc.robot.util.calc.ShotCalculations;
-import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Superstructure {
 
@@ -145,7 +134,7 @@ public class Superstructure {
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
     public Command fireCommand() {
-        if (shooter.fullyTracking() && shooter.shooterReady()) {
+        if (shooter.fullyTracking() && shooter.isReady()) {
             return Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
                 kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
@@ -169,18 +158,10 @@ public class Superstructure {
 
     public Command fullStowCommand() {
         return Commands.sequence(
-            shooter.stow(),
+            shooter.stowCommand(),
             setClimbState(ClimbState.STOW),
             setHopperState(HopperState.OFF),
-            setIntakeState(IntakeState.STOW);
+            setIntakeState(IntakeState.STOW)
         );
-    }
-
-    public Command forceHoodDown() {
-        
-    }
-
-    public Command stopOuttakingCommand() {
-        return Commands.parallel(setHopperState(HopperState.OFF), );
     }
 }

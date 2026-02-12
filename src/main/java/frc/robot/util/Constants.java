@@ -1139,13 +1139,6 @@ public final class Constants {
             return line;
         }
 
-        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
-            put("Pass Left", GET_PASS_LEFT());
-            put("Pass Right", GET_PASS_RIGHT());
-            put("Hub", GET_HUB());
-        }};
-
-
         public static final Translation3d HUB_RED = new Translation3d(4.6209, 4.041, 1.8288);
         
         public static final List<Translation3d> HUBS = new ArrayList<Translation3d>() {{
@@ -1180,6 +1173,12 @@ public final class Constants {
             int index = Robot.isRedAlliance()? 0 : 1;
             return PASS_RIGHT_LOCATIONS.get(index);
         }
+
+        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
+            put("Pass Left", GET_PASS_LEFT());
+            put("Pass Right", GET_PASS_RIGHT());
+            put("Hub", GET_HUB());
+        }};
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
         public static final List<Pose2d> OUTPOSTS = new ArrayList<Pose2d>() {{
