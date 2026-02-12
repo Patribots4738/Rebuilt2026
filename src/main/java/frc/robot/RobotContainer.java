@@ -49,6 +49,7 @@ import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.OIConstants;
+import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.ActiveConditionalCommand;
@@ -90,6 +91,7 @@ public class RobotContainer {
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
+    private final Alignment alignment;
 
     private final Superstructure superstructure;
 
@@ -142,6 +144,7 @@ public class RobotContainer {
         hood = new Hood(new HoodIOKraken());
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
+        alignment = new Alignment(swerve);
 
         SmartDashboard.putData(field2d);
 
@@ -305,15 +308,14 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("ShootOnTheFly", superstructure.outtakeCommand());
-        NamedCommands.registerCommand("StopShooting", superstructure.);
-        NamedCommands.registerCommand("Track", shooter.setTrackTargetCommand(() -> true).only);
-        NamedCommands.registerCommand("StopTrack", shooter.setTrackTargetCommand(() -> false));
+        NamedCommands.registerCommand("ShootOnTheFly", shooter.armShooterCommand());
+        NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
+        NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
         NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
-        NamedCommands.registerCommand("AlignStartingLineLeft", alignment.);
 
     }
 }
