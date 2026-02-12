@@ -48,6 +48,7 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
+import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
@@ -317,5 +318,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
 
+        NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
+        NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
+        NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
     }
 }

@@ -280,4 +280,9 @@ public class Alignment {
                 true
             );
     }
+
+    public Command autonoumusTowerAlignmentCommand(Pose2d robot, int index) {
+        alignmentIndex = index;
+        return towerAlignmentCommand(robot);
+    }
 }
