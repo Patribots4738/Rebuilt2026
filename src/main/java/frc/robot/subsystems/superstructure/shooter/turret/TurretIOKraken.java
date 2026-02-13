@@ -33,6 +33,7 @@ public class TurretIOKraken implements TurretIO {
         motor.setTorqueCurrentLimits(-TurretConstants.CURRENT_LIMIT, TurretConstants.CURRENT_LIMIT);
         motor.setBrakeMode(TurretConstants.BRAKE_MOTOR);
         motor.setTelemetryPreference(TelemetryPreference.DEFAULT);
+        motor.setPositionClosedLoopWrappingEnabled(false);
     }
 
     private void configEncoder() {

@@ -293,6 +293,11 @@ public class Alignment {
             );
     }
 
+    public Command autonoumusTowerAlignmentCommand(Pose2d robot, int index) {
+        alignmentIndex = index;
+        return towerAlignmentCommand(robot);
+    }
+  
     public Command startingLineAlignmentCommand(Pose2d robotPos) {
         return autoAlignmentCommand(AlignmentMode.STARTING_LINE, this::getAllianceLineAlignmentSpeeds, true);
     }

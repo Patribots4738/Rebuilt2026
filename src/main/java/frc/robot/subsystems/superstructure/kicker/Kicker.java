@@ -30,6 +30,11 @@ public class Kicker extends SubsystemBase {
 	
 	private final KickerIO io;
 	private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
+
+	@AutoLogOutput (key = "Subsystems/Kicker/EmptyHopper")
+	private boolean emptyHopper;
+
+	private Debouncer emptyHopperDebouncer = new Debouncer(0.5);
 	
 	private double percentOutput = 0.0;
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
@@ -72,6 +77,7 @@ public class Kicker extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+		updateEmptyHopper();
 
         if (shouldRunSetpoint) {
             io.setPercent(percentOutput);
@@ -101,6 +107,14 @@ public class Kicker extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+
+	public void updateEmptyHopper() {
+		emptyHopper = emptyHopperDebouncer.calculate(!(inputs.isRangeTripped));
+	}
+
+	public boolean emptyHopper() {
+		return emptyHopper;
+	}
 	
 	public Command quasistatic(SysIdRoutine.Direction direction) {
 		return kickerRoutine.quasistatic(direction);
