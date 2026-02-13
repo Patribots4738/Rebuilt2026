@@ -25,14 +25,19 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.subsystems.superstructure.Shooter;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
+import frc.robot.subsystems.superstructure.Superstructure.HopperState;
+import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
+import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
+import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.intake.IntakeIOKraken;
+import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
@@ -43,10 +48,12 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
-import frc.robot.util.Constants;
+import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
+import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.ShotCalculations;
+import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -85,6 +92,7 @@ public class RobotContainer {
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
+    private final Alignment alignment;
 
     private final Superstructure superstructure;
 
@@ -137,6 +145,7 @@ public class RobotContainer {
         hood = new Hood(new HoodIOKraken());
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
+        alignment = new Alignment(swerve);
 
         SmartDashboard.putData(field2d);
 
@@ -212,11 +221,33 @@ public class RobotContainer {
         ), swerve)
         );
 
+        controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
+        controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
+        controller.rightBumper().onTrue(superstructure.fullStowCommand());
+        controller.rightTrigger()
+                .whileTrue(
+                        new ActiveConditionalCommand(
+                                superstructure.fireCommand(), 
+                                Commands.sequence(
+                                        shooter.armShooterCommand(), 
+                                        Commands.waitUntil(() -> shooter.isReady()),
+                                        superstructure.fireCommand()),
+                                () -> shooter.isReady()
+                        )
+                );
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
+        controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
+        controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(()-> !controller.povRight().getAsBoolean()));
+        controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
+
+
 
         // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
         // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        controller.b().whileTrue(swerve.driveCharacterization());
-        controller.y().whileTrue(swerve.getSetWheelsZero());
+        // controller.b().whileTrue(swerve.driveCharacterization());
+        // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
     private void configureOperatorBindings(PatriBoxController controller) {
@@ -289,5 +320,18 @@ public class RobotContainer {
         freshCode = false;
     }
 
-    private void prepareNamedCommands() {}
+    private void prepareNamedCommands() {
+        NamedCommands.registerCommand("ShootOnTheFly", shooter.armShooterCommand());
+        NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
+        NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
+        NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
+        NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
+        NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+
+        NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
+        NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
+        NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+    }
 }

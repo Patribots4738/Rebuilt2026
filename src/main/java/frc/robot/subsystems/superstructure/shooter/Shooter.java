@@ -1,4 +1,4 @@
-package frc.robot.subsystems.superstructure;
+package frc.robot.subsystems.superstructure.shooter;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -6,18 +6,15 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
-import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
-import frc.robot.subsystems.superstructure.shooter.hood.HoodIOKraken;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
-import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
-import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
@@ -27,9 +24,15 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackTarget")
-    private boolean trackTarget = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
+    private boolean aimTurret = true;
+    @AutoLogOutput(key = "Susbsytems/Shooter/TrackFlywheel")
+    private boolean spinFlywheel = false;
+    @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
+    private boolean aimHood = true;
     private int passIndex = 0;
+
+    private ShootingParameters shotParams;
 
     private Turret turret;
     private Hood hood;
@@ -51,6 +54,8 @@ public class Shooter extends SubsystemBase {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
+
+        shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
     }
 
     @Override
@@ -58,28 +63,71 @@ public class Shooter extends SubsystemBase {
         if (PoseCalculations.inTrench(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
-        else if (trackTarget) {
+        else if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
-            flywheel.setVelocity(shotParams.flywheelSpeed());
-            hood.setPosition(shotParams.hoodAngle());     
-            turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());       
+            shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
+            this.setShooterStates();
         }
-    }
-
-    public boolean isTrackingTarget() {
-        return trackTarget;
-    }
-
-    public void setTrackTarget(boolean trackTarget) {
-        if (!trackTarget) {
+        else {
             targetName = "None";
         }
-        this.trackTarget = trackTarget;
     }
 
-    public Command setTrackTargetCommand(BooleanSupplier trackTarget) {
-        return Commands.runOnce(() -> setTrackTarget(trackTarget.getAsBoolean()));
+    public boolean partiallyTracking() {
+        return aimHood || aimTurret || spinFlywheel;
+    }
+
+    public boolean fullyTracking() {
+        return aimHood && aimTurret && spinFlywheel;
+    }
+
+    public boolean hoodTracking() {
+        return aimHood;
+    }
+
+    public boolean turretTracking() {
+        return aimTurret;
+    }
+
+    public boolean flywheelTracking() {
+        return spinFlywheel;
+    }
+
+    public void setShooterStates() {
+        if (spinFlywheel) flywheel.setVelocity(shotParams.flywheelSpeed());
+        if (aimTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
+        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+        }
+        else if (aimHood){
+            hood.setPosition(shotParams.hoodAngle());
+        }        
+    }
+    
+    public void setSpinFlywheel(boolean spinFlywheel) {
+        this.spinFlywheel = spinFlywheel;
+    }
+
+    public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
+        return Commands.runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
+    }
+
+    public Command trackTargetCommand(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
+        return Commands.runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
+    }
+
+    public void setTrackTarget(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
+        this.spinFlywheel = spinFlywheel;
+        this.aimTurret = aimTurret;
+        this.aimHood = aimHood;
+    }
+
+    public Command armShooterCommand() {
+        return Commands.runOnce(() -> setTrackTarget(true, true, true));
+    }
+
+    public Command disarmShooterCommand() {
+        return Commands.runOnce(() -> setTrackTarget(false, false, false));
     }
 
     /**
@@ -87,7 +135,7 @@ public class Shooter extends SubsystemBase {
      * 
      * @return whether the shooter is at the right state
      */
-    public boolean shooterReady() {
+    public boolean isReady() {
         return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
     }
 
@@ -123,5 +171,12 @@ public class Shooter extends SubsystemBase {
 
     public Command ejectCommand() {
         return Commands.runOnce(() -> this.eject());
+    }
+
+    public Command stowCommand() {
+        return Commands.sequence(
+                    hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+                    this.setNeutralCommand()
+                );
     }
 }

@@ -22,8 +22,8 @@ import frc.robot.util.Constants.TurretConstants;
 
 public class ShotCalculations {
 
-    private final static LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
-    private final static LinearFilter hAngleFilter = LinearFilter.movingAverage((int) (0.1 / 33.3333));
+    private final static LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / LoggingConstants.PHASE_DELAY));
+    private final static LinearFilter hAngleFilter = LinearFilter.movingAverage((int) (0.1 / LoggingConstants.PHASE_DELAY));
 
     private static Rotation2d lastTurretAngle;
     private static double lastHoodAngleRadians;
