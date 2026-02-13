@@ -899,7 +899,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 50;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
+        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
 
         public static final double EJECT_VELOCITY = 10;
 
@@ -1101,6 +1101,8 @@ public final class Constants {
     public static final class SpindexerConstants {
         public static final int CAN_ID = 11;
 
+        public static final double SPINDEXER_RADIUS = Units.inchesToMeters(5.5);
+        
         public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 

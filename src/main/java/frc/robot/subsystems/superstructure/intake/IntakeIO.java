@@ -13,6 +13,7 @@ public interface IntakeIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
+        public double positionRotations = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
