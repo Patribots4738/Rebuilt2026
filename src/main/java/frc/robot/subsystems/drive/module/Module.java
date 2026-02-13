@@ -26,7 +26,7 @@ public class Module {
         this.chassisAngularOffset = chassisAngularOffset;
 
         MK5nSwerveModuleConstants.LOGGED_DRIVING_GAINS.onChanged(Commands.runOnce(() -> io.setDriveGains(MK5nSwerveModuleConstants.LOGGED_DRIVING_GAINS.get())).ignoringDisable(true));
-        MK5nSwerveModuleConstants.LOGGED_TURNING_GAINS.onChanged(Commands.runOnce(() -> io.setDriveGains(MK5nSwerveModuleConstants.LOGGED_TURNING_GAINS.get())).ignoringDisable(true));
+        MK5nSwerveModuleConstants.LOGGED_TURNING_GAINS.onChanged(Commands.runOnce(() -> io.setTurnGains(MK5nSwerveModuleConstants.LOGGED_TURNING_GAINS.get())).ignoringDisable(true));
     }
 
     public void updateInputs() {

@@ -464,8 +464,8 @@ public final class Constants {
 
         public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205566;
         public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367676;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.280273;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.000244;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.277100;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329102;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
@@ -495,7 +495,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.0;
+        public static final double DRIVING_P = 3.0;
         public static final double DRIVING_I = 0.0;
         public static final double DRIVING_D = 0.0;
         public static final double DRIVING_S = 0.0;
@@ -512,9 +512,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 0.0;
+        public static final double TURNING_P = 280.0;
         public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 0.0;
+        public static final double TURNING_D = 20.0;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -947,7 +947,7 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 40;
+        public static final double CURRENT_LIMIT = 30;
 
         public static final double GEAR_RATIO = 1.0;
 
@@ -993,7 +993,7 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 0;
+        public static final double CURRENT_LIMIT = 20;
 
         public static final double INTAKE_PERCENT = 0.5;
 
