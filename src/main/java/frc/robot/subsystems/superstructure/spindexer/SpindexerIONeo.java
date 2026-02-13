@@ -32,7 +32,7 @@ public class SpindexerIONeo implements SpindexerIO {
         inputs.temperatureCelsius = motor.getMotorTemperature();
         inputs.percentOutput = motor.getAppliedOutput();
         inputs.targetPercentOutput = motor.getTargetPercent();
-        inputs.velocityRotationsPerSec = motor.getVelocity() / (2.0 * Math.PI);
+        inputs.velocityRotationsPerSec = motor.getVelocity() / 60.0;
         inputs.positionRotations = motor.getPosition();
     }
 
