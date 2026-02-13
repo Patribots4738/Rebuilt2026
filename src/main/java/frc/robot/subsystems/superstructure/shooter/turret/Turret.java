@@ -66,7 +66,7 @@ public class Turret extends SubsystemBase {
      * @param position in radians
      */
     public void setPosition(double position) {
-        position = MathUtil.clamp(position, TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        position = position % (TurretConstants.MAX_ANGLE_RADIANS - TurretConstants.MIN_ANGLE_RADIANS);
         if (position != targetState.position) {
             setpoint.position = inputs.internalPositionRads;
             setpoint.velocity = inputs.internalVelocityRadsPerSec;

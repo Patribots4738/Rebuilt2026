@@ -112,22 +112,16 @@ public final class Constants {
             ROBOT_OFFSET.getZ() + 0.0
         );
 
-        public static final Translation3d WRIST_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
-        );
-
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getX() - 4.5,
+            ROBOT_OFFSET.getY() -4.0,
+            ROBOT_OFFSET.getZ() + 12.594
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
+            ROBOT_OFFSET.getX() + -9.392,
             ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getZ() + 17.156
         );
 
         public static final double PHASE_DELAY = 0.03;
@@ -147,13 +141,13 @@ public final class Constants {
 
         // Chassis configuration
         // Distance between centers of right and left wheels on robot
-        public static final double TRACK_WIDTH = Units.inchesToMeters(23.0);
+        public static final double TRACK_WIDTH = Units.inchesToMeters(21.75);
         // Distance between front and back wheels on robot
         // Easiest measured from the center of the bore of the vortex
-        public static final double WHEEL_BASE = Units.inchesToMeters(23.0);
+        public static final double WHEEL_BASE = Units.inchesToMeters(21.75);
 
-        public static final double ROBOT_LENGTH_METERS = Units.inchesToMeters(28.5);
-        public static final double BUMPER_LENGTH_METERS = Units.inchesToMeters(2.75);
+        public static final double ROBOT_LENGTH_METERS = Units.inchesToMeters(27);
+        public static final double BUMPER_LENGTH_METERS = Units.inchesToMeters(2.75); //update
 
         public static final double FULL_ROBOT_LENGTH_METERS = ROBOT_LENGTH_METERS + (2*BUMPER_LENGTH_METERS);
 
@@ -638,11 +632,12 @@ public final class Constants {
 
         public enum DriverMode {
             DOUBLE,
+            SINGLE,
             DEV,
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.DOUBLE;
+        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
 
     }
 
@@ -989,6 +984,8 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 0;
 
+        public static final double EXTENSION_LEMGTH_METERS = Units.inchesToMeters(9.108);
+
         public static final double INTAKE_PERCENT = 0.5;
 
         public static final double POSITION_CONVERSION_FACTOR = 0.0;
@@ -1104,7 +1101,7 @@ public final class Constants {
     public static final class SpindexerConstants {
         public static final int CAN_ID = 11;
 
-        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double CURRENT_LIMIT = 15.0;
@@ -1146,13 +1143,6 @@ public final class Constants {
             return line;
         }
 
-        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
-            put("Pass Left", GET_PASS_LEFT());
-            put("Pass Right", GET_PASS_RIGHT());
-            put("Hub", GET_HUB());
-        }};
-
-
         public static final Translation3d HUB_RED = new Translation3d(4.6209, 4.041, 1.8288);
         
         public static final List<Translation3d> HUBS = new ArrayList<Translation3d>() {{
@@ -1161,7 +1151,7 @@ public final class Constants {
         }};
 
         public static final Translation3d GET_HUB() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return HUBS.get(index);
         }
         
@@ -1179,14 +1169,20 @@ public final class Constants {
         }};
 
         public static final Translation3d GET_PASS_LEFT() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_LEFT_LOCATIONS.get(index);
         }
 
         public static final Translation3d GET_PASS_RIGHT() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_RIGHT_LOCATIONS.get(index);
         }
+
+        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
+            put("Hub", GET_HUB());
+            put("Pass Left", GET_PASS_LEFT());
+            put("Pass Right", GET_PASS_RIGHT());
+        }};
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
         public static final List<Pose2d> OUTPOSTS = new ArrayList<Pose2d>() {{
