@@ -52,6 +52,7 @@ import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
+import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
@@ -321,7 +322,7 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("ShootOnTheFly", shooter.armShooterCommand());
+        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().unless(() -> PoseCalculations.behindTower(swerve.getPose())));
         NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));

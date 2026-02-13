@@ -28,12 +28,7 @@
       "linkedName": "ClimbPrepMiddle"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.7313237221494111,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Depot",

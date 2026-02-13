@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 1.4984204545454543,
+        "x": 0.9954608770044411,
         "y": 3.705181818181819
       },
       "prevControl": {
-        "x": 1.74842020418281,
+        "x": 1.245460626641797,
         "y": 3.705535627819142
       },
       "nextControl": null,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Climb",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
