@@ -1133,12 +1133,12 @@ public final class Constants {
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
 
-        public static final double FREND_LINE() {
+        public static final double CURRENT_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
             return line;
         }
 
-        public static final double FOW_LINE() {
+        public static final double OPPOSING_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
             return line;
         }
@@ -1257,8 +1257,8 @@ public final class Constants {
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
         public static final double TRENCH_WIDTH = 1.5772;
-        public static final List<Pose2d> TRENCHS = new ArrayList<Pose2d>() {{
-            //RED Trenchs
+        public static final List<Pose2d> TRENCHES = new ArrayList<Pose2d>() {{
+            //RED TRENCHES
             //Side 1
             Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
             add(trenchRed1.toPose2d());
@@ -1273,7 +1273,7 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'D'));
-            //Blue Trenchs
+            //Blue Trenches
             //Side 1
             Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
             add(trenchBlue1.toPose2d());
@@ -1290,14 +1290,14 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
         }};
 
-        public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
+        public static final List<Pose2d> GET_ALLIANCE_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 0 : 10;
-            return TRENCHS.subList(startindex, startindex + 10);
+            return TRENCHES.subList(startindex, startindex + 10);
         }
 
-        public static final List<Pose2d> GET_ENEMY_TRENCHS() {
+        public static final List<Pose2d> GET_OPPOSING_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
-            return TRENCHS.subList(startindex, startindex + 8);
+            return TRENCHES.subList(startindex, startindex + 8);
         }
 
         public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
@@ -1341,7 +1341,7 @@ public final class Constants {
             return BUMPS.subList(startindex, startindex + 8);
         }
 
-        public static final List<Pose2d> GET_ENEMY_BUMPS() {
+        public static final List<Pose2d> GET_OPPOSING_BUMPS() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }
