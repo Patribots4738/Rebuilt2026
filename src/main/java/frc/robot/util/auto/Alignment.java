@@ -59,7 +59,8 @@ public class Alignment {
         NONE,
         TOWER,
         BUMP,
-        TRENCH
+        TRENCH,
+        STARTING_LINE
     }
 
     public void resetProfile() {
@@ -213,6 +214,17 @@ public class Alignment {
         return autoSpeeds;
     }
 
+    public ChassisSpeeds getAllianceLineAlignmentSpeeds() {
+        Pose2d node = PoseCalculations.nearest(swerve.getPose(), FieldConstants.ALLIANCE_LINE_LIST);
+
+        double distance = DriveConstants.FULL_ROBOT_LENGTH_METERS / 2;
+        Pose2d desiredPose = PoseCalculations.getPoseWithDistance(node, distance);
+
+        ChassisSpeeds autoSpeeds = getProfiledAutoSpeeds(desiredPose);
+
+        return autoSpeeds;
+    }
+
     public void updateIndex(int increment) {
         resetHDC();
         resetProfile();
@@ -284,5 +296,9 @@ public class Alignment {
     public Command autonoumusTowerAlignmentCommand(Pose2d robot, int index) {
         alignmentIndex = index;
         return towerAlignmentCommand(robot);
+    }
+  
+    public Command startingLineAlignmentCommand(Pose2d robotPos) {
+        return autoAlignmentCommand(AlignmentMode.STARTING_LINE, this::getAllianceLineAlignmentSpeeds, true);
     }
 }

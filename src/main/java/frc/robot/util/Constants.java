@@ -632,11 +632,12 @@ public final class Constants {
 
         public enum DriverMode {
             DOUBLE,
+            SINGLE,
             DEV,
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.DOUBLE;
+        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
 
     }
 
@@ -1125,6 +1126,9 @@ public final class Constants {
         public static final double FIELD_LENGTH = 16.5890;
         public static final double FIELD_WIDTH = 8.0756;
 
+        public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
+        public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
+
         public static final double CENTER_LINE_X = 8.2499;
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
@@ -1147,7 +1151,7 @@ public final class Constants {
         }};
 
         public static final Translation3d GET_HUB() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return HUBS.get(index);
         }
         
@@ -1165,19 +1169,19 @@ public final class Constants {
         }};
 
         public static final Translation3d GET_PASS_LEFT() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_LEFT_LOCATIONS.get(index);
         }
 
         public static final Translation3d GET_PASS_RIGHT() {
-            int index = Robot.isRedAlliance()? 0 : 1;
+            int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_RIGHT_LOCATIONS.get(index);
         }
 
         public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
+            put("Hub", GET_HUB());
             put("Pass Left", GET_PASS_LEFT());
             put("Pass Right", GET_PASS_RIGHT());
-            put("Hub", GET_HUB());
         }};
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
@@ -1341,5 +1345,12 @@ public final class Constants {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }
+
+        public static final List<Pose2d> ALLIANCE_LINE_LIST = new ArrayList<Pose2d>() {{
+            add(ALLIANCE_LINE_SHOT_RED_LEFT);
+            add(ALLIANCE_LINE_SHOT_RED_RIGHT);
+            add(PoseCalculations.mirrorPose(ALLIANCE_LINE_SHOT_RED_LEFT));
+            add(PoseCalculations.mirrorPose(ALLIANCE_LINE_SHOT_RED_RIGHT));
+        }};
     }
 }

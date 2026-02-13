@@ -190,11 +190,23 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        configureDriverBindings(driver);
-        configureOperatorBindings(operator);
+        switch(OIConstants.DRIVER_MODE) {
+                case DEV:
+                        configureDevBindings(driver);
+                        break;
+                case SINGLE:
+                        configureDriverBindings(driver);
+                        break;
+        }
     }
 
     private void configureTimedEvents() {}
+
+    private void configureDevBindings(PatriBoxController controller) {
+        controller.leftBumper().onTrue(swerve.setWheelsOCommand());
+        controller.rightBumper().onTrue(swerve.getSetWheelsX());
+        controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+    }
 
     private void configureDriverBindings(PatriBoxController controller) {
 
