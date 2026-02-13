@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.764965909090909,
-        "y": 4.674022727272727
+        "x": 7.879755955316385,
+        "y": 5.894980725355017
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.053795454545455,
-        "y": 6.663238636363636
+        "x": 7.604758497316638,
+        "y": 6.915008944543827
       },
       "isLocked": false,
       "linkedName": "Center Line Left"
@@ -48,7 +48,7 @@
   "folder": "Center Line",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -41.987212495816586
   },
   "useDefaultConstraints": true
 }
