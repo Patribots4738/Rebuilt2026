@@ -87,7 +87,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    private final frc.robot.subsystems.superstructure.shooter.Shooter shooter;
+    private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
