@@ -323,6 +323,7 @@ public class RobotContainer {
 
     private void prepareNamedCommands() {
         NamedCommands.registerCommand("Shoot", shooter.armShooterCommand());
+        NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand().until(() -> kicker.emptyHopper()));
         NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
@@ -339,5 +340,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("WaitUntilBehindTower", Commands.waitUntil(() -> PoseCalculations.behindTower(swerve.getPose())));
         NamedCommands.registerCommand("WaitUntilNotBehindTower", Commands.waitUntil(() -> ! (PoseCalculations.behindTower(swerve.getPose()))));
         NamedCommands.registerCommand("WaitUntilClimb", Commands.waitUntil(() -> superstructure.targetClimbState == ClimbState.UP));
+        NamedCommands.registerCommand("WaitUntilInsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone));
     }
 }

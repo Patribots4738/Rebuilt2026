@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 6.486920454545454,
-        "y": 1.375840909090908
+        "y": 1.3758409090909076
       },
       "isLocked": false,
       "linkedName": "BackHubLeft"
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

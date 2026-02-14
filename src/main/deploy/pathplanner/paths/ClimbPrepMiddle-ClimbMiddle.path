@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3641931818181816,
-        "y": 3.705181818181819
+        "x": 2.5860456241169634,
+        "y": 3.745016200121854
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1141932383040483,
-        "y": 3.7050137618513124
+        "x": 2.33604568060283,
+        "y": 3.7448481437913475
       },
       "isLocked": false,
       "linkedName": "ClimbPrepMiddle"
     },
     {
       "anchor": {
-        "x": 0.9954608770044411,
-        "y": 3.705181818181819
+        "x": 0.913431607522381,
+        "y": 3.745016200121854
       },
       "prevControl": {
-        "x": 1.245460626641797,
-        "y": 3.705535627819142
+        "x": 1.1634313571597368,
+        "y": 3.745370009759177
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
