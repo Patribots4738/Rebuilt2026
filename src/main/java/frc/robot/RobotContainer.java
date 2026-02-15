@@ -341,5 +341,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("WaitUntilNotBehindTower", Commands.waitUntil(() -> ! (PoseCalculations.behindTower(swerve.getPose()))));
         NamedCommands.registerCommand("WaitUntilClimb", Commands.waitUntil(() -> superstructure.targetClimbState == ClimbState.UP));
         NamedCommands.registerCommand("WaitUntilInsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone));
+
+
+
+        NamedCommands.registerCommand("WiggleShoot", Commands.race(
+                Commands.sequence(Commands.waitSeconds(2.0),
+                        NamedCommands.getCommand("IntakeStow")),
+                Commands.waitSeconds(5),
+                NamedCommands.getCommand("ShootUntilEmptyHopper")
+        ));
     }
 }
