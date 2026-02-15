@@ -424,25 +424,6 @@ public class PoseCalculations {
     }
 
     /**
-     * Forward offset of the shooter relative to the robot origin (meters).
-     */
-    public static final double SHOOTER_FORWARD_OFFSET_METERS = 0.0;
-
-    
-    /**
-     * Determines whether the hood should be lowered based on
-     * whether the shooter (not robot center) is inside the trench.
-     *
-     * @param pos robot pose
-     * @return true if hood should be lowered
-     */
-    public static boolean shouldPutHoodDown(Pose2d pos) {
-        Pose2d shooterPose = getPoseWithDistance(pos, SHOOTER_FORWARD_OFFSET_METERS);
-        return inTrench(shooterPose);
-    }
-
-
-    /**
      * Determines whether the pose is on the ramp (bump region).
      *
      * @param pos robot pose
