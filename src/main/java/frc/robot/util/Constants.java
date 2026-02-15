@@ -38,6 +38,8 @@ import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedGainConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
+import frc.robot.util.custom.LoggedTunableConstant;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -642,7 +644,6 @@ public final class Constants {
         public static final double DRIVER_ALIGN_CANCEL_DEADBAND = 0.15;
 
         public enum DriverMode {
-            DOUBLE,
             SINGLE,
             DEV,
             CALIBRATION
@@ -987,58 +988,39 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 13;
         public static final int MOTOR_TYPE = 60;
-        public static final double GEAR_RATIO = 0.0;
+        public static final double GEAR_RATIO = 3.33333;
 
-        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 20;
 
         public static final double INTAKE_PERCENT = 0.5;
 
-        public static final double POSITION_CONVERSION_FACTOR = 0.0;
-        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-
-        public static final GainConstants GAINS = new GainConstants(
-            P,
-            I,
-            D,
-            A,
-            S,
-            V,
-            G
-        );
-
-
-
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Intake/Percent", INTAKE_PERCENT);
     }
 
     public static final class ExtenderConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 14;
         public static final int MOTOR_TYPE = 44;
-        public static final double GEAR_RATIO = 0.0;
+        public static final double GEAR_RATIO = 27.0;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 0.0;
+        public static final double CURRENT_LIMIT = 30.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = 0.0;
 
         public static final double STOW_POSITION_RADIANS = 0.0;
-        public static final double INTAKE_POSITION_RADIANS = Units.degreesToRadians(110);
+        public static final double INTAKE_POSITION_RADIANS = 0.0;
 
-        public static final double POSITION_CONVERSION_FACTOR = 0.0;
-        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
         public static final double DEADBAND_RADIANS = 0.0;
 
@@ -1060,6 +1042,12 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
+
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
+
+        public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
     }
 
     public static final class KickerConstants {
