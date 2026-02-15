@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants;
 
 public class PoseCalculations {
 
@@ -223,13 +224,15 @@ public class PoseCalculations {
         return ans;
     }
 
-    //SHOOTER_FORWARD_OFFSET_METERS: represents where the shooter is located relative to the robot’s pose origin.
-    public static final double SHOOTER_FORWARD_OFFSET_METERS = 0.0;
-
     public static boolean shouldPutHoodDown(Pose2d pos) {
-        Pose2d shooterPose = getPoseWithDistance(pos, SHOOTER_FORWARD_OFFSET_METERS);
-        return inTrench(shooterPose);
+        Pose2d hoodPose = new Pose2d(
+            pos.getX() + Constants.LoggingConstants.HOOD_OFFSET.getX(),
+            pos.getY() + Constants.LoggingConstants.HOOD_OFFSET.getY(),
+            pos.getRotation()
+    );
+        return inTrench(hoodPose);
     }
+
 
     public static boolean onRamp(Pose2d pos) {
         boolean ans = false;
