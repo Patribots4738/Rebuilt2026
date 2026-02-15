@@ -1223,21 +1223,22 @@ public final class Constants {
             Pose2d TowerRed = TOWER_CENTER_RED;
             add(TowerRed);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-SIDE"));
             //BLUE Tower
             Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
             add(TowerBlue);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-SIDE"));
         }};
+
 
         public static final Pose2d GET_TOWER_CENTER() {
             int index = Robot.isRedAlliance()? 0 : 5;

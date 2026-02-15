@@ -121,16 +121,16 @@ public class PoseCalculations {
     public static Pose2d getTowerDimensions(Pose2d pos, String side) {
         Pose2d newPos = new Pose2d();
         switch(side) {
-            case "PL":
+            case "LEFT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "PR":
+            case "RIGHT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "SL":
+            case "LEFT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
-            case "SR":
+            case "RIGHT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
         }
