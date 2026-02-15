@@ -81,8 +81,8 @@ public class RobotContainer {
 //     private final Turret turret;
 //     private final Hood hood;
 //     private final Shooter shooter;
-//     private final Intake intake;
-//     private final Extender extender;
+    private final Intake intake;
+    private final Extender extender;
 //     private final Kicker kicker;
 //     private final Spindexer spindexer;
 
@@ -128,8 +128,8 @@ public class RobotContainer {
 
         swerve = new Swerve();
         // climb = new Climb(new ClimbIOKraken());
-        // extender = new Extender(new ExtenderIOKraken());
-        // intake = new Intake(new IntakeIOKraken());
+        extender = new Extender(new ExtenderIOKraken());
+        intake = new Intake(new IntakeIOKraken());
         // spindexer = new Spindexer(new SpindexerIOKraken());
         // kicker = new Kicker(new KickerIOKraken());
         // flywheel = new Flywheel(new FlywheelIOKraken());
@@ -181,23 +181,31 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        configureDevBindings(driver);
-        // switch(OIConstants.DRIVER_MODE) {
-        //         case DEV:
-        //                 configureDevBindings(driver);
-        //                 break;
-        //         case SINGLE:
-        //                 configureDriverBindings(driver);
-        //                 break;
-        // }
+        switch(OIConstants.DRIVER_MODE) {
+                case DEV:
+                        configureDevBindings(driver);
+                        break;
+                case SINGLE:
+                        configureDriverBindings(driver);
+                        break;
+                case CALIBRATION:
+                        configureCalibrationBindings(driver);
+        }
     }
 
     private void configureTimedEvents() {}
 
     private void configureDevBindings(PatriBoxController controller) {
-        controller.leftBumper().onTrue(swerve.setWheelsOCommand());
-        controller.rightBumper().onTrue(swerve.getSetWheelsX());
-        controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+        controller.a().onTrue(swerve.setWheelsOCommand());
+        controller.b().onTrue(swerve.getSetWheelsX());
+        controller.x().onTrue(swerve.setWheelsZeroCommand());
+
+        controller.rightStick().onTrue(extender.resetEncodersCommand());
+        controller.rightTrigger().onTrue(extender.setTestPositionCommand());
+        controller.rightBumper().onTrue(extender.setNeutralCommand());
+
+        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        controller.leftBumper().onTrue(intake.setNeutralCommand());
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
@@ -220,23 +228,8 @@ public class RobotContainer {
         controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
-    private void configureOperatorBindings(PatriBoxController controller) {
+    private void configureCalibrationBindings(PatriBoxController controller) {
 
-        // controller.povUp()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() + 0.2));
-        // controller.povDown()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() - 0.2));
-        // controller.a()
-        //     .onTrue(krakenTest.setPosition(() -> 0));
-        // controller.b()
-        //     .whileTrue(krakenTest.setVelocity(() -> 500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.x()
-        //     .whileTrue(krakenTest.setVelocity(() -> -500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.rightTrigger()
-        //     .whileTrue(krakenTest.setPercent(controller::getRightY)
-        //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
     }
 
     public Command getAutonomousCommand() {

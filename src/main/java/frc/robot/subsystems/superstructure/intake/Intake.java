@@ -25,17 +25,12 @@ public class Intake extends SubsystemBase {
     private double percentOutput = 0.0;
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    private double testPercent;
 
-    // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
-    // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
-    // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
-    // private LoggedTunableNumber slowAcceleration = new LoggedTunableNumber("Intake/SlowProfile/Acceleration", IntakeConstants.SLOW_ACCELERATION);
-
-    // private final LoggedTunableBoolean brakeMotor = new LoggedTunableBoolean("Intake/BrakeMotor", IntakeConstants.BRAKE_MOTOR);
-    
     public Intake(IntakeIO io) {
         this.io = io;
 
+        IntakeConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = IntakeConstants.TEST_PERCENT.get()).ignoringDisable(true));
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
@@ -62,6 +57,14 @@ public class Intake extends SubsystemBase {
 
     public void setNeutral() {
         shouldRunSetpoint = false;
+    }
+
+    public void setTestPercent() {
+        setPercent(testPercent);
+    }
+
+    public Command setTestPercentCommand() {
+        return Commands.runOnce(() -> this.setTestPercent());
     }
 
     public Command setPercentCommand(DoubleSupplier percentSupplier) {
