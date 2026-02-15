@@ -855,7 +855,7 @@ public final class Constants {
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // TODO: find turret rotation limit
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); 
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -941,7 +941,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 1.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(30);
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
