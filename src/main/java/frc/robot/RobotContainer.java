@@ -149,7 +149,7 @@ public class RobotContainer {
                 swerve,
                 driver::getLeftY,
                 driver::getLeftX,
-                () -> driver.getRightX() / 1.6,
+                () -> -driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
         ));
