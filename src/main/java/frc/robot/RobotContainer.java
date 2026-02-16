@@ -324,5 +324,14 @@ public class RobotContainer {
                 Commands.waitSeconds(5),
                 NamedCommands.getCommand("ShootUntilEmptyHopper")
         ));
+
+        NamedCommands.registerCommand("CleanUpShoot", Commands.sequence(
+                Commands.deadline(NamedCommands.getCommand("WaitUntilBehindTower"), NamedCommands.getCommand("Shoot")),
+                NamedCommands.getCommand("StopShooting"), 
+                        NamedCommands.getCommand("WaitUntilNotaBehindTower"),
+                Commands.deadline(NamedCommands.getCommand("WaitUntilClimb"), 
+                        NamedCommands.getCommand("Shoot")),
+                NamedCommands.getCommand("StopShooting")
+        ));
     }
 }

@@ -285,7 +285,10 @@ public final class Constants {
                 AutoConstants.AUTO_THETA_GAINS.getD(),
                 Units.degreesToRadians(45)));
 
-        public static final String[] AUTO_NAMES = new String[] {};
+        public static final String[] AUTO_NAMES = new String[] {
+            "Double Center Rush Left",
+            "Double Center Rush Right"
+        };
 
         public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
         public static final Rotation2d rotation135 = new Rotation2d().fromDegrees(135);
