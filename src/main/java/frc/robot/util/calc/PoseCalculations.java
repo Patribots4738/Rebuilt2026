@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.LoggingConstants;
 
 public class PoseCalculations {
 
@@ -410,10 +411,10 @@ public class PoseCalculations {
     public static boolean inTrench(Pose2d pos) {
         boolean ans = false;
         if (
-            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY()) 
+            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY())
             && 
             (
-                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX()) 
+                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
                 || 
                 (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
             )
@@ -422,7 +423,22 @@ public class PoseCalculations {
         }
         return ans;
     }
-
+    
+    /**
+     * Determines if the hood will hit the trench bar and if it should put it down.
+     *
+     * @param pos
+     * @return true if hood conflicts with trench, false otherwise
+     */
+	public static boolean shouldPutHoodDown(Pose2d pos) {
+		Pose2d hoodPose = new Pose2d(
+				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
+				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
+				pos.getRotation()
+		);
+		return inTrench(hoodPose);
+	}
+	
     /**
      * Determines whether the pose is on the ramp (bump region).
      *
