@@ -77,7 +77,7 @@ public class ModuleIOKraken implements ModuleIO {
     }
 
     private void configEncoder(double absoluteEncoderOffset) {
-        turnEncoder.configureMagnetSensor(false, absoluteEncoderOffset);
+        turnEncoder.configureMagnetSensor(MK5nSwerveModuleConstants.INVERT_TURNING_CANCODER, absoluteEncoderOffset);
         turnEncoder.setPositionConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR);
         turnEncoder.setVelocityConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR);
     }

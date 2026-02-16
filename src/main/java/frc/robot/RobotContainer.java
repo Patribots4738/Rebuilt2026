@@ -149,7 +149,7 @@ public class RobotContainer {
                 swerve,
                 driver::getLeftY,
                 driver::getLeftX,
-                () -> -driver.getRightX() / 1.6,
+                () -> driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
         ));
@@ -196,6 +196,17 @@ public class RobotContainer {
     private void configureTimedEvents() {}
 
     private void configureDevBindings(PatriBoxController controller) {
+        controller.start().onTrue(
+                Commands.runOnce(() -> swerve.resetOdometry(
+                new Pose2d(
+                        swerve.getPose().getTranslation(),
+                        Rotation2d.fromDegrees(
+                                Robot.isRedAlliance()
+                                ? 0
+                                : 180))
+        ), swerve)
+        );
+
         controller.a().onTrue(swerve.setWheelsOCommand());
         controller.b().onTrue(swerve.getSetWheelsX());
         controller.x().onTrue(swerve.setWheelsZeroCommand());

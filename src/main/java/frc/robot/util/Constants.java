@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
@@ -140,7 +142,7 @@ public final class Constants {
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
-        public static double MAX_SPEED_METERS_PER_SECOND = 4.5;
+        public static double MAX_SPEED_METERS_PER_SECOND = 2.0;
 
         public static double SKID_THRESHOLD = 0.1;
 
@@ -464,16 +466,18 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205566;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367676;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.277100;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329102;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.207031;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.366943;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275635;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.328369;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
         public static final double MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC = 400;
 
         public static final boolean INVERT_TURNING_MOTOR = false;
+
+        public static final boolean INVERT_TURNING_CANCODER = false;
 
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
 
@@ -747,7 +751,14 @@ public final class Constants {
     public static final class PigeonConstants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
-
+        public static final double YAW_OFFSET = -179.72291564941406;
+        public static final double PITCH_OFFSET = 0.2597428858280182;
+        public static final double ROLL_OFFSET = 179.89633178710938;
+        public static final MountPoseConfigs POSE_CONFIGS = new MountPoseConfigs(){{
+            withMountPoseYaw(YAW_OFFSET);
+            withMountPosePitch(PITCH_OFFSET);
+            withMountPoseRoll(ROLL_OFFSET);
+        }};
     }
 
     public static final class CANRangeConstants {
@@ -993,7 +1004,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 3.33333;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 20;
 
         public static final double INTAKE_PERCENT = 0.5;
