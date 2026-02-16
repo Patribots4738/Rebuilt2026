@@ -9,126 +9,118 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "4-Outpost"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "StopIntake"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "race",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "WaitUntilEmptyHopper"
-                            }
-                          },
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 4.0
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Outpost-Depot"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Intake"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Depot-ClimbPrepMiddle"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "StopIntake"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "ClimbUp"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "ClimbPrepMiddle-ClimbMiddle"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "IntakeStow"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "ClimbDown"
-                      }
-                    }
-                  ]
+                  "pathName": "4-Outpost"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CleanUpShoot"
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "WaitUntilEmptyHopper"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Outpost-Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Depot-ClimbPrepMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ClimbUp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ClimbPrepMiddle-ClimbMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeStow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbDown"
           }
         }
       ]

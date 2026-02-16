@@ -9,120 +9,105 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "1-Depot"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "Intake"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Depot-Outpost"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "StopIntake"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "race",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "wait",
-                            "data": {
-                              "waitTime": 6.0
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "WaitUntilEmptyHopper"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "parallel",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "Outpost-ClimbPrepRight"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "IntakeStow"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "ClimbUp"
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "type": "race",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "path",
-                            "data": {
-                              "pathName": "ClimbPrepRight-ClimbRight"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "TowerAlignRight"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "pathName": "1-Depot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CleanUpShoot"
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Depot-Outpost"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "WaitUntilEmptyHopper"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Outpost-ClimbPrepRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeStow"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ClimbUp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepRight-ClimbRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbDown"
           }
         }
       ]

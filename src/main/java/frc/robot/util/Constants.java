@@ -56,7 +56,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.DEVBOT;
+        private static RobotType robotType = RobotType.SIMBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -287,7 +287,10 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {
             "Double Center Rush Left",
-            "Double Center Rush Right"
+            "Double Center Rush Right",
+            "Cleanup Left",
+            "Cleanup Middle",
+            "Cleanup Right"
         };
 
         public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
@@ -491,7 +494,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.0;
+        public static final double DRIVING_P = 20.0;
         public static final double DRIVING_I = 0.0;
         public static final double DRIVING_D = 0.0;
         public static final double DRIVING_S = 0.0;
@@ -506,9 +509,9 @@ public final class Constants {
             0.0
         );
 
-        public static final double TURNING_P = 0.0;
+        public static final double TURNING_P = 250d;
         public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 0.0;
+        public static final double TURNING_D = 20d;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(

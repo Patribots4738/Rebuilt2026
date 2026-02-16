@@ -63,6 +63,9 @@ public class Shooter extends SubsystemBase {
         if (PoseCalculations.inTrench(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
+        else if (PoseCalculations.behindTower(robotRelativePose.get())) {
+            spinFlywheel = false;
+        }
         else if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
             shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);

@@ -318,20 +318,13 @@ public class RobotContainer {
 
 
 
-        NamedCommands.registerCommand("WiggleShoot", Commands.race(
+        NamedCommands.registerCommand("WiggleShoot", Commands.parallel(
                 Commands.sequence(Commands.waitSeconds(2.0),
                         NamedCommands.getCommand("IntakeStow")),
-                Commands.waitSeconds(5),
-                NamedCommands.getCommand("ShootUntilEmptyHopper")
-        ));
-
-        NamedCommands.registerCommand("CleanUpShoot", Commands.sequence(
-                Commands.deadline(NamedCommands.getCommand("WaitUntilBehindTower"), NamedCommands.getCommand("Shoot")),
-                NamedCommands.getCommand("StopShooting"), 
-                        NamedCommands.getCommand("WaitUntilNotaBehindTower"),
-                Commands.deadline(NamedCommands.getCommand("WaitUntilClimb"), 
-                        NamedCommands.getCommand("Shoot")),
-                NamedCommands.getCommand("StopShooting")
+                Commands.race(
+                        NamedCommands.getCommand("WaitUntilEmptyHopper"),
+                        Commands.waitSeconds(5)
+                )
         ));
     }
 }
