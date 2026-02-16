@@ -3,68 +3,33 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.312181818181818,
-        "y": 0.5100681818181818
+        "x": 4.418320645970759,
+        "y": 0.5541847674600957
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.662375,
-        "y": 0.6852840909090914
+        "x": 5.667357437590249,
+        "y": 0.5935225062535427
       },
       "isLocked": false,
       "linkedName": "5CLR"
     },
     {
       "anchor": {
-        "x": 7.6722045454545444,
-        "y": 0.6749772727272727
+        "x": 7.848139534883721,
+        "y": 2.128515205724508
       },
       "prevControl": {
-        "x": 7.45456383577451,
-        "y": 0.5519629585602974
-      },
-      "nextControl": {
-        "x": 7.9092613636363645,
-        "y": 0.8089659090909094
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.6722045454545444,
-        "y": 3.4268977272727272
-      },
-      "prevControl": {
-        "x": 7.692818181818181,
-        "y": 2.1488522727272734
+        "x": 7.188050250492672,
+        "y": 1.3796699802697066
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "CLRight"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.9829619921363063,
-      "rotationDegrees": 90.0
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.099415204678363,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 6.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -77,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 45.64478381086326
   },
   "reversed": false,
   "folder": "Starting Line",

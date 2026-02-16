@@ -242,32 +242,6 @@ public class RobotContainer {
         controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
         controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(()-> !controller.povRight().getAsBoolean()));
         controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
-
-
-
-        // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        // controller.b().whileTrue(swerve.driveCharacterization());
-        // controller.y().whileTrue(swerve.getSetWheelsZero());
-    }
-
-    private void configureOperatorBindings(PatriBoxController controller) {
-
-        // controller.povUp()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() + 0.2));
-        // controller.povDown()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() - 0.2));
-        // controller.a()
-        //     .onTrue(krakenTest.setPosition(() -> 0));
-        // controller.b()
-        //     .whileTrue(krakenTest.setVelocity(() -> 500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.x()
-        //     .whileTrue(krakenTest.setVelocity(() -> -500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.rightTrigger()
-        //     .whileTrue(krakenTest.setPercent(controller::getRightY)
-        //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
     }
 
     public Command getAutonomousCommand() {
