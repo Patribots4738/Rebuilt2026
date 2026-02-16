@@ -18,6 +18,7 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
@@ -31,6 +32,7 @@ public class Shooter extends SubsystemBase {
     @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
     private boolean aimHood = true;
     private int passIndex = 0;
+    public boolean manualAiming = false;
 
     private ShootingParameters shotParams;
 
@@ -60,10 +62,15 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+        if (manualAiming) {
+            hood.setPosition(HoodConstants.LOCK_ANGLE_RADIANS);
+            flywheel.setVelocity(FlywheelConstants.LOCK_VELOCITY);
+            turret.setPosition(TurretConstants.LOCK_ANGLE_RADIANS);
+        }
+        else if (PoseCalculations.inTrench(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
-        else if (partiallyTracking()) {
+        else if (partiallyTracking() && !manualAiming) {
             updateTarget(robotRelativePose.get());
             shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
             this.setShooterStates();
@@ -178,5 +185,9 @@ public class Shooter extends SubsystemBase {
                     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
                     this.setNeutralCommand()
                 );
+    }
+    
+    public Command toggleManualAiming() {
+        return Commands.run(() -> manualAiming = !manualAiming);
     }
 }
