@@ -27,12 +27,13 @@ public class SpindexerIONeo implements SpindexerIO {
     public void updateInputs(SpindexerIOInputs inputs) {
         inputs.motorConnected = true;
         inputs.internalVelocityRadsPerSec = motor.getVelocityRadsPerSec();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
         inputs.percentOutput = motor.getAppliedOutput();
         inputs.targetPercentOutput = motor.getTargetPercent();
-        inputs.velocityRotationsPerSec = motor.getVelocity();
+        inputs.velocityRotationsPerSec = motor.getVelocity() / 60.0;
+        inputs.positionRotations = motor.getPosition();
     }
 
     @Override

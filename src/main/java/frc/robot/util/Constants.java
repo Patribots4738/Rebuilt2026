@@ -849,13 +849,14 @@ public final class Constants {
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
         public static final double GEAR_RATIO = 9.0;
 
+        public static final double LOCK_ANGLE_RADIANS = 0.0;
 
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // TODO: find turret rotation limit
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); 
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -897,9 +898,11 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
+        
+        public static final double LOCK_VELOCITY = 0.0;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
+        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
 
         public static final double EJECT_VELOCITY = 10;
 
@@ -937,11 +940,13 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 40;
+        
+        public static final double LOCK_ANGLE_RADIANS = 0.0;
 
         public static final double GEAR_RATIO = 1.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(30);
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
@@ -1101,6 +1106,8 @@ public final class Constants {
     public static final class SpindexerConstants {
         public static final int CAN_ID = 11;
 
+        public static final double SPINDEXER_RADIUS = Units.inchesToMeters(5.5);
+        
         public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
@@ -1133,12 +1140,12 @@ public final class Constants {
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
 
-        public static final double FREND_LINE() {
+        public static final double CURRENT_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
             return line;
         }
 
-        public static final double FOW_LINE() {
+        public static final double OPPOSING_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
             return line;
         }
@@ -1223,21 +1230,22 @@ public final class Constants {
             Pose2d TowerRed = TOWER_CENTER_RED;
             add(TowerRed);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-SIDE"));
             //BLUE Tower
             Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
             add(TowerBlue);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-SIDE"));
         }};
+
 
         public static final Pose2d GET_TOWER_CENTER() {
             int index = Robot.isRedAlliance()? 0 : 5;
@@ -1257,8 +1265,8 @@ public final class Constants {
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
         public static final double TRENCH_WIDTH = 1.5772;
-        public static final List<Pose2d> TRENCHS = new ArrayList<Pose2d>() {{
-            //RED Trenchs
+        public static final List<Pose2d> TRENCHES = new ArrayList<Pose2d>() {{
+            //RED TRENCHES
             //Side 1
             Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
             add(trenchRed1.toPose2d());
@@ -1273,7 +1281,7 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'D'));
-            //Blue Trenchs
+            //Blue Trenches
             //Side 1
             Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
             add(trenchBlue1.toPose2d());
@@ -1290,14 +1298,14 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
         }};
 
-        public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
+        public static final List<Pose2d> GET_ALLIANCE_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 0 : 10;
-            return TRENCHS.subList(startindex, startindex + 10);
+            return TRENCHES.subList(startindex, startindex + 10);
         }
 
-        public static final List<Pose2d> GET_ENEMY_TRENCHS() {
+        public static final List<Pose2d> GET_OPPOSING_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
-            return TRENCHS.subList(startindex, startindex + 8);
+            return TRENCHES.subList(startindex, startindex + 8);
         }
 
         public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
@@ -1341,7 +1349,7 @@ public final class Constants {
             return BUMPS.subList(startindex, startindex + 8);
         }
 
-        public static final List<Pose2d> GET_ENEMY_BUMPS() {
+        public static final List<Pose2d> GET_OPPOSING_BUMPS() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }

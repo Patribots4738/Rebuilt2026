@@ -27,7 +27,7 @@ public class HoodIONeo implements HoodIO {
         inputs.internalPositionRads = motor.getPosition();
         inputs.internalVelocityRadsPerSec = motor.getVelocity();
         inputs.targetPositionRads = motor.getTargetPosition();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
         inputs.encoderAbsPositionRads = inputs.internalPositionRads;

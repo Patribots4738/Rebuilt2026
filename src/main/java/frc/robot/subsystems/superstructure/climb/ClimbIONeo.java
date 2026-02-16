@@ -29,7 +29,7 @@ public class ClimbIONeo implements ClimbIO {
         inputs.positionMeters = motor.getPosition();
         inputs.targetPositionMeters = motor.getTargetPosition();
         inputs.velocityMetersPerSec = motor.getVelocity();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
     }
