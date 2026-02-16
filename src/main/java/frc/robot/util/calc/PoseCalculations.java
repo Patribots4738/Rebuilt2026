@@ -423,8 +423,8 @@ public class PoseCalculations {
         }
         return ans;
     }
-    
-    /**
+
+/**
      * Determines if the hood will hit the trench bar and if it should put it down.
      *
      * @param pos
