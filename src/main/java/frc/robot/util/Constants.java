@@ -849,6 +849,7 @@ public final class Constants {
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
         public static final double GEAR_RATIO = 9.0;
 
+        public static final double LOCK_ANGLE_RADIANS = 0.0;
 
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
@@ -897,6 +898,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
+        
+        public static final double LOCK_VELOCITY = 0.0;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
@@ -937,6 +940,8 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 40;
+        
+        public static final double LOCK_ANGLE_RADIANS = 0.0;
 
         public static final double GEAR_RATIO = 1.0;
 
