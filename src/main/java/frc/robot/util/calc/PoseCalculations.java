@@ -423,7 +423,13 @@ public class PoseCalculations {
         }
         return ans;
     }
-	
+    
+    /**
+     * Determines if the hood will hit the trench bar and if it should put it down.
+     *
+     * @param pos
+     * @return true if hood conflicts with trench, false otherwise
+     */
 	public static boolean shouldPutHoodDown(Pose2d pos) {
 		Pose2d hoodPose = new Pose2d(
 				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
