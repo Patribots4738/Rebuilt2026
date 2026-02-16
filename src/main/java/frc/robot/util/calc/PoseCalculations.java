@@ -240,16 +240,16 @@ public class PoseCalculations {
     public static Pose2d getTowerDimensions(Pose2d pos, String side) {
         Pose2d newPos = new Pose2d();
         switch(side) {
-            case "PL":
+            case "LEFT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "PR":
+            case "RIGHT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "SL":
+            case "LEFT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
-            case "SR":
+            case "RIGHT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
         }
@@ -279,11 +279,11 @@ public class PoseCalculations {
      */
     public static ZONE getZone(Pose2d pos) {
         ZONE currentZone = ZONE.inAllianceZone;
-        if (pos.getX() < FieldConstants.FREND_LINE()) {
+        if (pos.getX() < FieldConstants.CURRENT_ALLIANCE_LINE()) {
             currentZone = ZONE.inAllianceZone;
-        } else if (pos.getX() > FieldConstants.FREND_LINE() && pos.getX() < FieldConstants.FOW_LINE()) {
+        } else if (pos.getX() > FieldConstants.CURRENT_ALLIANCE_LINE() && pos.getX() < FieldConstants.OPPOSING_ALLIANCE_LINE()) {
             currentZone = ZONE.inNeutralZone;
-        } else if (pos.getX() > FieldConstants.FOW_LINE()) {
+        } else if (pos.getX() > FieldConstants.OPPOSING_ALLIANCE_LINE()) {
             currentZone = ZONE.inOppZone;
         }
         return currentZone;
@@ -410,12 +410,12 @@ public class PoseCalculations {
     public static boolean inTrench(Pose2d pos) {
         boolean ans = false;
         if (
-            (pos.getY() > FieldConstants.TRENCHS.get(3).getY() && pos.getY() < FieldConstants.TRENCHS.get(9).getY()) 
+            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY()) 
             && 
             (
-                (pos.getX() > FieldConstants.TRENCHS.get(1).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX()) 
+                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX()) 
                 || 
-                (pos.getX() > FieldConstants.TRENCHS.get(11).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX())
+                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
             )
             ) {
             ans = true;
