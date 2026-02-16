@@ -1,7 +1,6 @@
 package frc.robot.subsystems.superstructure.extender;
 
 import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;

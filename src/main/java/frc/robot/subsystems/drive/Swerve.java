@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -50,6 +52,8 @@ import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 
+import static edu.wpi.first.units.Units.*;
+
 public class Swerve extends SubsystemBase {
 
     public static double twistScalar = 4;
@@ -72,6 +76,8 @@ public class Swerve extends SubsystemBase {
     private double maxAngularVelocity;
     
     private ChassisSpeeds speeds = new ChassisSpeeds();
+    
+    private final SysIdRoutine driveRoutine, turnRoutine;
 
     /**
      * Creates a new DriveSubsystem.
@@ -187,6 +193,38 @@ public class Swerve extends SubsystemBase {
         );
 
         configureAutoBuilder();
+        
+        driveRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> runDriveCharacterization(volts.in(Volts)),
+                        log -> log.motor("drive")
+                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getDriveAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
+                        this
+                )
+        );
+        
+        turnRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        Volts.per(Seconds).of(1),
+                        Volts.of(7),
+                        Seconds.of(10)
+                ),
+                new SysIdRoutine.Mechanism(
+                        (Voltage volts) -> runTurnCharacterization(volts.in(Volts)),
+                        log -> log.motor("turn")
+                                .voltage(Volts.of(getTurnCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getTurnAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getTurnCharacterizationVelocity())),
+                        this
+                )
+        );
     }
 
     private void configureAutoBuilder() {
@@ -367,6 +405,22 @@ public class Swerve extends SubsystemBase {
         }
         return average / 4.0;
     }
+    
+    public double getDriveAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getDrivePositionRadians();
+        }
+        return average / 4.0;
+    }
+    
+    public double getDriveCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getDriveVoltage();
+        }
+        return totalVoltage / swerveModules.length;
+    }
 
     public double getTurnCharacterizationVelocity() {
         double average = 0.0;
@@ -374,6 +428,22 @@ public class Swerve extends SubsystemBase {
             average += module.getTurnCharacterizationVelocity();
         }
         return average / 4.0;
+    }
+    
+    public double getTurnAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getPosition().angle.getRadians();
+        }
+        return average / 4.0;
+    }
+    
+    public double getTurnCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getTurnVoltage();
+        }
+        return totalVoltage / swerveModules.length;
     }
 
     public void setSpeedsSlow() {
@@ -601,5 +671,21 @@ public class Swerve extends SubsystemBase {
             getPose().getRotation().getRadians(),
             AutoConstants.HDC_ROTATION_TOLERANCE_RADIANS
         );
+    }
+    
+    public Command driveQuasistatic(SysIdRoutine.Direction direction) {
+        return driveRoutine.quasistatic(direction);
+    }
+    
+    public Command driveDynamic(SysIdRoutine.Direction direction) {
+        return driveRoutine.dynamic(direction);
+    }
+    
+    public Command turnQuasistatic(SysIdRoutine.Direction direction) {
+        return turnRoutine.quasistatic(direction);
+    }
+    
+    public Command turnDynamic(SysIdRoutine.Direction direction) {
+        return turnRoutine.dynamic(direction);
     }
 }

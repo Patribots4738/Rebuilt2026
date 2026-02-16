@@ -14,7 +14,7 @@ public interface KickerIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
-
+        public double positionRotations = 0.0;
         public boolean isRangeTripped;
         public double rangeDistance;
     }
