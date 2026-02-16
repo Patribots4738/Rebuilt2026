@@ -1,6 +1,6 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
     id("com.peterabeles.gversion") version "1.10.3"
 }
 
@@ -45,7 +45,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = false // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -101,9 +101,49 @@ test {
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
-// Simulation configuration (e.g. environment variables).
-wpi.sim.addGui().defaultEnabled = true
-wpi.sim.addDriverstation()
+// Simulation configuration with multiple modes
+// Only applies custom mode if simMode property is explicitly set
+// Usage: ./gradlew simulateJava -PsimMode=<mode>
+// Modes: gui, ds, both, headless
+if (project.hasProperty('simMode')) {
+    def simMode = project.property('simMode')
+
+    switch (simMode) {
+        case 'gui':
+            // SimGUI only
+            wpi.sim.addGui().defaultEnabled = true
+            wpi.sim.addDriverstation().defaultEnabled = false
+            println "Using SimGUI"
+            break
+        case 'ds':
+            // Driver Station only
+            wpi.sim.addGui().defaultEnabled = false
+            wpi.sim.addDriverstation().defaultEnabled = true
+            println "Utilizing Driver Station"
+            break
+        case 'both':
+            // Both GUI and Driver Station
+            wpi.sim.addGui().defaultEnabled = true
+            wpi.sim.addDriverstation().defaultEnabled = true
+            println "Running with SimGUI and Driver Station"
+            break
+        case 'headless':
+            // No GUI or Driver Station (headless simulation)
+            wpi.sim.addGui().defaultEnabled = false
+            wpi.sim.addDriverstation().defaultEnabled = false
+            println "Running Headlessly"
+            break
+        default:
+            println "Unknown simulation mode ${simMode}. Running SimGUI."
+            wpi.sim.addGui().defaultEnabled = true
+            wpi.sim.addDriverstation()
+            break
+    }
+} else {
+    // Runs SimGUI if no simMode is specified (e.g. when running from VS Code)
+    wpi.sim.addGui().defaultEnabled = true
+    wpi.sim.addDriverstation()
+}
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
 // in order to make them all available at runtime. Also adding the manifest so WPILib

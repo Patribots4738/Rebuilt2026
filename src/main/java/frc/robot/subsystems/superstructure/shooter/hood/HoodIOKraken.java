@@ -16,8 +16,8 @@ public class HoodIOKraken implements HoodIO {
     private boolean encoderUpdated = false;
 
     public HoodIOKraken() {
-        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, CANConstants.RIO_BUS, true, true, ControlPreference.TORQUE_CURRENT);
-        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID, CANConstants.RIO_BUS);
+        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
         configMotor();
         configEncoder();
     }
@@ -41,7 +41,27 @@ public class HoodIOKraken implements HoodIO {
         encoder.setPositionConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(HoodConstants.VELOCITY_CONVERSION_FACTOR);
     }
-
+    
+    @Override
+    public void updateInputs(HoodIOInputs inputs) {
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.internalPositionRads = motor.getPositionAsDouble();
+        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI;
+        inputs.targetPositionRads = motor.getTargetPosition();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        if (inputs.encoderConnected) {
+            inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
+            if (!encoderUpdated) {
+                motor.resetEncoder(inputs.encoderAbsPositionRads > TurretConstants.MAX_ANGLE_RADIANS ? inputs.encoderAbsPositionRads - 2 * Math.PI : inputs.encoderAbsPositionRads);
+                encoderUpdated = true;
+            }
+        } else {
+            inputs.encoderAbsPositionRads = inputs.internalPositionRads;
+        }
+    }
+    
     @Override
     public void setPosition(double position, double feedforward) {
         motor.setTargetPosition(position, feedforward);

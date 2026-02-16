@@ -5,7 +5,7 @@ import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
 public class ClimbIONeo implements ClimbIO {
-     private final Neo motor;
+    private final Neo motor;
 
     public ClimbIONeo() {
         motor = new Neo(ClimbConstants.CAN_ID, false);
@@ -14,7 +14,8 @@ public class ClimbIONeo implements ClimbIO {
 
     private void configMotor() {
         resetEncoder(0);
-        motor.setPID(ClimbConstants.GAINS);
+        motor.setPID(ClimbConstants.SLOW_GAINS, 0);
+        motor.setPID(ClimbConstants.FAST_GAINS, 1);
         motor.setInverted(ClimbConstants.MOTOR_INVERTED);
         motor.setPositionConversionFactor(ClimbConstants.POSITION_CONVERSION_FACTOR);
         motor.setVelocityConversionFactor(ClimbConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
@@ -28,14 +29,13 @@ public class ClimbIONeo implements ClimbIO {
         inputs.positionMeters = motor.getPosition();
         inputs.targetPositionMeters = motor.getTargetPosition();
         inputs.velocityMetersPerSec = motor.getVelocity();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
     }
 
-    @Override
-    public void setPosition(double position) {
-        motor.setTargetPosition(position);
+    public void setPosition(double position, int slot) {
+        motor.setTargetPosition(position, slot);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ClimbIONeo implements ClimbIO {
     }
 
     @Override
-    public void setGains(GainConstants constants) {
-        motor.setPID(constants);
+    public void setGains(GainConstants constants, int slot) {
+        motor.setPID(constants, slot);
     }
 }
