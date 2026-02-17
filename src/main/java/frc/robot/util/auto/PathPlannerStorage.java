@@ -1,6 +1,7 @@
 package frc.robot.util.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -17,6 +18,7 @@ import frc.robot.Robot.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -32,6 +34,8 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
+    private final LoggedDashboardChooser<BooleanSupplier> autoClimb;
+
     public static final ArrayList<Pose2d> AUTO_STARTING_POSITIONS = new ArrayList<Pose2d>();
 
     public static final HashMap<String, List<PathPlannerPath>> AUTO_PATHS = new HashMap<String, List<PathPlannerPath>>();
@@ -40,6 +44,7 @@ public class PathPlannerStorage {
      */
     public PathPlannerStorage() {
         autoChooser = new LoggedDashboardChooser<>("Auto Routine");
+        autoClimb = new LoggedDashboardChooser<>("Auto Climb");
     }
 
     public void configureAutoChooser() {
@@ -95,6 +100,18 @@ public class PathPlannerStorage {
         return this.autoChooser;
     }
 
+    public boolean getAutoClimb() {
+        return autoClimb.get().getAsBoolean();
+    }
+
+    public BooleanSupplier getAutoClimbSupplier() {
+        return autoClimb.get();
+    }
+
+    public LoggedDashboardChooser<BooleanSupplier> getAutoClimbDashboard() {
+        return autoClimb;
+    }
+
     public Command updatePathViewerCommand() {
         return Commands.either(
             Commands.runOnce(() -> {
@@ -131,5 +148,54 @@ public class PathPlannerStorage {
         }
     
         return autoPoses;
+    }
+
+    public Command climbOrNoClimb() {
+        String pathToClimbName = null;
+        String pathToCenterLineName = null;
+        PathPlannerPath pathToClimbPrep;
+        PathPlannerPath pathToClimb;
+        PathPlannerPath pathToStartingLine;
+        PathPlannerPath pathToCenterLine;
+        try {
+            pathToClimbPrep = PathPlannerPath.fromPathFile(pathToClimbName);
+            pathToClimb = PathPlannerPath.fromPathFile(pathToClimbName);
+            pathToStartingLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
+            pathToCenterLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        return Commands.either(
+            Commands.sequence(
+                Commands.parallel(
+                    AutoBuilder.followPath(pathToClimbPrep), 
+                    NamedCommands.getCommand("ClimbUp"), 
+                    NamedCommands.getCommand("StopIntake")
+                ), 
+                AutoBuilder.followPath(pathToClimb), 
+                NamedCommands.getCommand("StopShooting"), 
+                NamedCommands.getCommand("ClimbDown")
+            ), 
+            
+            Commands.sequence(
+                Commands.parallel(
+                    AutoBuilder.followPath(pathToStartingLine), 
+                    Commands.deadline(
+                        Commands.race(
+                            NamedCommands.getCommand("WaitUntilEmptyHopper"), 
+                            NamedCommands.getCommand("WaitUntilOutsideAllianceZone")
+                        ),
+                        NamedCommands.getCommand("Shoot"),
+                        NamedCommands.getCommand("StopIntake")
+                    )
+                ), Commands.parallel(
+                    AutoBuilder.followPath(pathToCenterLine),
+                    NamedCommands.getCommand("Intake"),
+                    NamedCommands.getCommand("StopShooting")
+                )
+            ), 
+            autoClimb.get()
+        );
     }
 }

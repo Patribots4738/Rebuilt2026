@@ -290,7 +290,8 @@ public final class Constants {
             "Double Center Rush Right",
             "Cleanup Left",
             "Cleanup Middle",
-            "Cleanup Right"
+            "Cleanup Right",
+            "Dumby Center"
         };
 
         public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
