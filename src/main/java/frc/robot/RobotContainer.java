@@ -268,8 +268,6 @@ public class RobotContainer {
         // controller.rightTrigger()
         //     .whileTrue(krakenTest.setPercent(controller::getRightY)
         //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
-        
-        controller.rightBumper().onTrue(shooter.toggleManualAiming());
     }
 
     public Command getAutonomousCommand() {
