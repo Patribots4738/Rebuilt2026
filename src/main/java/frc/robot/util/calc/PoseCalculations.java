@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.LoggingConstants;
 
 public class PoseCalculations {
 
@@ -240,16 +241,16 @@ public class PoseCalculations {
     public static Pose2d getTowerDimensions(Pose2d pos, String side) {
         Pose2d newPos = new Pose2d();
         switch(side) {
-            case "PL":
+            case "LEFT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "PR":
+            case "RIGHT-POST":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_POST_DISTANCE/2)), pos.getRotation());
             break;
-            case "SL":
+            case "LEFT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() - (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
-            case "SR":
+            case "RIGHT-SIDE":
                 newPos = new Pose2d((pos.getX()), (pos.getY() + (FieldConstants.TOWER_WIDTH/2)), pos.getRotation());
             break;
         }
@@ -279,11 +280,11 @@ public class PoseCalculations {
      */
     public static ZONE getZone(Pose2d pos) {
         ZONE currentZone = ZONE.inAllianceZone;
-        if (pos.getX() < FieldConstants.FREND_LINE()) {
+        if (pos.getX() < FieldConstants.CURRENT_ALLIANCE_LINE()) {
             currentZone = ZONE.inAllianceZone;
-        } else if (pos.getX() > FieldConstants.FREND_LINE() && pos.getX() < FieldConstants.FOW_LINE()) {
+        } else if (pos.getX() > FieldConstants.CURRENT_ALLIANCE_LINE() && pos.getX() < FieldConstants.OPPOSING_ALLIANCE_LINE()) {
             currentZone = ZONE.inNeutralZone;
-        } else if (pos.getX() > FieldConstants.FOW_LINE()) {
+        } else if (pos.getX() > FieldConstants.OPPOSING_ALLIANCE_LINE()) {
             currentZone = ZONE.inOppZone;
         }
         return currentZone;
@@ -410,12 +411,12 @@ public class PoseCalculations {
     public static boolean inTrench(Pose2d pos) {
         boolean ans = false;
         if (
-            (pos.getY() > FieldConstants.TRENCHS.get(3).getY() && pos.getY() < FieldConstants.TRENCHS.get(9).getY()) 
+            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY())
             && 
             (
-                (pos.getX() > FieldConstants.TRENCHS.get(1).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX()) 
+                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
                 || 
-                (pos.getX() > FieldConstants.TRENCHS.get(11).getX() && pos.getX() < FieldConstants.TRENCHS.get(2).getX())
+                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
             )
             ) {
             ans = true;
@@ -423,6 +424,21 @@ public class PoseCalculations {
         return ans;
     }
 
+/**
+     * Determines if the hood will hit the trench bar and if it should put it down.
+     *
+     * @param pos
+     * @return true if hood conflicts with trench, false otherwise
+     */
+	public static boolean shouldPutHoodDown(Pose2d pos) {
+		Pose2d hoodPose = new Pose2d(
+				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
+				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
+				pos.getRotation()
+		);
+		return inTrench(hoodPose);
+	}
+	
     /**
      * Determines whether the pose is on the ramp (bump region).
      *

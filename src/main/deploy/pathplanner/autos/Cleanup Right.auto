@@ -5,45 +5,102 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "5-Outpost"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5-Outpost"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Outpost-Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Depot-ClimbPrepMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ClimbUp"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost-Depot"
+            "pathName": "ClimbPrepMiddle-ClimbMiddle"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 3.0
+            "name": "StopShooting"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Depot-ClimbPrepLeft"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ClimbPrepLeft-ClimbLeft"
+            "name": "ClimbDown"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Drive Only",
+  "folder": "Full Autos",
   "choreoAuto": false
 }

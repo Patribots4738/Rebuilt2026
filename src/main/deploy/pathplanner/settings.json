@@ -10,7 +10,8 @@
     "Starting Line"
   ],
   "autoFolders": [
-    "Drive Only"
+    "Drive Only",
+    "Full Autos"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

@@ -5,15 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "1-Depot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1-Depot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Depot-Outpost"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Depot-Outpost"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -23,15 +55,40 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "ClimbPrepRight-ClimbRight"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ClimbPrepRight-ClimbRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ClimbUp"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbDown"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Drive Only",
+  "folder": "Full Autos",
   "choreoAuto": false
 }
