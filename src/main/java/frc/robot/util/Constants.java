@@ -199,10 +199,15 @@ public final class Constants {
 
         // Angular offsets of the modules relative to the chassis in radians
         // add 90 degrees to change the X and Y axis
-        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
-        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
-        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
-        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90);
+        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(88.744319974812);
+        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180);
+        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0);
+        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(269.20908);
+
+        // public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
+        // public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
+        // public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
+        // public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90);
 
         public static final int GYRO_CAN_ID = 29;
         public static final boolean GYRO_REVERSED = true;
@@ -467,15 +472,17 @@ public final class Constants {
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
         public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.207031;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.366943;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367432;
         public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275635;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.328369;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329590;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
         public static final double MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC = 400;
 
         public static final boolean INVERT_TURNING_MOTOR = false;
+
+        public static final boolean INVERT_DRIVE_MOTOR = false;
 
         public static final boolean INVERT_TURNING_CANCODER = false;
 
@@ -751,9 +758,9 @@ public final class Constants {
     public static final class PigeonConstants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
-        public static final double YAW_OFFSET = -179.72291564941406;
-        public static final double PITCH_OFFSET = 0.2597428858280182;
-        public static final double ROLL_OFFSET = 179.89633178710938;
+        public static final double YAW_OFFSET = 0.0;
+        public static final double PITCH_OFFSET = 0.0;
+        public static final double ROLL_OFFSET = 180.0;
         public static final MountPoseConfigs POSE_CONFIGS = new MountPoseConfigs(){{
             withMountPoseYaw(YAW_OFFSET);
             withMountPosePitch(PITCH_OFFSET);
@@ -1107,12 +1114,12 @@ public final class Constants {
     }
 
     public static final class SpindexerConstants {
-        public static final int CAN_ID = 11;
+        public static final int CAN_ID = 15;
 
-        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 15.0;
+        public static final double CURRENT_LIMIT = 30.0;
 
         public static final boolean MOTOR_INVERTED = false;
         public static final int MOTOR_TYPE = 44;
@@ -1121,7 +1128,9 @@ public final class Constants {
         public static final double CLOCKWISE_PERCENT = -0.5;
         public static final double COUNTERCLOCKWISE_PERCENT = 0.5;
         
-        public static final double GEAR_RATIO = 9;
+        public static final double GEAR_RATIO = 3.0;
+
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Spindexer/PercentOutput", 0.0);
     }
 
     public static final class FieldConstants {

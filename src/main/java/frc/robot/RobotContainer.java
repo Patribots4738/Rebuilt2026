@@ -84,7 +84,7 @@ public class RobotContainer {
     private final Intake intake;
     private final Extender extender;
 //     private final Kicker kicker;
-//     private final Spindexer spindexer;
+    private final Spindexer spindexer;
 
 //     private final Superstructure superstructure;
 
@@ -130,7 +130,7 @@ public class RobotContainer {
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
-        // spindexer = new Spindexer(new SpindexerIOKraken());
+        spindexer = new Spindexer(new SpindexerIOKraken());
         // kicker = new Kicker(new KickerIOKraken());
         // flywheel = new Flywheel(new FlywheelIOKraken());
         // turret = new Turret(new TurretIOKraken());
@@ -216,7 +216,11 @@ public class RobotContainer {
         controller.rightBumper().onTrue(extender.setNeutralCommand());
 
         controller.leftTrigger().onTrue(intake.setTestPercentCommand());
-        controller.leftBumper().onTrue(intake.setNeutralCommand());
+        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+
+        controller.povUp().onTrue(spindexer.setTestPercentCommand());
+        controller.povRight().onTrue(spindexer.setPercentCommand(0.0));
+        
     }
 
     private void configureDriverBindings(PatriBoxController controller) {

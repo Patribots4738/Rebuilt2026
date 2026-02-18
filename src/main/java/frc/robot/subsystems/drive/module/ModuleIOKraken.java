@@ -41,6 +41,7 @@ public class ModuleIOKraken implements ModuleIO {
     private void configMotors() {
 
         turnMotor.setMotorInverted(MK5nSwerveModuleConstants.INVERT_TURNING_MOTOR);
+        driveMotor.setMotorInverted(MK5nSwerveModuleConstants.INVERT_DRIVE_MOTOR);
 
         driveMotor.setGearRatio(MK5nSwerveModuleConstants.DRIVE_GEAR_RATIO);
 

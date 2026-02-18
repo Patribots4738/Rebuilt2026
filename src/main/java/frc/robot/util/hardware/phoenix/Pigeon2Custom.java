@@ -55,7 +55,7 @@ public class Pigeon2Custom extends Pigeon2 {
         super(id, canBus);
 
         restoreFactoryDefaults();
-        configurator.apply(PigeonConstants.POSE_CONFIGS);
+        // configurator.apply(PigeonConstants.POSE_CONFIGS);
         
         yawSignal = getYaw();
         pitchSignal = getPitch();
