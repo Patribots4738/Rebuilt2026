@@ -6,6 +6,7 @@ package frc.robot.subsystems.superstructure.kicker;
 
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.subsystems.superstructure.intake.IntakeIO;
+import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.IntakeConstants;
 
 import static edu.wpi.first.units.Units.Second;
@@ -93,7 +94,7 @@ public class Kicker extends SubsystemBase {
     }
 
 	public void updateEmptyHopper() {
-		emptyHopper = emptyHopperDebouncer.calculate(!(inputs.isRangeTripped));
+		emptyHopper = FieldConstants.IS_REAL ? emptyHopperDebouncer.calculate(!(inputs.isRangeTripped)) : true;
 	}
 
 	public boolean emptyHopper() {

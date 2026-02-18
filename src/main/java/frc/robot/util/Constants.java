@@ -37,6 +37,7 @@ import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -288,6 +289,7 @@ public final class Constants {
         public static final String[] AUTO_NAMES = new String[] {
             "Double Center Rush Left",
             "Double Center Rush Right",
+            "Depot Center Rush",
             "Cleanup Left",
             "Cleanup Middle",
             "Cleanup Right",
@@ -312,6 +314,10 @@ public final class Constants {
 
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
+
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", false);
+        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", false);
+
     }
 
     public static final class MAXSwerveModuleConstants {

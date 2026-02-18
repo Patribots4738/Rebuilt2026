@@ -24,11 +24,11 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
+    @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
     private boolean aimTurret = true;
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackFlywheel")
+    @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
-    @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
+    @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
     private boolean aimHood = true;
     private int passIndex = 0;
 

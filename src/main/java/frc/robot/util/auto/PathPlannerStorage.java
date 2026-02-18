@@ -10,7 +10,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.util.Constants.AutoConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Robot.GameMode;
@@ -18,9 +20,12 @@ import frc.robot.Robot.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -34,7 +39,13 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
-    private final LoggedDashboardChooser<BooleanSupplier> autoClimb;
+    @AutoLogOutput (key = "pathToClimbName")
+    private String pathToClimbName = null;
+
+    private boolean climb;
+    private boolean left;
+
+    private final Set<Subsystem> requirements;
 
     public static final ArrayList<Pose2d> AUTO_STARTING_POSITIONS = new ArrayList<Pose2d>();
 
@@ -42,9 +53,13 @@ public class PathPlannerStorage {
     /**
      * Creates a new AutoPathStorage object.
      */
-    public PathPlannerStorage() {
+    public PathPlannerStorage(Set<Subsystem> requirements) {
         autoChooser = new LoggedDashboardChooser<>("Auto Routine");
-        autoClimb = new LoggedDashboardChooser<>("Auto Climb");
+
+        AutoConstants.LOGGED_CLIMB_BOOLEAN.onChanged(Commands.runOnce(() -> climb = AutoConstants.LOGGED_CLIMB_BOOLEAN.get()).ignoringDisable(true));
+        AutoConstants.LOGGED_LEFT_BOOLEAN.onChanged(Commands.runOnce(() -> climb = AutoConstants.LOGGED_LEFT_BOOLEAN.get()).ignoringDisable(true));
+
+        this.requirements = requirements;
     }
 
     public void configureAutoChooser() {
@@ -100,18 +115,6 @@ public class PathPlannerStorage {
         return this.autoChooser;
     }
 
-    public boolean getAutoClimb() {
-        return autoClimb.get().getAsBoolean();
-    }
-
-    public BooleanSupplier getAutoClimbSupplier() {
-        return autoClimb.get();
-    }
-
-    public LoggedDashboardChooser<BooleanSupplier> getAutoClimbDashboard() {
-        return autoClimb;
-    }
-
     public Command updatePathViewerCommand() {
         return Commands.either(
             Commands.runOnce(() -> {
@@ -150,52 +153,70 @@ public class PathPlannerStorage {
         return autoPoses;
     }
 
-    public Command climbOrNoClimb() {
-        String pathToClimbName = null;
-        String pathToCenterLineName = null;
+    public Command climbOrNoClimb(String startingPose) {
+        return climb ? 
+            climbAuto(startingPose, (left ?
+                "Middle" : "Right")) : 
+            noClimbAuto(startingPose, left ? 
+                1 : 5
+            );
+    }
+
+    /**
+     * To climb or not to climb that is the question, I know its ugly and not good code but deal with it unless you want to fix it
+     * @param startingPose the name of the first part of the path
+     * @param left left is either left side of the field or left side of the climb
+     * @return commands from the final path of the pathplanner auton to the end of the real one
+     */
+    public Command climbAuto(String startingPose, String side) {
+        String pathToClimbNamePrep = startingPose + "-ClimbPrep" + side;
+        String pathToSomethingName = "1CLR-CLLeft";
+        pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
         PathPlannerPath pathToClimbPrep;
+        PathPlannerPath pathToSomething;
         PathPlannerPath pathToClimb;
-        PathPlannerPath pathToStartingLine;
-        PathPlannerPath pathToCenterLine;
         try {
-            pathToClimbPrep = PathPlannerPath.fromPathFile(pathToClimbName);
+            pathToClimbPrep = PathPlannerPath.fromPathFile(pathToClimbNamePrep);
             pathToClimb = PathPlannerPath.fromPathFile(pathToClimbName);
-            pathToStartingLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
-            pathToCenterLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
+            pathToSomething = PathPlannerPath.fromPathFile(pathToSomethingName);
+            System.out.println(pathToClimbPrep + " " + pathToClimb);
         } catch (Exception e) {
-            // TODO: handle exception
+            return Commands.none();
         }
 
-        return Commands.either(
-            Commands.sequence(
+        return Commands.defer(() -> Commands.sequence(
                 Commands.parallel(
-                    AutoBuilder.followPath(pathToClimbPrep), 
+                    AutoBuilder.followPath(pathToSomething), 
                     NamedCommands.getCommand("ClimbUp"), 
                     NamedCommands.getCommand("StopIntake")
                 ), 
                 AutoBuilder.followPath(pathToClimb), 
                 NamedCommands.getCommand("StopShooting"), 
                 NamedCommands.getCommand("ClimbDown")
-            ), 
-            
-            Commands.sequence(
-                Commands.parallel(
-                    AutoBuilder.followPath(pathToStartingLine), 
-                    Commands.deadline(
-                        Commands.race(
-                            NamedCommands.getCommand("WaitUntilEmptyHopper"), 
-                            NamedCommands.getCommand("WaitUntilOutsideAllianceZone")
-                        ),
-                        NamedCommands.getCommand("Shoot"),
-                        NamedCommands.getCommand("StopIntake")
-                    )
-                ), Commands.parallel(
-                    AutoBuilder.followPath(pathToCenterLine),
-                    NamedCommands.getCommand("Intake"),
-                    NamedCommands.getCommand("StopShooting")
-                )
-            ), 
-            autoClimb.get()
-        );
+        ), requirements);
+    }
+
+    public Command noClimbAuto(String startingPose, int index) {
+        String pathToStartingLineName = startingPose + "-" + index + "CLR";
+        String pathToCenterLineName = index + "CLR-CL" + (index == 1 ? "Left" : "Right");
+        PathPlannerPath pathToStartingLine;
+        PathPlannerPath pathToCenterLine;
+        try {
+            pathToStartingLine = PathPlannerPath.fromPathFile(pathToStartingLineName);
+            pathToCenterLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
+        } catch (Exception e) {
+            return Commands.none();
+        }
+        return Commands.defer(() -> Commands.sequence(
+            Commands.parallel(
+                AutoBuilder.followPath(pathToStartingLine),
+                NamedCommands.getCommand("StopIntake"),
+                NamedCommands.getCommand("WaitUntilEmptyHopper")
+            ), Commands.parallel(
+                AutoBuilder.followPath(pathToCenterLine),
+                NamedCommands.getCommand("Intake"),
+                NamedCommands.getCommand("StopShooting")
+            )
+        ), requirements);
     }
 }
