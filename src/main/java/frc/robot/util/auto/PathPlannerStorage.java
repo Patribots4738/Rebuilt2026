@@ -39,9 +39,6 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
-    @AutoLogOutput (key = "pathToClimbName")
-    private String pathToClimbName = null;
-
     private boolean climb;
     private boolean left;
 
@@ -171,7 +168,7 @@ public class PathPlannerStorage {
     public Command climbAuto(String startingPose, String side) {
         String pathToClimbNamePrep = startingPose + "-ClimbPrep" + side;
         String pathToSomethingName = "1CLR-CLLeft";
-        pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
+        String pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
         PathPlannerPath pathToClimbPrep;
         PathPlannerPath pathToSomething;
         PathPlannerPath pathToClimb;
@@ -218,5 +215,44 @@ public class PathPlannerStorage {
                 NamedCommands.getCommand("StopShooting")
             )
         ), requirements);
+    }
+
+    public Command endAuto(String startingPose) {
+        int index = left? 1 : 5;
+        String centerLineSide = left ? "Left" : "Right";
+        String climbSide = left ? "Middle" : "Right";
+        String secondNode = climb ? "ClimbPrep" + climbSide : index + "CLR";
+        String thirdNode = climb ? "Climb" + climbSide : "CL" + centerLineSide;
+        String firstPathName = startingPose + "-" + secondNode;
+        String lastPathName = secondNode + "-" + thirdNode;
+        PathPlannerPath firstPath;
+        PathPlannerPath lastPath;
+        try {
+            firstPath = PathPlannerPath.fromPathFile(firstPathName);
+            lastPath = PathPlannerPath.fromPathFile(lastPathName);
+        } catch(Exception e) {
+            return Commands.none();
+        }
+
+        return Commands.either(Commands.sequence(
+            Commands.parallel(
+                AutoBuilder.followPath(firstPath), 
+                    NamedCommands.getCommand("ClimbUp"), 
+                    NamedCommands.getCommand("StopIntake")),
+            AutoBuilder.followPath(lastPath), 
+            NamedCommands.getCommand("StopShooting"), 
+            NamedCommands.getCommand("ClimbDown")
+        ), 
+        Commands.sequence(
+            Commands.parallel(
+                AutoBuilder.followPath(firstPath),
+                NamedCommands.getCommand("StopIntake"),
+                NamedCommands.getCommand("WaitUntilEmptyHopper")
+            ), Commands.parallel(
+                AutoBuilder.followPath(lastPath),
+                NamedCommands.getCommand("Intake"),
+                NamedCommands.getCommand("StopShooting")
+            )
+        ), () -> climb);
     }
 }

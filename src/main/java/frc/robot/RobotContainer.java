@@ -170,6 +170,7 @@ public class RobotContainer {
 
         pathPlannerStorage = new PathPlannerStorage(Set.of(swerve, extender, intake, climb, shooter, spindexer, kicker));
 
+        prepareNamedCommands();
         pathPlannerStorage.configureAutoChooser();
         pathPlannerStorage.getAutoChooser().addOption("WheelRadiusCharacterization",
                 swerve.setWheelsOCommand()
@@ -187,8 +188,6 @@ public class RobotContainer {
                         swerve::getTurnCharacterizationVelocity));
 
         CommandScheduler.getInstance().schedule(new NTGainTuner());
-
-        prepareNamedCommands();
     }
 
     private void configureButtonBindings() {
@@ -319,7 +318,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("WaitUntilOutsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) != PoseCalculations.ZONE.inAllianceZone));
 
 
-        NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
+        NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.endAuto("ThroughDepot"));
 
 
         NamedCommands.registerCommand("WiggleShoot", Commands.parallel(
