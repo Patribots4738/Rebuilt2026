@@ -39,8 +39,11 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
-    private boolean climb;
-    private boolean left;
+    @AutoLogOutput (key = "Subsystems/Climb/climb")
+    private boolean climb = false;
+
+    @AutoLogOutput (key = "Subsystems/Climb/left")
+    private boolean left = true;
 
     private final Set<Subsystem> requirements;
 
@@ -54,7 +57,7 @@ public class PathPlannerStorage {
         autoChooser = new LoggedDashboardChooser<>("Auto Routine");
 
         AutoConstants.LOGGED_CLIMB_BOOLEAN.onChanged(Commands.runOnce(() -> climb = AutoConstants.LOGGED_CLIMB_BOOLEAN.get()).ignoringDisable(true));
-        AutoConstants.LOGGED_LEFT_BOOLEAN.onChanged(Commands.runOnce(() -> climb = AutoConstants.LOGGED_LEFT_BOOLEAN.get()).ignoringDisable(true));
+        AutoConstants.LOGGED_LEFT_BOOLEAN.onChanged(Commands.runOnce(() -> left = AutoConstants.LOGGED_LEFT_BOOLEAN.get()).ignoringDisable(true));
 
         this.requirements = requirements;
     }
@@ -151,41 +154,29 @@ public class PathPlannerStorage {
     }
 
     public Command climbOrNoClimb(String startingPose) {
-        return climb ? 
-            climbAuto(startingPose, (left ?
-                "Middle" : "Right")) : 
-            noClimbAuto(startingPose, left ? 
-                1 : 5
-            );
+        return climb ?
+            climbAuto(startingPose, left ? "Middle" : "Right") :
+            noClimbAuto(startingPose, left ? 1 : 5);
     }
 
-    /**
-     * To climb or not to climb that is the question, I know its ugly and not good code but deal with it unless you want to fix it
-     * @param startingPose the name of the first part of the path
-     * @param left left is either left side of the field or left side of the climb
-     * @return commands from the final path of the pathplanner auton to the end of the real one
-     */
     public Command climbAuto(String startingPose, String side) {
         String pathToClimbNamePrep = startingPose + "-ClimbPrep" + side;
-        String pathToSomethingName = "1CLR-CLLeft";
         String pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
         PathPlannerPath pathToClimbPrep;
-        PathPlannerPath pathToSomething;
         PathPlannerPath pathToClimb;
         try {
             pathToClimbPrep = PathPlannerPath.fromPathFile(pathToClimbNamePrep);
             pathToClimb = PathPlannerPath.fromPathFile(pathToClimbName);
-            pathToSomething = PathPlannerPath.fromPathFile(pathToSomethingName);
-            System.out.println(pathToClimbPrep + " " + pathToClimb);
         } catch (Exception e) {
             return Commands.none();
         }
 
         return Commands.defer(() -> Commands.sequence(
                 Commands.parallel(
-                    AutoBuilder.followPath(pathToSomething), 
+                    AutoBuilder.followPath(pathToClimbPrep), 
                     NamedCommands.getCommand("ClimbUp"), 
-                    NamedCommands.getCommand("StopIntake")
+                    NamedCommands.getCommand("StopIntake"),
+                    NamedCommands.getCommand("ShootUntilEmptyHopper")
                 ), 
                 AutoBuilder.followPath(pathToClimb), 
                 NamedCommands.getCommand("StopShooting"), 

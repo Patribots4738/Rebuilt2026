@@ -296,7 +296,7 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand());
+        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().withTimeout(5d));
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand().until(() -> kicker.emptyHopper()));
         NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
@@ -318,7 +318,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("WaitUntilOutsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) != PoseCalculations.ZONE.inAllianceZone));
 
 
-        NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.endAuto("ThroughDepot"));
+        NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
 
 
         NamedCommands.registerCommand("WiggleShoot", Commands.parallel(
