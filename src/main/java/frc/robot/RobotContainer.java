@@ -77,13 +77,13 @@ public class RobotContainer {
     private final Swerve swerve;
     @SuppressWarnings("unused")
 //     private final Climb climb;
-//     private final Flywheel flywheel;
-//     private final Turret turret;
-//     private final Hood hood;
+    private final Flywheel flywheel;
+    private final Turret turret;
+    private final Hood hood;
 //     private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
-//     private final Kicker kicker;
+    private final Kicker kicker;
     private final Spindexer spindexer;
 
 //     private final Superstructure superstructure;
@@ -131,10 +131,10 @@ public class RobotContainer {
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
-        // kicker = new Kicker(new KickerIOKraken());
-        // flywheel = new Flywheel(new FlywheelIOKraken());
-        // turret = new Turret(new TurretIOKraken());
-        // hood = new Hood(new HoodIOKraken());
+        kicker = new Kicker(new KickerIOKraken());
+        flywheel = new Flywheel(new FlywheelIOKraken());
+        turret = new Turret(new TurretIOKraken());
+        hood = new Hood(new HoodIOKraken());
         // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
@@ -211,15 +211,20 @@ public class RobotContainer {
         controller.b().onTrue(swerve.getSetWheelsX());
         controller.x().onTrue(swerve.setWheelsZeroCommand());
 
-        controller.rightStick().onTrue(extender.resetEncodersCommand());
-        controller.rightTrigger().onTrue(extender.setTestPositionCommand());
-        controller.rightBumper().onTrue(extender.setNeutralCommand());
+        // controller.rightStick().onTrue(extender.resetEncodersCommand());
+        // controller.rightTrigger().onTrue(extender.setTestPositionCommand());
+        // controller.rightBumper().onTrue(extender.setNeutralCommand());
 
         controller.leftTrigger().onTrue(intake.setTestPercentCommand());
         controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
-        controller.povUp().onTrue(spindexer.setTestPercentCommand());
-        controller.povRight().onTrue(spindexer.setPercentCommand(0.0));
+        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setTestPercentCommand(), kicker.setTestPercentCommand()));
+        controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+
+        controller.povUp().onTrue(hood.setTestPositionCommand());
+        controller.povDown().onTrue(hood.setNeutralCommand());
+        controller.povRight().onTrue(turret.setTestPositionCommand());
+        controller.povLeft().onTrue(turret.setNeutralCommand());
         
     }
 

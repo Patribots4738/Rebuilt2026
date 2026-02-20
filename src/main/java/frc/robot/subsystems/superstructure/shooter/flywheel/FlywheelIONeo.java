@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import frc.robot.util.Constants.FlywheelConstants;
+import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
 public class FlywheelIONeo implements FlywheelIO {
@@ -51,5 +52,10 @@ public class FlywheelIONeo implements FlywheelIO {
     @Override
     public void setPercent(double percent) {
         motor.setTargetPercent(percent);
+    }
+
+    @Override
+    public void setGains(GainConstants constants) {
+        motor.setPID(constants);
     }
 }

@@ -6,6 +6,7 @@ package frc.robot.subsystems.superstructure.kicker;
 
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.subsystems.superstructure.intake.IntakeIO;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 
 import static edu.wpi.first.units.Units.Second;
@@ -36,6 +37,8 @@ public class Kicker extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
+    private double testPercent;
+
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
     // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
@@ -46,6 +49,8 @@ public class Kicker extends SubsystemBase {
     public Kicker(KickerIO io) {
         this.io = io;
 
+        KickerConstants.LOGGED_KICKER_PERCENT.onChanged(Commands.runOnce(() -> testPercent = KickerConstants.LOGGED_KICKER_PERCENT.get()).ignoringDisable(true));
+        
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
@@ -84,5 +89,13 @@ public class Kicker extends SubsystemBase {
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
+    }
+
+    public void setTestPercent() {
+        setPercent(testPercent);
+    }
+
+    public Command setTestPercentCommand() {
+        return Commands.runOnce(() -> setTestPercent());
     }
 }

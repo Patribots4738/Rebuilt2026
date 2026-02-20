@@ -28,6 +28,8 @@ public interface HoodIO {
     public default void runCharacterization(double input) {}
 
     public default void setBrakeMode(boolean brake) {}
+
+    public default void resetEncoders(double position) {}
         
     public default void setGains(GainConstants constants) {}
 

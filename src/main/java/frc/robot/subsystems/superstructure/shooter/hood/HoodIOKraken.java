@@ -53,6 +53,12 @@ public class HoodIOKraken implements HoodIO {
     }
 
     @Override
+    public void resetEncoders(double position) {
+        motor.resetEncoder(position);
+
+    }
+
+    @Override
     public void runCharacterization(double input) {}
 
     @Override

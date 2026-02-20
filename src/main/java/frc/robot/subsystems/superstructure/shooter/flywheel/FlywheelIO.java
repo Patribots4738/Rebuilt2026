@@ -2,6 +2,8 @@ package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.util.custom.GainConstants;
+
 public interface FlywheelIO {
     @AutoLog
     class FlywheelIOInputs {
@@ -31,4 +33,6 @@ public interface FlywheelIO {
     public default void setVoltage(double volts) {}
 
     public default void setCurrent(double amps) {}
+
+    public default void setGains(GainConstants constants) {}
 }

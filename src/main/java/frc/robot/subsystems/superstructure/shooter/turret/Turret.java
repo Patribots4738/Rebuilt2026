@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.ShotCalculations;
 
@@ -34,10 +37,15 @@ public class Turret extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
+    private double testPositionDegrees;
+
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
     public Turret(TurretIO io) {
         this.io = io;
+
+        TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
+        TurretConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = TurretConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
     }
 
     @Override
@@ -86,6 +94,14 @@ public class Turret extends SubsystemBase {
 
     public Command setPositionCommand(double position) {
         return setPositionCommand(() -> position);
+    }
+
+    public void setTestPositionDegrees() {
+        setPosition(Units.degreesToRadians(testPositionDegrees));
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> setTestPositionDegrees());
     }
 
     public void setNeutral() {

@@ -56,4 +56,10 @@ public class HoodIONeo implements HoodIO {
     public void setGains(GainConstants constants) {
         motor.setPID(constants);
     }
+
+    @Override
+    public void resetEncoders(double position) {
+        motor.resetEncoder(position);
+
+    }
 }

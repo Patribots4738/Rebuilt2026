@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
@@ -23,6 +25,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.calc.ShotCalculations;
 
 public class Hood extends SubsystemBase {
@@ -34,11 +37,16 @@ public class Hood extends SubsystemBase {
     private double yaw;
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    
+    private double testPositionDegrees;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
 
     public Hood(HoodIO io) { 
         this.io = io;
+
+        HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
+        HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
     }
 
     @Override
@@ -92,12 +100,24 @@ public class Hood extends SubsystemBase {
         return setPositionCommand(() -> position);
     }
 
+    public void setTestPositionDegrees() {
+        setPosition(Units.degreesToRadians(testPositionDegrees));
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> setTestPositionDegrees());
+    }
+
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
+    }
+
+    public Command resetEncodersCommand() {
+        return runOnce(() -> io.resetEncoders(0));
     }
 
     public boolean atPosition(double position) {

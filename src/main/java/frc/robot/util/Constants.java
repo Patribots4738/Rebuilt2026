@@ -37,6 +37,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
+import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedGainConstants;
@@ -199,10 +200,10 @@ public final class Constants {
 
         // Angular offsets of the modules relative to the chassis in radians
         // add 90 degrees to change the X and Y axis
-        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(88.744319974812);
-        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180);
-        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0);
-        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(269.20908);
+        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90); //good
+        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
+        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
+        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90); // good
 
         // public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
         // public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
@@ -471,10 +472,10 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.207031;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367432;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275635;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329590;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = 0.0;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.0;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.0;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.0;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
@@ -760,7 +761,7 @@ public final class Constants {
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
         public static final double YAW_OFFSET = 0.0;
         public static final double PITCH_OFFSET = 0.0;
-        public static final double ROLL_OFFSET = 180.0;
+        public static final double ROLL_OFFSET = 0.0;
         public static final MountPoseConfigs POSE_CONFIGS = new MountPoseConfigs(){{
             withMountPoseYaw(YAW_OFFSET);
             withMountPosePitch(PITCH_OFFSET);
@@ -877,9 +878,8 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 50;
 
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
-        public static final double GEAR_RATIO = 9.0;
-
-
+        public static final double GEAR_RATIO = 50.0;
+        
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
@@ -907,6 +907,9 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 4d;
@@ -956,6 +959,9 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
+        public static final LoggedTunableConstant LOGGED_LINEAR_VELOCITY = new LoggedTunableConstant("Shooter/Flyweel/LinearVelocity", 0.0);
     }
 
     public static final class HoodConstants {
@@ -999,6 +1005,9 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 3d;
@@ -1079,33 +1088,17 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
         
         public static final double CURRENT_LIMIT = 40.0;
-        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean BRAKE_MOTOR = false;
 
         public static final double DEBOUNCER_TIME = 0.5;
         
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.5;
-        public static final double FORWARD_PERCENT = 0.5;
+        public static final double REVERSE_PERCENT = -0.2;
+        public static final double FORWARD_PERCENT = 0.2;
         
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-        
-        public static final GainConstants GAINS = new GainConstants(
-                P,
-                I,
-                D,
-                A,
-                S,
-                V,
-                G
-        );
+        public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
 
     public static final class GeneralHardwareConstants {
@@ -1121,7 +1114,7 @@ public final class Constants {
 
         public static final double CURRENT_LIMIT = 30.0;
 
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final int MOTOR_TYPE = 44;
 
         public static final double IDLE_PERCENT = 0.0;
@@ -1130,7 +1123,7 @@ public final class Constants {
         
         public static final double GEAR_RATIO = 3.0;
 
-        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Spindexer/PercentOutput", 0.0);
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", 0.0);
     }
 
     public static final class FieldConstants {

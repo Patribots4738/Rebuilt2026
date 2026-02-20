@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import frc.robot.util.Constants.FlywheelConstants;
+import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 
@@ -61,5 +62,10 @@ public class FlywheelIOKraken implements FlywheelIO {
     @Override
     public void setCurrent(double amps) {
         motor.setTorqueCurrentOutput(amps);
+    }
+
+    @Override
+    public void setGains(GainConstants constants) {
+        motor.setGains(constants.withG(0.0));
     }
 }
