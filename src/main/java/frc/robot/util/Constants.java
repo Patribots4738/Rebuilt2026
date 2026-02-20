@@ -290,6 +290,7 @@ public final class Constants {
             "Double Center Rush Left",
             "Double Center Rush Right",
             "Depot Center Rush",
+            "Outpost Center Rush",
             "Cleanup Left",
             "Cleanup Middle",
             "Cleanup Right",
@@ -315,7 +316,7 @@ public final class Constants {
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
 
-        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", false);
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", true);
         
         public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", true);
 

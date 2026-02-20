@@ -39,12 +39,6 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
-    @AutoLogOutput (key = "Subsystems/Climb/climb")
-    private boolean climb = false;
-
-    @AutoLogOutput (key = "Subsystems/Climb/left")
-    private boolean left = true;
-
     private final Set<Subsystem> requirements;
 
     public static final ArrayList<Pose2d> AUTO_STARTING_POSITIONS = new ArrayList<Pose2d>();
@@ -55,9 +49,6 @@ public class PathPlannerStorage {
      */
     public PathPlannerStorage(Set<Subsystem> requirements) {
         autoChooser = new LoggedDashboardChooser<>("Auto Routine");
-
-        AutoConstants.LOGGED_CLIMB_BOOLEAN.onChanged(Commands.runOnce(() -> climb = AutoConstants.LOGGED_CLIMB_BOOLEAN.get()).ignoringDisable(true));
-        AutoConstants.LOGGED_LEFT_BOOLEAN.onChanged(Commands.runOnce(() -> left = AutoConstants.LOGGED_LEFT_BOOLEAN.get()).ignoringDisable(true));
 
         this.requirements = requirements;
     }
@@ -154,12 +145,12 @@ public class PathPlannerStorage {
     }
 
     public Command climbOrNoClimb(String startingPose) {
-        return climb ?
-            climbAuto(startingPose, left ? "Middle" : "Right") :
-            noClimbAuto(startingPose, left ? 1 : 5);
+        return Commands.defer(() -> (AutoConstants.LOGGED_CLIMB_BOOLEAN.get() ?
+            climbAuto(startingPose, AutoConstants.LOGGED_LEFT_BOOLEAN.get() ? "Middle" : "Right") :
+            noClimbAuto(startingPose, AutoConstants.LOGGED_LEFT_BOOLEAN.get() ? 1 : 5)), requirements);
     }
 
-    public Command climbAuto(String startingPose, String side) {
+    private Command climbAuto(String startingPose, String side) {
         String pathToClimbNamePrep = startingPose + "-ClimbPrep" + side;
         String pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
         PathPlannerPath pathToClimbPrep;
@@ -184,7 +175,7 @@ public class PathPlannerStorage {
         ), requirements);
     }
 
-    public Command noClimbAuto(String startingPose, int index) {
+    private Command noClimbAuto(String startingPose, int index) {
         String pathToStartingLineName = startingPose + "-" + index + "CLR";
         String pathToCenterLineName = index + "CLR-CL" + (index == 1 ? "Left" : "Right");
         PathPlannerPath pathToStartingLine;
@@ -206,44 +197,5 @@ public class PathPlannerStorage {
                 NamedCommands.getCommand("StopShooting")
             )
         ), requirements);
-    }
-
-    public Command endAuto(String startingPose) {
-        int index = left? 1 : 5;
-        String centerLineSide = left ? "Left" : "Right";
-        String climbSide = left ? "Middle" : "Right";
-        String secondNode = climb ? "ClimbPrep" + climbSide : index + "CLR";
-        String thirdNode = climb ? "Climb" + climbSide : "CL" + centerLineSide;
-        String firstPathName = startingPose + "-" + secondNode;
-        String lastPathName = secondNode + "-" + thirdNode;
-        PathPlannerPath firstPath;
-        PathPlannerPath lastPath;
-        try {
-            firstPath = PathPlannerPath.fromPathFile(firstPathName);
-            lastPath = PathPlannerPath.fromPathFile(lastPathName);
-        } catch(Exception e) {
-            return Commands.none();
-        }
-
-        return Commands.either(Commands.sequence(
-            Commands.parallel(
-                AutoBuilder.followPath(firstPath), 
-                    NamedCommands.getCommand("ClimbUp"), 
-                    NamedCommands.getCommand("StopIntake")),
-            AutoBuilder.followPath(lastPath), 
-            NamedCommands.getCommand("StopShooting"), 
-            NamedCommands.getCommand("ClimbDown")
-        ), 
-        Commands.sequence(
-            Commands.parallel(
-                AutoBuilder.followPath(firstPath),
-                NamedCommands.getCommand("StopIntake"),
-                NamedCommands.getCommand("WaitUntilEmptyHopper")
-            ), Commands.parallel(
-                AutoBuilder.followPath(lastPath),
-                NamedCommands.getCommand("Intake"),
-                NamedCommands.getCommand("StopShooting")
-            )
-        ), () -> climb);
     }
 }
