@@ -41,7 +41,7 @@ public class Module {
      */
     public void setDesiredState(SwerveModuleState desiredState, double feedforward) {
         // Apply chassis angular offset to the desired state.
-        this.desiredState.speedMetersPerSecond *= desiredState.angle.minus(new Rotation2d(inputs.turnEncoderAbsPositionRads)).getCos();
+        this.desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
         this.desiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset));
 
         // Optimize the reference state to avoid spinning further than 90 degrees.
