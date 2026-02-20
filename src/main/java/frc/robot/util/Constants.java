@@ -39,6 +39,8 @@ import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
+import org.littletonrobotics.junction.AutoLog;
+import frc.robot.util.custom.LoggedGainConstants;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -837,6 +839,8 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
+        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Turret/Gains");
+        
         public static final int MOTOR_CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
 

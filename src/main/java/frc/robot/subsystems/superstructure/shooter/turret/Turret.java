@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.ShotCalculations;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -40,6 +42,7 @@ public class Turret extends SubsystemBase {
 
     public Turret(TurretIO io) {
         this.io = io;
+        TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
         this.turretRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
