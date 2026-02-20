@@ -839,8 +839,6 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
-        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Turret/Gains");
-        
         public static final int MOTOR_CAN_ID = 0;
         public static final int MOTOR_TYPE = 44;
 
@@ -883,6 +881,8 @@ public final class Constants {
             G
         );
 
+        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Turret/Gains");
+        
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 4d;
         public static final double JERK = 20d;
