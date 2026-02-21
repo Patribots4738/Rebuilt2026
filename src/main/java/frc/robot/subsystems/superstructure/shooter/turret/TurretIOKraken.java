@@ -7,7 +7,6 @@ import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
-import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class TurretIOKraken implements TurretIO {
     private final Kraken motor;
@@ -32,7 +31,6 @@ public class TurretIOKraken implements TurretIO {
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-TurretConstants.CURRENT_LIMIT, TurretConstants.CURRENT_LIMIT);
         motor.setBrakeMode(TurretConstants.BRAKE_MOTOR);
-        motor.setTelemetryPreference(TelemetryPreference.DEFAULT);
     }
 
     private void configEncoder() {

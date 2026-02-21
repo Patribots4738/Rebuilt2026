@@ -868,16 +868,16 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
-        public static final int MOTOR_CAN_ID = 0;
+        public static final int MOTOR_CAN_ID = 17;
         public static final int MOTOR_TYPE = 44;
 
-        public static final int ENCODER_CAN_ID = 0;
+        public static final int ENCODER_CAN_ID = 18;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0.105713;
         public static final double GEAR_RATIO = 50.0;
         
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
@@ -885,7 +885,7 @@ public final class Constants {
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // TODO: find turret rotation limit
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -924,12 +924,14 @@ public final class Constants {
     }
 
     public static final class FlywheelConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 20;
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
+
+        public static final double GEAR_RATIO = 1.0;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
@@ -939,7 +941,7 @@ public final class Constants {
         public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
         public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
 
-        public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
+        public static final double CIRCUMFERENCE_METERS = 0.1016 * Math.PI;
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
@@ -965,19 +967,17 @@ public final class Constants {
     }
 
     public static final class HoodConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 19;
         public static final int MOTOR_TYPE = 44;
-
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0.0;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 30;
+        public static final double CURRENT_LIMIT = 50;
 
-        public static final double GEAR_RATIO = 1.0;
+        public static final double GEAR_RATIO = 42 / 18;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(38.5); // TODO: hood moves from what to what degrees?
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
@@ -1078,8 +1078,10 @@ public final class Constants {
     }
 
     public static final class KickerConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 16;
         public static final int MOTOR_TYPE = 60;
+
+        public static final int CANRANGE_ID = 28;
         
         public static final boolean MOTOR_INVERTED = false;
         
@@ -1118,12 +1120,13 @@ public final class Constants {
         public static final int MOTOR_TYPE = 44;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double CLOCKWISE_PERCENT = -0.5;
-        public static final double COUNTERCLOCKWISE_PERCENT = 0.5;
+        public static final double CLOCKWISE_PERCENT = -0.6;
+        public static final double COUNTERCLOCKWISE_PERCENT = 0.6;
+        public static final double FEED_PERCENT = 0.6;
         
         public static final double GEAR_RATIO = 3.0;
 
-        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", 0.0);
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
     }
 
     public static final class FieldConstants {

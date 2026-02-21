@@ -8,7 +8,7 @@ public class HoodIONeo implements HoodIO {
     private final Neo motor;
 
     public HoodIONeo() {
-        motor = new Neo(HoodConstants.CAN_ID, false, false, true);
+        motor = new Neo(HoodConstants.CAN_ID, false, false, false);
         configMotor();
     }
 
@@ -30,7 +30,6 @@ public class HoodIONeo implements HoodIO {
         inputs.appliedOutputVolts = motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
-        inputs.encoderAbsPositionRads = inputs.internalPositionRads;
     }
 
     @Override

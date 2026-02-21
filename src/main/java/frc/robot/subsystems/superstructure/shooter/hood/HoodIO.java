@@ -15,8 +15,6 @@ public interface HoodIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
-        public boolean encoderConnected = false;
-        public double encoderAbsPositionRads = 0.0;
     }
 
     public default void updateInputs(HoodIOInputs inputs) {}

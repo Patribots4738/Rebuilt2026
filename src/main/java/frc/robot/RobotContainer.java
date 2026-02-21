@@ -218,7 +218,7 @@ public class RobotContainer {
         controller.leftTrigger().onTrue(intake.setTestPercentCommand());
         controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
-        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setTestPercentCommand(), kicker.setTestPercentCommand()));
+        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
         controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
         controller.povUp().onTrue(hood.setTestPositionCommand());
