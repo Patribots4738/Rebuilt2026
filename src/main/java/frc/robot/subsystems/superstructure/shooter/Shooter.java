@@ -190,4 +190,18 @@ public class Shooter extends SubsystemBase {
     public Command toggleManualAiming() {
         return Commands.run(() -> manualAiming = !manualAiming);
     }
+
+    public Command turretLeftCommand() {
+        return Commands.runOnce(() -> {
+            turret.setPosition(Math.toRadians(30));
+        },
+        turret);
+    }
+
+    public Command turretRightCommand() {
+        return Commands.runOnce(() -> {
+            turret.setPosition(Math.toRadians(-30));
+        },
+        turret);
+    }
 }

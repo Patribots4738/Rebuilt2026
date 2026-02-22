@@ -206,6 +206,9 @@ public class RobotContainer {
         controller.leftBumper().onTrue(swerve.setWheelsOCommand());
         controller.rightBumper().onTrue(swerve.getSetWheelsX());
         controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+        controller.a().onTrue(shooter.turretLeftCommand());
+        controller.b().onTrue(shooter.turretRightCommand());
+
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
@@ -241,7 +244,6 @@ public class RobotContainer {
         controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
         controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(()-> !controller.povRight().getAsBoolean()));
         controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
-
 
 
         // controller.leftBumper().whileTrue(swerve.getSetWheelsX());

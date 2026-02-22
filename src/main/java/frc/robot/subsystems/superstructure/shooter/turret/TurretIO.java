@@ -3,6 +3,7 @@ package frc.robot.subsystems.superstructure.shooter.turret;
 import org.littletonrobotics.junction.AutoLog;
 
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedGainConstants;
 
 public interface TurretIO {
     
@@ -33,4 +34,6 @@ public interface TurretIO {
     public default void setGains(GainConstants constants) {}
 
     public default void configureProfile(double velocity, double acceleration, double jerk) {}
+
+    public default void setGains(LoggedGainConstants gains) {}
 }

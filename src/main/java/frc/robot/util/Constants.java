@@ -490,7 +490,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.0;
+        public static final double DRIVING_P = FieldConstants.IS_REAL ? 0 : 25d;
         public static final double DRIVING_I = 0.0;
         public static final double DRIVING_D = 0.0;
         public static final double DRIVING_S = 0.0;
@@ -505,9 +505,9 @@ public final class Constants {
             0.0
         );
 
-        public static final double TURNING_P = 0.0;
+        public static final double TURNING_P = FieldConstants.IS_REAL ? 0.0 : 330d;
         public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 0.0;
+        public static final double TURNING_D = FieldConstants.IS_REAL ? 0.0 : 22.5;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -839,10 +839,10 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
-        public static final int MOTOR_CAN_ID = 0;
+        public static final int MOTOR_CAN_ID = 20;
         public static final int MOTOR_TYPE = 44;
 
-        public static final int ENCODER_CAN_ID = 0;
+        public static final int ENCODER_CAN_ID = 14;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
@@ -887,7 +887,7 @@ public final class Constants {
         public static final double ACCELERATION = 4d;
         public static final double JERK = 20d;
 
-        public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
+        public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(-4.5, -4.0, 12.594, Rotation3d.kZero);
         public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(
             TURRET_TO_ROBOT_TRANSFORM3D.getX(),
             TURRET_TO_ROBOT_TRANSFORM3D.getY(),
