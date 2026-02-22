@@ -15,6 +15,8 @@ public interface HoodIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
+        public double percentOutput = 0.0;
+        public double targetPercentOutput = 0.0;
     }
 
     public default void updateInputs(HoodIOInputs inputs) {}
@@ -30,6 +32,8 @@ public interface HoodIO {
     public default void resetEncoders(double position) {}
         
     public default void setGains(GainConstants constants) {}
+
+    public default void setPercent(double percent) {}
 
     public default void configureProfile(double velocity, double acceleration, double jerk) {}
 }

@@ -200,10 +200,11 @@ public final class Constants {
 
         // Angular offsets of the modules relative to the chassis in radians
         // add 90 degrees to change the X and Y axis
-        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90); //good
-        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
-        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
-        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90); // good
+        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90); // invert drive
+        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0); // good
+        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-180); // good
+        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90); // invert drive
+
 
         // public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
         // public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
@@ -472,18 +473,23 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = 0.0;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.0;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.0;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.0;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205078;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.365723;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.273926;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329346;
+
+
+        // inversions for different motors may be needed for dual type
+        public static final boolean INVERT_FRONT_LEFT_DRIVE = true;
+        public static final boolean INVERT_FRONT_RIGHT_DRIVE = false;
+        public static final boolean INVERT_BACK_LEFT_DRIVE = false;
+        public static final boolean INVERT_BACK_RIGHT_DRIVE = true;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
         public static final double MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC = 400;
 
         public static final boolean INVERT_TURNING_MOTOR = false;
-
-        public static final boolean INVERT_DRIVE_MOTOR = false;
 
         public static final boolean INVERT_TURNING_CANCODER = false;
 
@@ -874,18 +880,18 @@ public final class Constants {
         public static final int ENCODER_CAN_ID = 18;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0.105713;
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0.107178;
         public static final double GEAR_RATIO = 50.0;
         
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = -0.935791 * 2 * Math.PI;
+        public static final double MAX_ANGLE_RADIANS = 1.065674 * 2 * Math.PI; // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -972,20 +978,20 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 50;
+        public static final double CURRENT_LIMIT = 150;
 
-        public static final double GEAR_RATIO = 42 / 18;
+        public static final double GEAR_RATIO = 2.33333333333333;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(38.5); // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = 0.6719518; 
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
 
-        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+        public static final double POSITION_DEADBAND_RADIANS = 0.01;
         
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
@@ -994,7 +1000,7 @@ public final class Constants {
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = -21.5; //21.5 amps
 
         public static final GainConstants GAINS = new GainConstants(
             P,

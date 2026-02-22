@@ -12,21 +12,33 @@ public class HoodIOKraken implements HoodIO {
     private final Kraken motor;
 
     public HoodIOKraken() {
-        motor = new Kraken(HoodConstants.CAN_ID, HoodConstants.MOTOR_TYPE, true, true, ControlPreference.VOLTAGE);
+        motor = new Kraken(HoodConstants.CAN_ID, HoodConstants.MOTOR_TYPE, true, false, ControlPreference.TORQUE_CURRENT);
         configMotor();
     }
 
     public void configMotor() {
-        motor.setBrakeMode(HoodConstants.BRAKE_MOTOR);
-        motor.setUnitConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
-        motor.setMotorInverted(HoodConstants.MOTOR_INVERTED);
         motor.setGearRatio(HoodConstants.GEAR_RATIO);
+        motor.setUnitConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
+        motor.setMotorInverted(HoodConstants.MOTOR_INVERTED);
         motor.setGains(HoodConstants.GAINS);
         motor.setStatorCurrentLimit(HoodConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-HoodConstants.CURRENT_LIMIT, HoodConstants.CURRENT_LIMIT);
         motor.setBrakeMode(HoodConstants.BRAKE_MOTOR);
         motor.resetEncoder(0.0);
+        // motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
+    }
+
+    @Override
+    public void updateInputs(HoodIOInputs inputs) {
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.percentOutput = motor.getPercentAsDouble();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.internalPositionRads = motor.getPositionAsDouble();
+        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
+        inputs.targetPositionRads = motor.getTargetPosition();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
     }
 
     @Override
@@ -42,7 +54,6 @@ public class HoodIOKraken implements HoodIO {
     @Override
     public void resetEncoders(double position) {
         motor.resetEncoder(position);
-
     }
 
     @Override
@@ -61,5 +72,9 @@ public class HoodIOKraken implements HoodIO {
     @Override
     public void configureProfile(double velocity, double acceleration, double jerk) {
         motor.configureMotionMagic(velocity, acceleration, jerk);
+    }
+
+    public void setPercent(double percent) {
+        motor.setPercentOutput(percent);
     }
 }

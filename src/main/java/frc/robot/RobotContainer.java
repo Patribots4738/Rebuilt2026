@@ -14,7 +14,12 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -108,6 +113,9 @@ public class RobotContainer {
     public static Pose2d autoStartingPose = Pose2d.kZero;
     @AutoLogOutput(key = "Draggables/RobotPose3d")
     public static Pose3d robotPose3d = new Pose3d();
+    public static Mechanism2d mech = new Mechanism2d(10, 10);
+    public static MechanismRoot2d hoodPivot = mech.getRoot("Hood", 0, 0);
+    public static MechanismLigament2d hoodMechanism = new MechanismLigament2d("hoodMechanism", 10, 0, 2, new Color8Bit(Color.kPurple));
 
     public RobotContainer() {
 
@@ -139,6 +147,7 @@ public class RobotContainer {
         // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
+        SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -207,7 +216,7 @@ public class RobotContainer {
         ), swerve)
         );
 
-        controller.a().onTrue(swerve.setWheelsOCommand());
+        // controller.a().onTrue(swerve.setWheelsOCommand());
         controller.b().onTrue(swerve.getSetWheelsX());
         controller.x().onTrue(swerve.setWheelsZeroCommand());
 
@@ -221,8 +230,9 @@ public class RobotContainer {
         controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
         controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
-        controller.povUp().onTrue(hood.setTestPositionCommand());
-        controller.povDown().onTrue(hood.setNeutralCommand());
+        controller.povUp().onTrue(turret.setTestPositionCommand());
+        controller.a().onTrue(turret.setPositionCommand(1.0));
+        controller.povDown().onTrue(turret.setNeutralCommand());
         controller.povRight().onTrue(turret.setTestPositionCommand());
         controller.povLeft().onTrue(turret.setNeutralCommand());
         

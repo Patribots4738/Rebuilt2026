@@ -60,7 +60,7 @@ public class Shooter extends SubsystemBase {
         }
         else if (trackTarget) {
             updateTarget(robotRelativePose.get());
-            ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
+            ShootingParameters shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, true);
             flywheel.setVelocity(shotParams.flywheelSpeed());
             hood.setPosition(shotParams.hoodAngle());     
             turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());       
