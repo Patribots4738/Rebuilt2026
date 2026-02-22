@@ -909,6 +909,7 @@ public final class Constants {
         public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
 
         // TODO: tune these values
+        // if it's not in sim use first values else use second values: note to self delete this afterwards
         public static final double P = FieldConstants.IS_REAL ? 0 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
