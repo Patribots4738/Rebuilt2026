@@ -36,7 +36,7 @@ public class Spindexer extends SubsystemBase {
                 )
         );
 	}
-	
+	//Controls the amount of power and rotation/speed of the spindexer
 	@Override
     public void periodic(){
         io.updateInputs(inputs);

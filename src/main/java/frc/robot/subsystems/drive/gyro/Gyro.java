@@ -47,3 +47,4 @@ public class Gyro {
         return inputs.yawVelocityRadsPerSec;
     }
 }
+//This part gets the info from the gyroscope

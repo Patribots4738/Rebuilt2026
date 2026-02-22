@@ -56,7 +56,7 @@ public class Turret extends SubsystemBase {
                 )
         );
     }
-
+// this part logs the voltage, rotation, and speed of the turret
     @Override
     public void periodic() {
         io.updateInputs(inputs);

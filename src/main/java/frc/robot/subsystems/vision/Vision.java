@@ -68,6 +68,7 @@ public class Vision extends SubsystemBase {
         }
         this.poseEstimator = poseEstimator;
     }
+    // this is a count of the amount of time the camera has been on for
 
     @Override
     public void periodic() {
@@ -176,7 +177,7 @@ public class Vision extends SubsystemBase {
         }
         return true;
     }
-
+// if the camera sees a target this gets the position and rotation of the robot
 
     public Command toggleMT1Command() {
         return runOnce(() -> this.useMT1Override = !this.useMT1Override);

@@ -60,7 +60,7 @@ public class Climb extends SubsystemBase {
                 )
         );
     }
-
+//This part logs the power, rotation, and speed of the climb motors
     @Override
     public void periodic() {
         io.updateInputs(inputs);
@@ -76,7 +76,7 @@ public class Climb extends SubsystemBase {
             setpoint.velocity = inputs.velocityMetersPerSec;
             io.setNeutral();
         }
-
+//I think this part is in charge of running to motors?
         RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
             LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), inputs.positionMeters,
             new Rotation3d()
@@ -98,7 +98,7 @@ public class Climb extends SubsystemBase {
             new Rotation3d()
         );
     }
-
+//I think this part makes it clamp on
     public void setNeutral() {
         io.setNeutral();
     }
