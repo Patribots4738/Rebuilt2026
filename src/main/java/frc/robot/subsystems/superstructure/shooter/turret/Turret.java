@@ -35,6 +35,7 @@ public class Turret extends SubsystemBase {
     private State setpoint = new State(0, 0);
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    private boolean isCharacterizing = false;
     
     private final SysIdRoutine turretRoutine;
 
@@ -50,7 +51,10 @@ public class Turret extends SubsystemBase {
                         Seconds.of(10)
                 ),
                 new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        (Voltage volts) -> {
+                            isCharacterizing = true;
+                            io.runCharacterization(volts.in(Volts));
+                        },
                         log -> log.motor("turret")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
                                 .angularPosition(Radians.of(inputs.internalPositionRads))
@@ -68,7 +72,10 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
 
-        if (shouldRunSetpoint) {
+        if (isCharacterizing) {
+            // SysId routine is controlling the motor directly; don't override it
+            isCharacterizing = false;
+        } else if (shouldRunSetpoint) {
             setpoint = profile.calculate(0.02, setpoint, targetState);
             // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
             // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
