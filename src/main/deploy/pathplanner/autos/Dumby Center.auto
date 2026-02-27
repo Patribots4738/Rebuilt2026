@@ -17,12 +17,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "ClimbUp"
                 }
               }
@@ -30,15 +24,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ClimbPrepMiddle-ClimbMiddle"
+            "name": "ShootUntilEmptyHopper"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "StopShooting"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepMiddle-ClimbMiddle"
           }
         },
         {

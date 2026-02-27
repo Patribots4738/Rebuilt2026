@@ -291,6 +291,8 @@ public final class Constants {
             "Double Center Rush Right",
             "Depot Center Rush",
             "Outpost Center Rush",
+            "Disrupt Left",
+            "Disrupt Right",
             "Cleanup Left",
             "Cleanup Middle",
             "Cleanup Right",
