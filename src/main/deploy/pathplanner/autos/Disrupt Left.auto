@@ -32,25 +32,25 @@
         {
           "type": "path",
           "data": {
+            "pathName": "DisruptR-DisruptShortL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DisruptShortL-DisruptR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "DisruptR-DisruptL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DisuptL-DisruptR"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DisruptR-DisruptL"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DisruptL-DisruptR 2"
+            "pathName": "DisruptL-DisruptR-Short"
           }
         }
       ]
