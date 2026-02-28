@@ -1056,6 +1056,47 @@ public final class Constants {
         );
     }
 
+public static final class FlywheelConstants {
+        public static final int CAN_ID = 0;
+        public static final int MOTOR_TYPE = 60;
+        
+        public static final boolean MOTOR_INVERTED = false;
+        
+        public static final double GEAR_RATIO = 1.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
+        
+        public static final double CURRENT_LIMIT = 40.0;
+        public static final boolean BRAKE_MOTOR = true;
+
+        public static final double DEBOUNCER_TIME = 0.5;
+        
+        public static final double DEADBAND_RADIANS = 0.0;
+
+        public static final double IDLE_PERCENT = 0.0;
+        public static final double REVERSE_PERCENT = -0.5;
+        public static final double FORWARD_PERCENT = 0.5;
+        
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+        
+        public static final GainConstants GAINS = new GainConstants(
+                P,
+                I,
+                D,
+                A,
+                S,
+                V,
+                G
+        );
+    }
+
+
     public static final class GeneralHardwareConstants {
         public static final boolean SAFE_HARDWARE_MODE = false;
         public static final double TIMEOUT_SECONDS = 1.0;
