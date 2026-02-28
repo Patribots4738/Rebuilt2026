@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -206,8 +207,10 @@ public class RobotContainer {
         controller.leftBumper().onTrue(swerve.setWheelsOCommand());
         controller.rightBumper().onTrue(swerve.getSetWheelsX());
         controller.povUp().onTrue(swerve.setWheelsZeroCommand());
-        controller.a().onTrue(shooter.turretLeftCommand());
-        controller.b().onTrue(shooter.turretRightCommand());
+        controller.a().whileTrue(turret.quasistatic(Direction.kForward));
+        controller.b().whileTrue(turret.quasistatic(Direction.kReverse));
+        controller.c().whileTrue(turret.dynamic(Direction.kForward));
+        controller.d().whileTrue(turret.dynamic(Direction.kReverse));
 
     }
 
