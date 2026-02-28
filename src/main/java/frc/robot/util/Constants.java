@@ -890,44 +890,6 @@ public final class Constants {
         );
     }
 
-    public static final class FlywheelConstants {
-        public static final int CAN_ID = 0;
-        public static final int MOTOR_TYPE = 60;
-
-        public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 50;
-
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
-
-        public static final double EJECT_VELOCITY = 10;
-
-        public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
-        public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
-
-        public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
-
-        // TODO: tune these values
-        // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-
-        public static final GainConstants GAINS = new GainConstants(
-            P,
-            I,
-            D,
-            A,
-            S,
-            V,
-            G
-        );
-    }
 
     public static final class HoodConstants {
         public static final int CAN_ID = 0;
