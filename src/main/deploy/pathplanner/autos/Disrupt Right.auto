@@ -32,25 +32,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DisruptL-DisruptR-Short"
+            "pathName": "DisruptL-DisruptShortR"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DisruptR-DisruptL-Long"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DisuptL-DisruptR"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DisruptR-DisruptL-Long"
+            "pathName": "DisruptShortR-DisruptL"
           }
         }
       ]
