@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.superstructure.flywheel;
+package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.Constants.FlywheelConstants;
@@ -31,14 +31,14 @@ public class Flywheel extends SubsystemBase {
 	private final FlywheelIO io;
 	private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-	@AutoLogOutput (key = "Subsystems/Flywheel/EmptyHopper")
-	private boolean emptyHopper;
 
-	private Debouncer emptyHopperDebouncer = new Debouncer(0.5);
+    @AutoLogOutput (key= "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
+    private boolean shouldRunSetpoint = false;
+    @AutoLogOutput (key= "Subsystems/Shooter/Flywheel/TargetLinearVelocity")
+    private double targetVelocity = 0.0;
 	
 	private double percentOutput = 0.0;
-    @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
-    private boolean shouldRunSetpoint = false;
+    
 	
 	private final SysIdRoutine flywheelRoutine;
 	
@@ -62,7 +62,7 @@ public class Flywheel extends SubsystemBase {
 					    log -> log.motor("flywheel")
 							    .voltage(Volts.of(inputs.appliedOutputVolts))
 							    .angularPosition(Rotations.of(inputs.positionRotations))
-							    .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec)),
+							    .angularVelocity(RotationsPerSecond.of(inputs.velocityRadsPerSec)),
 					    this
 			    )
 	    );
@@ -77,7 +77,7 @@ public class Flywheel extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-		updateEmptyHopper();
+		Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
 
         if (shouldRunSetpoint) {
             io.setPercent(percentOutput);
@@ -87,35 +87,53 @@ public class Flywheel extends SubsystemBase {
 
     }
 
-    public void setPercent(double percent) {
-        percentOutput = percent;
-        shouldRunSetpoint = true;
-    }
-
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
 
-    public Command setPercentCommand(DoubleSupplier percentSupplier) {
-        return runOnce(() -> setPercent(percentSupplier.getAsDouble()));
+    public void setVelocity(double velocity){
+        targetVelocity = velocity / FlywheelConstants.CIRCUMFRENCE_METERS;
+        shouldRunSetpoint = true;
     }
 
-    public Command setPercentCommand(double percent) {
-        return setPercentCommand(() -> percent);
+    public boolean atTargetVelocity(){
+        return atVelocity(targetVelocity);
+    }
+
+    public boolean atVelocity(double velocity) {
+        return MathUtil.isNear(getVelocity(), velocity, FlywheelConstants.VELOCITY_DEADBAND_METERS_PER_SEC);
+    }
+
+    public double getVelocity() {
+        return inputs.velocityRadsPerSec *FlywheelConstants.CIRCUMFRENCE_METERS;
+    }
+
+    public double getTargetVelocity() {
+        return targetVelocity * FlywheelConstants.CIRCUMFRENCE_METERS;
+    }
+
+    public Command setVelocityCommand(DoubleSupplier velocitySupplier) {
+        return runOnce(() -> setVelocity(velocitySupplier.getAsDouble()));
+    }
+
+    public Command setVelocityCommand(double velocity) {
+        return setVelocityCommand(() -> velocity);
     }
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
 
-	public void updateEmptyHopper() {
-		emptyHopper = emptyHopperDebouncer.calculate(!(inputs.isRangeTripped));
-	}
+    public Command runCharacterization(double volts) {
+        return runOnce(()-> io.runCharacterization(volts));
+    }
 
-	public boolean emptyHopper() {
-		return emptyHopper;
-	}
+    public double getVoltage() {
+        return inputs.appliedOutputsVolts;
+    } 
 	
+
+    
 	public Command quasistatic(SysIdRoutine.Direction direction) {
 		return flywheelRoutine.quasistatic(direction);
 	}

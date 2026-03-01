@@ -1069,6 +1069,12 @@ public static final class FlywheelConstants {
         public static final double CURRENT_LIMIT = 40.0;
         public static final boolean BRAKE_MOTOR = true;
 
+        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
+
+        public static final double CIRCUMFRENCE_METERS = 4 * Math.PI;
+
+        public static final double EJECT_VELOCITY = 0.2;
+
         public static final double DEBOUNCER_TIME = 0.5;
         
         public static final double DEADBAND_RADIANS = 0.0;
