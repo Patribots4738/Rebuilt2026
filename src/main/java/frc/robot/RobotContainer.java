@@ -57,6 +57,8 @@ import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
 public class RobotContainer {
 
     private PowerDistribution pdh;
@@ -207,10 +209,12 @@ public class RobotContainer {
         controller.leftBumper().onTrue(swerve.setWheelsOCommand());
         controller.rightBumper().onTrue(swerve.getSetWheelsX());
         controller.povUp().onTrue(swerve.setWheelsZeroCommand());
-        controller.a().whileTrue(turret.quasistatic(Direction.kForward));
-        controller.b().whileTrue(turret.quasistatic(Direction.kReverse));
-        controller.c().whileTrue(turret.dynamic(Direction.kForward));
-        controller.d().whileTrue(turret.dynamic(Direction.kReverse));
+        // controller.a().whileTrue(turret.quasistatic(SysIdRoutine.Direction.kForward));
+        // controller.b().whileTrue(turret.quasistatic(SysIdRoutine.Direction.kReverse));
+        // controller.x().whileTrue(turret.dynamic(SysIdRoutine.Direction.kForward));
+        // controller.y().whileTrue(turret.dynamic(SysIdRoutine.Direction.kReverse));
+        controller.a().onTrue(shooter.turretLeftCommand());
+        controller.b().onTrue(shooter.turretRightCommand());
 
     }
 

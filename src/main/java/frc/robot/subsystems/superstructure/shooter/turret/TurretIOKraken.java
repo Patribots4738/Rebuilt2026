@@ -58,8 +58,8 @@ public class TurretIOKraken implements TurretIO {
         } else {
             inputs.encoderAbsPositionRads = inputs.internalPositionRads;
         }   
-        inputs.internalPositionRads = motor.getPositionAsDouble() * 2.0 * Math.PI;
-        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI;
+        inputs.internalPositionRads = motor.getPositionAsDouble();
+        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
         inputs.targetPositionRads = motor.getTargetPosition();
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();

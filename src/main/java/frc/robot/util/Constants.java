@@ -863,12 +863,12 @@ public final class Constants {
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 0 : 0.01728;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0.011816;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0.040259;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0.080111;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
