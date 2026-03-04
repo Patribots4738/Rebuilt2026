@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -50,6 +51,8 @@ import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 
+import static edu.wpi.first.units.Units.*;
+
 public class Swerve extends SubsystemBase {
 
     public static double twistScalar = 4;
@@ -70,6 +73,8 @@ public class Swerve extends SubsystemBase {
 
     private ChassisSpeeds speeds = new ChassisSpeeds();
 
+    private SysIdRoutine driveRoutine, turnRoutine;
+    
     /**
      * Creates a new DriveSubsystem.
      */
@@ -185,6 +190,42 @@ public class Swerve extends SubsystemBase {
         );
 
         configureAutoBuilder();
+        
+        driveRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
+                        Volts.of(0.5).per(Second),
+                        null,
+                        null,
+                        (state) -> Logger.recordOutput("DriveSysIdState", state.toString())
+                ),
+                new SysIdRoutine.Mechanism(
+                        (voltage) -> runDriveCharacterization(voltage.in(Volts)),
+                        log -> log.motor("drive")
+                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getDriveAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
+                        this
+                )
+        );
+        
+        turnRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
+                        Volts.of(0.5).per(Second),
+                        null,
+                        null,
+                        (state) -> Logger.recordOutput("TurnSysIdState", state.toString())
+                ),
+                new SysIdRoutine.Mechanism(
+                        (voltage) -> runTurnCharacterization(voltage.in(Volts)),
+                        log -> log.motor("drive")
+                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getDriveAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
+                        this
+                )
+        );
     }
 
     private void configureAutoBuilder() {
@@ -558,5 +599,53 @@ public class Swerve extends SubsystemBase {
             getPose().getRotation().getRadians(),
             AutoConstants.HDC_ROTATION_TOLERANCE_RADIANS
         );
+    }
+    
+    public double getDriveAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getDrivePositionRadians();
+        }
+        return average / 4.0;
+    }
+    
+    public double getDriveCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getDriveVoltage();
+        }
+        return totalVoltage / swerveModules.length;
+    }
+    
+    public double getTurnAveragePosition() {
+        double average = 0.0;
+        for (Module module : swerveModules) {
+            average += module.getPosition().angle.getRadians();
+        }
+        return average / 4.0;
+    }
+    
+    public double getTurnCharacterizationVoltage() {
+        double totalVoltage = 0;
+        for (Module module : swerveModules) {
+            totalVoltage += module.getTurnVoltage();
+        }
+        return totalVoltage / swerveModules.length;
+    }
+    
+    public Command driveQuasistatic(SysIdRoutine.Direction direction) {
+        return driveRoutine.quasistatic(direction);
+    }
+    
+    public Command driveDynamic(SysIdRoutine.Direction direction) {
+        return driveRoutine.dynamic(direction);
+    }
+    
+    public Command turnQuasistatic(SysIdRoutine.Direction direction) {
+        return turnRoutine.quasistatic(direction);
+    }
+    
+    public Command turnDynamic(SysIdRoutine.Direction direction) {
+        return turnRoutine.dynamic(direction);
     }
 }

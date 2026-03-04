@@ -136,4 +136,11 @@ public class Module {
         return inputs.turnInternalVelocityRadsPerSec / MK5nSwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR;
     }
 
+    public double getDriveVoltage() {
+        return inputs.driveAppliedVolts;
+    }
+    
+    public double getTurnVoltage() {
+        return inputs.turnAppliedVolts;
+    }
 }
