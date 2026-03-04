@@ -515,7 +515,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.1;
+        public static final double DRIVING_P = 3.0;
         public static final double DRIVING_I = 0.0;
         public static final double DRIVING_D = 0.0;
         public static final double DRIVING_S = 0.0;
