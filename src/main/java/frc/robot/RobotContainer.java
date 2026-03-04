@@ -82,14 +82,14 @@ public class RobotContainer {
     private final Swerve swerve;
     @SuppressWarnings("unused")
 //     private final Climb climb;
-    private final Flywheel flywheel;
-    private final Turret turret;
-    private final Hood hood;
-//     private final Shooter shooter;
-    private final Intake intake;
-    private final Extender extender;
-    private final Kicker kicker;
-    private final Spindexer spindexer;
+//     private final Flywheel flywheel;
+//     private final Turret turret;
+//     private final Hood hood;
+// //     private final Shooter shooter;
+//     private final Intake intake;
+//     private final Extender extender;
+//     private final Kicker kicker;
+//     private final Spindexer spindexer;
 
 //     private final Superstructure superstructure;
 
@@ -136,13 +136,13 @@ public class RobotContainer {
 
         swerve = new Swerve();
         // climb = new Climb(new ClimbIOKraken());
-        extender = new Extender(new ExtenderIOKraken());
-        intake = new Intake(new IntakeIOKraken());
-        spindexer = new Spindexer(new SpindexerIOKraken());
-        kicker = new Kicker(new KickerIOKraken());
-        flywheel = new Flywheel(new FlywheelIOKraken());
-        turret = new Turret(new TurretIOKraken());
-        hood = new Hood(new HoodIOKraken());
+        // extender = new Extender(new ExtenderIOKraken());
+        // intake = new Intake(new IntakeIOKraken());
+        // spindexer = new Spindexer(new SpindexerIOKraken());
+        // kicker = new Kicker(new KickerIOKraken());
+        // flywheel = new Flywheel(new FlywheelIOKraken());
+        // turret = new Turret(new TurretIOKraken());
+        // hood = new Hood(new HoodIOKraken());
         // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
@@ -156,8 +156,8 @@ public class RobotContainer {
 
         swerve.setDefaultCommand(new Drive(
                 swerve,
-                driver::getLeftY,
-                driver::getLeftX,
+                () -> -driver.getLeftY(),
+                () -> -driver.getLeftX(),
                 () -> -driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
@@ -224,17 +224,17 @@ public class RobotContainer {
         // controller.rightTrigger().onTrue(extender.setTestPositionCommand());
         // controller.rightBumper().onTrue(extender.setNeutralCommand());
 
-        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
-        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+        // controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        // controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
-        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
-        controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+        // controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
+        // controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
-        controller.povUp().onTrue(turret.setTestPositionCommand());
-        controller.a().onTrue(turret.setPositionCommand(1.0));
-        controller.povDown().onTrue(turret.setNeutralCommand());
-        controller.povRight().onTrue(turret.setTestPositionCommand());
-        controller.povLeft().onTrue(turret.setNeutralCommand());
+        // controller.povUp().onTrue(turret.setTestPositionCommand());
+        // controller.a().onTrue(turret.setPositionCommand(1.0));
+        // controller.povDown().onTrue(turret.setNeutralCommand());
+        // controller.povRight().onTrue(turret.setTestPositionCommand());
+        // controller.povLeft().onTrue(turret.setNeutralCommand());
         
     }
 

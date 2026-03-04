@@ -515,11 +515,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 3.0;
+        public static final double DRIVING_P = 0.1;
         public static final double DRIVING_I = 0.0;
         public static final double DRIVING_D = 0.0;
         public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.0;
+        public static final double DRIVING_V = 0.124;
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -532,9 +532,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 280.0;
+        public static final double TURNING_P = 100.0;
         public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 20.0;
+        public static final double TURNING_D = 0.5;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
