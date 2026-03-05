@@ -40,12 +40,18 @@ public class Module {
      * @param desiredState stored rotation 2d and speed 
      */
     public void setDesiredState(SwerveModuleState desiredState, double feedforward) {
+        // TODO: recognize that this file was changed to reflect Hugo's latest setDesiredState version
+        // which fixes various problems with driving
+
         // Apply chassis angular offset to the desired state.
-        this.desiredState.speedMetersPerSecond *= desiredState.angle.minus(new Rotation2d(inputs.turnEncoderAbsPositionRads)).getCos();
+        this.desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
         this.desiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset));
 
         // Optimize the reference state to avoid spinning further than 90 degrees.
         this.desiredState.optimize(new Rotation2d(inputs.turnEncoderAbsPositionRads));
+
+        // Multiply and update the speed by the cosine of the difference in the angle between the desired and current angle to limit skew when changing direction
+        this.desiredState.speedMetersPerSecond *= this.desiredState.angle.minus(new Rotation2d(inputs.turnEncoderAbsPositionRads)).getCos();
 
         // Command driving and turning TalonFX towards their respective setpoints.
         io.runDriveVelocity(this.desiredState.speedMetersPerSecond, feedforward);

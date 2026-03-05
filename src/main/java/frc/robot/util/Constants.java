@@ -24,9 +24,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -34,7 +31,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
-import frc.robot.Robot.GameMode;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
@@ -287,10 +283,10 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {};
 
-        public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
-        public static final Rotation2d rotation135 = new Rotation2d().fromDegrees(135);
-        public static final Rotation2d rotation225 = new Rotation2d().fromDegrees(225);
-        public static final Rotation2d rotation315 = new Rotation2d().fromDegrees(315);
+        public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
+        public static final Rotation2d rotation135 = Rotation2d.fromDegrees(135);
+        public static final Rotation2d rotation225 = Rotation2d.fromDegrees(225);
+        public static final Rotation2d rotation315 = Rotation2d.fromDegrees(315);
 
         public static final List<Rotation2d> BUMP_ROTATIONS = new ArrayList<Rotation2d>() {{
             Rotation2d rotation1 = rotation45;
@@ -855,7 +851,7 @@ public final class Constants {
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); 
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(360-8);
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -899,13 +895,16 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 50;
 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1;
+        // TODO: wayyyy too small (in 2024, we used 50 RPM -> 628.3185307180 MPS) (please use RPM)
+        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
 
         public static final double EJECT_VELOCITY = 10;
 
         public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
         public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
 
+        // TODO: your circumfrence is NOT 12 meters
+        // use the website where you bought your wheels from to get this
         public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
 
         // TODO: tune these values
