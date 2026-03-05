@@ -30,6 +30,8 @@ public class FlywheelIOKraken implements FlywheelIO {
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        // TODO: set this to just be RPM, not RAD/s (remove 2pi)
+        // note: you would want this 2pi as a conversion factor anyways, inside of configMotor
         inputs.velocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI;
         inputs.positionRotations = motor.getPositionAsDouble();
     }

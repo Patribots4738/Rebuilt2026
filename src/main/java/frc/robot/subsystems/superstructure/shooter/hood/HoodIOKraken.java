@@ -46,7 +46,7 @@ public class HoodIOKraken implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         inputs.motorConnected = motor.refreshSignals().isOK();
         inputs.internalPositionRads = motor.getPositionAsDouble();
-        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI;
+        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI; // TODO: Use unit conversion factor
         inputs.targetPositionRads = motor.getTargetPosition();
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();

@@ -8,6 +8,7 @@ public interface FlywheelIO {
 
         public boolean motorConnected = false;
         public double percentOutput = 0.0;
+        // TODO: these should all be RPM, not rad (rad only for hood/turret)
         public double targetVelocityRadsPerSec = 0.0;
         public double velocityRadsPerSec = 0.0;
         public double appliedOutputVolts = 0.0;

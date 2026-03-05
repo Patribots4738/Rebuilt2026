@@ -22,6 +22,7 @@ import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
+// TODO: overall the logic in here is convoluted and makes it difficult to follow branches and debug
 public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
@@ -34,9 +35,9 @@ public class Shooter extends SubsystemBase {
 
     private ShootingParameters shotParams;
 
-    private Turret turret;
-    private Hood hood;
-    private Flywheel flywheel;
+    private final Turret turret;
+    private final Hood hood;
+    private final Flywheel flywheel;
 
     private Translation3d targetLocation;
     @AutoLogOutput(key = "Subsystems/Shooter/Target")
@@ -60,7 +61,9 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+
+        // TODO: (1) Consolidate/flatten state logic in periodic for clarity and reducing repetition in this::setShooterStates
+        if (PoseCalculations.inTrench(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
         else if (partiallyTracking()) {
@@ -73,6 +76,8 @@ public class Shooter extends SubsystemBase {
         }
     }
 
+    // TODO: consider refactoring this functionality. when do we want partial/full tracking?
+    // it looks like they are all unified, and in that case, the redundancy of three variables should be condensed to one
     public boolean partiallyTracking() {
         return aimHood || aimTurret || spinFlywheel;
     }
@@ -93,39 +98,45 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
+    // TODO: (2) flatten this with the periodic state checks (also try to consolidate these conditions)
     public void setShooterStates() {
         if (spinFlywheel) flywheel.setVelocity(shotParams.flywheelSpeed());
         if (aimTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
-        if (PoseCalculations.inTrench(robotRelativePose.get())) {
+        if (PoseCalculations.inTrench(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
         else if (aimHood){
             hood.setPosition(shotParams.hoodAngle());
-        }        
+        }
     }
     
     public void setSpinFlywheel(boolean spinFlywheel) {
         this.spinFlywheel = spinFlywheel;
     }
 
+    // TODO: consider runOnce() to implicitly add requirement
     public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
         return Commands.runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
     }
 
+    // TODO: consider runOnce() to implicitly add requirement
     public Command trackTargetCommand(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
         return Commands.runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
     }
 
+    // TODO: if you are going to have internal methods such as this::setSpinFlywheel, use them instead of directly setting the bools
     public void setTrackTarget(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
         this.spinFlywheel = spinFlywheel;
         this.aimTurret = aimTurret;
         this.aimHood = aimHood;
     }
 
+    // TODO: consider runOnce() to implicitly add requirement
     public Command armShooterCommand() {
         return Commands.runOnce(() -> setTrackTarget(true, true, true));
     }
 
+    // TODO: consider runOnce() to implicitly add requirement
     public Command disarmShooterCommand() {
         return Commands.runOnce(() -> setTrackTarget(false, false, false));
     }
@@ -157,6 +168,7 @@ public class Shooter extends SubsystemBase {
         flywheel.setNeutral();
     }
 
+    // TODO: use enum to lower multiplicity of values instead of string
     public void updateTarget(Pose2d robotPose) {
         targetName = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
                         ? "Hub" 
@@ -169,6 +181,7 @@ public class Shooter extends SubsystemBase {
         flywheel.setVelocity(FlywheelConstants.EJECT_VELOCITY);
     }
 
+    // TODO: add requirement
     public Command ejectCommand() {
         return Commands.runOnce(() -> this.eject());
     }

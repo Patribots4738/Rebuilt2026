@@ -473,6 +473,9 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getDriveMultiplier() {
+        // TODO: make this a variable that you can change
+        // It's meant to toggle around 0.25 for some driver binding (leftStickDown, for example)
+        // it's a manual alignment override scrub for climb, generally
         return 1.0;
     }
     

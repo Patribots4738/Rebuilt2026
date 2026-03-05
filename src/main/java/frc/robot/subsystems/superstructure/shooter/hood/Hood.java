@@ -66,6 +66,10 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
+            // TODO: consider if you need a profile since it continuously tracks unique state
+            // it also resets this profile whenever the position changes, 
+            // pretty much negating its use for target tracking
+            // - you don't want predictability/smoothness, you want to get to setpoint ASAP
             setpoint = profile.calculate(0.02, setpoint, targetState);
             // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
             // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
@@ -91,6 +95,8 @@ public class Hood extends SubsystemBase {
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
+        // TODO: This is where the profile is re-initialized
+        // do you even need a profile for this/turret?
         if (position != targetState.position) {
             setpoint.position = inputs.internalPositionRads;
             setpoint.velocity = inputs.internalVelocityRadsPerSec;

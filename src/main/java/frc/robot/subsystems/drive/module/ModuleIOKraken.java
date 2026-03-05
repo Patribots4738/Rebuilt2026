@@ -47,8 +47,7 @@ public class ModuleIOKraken implements ModuleIO {
         driveMotor.setUnitConversionFactor(MK5nSwerveModuleConstants.DRIVING_ENCODER_POSITION_FACTOR);
 
         // Apply position and velocity conversion factors for the turning encoder. We
-        // want these in radians and radians per second to use with WPILib's swerve
-        // APIs.
+        // want these in radians and radians per second to use with WPILib's swerve APIs.
         turnMotor.setUnitConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR);
 
         // Set status signal update frequencies, optimized for swerve
@@ -56,6 +55,7 @@ public class ModuleIOKraken implements ModuleIO {
         turnMotor.setTelemetryPreference(TelemetryPreference.SWERVE);
 
         // We only want to ask for the abs encoder in real life
+        // TODO: else set turn motor gear ratio
         if (FieldConstants.IS_REAL) {
             turnMotor.setEncoder(turnEncoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
         }

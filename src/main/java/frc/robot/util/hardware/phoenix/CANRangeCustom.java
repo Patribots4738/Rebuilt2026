@@ -15,9 +15,6 @@ import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.signals.UpdateModeValue;
 
 import edu.wpi.first.units.measure.Distance;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
-import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.CANRangeConstants;
 import frc.robot.util.Constants.FieldConstants;
@@ -153,6 +150,10 @@ public class CANRangeCustom extends CANrange {
         applyParameter(
             () -> configurator.apply(FOVParamsConfigs, timeoutSeconds),
             () -> configurator.refresh(FOVParamsConfigs,timeoutSeconds), 
+            // TODO: more robust check since this never returns true with floating point imprecision, consider xor
+            // @see MathUtil.isNear (requires tuning some deadband) 
+            // or XOR 0 (checks if it changes to anything at all, and if so, assume it was the right value)
+            // for more info see https://github.com/Patribots4738/Reefscape2025/pull/133
             () -> FOVParamsConfigs.FOVCenterX == CenterX 
                 && FOVParamsConfigs.FOVCenterY == CenterY 
                 && FOVParamsConfigs.FOVRangeX == RangeX
@@ -176,6 +177,7 @@ public class CANRangeCustom extends CANrange {
         applyParameter(
             () -> configurator.apply(proxParamsConfigs,timeoutSeconds),
             () -> configurator.refresh(proxParamsConfigs,timeoutSeconds),
+            // TODO: see above TODO
             () -> proxParamsConfigs.MinSignalStrengthForValidMeasurement == minValid 
                 && proxParamsConfigs.ProximityHysteresis == hysteresis 
                 && proxParamsConfigs.ProximityThreshold == threshold,
@@ -196,6 +198,7 @@ public class CANRangeCustom extends CANrange {
         applyParameter(
             () -> configurator.apply(tofParamsConfigs, timeoutSeconds),
             () -> configurator.refresh(tofParamsConfigs, timeoutSeconds),
+            // TODO: see above TODO
             () -> tofParamsConfigs.UpdateFrequency == frequency
                 && tofParamsConfigs.UpdateMode == updateModeValue,
             "ToF Params"

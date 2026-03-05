@@ -1,6 +1,5 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.units.measure.Voltage;
@@ -18,11 +17,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
-import frc.robot.util.calc.ShotCalculations;
-
 import static edu.wpi.first.units.Units.*;
 
 public class Turret extends SubsystemBase {
@@ -66,6 +62,10 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
+            // TODO: consider if you need a profile since it continuously tracks unique state
+            // it also resets this profile whenever the position changes, 
+            // pretty much negating its use for target tracking
+            // - you don't want predictability/smoothness, you want to get to setpoint ASAP
             setpoint = profile.calculate(0.02, setpoint, targetState);
             // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
             // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
@@ -80,7 +80,16 @@ public class Turret extends SubsystemBase {
     /**
      * Sets the desired rotation of the turret
      * 
-     * @param position in radians
+     * @param position in radians 
+     * 
+     * TODO: make position more consistent by
+     * - making it a Rotation2d (easier to work with)
+     * - @see MathUtil.angleModulus (or inputModulus(position, 0, 2pi)) rather than normal '%' (negative sign safe) (-1 % 360 = -1)
+     * - check if value is outside of MIN and MAX constants range (inside of hardstop)
+     * - Immediately either: 
+     *      return this function and not set anything, keeping the turret temporarily stationary until valid values are found (oliver and alexander preference)
+     * or
+     *      Get the closest possible value to the deadzone, meaning it would hug the deadzone wall and possibly oscillate
      */
     public void setPosition(double position) {
         position = position % (TurretConstants.MAX_ANGLE_RADIANS - TurretConstants.MIN_ANGLE_RADIANS);

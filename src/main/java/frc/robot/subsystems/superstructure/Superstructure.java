@@ -5,7 +5,6 @@ import java.util.Set;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
@@ -20,6 +19,7 @@ import frc.robot.util.Constants.SpindexerConstants;
 
 public class Superstructure {
 
+    // TODO: make these final (you'll see why)
     private Extender extender;
     private Intake intake;
     private Climb climb;
@@ -29,6 +29,10 @@ public class Superstructure {
 
     private final Set<Subsystem> requirements;
 
+    // TODO: re-evaluate the need for these variables, since you use the enums but don't need the variables
+    // and their respective .alongWith commands 
+    // (i.e. setting targetClimbState is useless since it just alongWiths a setTargetPosition to be the parameter 
+    // rather than the state you just set (which is what should happen))
     public ClimbState targetClimbState;
     public IntakeState targetIntakeState;
     public HopperState targetHopperState;
@@ -117,6 +121,7 @@ public class Superstructure {
     }
 
     public Command setIntakeState(IntakeState state) {
+        // TODO: the first lines of these two commands do nothing
         return Commands.runOnce(() -> targetIntakeState = state)
                 .alongWith(Commands.sequence(extender.setPositionCommand(state.extenderPosition), 
                 intake.setPercentCommand(() -> state.intakePercent)));
@@ -134,6 +139,8 @@ public class Superstructure {
 
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
+    // TODO: this logic is only ran once on startup because it is not lazily evaluated like Commands.either() or similar would do
+    // i.e. return commands.either(true (the parallel), commands.either(elseif, else, elseif condition), first if condition)
     public Command fireCommand() {
         if (shooter.fullyTracking() && shooter.isReady()) {
             return Commands.parallel(

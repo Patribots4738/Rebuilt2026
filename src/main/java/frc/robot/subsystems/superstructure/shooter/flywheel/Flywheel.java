@@ -35,7 +35,11 @@ public class Flywheel extends SubsystemBase {
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
-        //NOTE TO SELF CAUSE IM GONNA FORGET: i put this here since itll have to be construnted every time a new flywheel is made cause if it was in the other one it would like uhh make a new one every time it was called probably so im very very smart for this (maybe (maybe not))
+        // NOTE TO SELF CAUSE IM GONNA FORGET: i put this here since itll have to be
+        // constructed every time a new flywheel is made cause if it was in the other one
+        // it would like uhh make a new one every time it was called probably so im very
+        // very smart for this (maybe (maybe not))
+
         this.flywheelRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -77,7 +81,7 @@ public class Flywheel extends SubsystemBase {
      * @param velocity tangential velocity
      */
     public void setVelocity(double velocity) {
-        targetVelocity = velocity / FlywheelConstants.CIRCUMFERENCE_METERS;
+        targetVelocity = velocity / FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units
         shouldRunSetpoint = true;
     }
 
@@ -86,7 +90,7 @@ public class Flywheel extends SubsystemBase {
     }
 
     public boolean atVelocity(double velocity) {
-        return MathUtil.isNear(getVelocity(), velocity, FlywheelConstants.VELOCITY_DEADBAND_METERS_PER_SEC);
+        return MathUtil.isNear(getVelocity(), velocity, FlywheelConstants.VELOCITY_DEADBAND_METERS_PER_SEC); // TODO: use a bigger deadband (this will NEVER be true)
     }
 
     /**
@@ -95,11 +99,11 @@ public class Flywheel extends SubsystemBase {
      * @return the tangential velocity of the flywheel
      */
     public double getVelocity() {
-        return inputs.velocityRadsPerSec * FlywheelConstants.CIRCUMFERENCE_METERS;
+        return inputs.velocityRadsPerSec * FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units & consider using RPM
     }
 
     public double getTargetVelocity() {
-        return targetVelocity * FlywheelConstants.CIRCUMFERENCE_METERS;
+        return targetVelocity * FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units
     }
 
     public Command setVelocityCommand(DoubleSupplier velocitySupplier) {

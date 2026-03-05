@@ -166,45 +166,44 @@ public class Alignment {
     }
 
     public ChassisSpeeds getTowerAlignmentSpeeds() {
-        Pose2d towerCenter = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
-            (FieldConstants.GET_TOWER_CENTER().getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET), 
-            FieldConstants.GET_TOWER_CENTER().getY(), 
-            FieldConstants.GET_TOWER_CENTER().getRotation()
-        ) : new Pose2d(
-            (FieldConstants.GET_TOWER_CENTER().getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET), 
-            FieldConstants.GET_TOWER_CENTER().getY(), 
-            FieldConstants.GET_TOWER_CENTER().getRotation()
-        );
-        Pose2d postLeft = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
-            (FieldConstants.GET_TOWER_POSTS().get(2).getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET),
-            (FieldConstants.GET_TOWER_POSTS().get(2).getY() - AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
-            FieldConstants.GET_TOWER_POSTS().get(2).getRotation()
-        ) : new Pose2d(
-            (FieldConstants.GET_TOWER_POSTS().get(2).getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET),
-            (FieldConstants.GET_TOWER_POSTS().get(2).getY() - AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
-            FieldConstants.GET_TOWER_POSTS().get(2).getRotation()
-        );
-        Pose2d postRight = PoseCalculations.behindTower(swerve.getPose())? new Pose2d(
-            (FieldConstants.GET_TOWER_POSTS().get(1).getX() - AutoConstants.TOWER_ALIGNMENT_OFFSET),
-            (FieldConstants.GET_TOWER_POSTS().get(1).getY() + AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
-            FieldConstants.GET_TOWER_POSTS().get(1).getRotation()
-        ) : new Pose2d(
-            (FieldConstants.GET_TOWER_POSTS().get(1).getX() + AutoConstants.TOWER_ALIGNMENT_OFFSET),
-            (FieldConstants.GET_TOWER_POSTS().get(1).getY() + AutoConstants.TOWER_ALIGNMENT_OFFSET_Y),
-            FieldConstants.GET_TOWER_POSTS().get(1).getRotation()
-        );
-        Pose2d node;
+        boolean behindTower = PoseCalculations.behindTower(swerve.getPose());
 
-        switch(alignmentIndex) {
-            case 1:
-                node = postLeft;
-            break;
-            case -1:
-                node = postRight;
-            break;
-            default:
-                node = towerCenter;
-        }
+        double xOffset = behindTower
+                ? -AutoConstants.TOWER_ALIGNMENT_OFFSET
+                :  AutoConstants.TOWER_ALIGNMENT_OFFSET;
+
+        double yOffset = AutoConstants.TOWER_ALIGNMENT_OFFSET_Y;
+
+        // Base poses (no offsets yet)
+        Pose2d towerBase = FieldConstants.GET_TOWER_CENTER();
+        Pose2d leftPostBase  = FieldConstants.GET_TOWER_POSTS().get(2);
+        Pose2d rightPostBase = FieldConstants.GET_TOWER_POSTS().get(1);
+
+        // apply offsets
+        Pose2d towerCenter = new Pose2d(
+                towerBase.getX() + xOffset,
+                towerBase.getY(),
+                towerBase.getRotation()
+        );
+
+        Pose2d postLeft = new Pose2d(
+                leftPostBase.getX() + xOffset,
+                leftPostBase.getY() - yOffset,
+                leftPostBase.getRotation()
+        );
+
+        Pose2d postRight = new Pose2d(
+                rightPostBase.getX() + xOffset,
+                rightPostBase.getY() + yOffset,
+                rightPostBase.getRotation()
+        );
+
+        Pose2d node = switch (alignmentIndex) {
+            case 1  -> postLeft;
+            case -1 -> postRight;
+            default -> towerCenter;
+        };
+
 
         double distance = DriveConstants.FULL_ROBOT_LENGTH_METERS / 2;
         Pose2d desiredPose = PoseCalculations.getPoseWithDistance(node, distance);
@@ -281,6 +280,7 @@ public class Alignment {
 
     public Command autoBumpRotationCommand(Pose2d robotPos) {
         Pose2d desiredPos = new Pose2d(robotPos.getX(), robotPos.getY(), PoseCalculations.getClosestBumpRotation(robotPos));
+        // TODO: consider CommandsrunOnce over Commands.run
         return Commands.runOnce(() -> this.alignmentMode = AlignmentMode.BUMP).andThen(Commands.run(() -> swerve.setDesiredPose(desiredPos)));
     }
 
@@ -294,6 +294,7 @@ public class Alignment {
     }
 
     public Command autonoumusTowerAlignmentCommand(Pose2d robot, int index) {
+        // TODO: consider making this set index thing part of the command
         alignmentIndex = index;
         return towerAlignmentCommand(robot);
     }

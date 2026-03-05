@@ -180,10 +180,10 @@ public class RobotContainer {
                         swerve::runDriveCharacterization,
                         swerve::getDriveCharacterizationVelocity));
         pathPlannerStorage.getAutoChooser().addOption("TurnStaticCharacterization",
-                new StaticCharacterization(
-                        swerve,
-                        swerve::runTurnCharacterization,
-                        swerve::getTurnCharacterizationVelocity));
+            new StaticCharacterization(
+                swerve,
+                swerve::runTurnCharacterization,
+                swerve::getTurnCharacterizationVelocity));
 
         CommandScheduler.getInstance().schedule(new NTGainTuner());
 
@@ -192,12 +192,13 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         switch(OIConstants.DRIVER_MODE) {
-                case DEV:
-                        configureDevBindings(driver);
-                        break;
-                case SINGLE:
-                        configureDriverBindings(driver);
-                        break;
+            case DEV:
+                configureDevBindings(driver);
+                break;
+            case SINGLE:
+                configureDriverBindings(driver);
+                break;
+            // TODO: add a case for default (i'd default to driver bindings)
         }
     }
 
@@ -212,38 +213,42 @@ public class RobotContainer {
     private void configureDriverBindings(PatriBoxController controller) {
 
         controller.start().onTrue(
-                Commands.runOnce(() -> swerve.resetOdometry(
+            Commands.runOnce(() -> swerve.resetOdometry(
                 new Pose2d(
-                        swerve.getPose().getTranslation(),
-                        Rotation2d.fromDegrees(
-                                Robot.isRedAlliance()
-                                ? 0
-                                : 180))
-        ), swerve)
+                    swerve.getPose().getTranslation(),
+                    Rotation2d.fromDegrees(
+                        Robot.isRedAlliance()
+                        ? 0
+                        : 180))
+            ), swerve)
         );
 
         controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
         controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
         controller.rightBumper().onTrue(superstructure.fullStowCommand());
-        controller.rightTrigger()
-                .whileTrue(
-                        new ActiveConditionalCommand(
-                                superstructure.fireCommand(), 
-                                Commands.sequence(
-                                        shooter.armShooterCommand(), 
-                                        Commands.waitUntil(() -> shooter.isReady()),
-                                        superstructure.fireCommand()),
-                                () -> shooter.isReady()
-                        )
-                );
+        controller.rightTrigger().whileTrue(
+            new ActiveConditionalCommand(
+                superstructure.fireCommand(), 
+                Commands.sequence(
+                    shooter.armShooterCommand(), 
+                    Commands.waitUntil(() -> shooter.isReady()),
+                    superstructure.fireCommand()),
+                () -> shooter.isReady()
+            )
+        );
         controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        // TODO: make these automatic based on position?
+        // you could have this as some sort of manual override, but seems unecesary with four cameras.
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
         controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
-        controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(()-> !controller.povRight().getAsBoolean()));
+        // TODO: refactor this to not need a hardcoded onlyif
+        // examples:
+        // povDown.onTrue(commands.either(true,false,povright))
+        // povDown.and(povRight()) / povDown.and(povRight().negate())
+        // or make it a whileTrue with an activeConditionalCommand
+        controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(() -> !controller.povRight().getAsBoolean()));
         controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
-
-
 
         // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
         // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
@@ -310,6 +315,7 @@ public class RobotContainer {
     }
 
     public void onDisabled() {
+        // Stops bot in sim after auto (noramlly motors auto turn off when disabled)
         swerve.stopDriving();
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
