@@ -887,8 +887,10 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0.255127;
-        public static final double GEAR_RATIO = 50.0;
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double MOTOR_GEAR_RATIO = 50.0;
+        public static final double ENCODER_GEAR_RATIO = 10.0;
+
         
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
