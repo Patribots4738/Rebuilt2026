@@ -473,10 +473,10 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205078;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.365723;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.273926;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329346;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.206787;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367432;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275391;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.331299;
 
 
         // inversions for different motors may be needed for dual type
@@ -515,9 +515,9 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 3.0;
-        public static final double DRIVING_I = 0.0;
-        public static final double DRIVING_D = 0.0;
+        public static final double DRIVING_P = 20.0;
+        public static final double DRIVING_I = 6.0;
+        public static final double DRIVING_D = 1.5;
         public static final double DRIVING_S = 0.0;
         public static final double DRIVING_V = 0.124;
 
@@ -532,9 +532,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 100.0;
-        public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 0.5;
+        public static final double TURNING_P = 225.0;
+        public static final double TURNING_I = 13.0;
+        public static final double TURNING_D = 8.0;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -547,6 +547,10 @@ public final class Constants {
         );
 
         public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
+
+        public static final double DRIFT_MULTIPLIER = 4.0;
+
+        public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
 
     public static final class MK4cSwerveModuleConstants {
@@ -883,15 +887,15 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0.107178;
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0.255127;
         public static final double GEAR_RATIO = 50.0;
         
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = -0.935791 * 2 * Math.PI;
-        public static final double MAX_ANGLE_RADIANS = 1.065674 * 2 * Math.PI; // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = 0;
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -917,9 +921,9 @@ public final class Constants {
         public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
         public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
 
-        public static final double VELOCITY = 1.6;
-        public static final double ACCELERATION = 4d;
-        public static final double JERK = 20d;
+        public static final double VELOCITY = 1.0;
+        public static final double ACCELERATION = 1.0;
+        public static final double JERK = 0.5;
 
         public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
         public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(

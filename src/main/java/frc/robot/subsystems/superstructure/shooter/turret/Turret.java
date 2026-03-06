@@ -57,10 +57,10 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
-            setpoint = profile.calculate(0.02, setpoint, targetState);
+            // setpoint = profile.calculate(0.02, setpoint, targetState);
             // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
             // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
-            io.setPosition(setpoint.position, 0);
+            io.setPosition(targetState.position, 0);
         } else {
             setpoint.position = inputs.internalPositionRads;
             setpoint.velocity = inputs.internalVelocityRadsPerSec;

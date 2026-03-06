@@ -314,6 +314,10 @@ public class Swerve extends SubsystemBase {
         return this.gyroRotation2d;
     }
 
+    public double getGyroYawVelocityRadiansPerSec() {
+        return gyro.getYawVelocity();
+    }
+
     public boolean getModuleDrivePositionsFlipped() {
         for (Module module : swerveModules) {
             if (module.getDrivePositionFlipped()) {
@@ -345,6 +349,10 @@ public class Swerve extends SubsystemBase {
     // Drive method used in teleop
     public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
         ChassisSpeeds robotRelativeSpeeds;
+
+        if (rotSpeed == 0) {
+            rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
+        }
 
         if (fieldRelative) {
             robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, getPose().getRotation());

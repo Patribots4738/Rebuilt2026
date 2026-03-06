@@ -53,7 +53,7 @@ public class Module {
         this.desiredState.optimize(new Rotation2d(inputs.turnEncoderAbsPositionRads));
 
         // Multiply and update the speed by the cosine of the difference in the angle between the desired and current angle to limit skew when changing direction
-        // this.desiredState.speedMetersPerSecond *= this.desiredState.angle.minus(new Rotation2d(inputs.turnEncoderAbsPositionRads)).getCos();
+        this.desiredState.speedMetersPerSecond *= this.desiredState.angle.minus(new Rotation2d(inputs.turnEncoderAbsPositionRads)).getCos();
         this.desiredState.optimize(new Rotation2d(inputs.turnEncoderAbsPositionRads));
 
         // Command driving and turning TalonFX towards their respective setpoints.

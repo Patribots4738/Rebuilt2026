@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -82,14 +83,14 @@ public class RobotContainer {
     private final Swerve swerve;
     @SuppressWarnings("unused")
 //     private final Climb climb;
-//     private final Flywheel flywheel;
-//     private final Turret turret;
-//     private final Hood hood;
-// //     private final Shooter shooter;
-//     private final Intake intake;
-//     private final Extender extender;
-//     private final Kicker kicker;
-//     private final Spindexer spindexer;
+    private final Flywheel flywheel;
+    private final Turret turret;
+    private final Hood hood;
+    // private final Shooter shooter;
+    private final Intake intake;
+    private final Extender extender;
+    private final Kicker kicker;
+    private final Spindexer spindexer;
 
 //     private final Superstructure superstructure;
 
@@ -136,13 +137,13 @@ public class RobotContainer {
 
         swerve = new Swerve();
         // climb = new Climb(new ClimbIOKraken());
-        // extender = new Extender(new ExtenderIOKraken());
-        // intake = new Intake(new IntakeIOKraken());
-        // spindexer = new Spindexer(new SpindexerIOKraken());
-        // kicker = new Kicker(new KickerIOKraken());
-        // flywheel = new Flywheel(new FlywheelIOKraken());
-        // turret = new Turret(new TurretIOKraken());
-        // hood = new Hood(new HoodIOKraken());
+        extender = new Extender(new ExtenderIOKraken());
+        intake = new Intake(new IntakeIOKraken());
+        spindexer = new Spindexer(new SpindexerIOKraken());
+        kicker = new Kicker(new KickerIOKraken());
+        flywheel = new Flywheel(new FlywheelIOKraken());
+        turret = new Turret(new TurretIOKraken());
+        hood = new Hood(new HoodIOKraken());
         // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
 
@@ -216,25 +217,37 @@ public class RobotContainer {
         ), swerve)
         );
 
-        // controller.a().onTrue(swerve.setWheelsOCommand());
-        controller.b().onTrue(swerve.getSetWheelsX());
-        controller.x().onTrue(swerve.setWheelsZeroCommand());
+        // controller.b().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kForward));
+        // controller.a().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+        
+        // controller.povUp().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kForward));
+        // controller.povDown().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kReverse));
+        
+        // controller.x().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kForward));
+        // controller.y().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kReverse));
 
-        // controller.rightStick().onTrue(extender.resetEncodersCommand());
-        // controller.rightTrigger().onTrue(extender.setTestPositionCommand());
-        // controller.rightBumper().onTrue(extender.setNeutralCommand());
+        // controller.povLeft().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kForward));
+        // controller.povRight().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kReverse));
 
-        // controller.leftTrigger().onTrue(intake.setTestPercentCommand());
-        // controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+        controller.a().onTrue(extender.setTestPositionCommand());
+        controller.b().onTrue(extender.setNeutralCommand());
+        controller.x().onTrue(extender.resetEncodersCommand());
 
-        // controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
-        // controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+        controller.rightStick().onTrue(extender.resetEncodersCommand());
+        controller.rightTrigger().onTrue(extender.setTestPositionCommand());
+        controller.rightBumper().onTrue(extender.setNeutralCommand());
 
-        // controller.povUp().onTrue(turret.setTestPositionCommand());
+        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+
+        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
+        controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+
+        controller.povUp().onTrue(turret.setTestPositionCommand());
         // controller.a().onTrue(turret.setPositionCommand(1.0));
         // controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());
-        // controller.povLeft().onTrue(turret.setNeutralCommand());
+        controller.povLeft().onTrue(turret.setNeutralCommand());
         
     }
 
