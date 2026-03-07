@@ -31,6 +31,7 @@ public class Hood extends SubsystemBase {
 
     private State targetState = new State(0, 0);
     private State setpoint = new State(0, 0);
+    private 
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 

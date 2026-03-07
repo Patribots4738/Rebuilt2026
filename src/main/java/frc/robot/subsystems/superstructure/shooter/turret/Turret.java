@@ -8,10 +8,12 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,14 +27,13 @@ public class Turret extends SubsystemBase {
     private final TurretIO io;
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
-    private State targetState = new State(0, 0);
-    private State setpoint = new State(0, 0);
+    private Rotation2d targetPosition;
+    private Rotation2d currentPosition;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
     private final SysIdRoutine turretRoutine;
 
-    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
     public Turret(TurretIO io) {
         this.io = io;
@@ -59,22 +60,8 @@ public class Turret extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
-
-        if (shouldRunSetpoint) {
-            // TODO: consider if you need a profile since it continuously tracks unique state
-            // it also resets this profile whenever the position changes, 
-            // pretty much negating its use for target tracking
-            // - you don't want predictability/smoothness, you want to get to setpoint ASAP
-            setpoint = profile.calculate(0.02, setpoint, targetState);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
-            io.setPosition(setpoint.position, 0);
-        } else {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
-            io.setNeutral();
-        }
+        Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
+        Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", );
     }
 
     /**
@@ -91,8 +78,13 @@ public class Turret extends SubsystemBase {
      * or
      *      Get the closest possible value to the deadzone, meaning it would hug the deadzone wall and possibly oscillate
      */
-    public void setPosition(double position) {
-        position = position % (TurretConstants.MAX_ANGLE_RADIANS - TurretConstants.MIN_ANGLE_RADIANS);
+    public void setPosition(Rotation2d position) {
+        if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
+            targetPosition = position;
+        }
+        else {
+            targetPosition = inputs.encoderAbsPositionRads * TurretConst
+        }
         if (position != targetState.position) {
             setpoint.position = inputs.internalPositionRads;
             setpoint.velocity = inputs.internalVelocityRadsPerSec;
@@ -102,7 +94,7 @@ public class Turret extends SubsystemBase {
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
+            new Rotation3d(0, 0, targetPosition.getRadians())
         );
     }
 

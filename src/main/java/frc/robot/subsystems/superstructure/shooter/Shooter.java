@@ -115,8 +115,8 @@ public class Shooter extends SubsystemBase {
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
 
         // set the flywheel and turret states if we want them to track a target
-        if (spinFlywheel) flywheel.setSpeedRPM(() -> shotParams.flywheelSpeed());
-        if (aimTurret) turret.setPosition(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
+        if (spinFlywheel) flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+        if (aimTurret) turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
 
         // if the hood is under the trench, the hood should be down
         if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
