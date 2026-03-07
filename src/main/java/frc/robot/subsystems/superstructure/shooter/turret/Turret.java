@@ -14,12 +14,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
 import static edu.wpi.first.units.Units.*;
 
@@ -32,11 +35,17 @@ public class Turret extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
+    private double testPositionDegrees;
+
     private final SysIdRoutine turretRoutine;
 
 
     public Turret(TurretIO io) {
         this.io = io;
+
+        TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
+        TurretConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = TurretConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+
         this.turretRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -104,6 +113,14 @@ public class Turret extends SubsystemBase {
 
     public Command setPositionCommand(double position) {
         return setPositionCommand(() -> position);
+    }
+
+    public void setTestPositionDegrees() {
+        setPosition(Units.degreesToRadians(testPositionDegrees));
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> setTestPositionDegrees());
     }
 
     public void setNeutral() {

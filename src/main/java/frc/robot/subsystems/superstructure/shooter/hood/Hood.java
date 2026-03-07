@@ -13,6 +13,12 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +27,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.calc.ShotCalculations;
 
 import static edu.wpi.first.units.Units.*;
@@ -34,6 +41,9 @@ public class Hood extends SubsystemBase {
     private 
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    private double percentOutput = 0.0;
+    
+    private double testPosition;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
 	
@@ -41,6 +51,10 @@ public class Hood extends SubsystemBase {
 	
     public Hood(HoodIO io) {
         this.io = io;
+
+        HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
+        HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+
         this.setDefaultCommand(this.setNeutralCommand());
         this.hoodRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
@@ -82,10 +96,12 @@ public class Hood extends SubsystemBase {
             io.setNeutral();
         }
 
+        RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
+
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.HOOD_OFFSET,
             new Rotation3d(0.0, 
-                inputs.encoderAbsPositionRads, 
+                inputs.internalPositionRads, 
                 RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
         );
     }
@@ -106,6 +122,15 @@ public class Hood extends SubsystemBase {
         targetState.position = position;
         shouldRunSetpoint = true;
         //TODO: create components3d for sim
+
+         RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
+            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getY(),
+            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getZ(),
+            new Rotation3d(0, position, 0)
+        );
+
+        RobotContainer.hoodMechanism.setAngle(position);    
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
@@ -116,12 +141,24 @@ public class Hood extends SubsystemBase {
         return setPositionCommand(() -> position);
     }
 
+    public void setTestPosition() {
+        setPosition(testPosition);
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> setTestPosition());
+    }
+
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
+    }
+
+    public Command resetEncodersCommand() {
+        return runOnce(() -> io.resetEncoders(0));
     }
 
     public boolean atPosition(double position) {
@@ -142,6 +179,19 @@ public class Hood extends SubsystemBase {
 
     public double getTargetPosition() {
         return targetState.position;
+    }
+
+    public void setPercent(double percent) {
+        percentOutput = percent;
+        shouldRunSetpoint = true;
+    }
+
+    public Command setPercentCommand(double percent) {
+        return Commands.runOnce(() -> setPercent(percent));
+    }
+
+    public Command setPercentCommand(DoubleSupplier percentSupplier) {
+    return Commands.runOnce(() -> setPercent(percentSupplier.getAsDouble()));
     }
 
     public double getCharacterizationVelocity() {

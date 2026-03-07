@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,6 +43,8 @@ public class Extender extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
 
     private final SysIdRoutine extenderRoutine;
+    private double testPosition;
+
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Extender/FastProfile/Acceleration", ExtenderConstants.FAST_ACCELERATION);
@@ -72,8 +75,9 @@ public class Extender extends SubsystemBase {
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
-        // ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
-        // brakeMotor.onChanged(Commands.runOnce(() -> io.setBrakeMode(brakeMotor.get())).ignoringDisable(true));
+        ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
+        ExtenderConstants.LOGGED_TEST_POSITION.onChanged(Commands.runOnce(() -> testPosition = Units.degreesToRadians(ExtenderConstants.LOGGED_TEST_POSITION.get())).ignoringDisable(true));
+        ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
     }
 
     @Override
@@ -105,9 +109,16 @@ public class Extender extends SubsystemBase {
         shouldRunSetpoint = true;
     }
 
-
     public void setNeutral() {
         shouldRunSetpoint = false;
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> this.setTestPosition());
+    }
+ 
+    public void setTestPosition() {
+        this.setPosition(testPosition);
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {

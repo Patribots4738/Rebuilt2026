@@ -13,6 +13,7 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.drive.Swerve;
@@ -55,6 +56,9 @@ public class Flywheel extends SubsystemBase {
                         this
                 )
         );
+
+        FlywheelConstants.LOGGED_FLYWHEEL_GAINS.onChanged(Commands.runOnce(() -> io.setGains(FlywheelConstants.LOGGED_FLYWHEEL_GAINS.get())).ignoringDisable(true));
+        FlywheelConstants.LOGGED_LINEAR_VELOCITY.onChanged(Commands.runOnce(() -> testLinearVelocity = FlywheelConstants.LOGGED_LINEAR_VELOCITY.get()).ignoringDisable(true));
     }
 
     @Override

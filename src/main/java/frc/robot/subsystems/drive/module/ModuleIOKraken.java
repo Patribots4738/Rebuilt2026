@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive.module;
 
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.MK4cSwerveModuleConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.custom.GainConstants;
@@ -23,23 +24,27 @@ public class ModuleIOKraken implements ModuleIO {
      * @param canCoderId CAN ID of the modules encoder
      * @param absoluteEncoderOffset absolute encoder offset used to zero the module
      */
-    public ModuleIOKraken(int drivingCANId, int turningCANId, int canCoderId, double absoluteEncoderOffset) {
+    public ModuleIOKraken(int drivingCANId, int turningCANId, int canCoderId, double absoluteEncoderOffset, boolean invertDrive) {
         // TODO: CHANGE USETORQUECONTROL TO TRUE ONCE WE HAVE PHOENIX PRO
         driveMotor = new Kraken(drivingCANId, MK5nSwerveModuleConstants.DRIVE_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
         turnMotor = new Kraken(turningCANId, MK5nSwerveModuleConstants.TURN_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
         turnEncoder = new CANCoderCustom(canCoderId, CANConstants.DRIVEBASE_BUS);
         resetDriveEncoder();
         configEncoder(absoluteEncoderOffset);
-        configMotors();
+      
+        configMotors(invertDrive);
     }
 
     /**
      * Configures MK5n module's encoders, conversion factor, PID, and current
      * limit.
      */
-    private void configMotors() {
+    private void configMotors(boolean invertDrive) {
 
         turnMotor.setMotorInverted(MK5nSwerveModuleConstants.INVERT_TURNING_MOTOR);
+        driveMotor.setMotorInverted(invertDrive);
+
+        driveMotor.setGearRatio(MK5nSwerveModuleConstants.DRIVE_GEAR_RATIO);
 
         // Apply position and velocity conversion factors for the driving encoder. The
         // native units for position and velocity are rotations and RPM, respectively,
@@ -59,6 +64,9 @@ public class ModuleIOKraken implements ModuleIO {
         if (FieldConstants.IS_REAL) {
             turnMotor.setEncoder(turnEncoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
         }
+        else {
+            turnMotor.setGearRatio(MK4cSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
+        }
 
         turnMotor.setPositionClosedLoopWrappingEnabled(true);
 
@@ -77,7 +85,7 @@ public class ModuleIOKraken implements ModuleIO {
     }
 
     private void configEncoder(double absoluteEncoderOffset) {
-        turnEncoder.configureMagnetSensor(false, absoluteEncoderOffset);
+        turnEncoder.configureMagnetSensor(MK5nSwerveModuleConstants.INVERT_TURNING_CANCODER, absoluteEncoderOffset);
         turnEncoder.setPositionConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_POSITION_FACTOR);
         turnEncoder.setVelocityConversionFactor(MK5nSwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR);
     }
@@ -91,32 +99,29 @@ public class ModuleIOKraken implements ModuleIO {
         // Call refreshALl() to refresh all status signals, and check in on him :)
         inputs.driverMotorConnected = driveMotor.refreshSignals().isOK();
         // 800 m is roughly the value at which the talonfx position "flips", leading to odometry bugs
-        inputs.drivePositionFlipped = (inputs.drivePositionMeters > 800 && driveMotor.getPositionAsDouble() < -800);
+        inputs.drivePositionFlipped = Math.abs(driveMotor.getPositionAsDouble() - inputs.drivePositionMeters) >= 1600d;
         inputs.drivePositionMeters = driveMotor.getPositionAsDouble();
         inputs.driveVelocityMPS = driveMotor.getVelocityAsDouble();
         inputs.driveAppliedVolts = driveMotor.getVoltageAsDouble();
-        inputs.driveSupplyCurrentAmps = driveMotor.getSupplyCurrentAsDouble();
-        inputs.driveStatorCurrentAmps = driveMotor.getStatorCurrentAsDouble();
+        inputs.driveTorqueCurrentAmps = driveMotor.getTorqueCurrentAsDouble();
         inputs.driveTempCelcius = driveMotor.getTemperatureAsDouble();
-
+        
         // Call refreshALl() to refresh all status signals, and check in on him :)
         inputs.turnMotorConnected = turnMotor.refreshSignals().isOK();
         inputs.turnInternalPositionRads = turnMotor.getPositionAsDouble();
         inputs.turnInternalVelocityRadsPerSec = turnMotor.getVelocityAsDouble();
         inputs.turnAppliedVolts = turnMotor.getVoltageAsDouble();
-        inputs.turnSupplyCurrentAmps = turnMotor.getSupplyCurrentAsDouble();
-        inputs.turnStatorCurrentAmps = turnMotor.getStatorCurrentAsDouble();
+        inputs.turnTorqueCurrentAmps = driveMotor.getTorqueCurrentAsDouble();
         inputs.turnTempCelcius = turnMotor.getTemperatureAsDouble();
 
-        // Call refreshALl() to refresh all status signals (only if he is real)
-        if (!FieldConstants.IS_SIMULATION) {
-            inputs.turnEncoderConnected = turnEncoder.refreshSignals().isOK();
+        inputs.turnEncoderConnected = turnEncoder.refreshSignals().isOK() && FieldConstants.IS_REAL;
+
+        // // Call refreshALl() to refresh all status signals (only if he is real)
+        if (inputs.turnEncoderConnected) {
+            inputs.turnEncoderAbsPositionRads = turnEncoder.getAbsolutePositionAsDouble();
+        } else {
+            inputs.turnEncoderAbsPositionRads = inputs.turnInternalPositionRads;
         }
-
-        inputs.turnEncoderAbsPositionRads = inputs.turnEncoderConnected ? turnEncoder.getAbsolutePositionAsDouble() : inputs.turnInternalPositionRads;
-        inputs.turnEncoderPositionRads = inputs.turnEncoderConnected ? turnEncoder.getPositionAsDouble() : inputs.turnInternalPositionRads;
-        inputs.turnEncoderVelocityRadsPerSec = inputs.turnEncoderConnected ? turnEncoder.getVelocityAsDouble() : inputs.turnInternalVelocityRadsPerSec;
-
     }
 
     /**

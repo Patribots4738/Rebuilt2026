@@ -14,10 +14,16 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -59,14 +65,14 @@ import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
 
-    private PowerDistribution pdh;
+//     private PowerDistribution pdh;
 
-    @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
-    private double totalCurrent;
-    @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
-    private double totalPower;
-    @AutoLogOutput (key = "PowerDistributionHub/Voltage")
-    private double voltage;
+//     @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
+//     private double totalCurrent;
+//     @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
+//     private double totalPower;
+//     @AutoLogOutput (key = "PowerDistributionHub/Voltage")
+//     private double voltage;
 
     private EventLoop testButtonBindingLoop = new EventLoop();
     
@@ -84,18 +90,18 @@ public class RobotContainer {
 
     private final Swerve swerve;
     @SuppressWarnings("unused")
-    private final Climb climb;
+//     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    private final Shooter shooter;
+    // private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
     private final Alignment alignment;
 
-    private final Superstructure superstructure;
+//     private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -117,6 +123,9 @@ public class RobotContainer {
     public static Pose2d autoStartingPose = Pose2d.kZero;
     @AutoLogOutput(key = "Draggables/RobotPose3d")
     public static Pose3d robotPose3d = new Pose3d();
+    public static Mechanism2d mech = new Mechanism2d(10, 10);
+    public static MechanismRoot2d hoodPivot = mech.getRoot("Hood", 0, 0);
+    public static MechanismLigament2d hoodMechanism = new MechanismLigament2d("hoodMechanism", 10, 0, 2, new Color8Bit(Color.kPurple));
 
     public RobotContainer() {
 
@@ -125,18 +134,18 @@ public class RobotContainer {
         driver = new PatriBoxController(OIConstants.DRIVER_CONTROLLER_PORT, OIConstants.DRIVER_DEADBAND);
         operator = new PatriBoxController(OIConstants.OPERATOR_CONTROLLER_PORT, OIConstants.OPERATOR_DEADBAND);
 
-        pdh = new PowerDistribution(30, ModuleType.kRev);
-        pdh.setSwitchableChannel(false);
+        // pdh = new PowerDistribution(30, ModuleType.kRev);
+        // pdh.setSwitchableChannel(false);
 
-        totalCurrent = pdh.getTotalCurrent();
-        SmartDashboard.putNumber("Total Current", totalCurrent);
-        totalPower = pdh.getTotalPower();
-        SmartDashboard.putNumber("Total Power", totalPower);
-        voltage = pdh.getVoltage();
-        SmartDashboard.putNumber("Voltage", voltage);
+        // totalCurrent = pdh.getTotalCurrent();
+        // SmartDashboard.putNumber("Total Current", totalCurrent);
+        // totalPower = pdh.getTotalPower();
+        // SmartDashboard.putNumber("Total Power", totalPower);
+        // voltage = pdh.getVoltage();
+        // SmartDashboard.putNumber("Voltage", voltage);
 
         swerve = new Swerve();
-        climb = new Climb(new ClimbIOKraken());
+        // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -144,11 +153,12 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOKraken());
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
-        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
-        superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
+        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
         alignment = new Alignment(swerve);
 
         SmartDashboard.putData(field2d);
+        SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -157,8 +167,8 @@ public class RobotContainer {
 
         swerve.setDefaultCommand(new Drive(
                 swerve,
-                driver::getLeftY,
-                driver::getLeftX,
+                () -> -driver.getLeftY(),
+                () -> -driver.getLeftX(),
                 () -> -driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
@@ -205,9 +215,49 @@ public class RobotContainer {
     private void configureTimedEvents() {}
 
     private void configureDevBindings(PatriBoxController controller) {
-        controller.leftBumper().onTrue(swerve.setWheelsOCommand());
-        controller.rightBumper().onTrue(swerve.getSetWheelsX());
-        controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+        controller.start().onTrue(
+                Commands.runOnce(() -> swerve.resetOdometry(
+                new Pose2d(
+                        swerve.getPose().getTranslation(),
+                        Rotation2d.fromDegrees(
+                                Robot.isRedAlliance()
+                                ? 0
+                                : 180))
+        ), swerve)
+        );
+
+        // controller.b().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kForward));
+        // controller.a().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kReverse));
+        
+        // controller.povUp().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kForward));
+        // controller.povDown().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kReverse));
+        
+        // controller.x().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kForward));
+        // controller.y().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kReverse));
+
+        // controller.povLeft().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kForward));
+        // controller.povRight().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kReverse));
+
+        controller.a().onTrue(extender.setTestPositionCommand());
+        controller.b().onTrue(extender.setNeutralCommand());
+        controller.x().onTrue(extender.resetEncodersCommand());
+
+        controller.rightStick().onTrue(extender.resetEncodersCommand());
+        controller.rightTrigger().onTrue(extender.setTestPositionCommand());
+        controller.rightBumper().onTrue(extender.setNeutralCommand());
+
+        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+
+        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
+        controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+
+        controller.povUp().onTrue(turret.setTestPositionCommand());
+        // controller.a().onTrue(turret.setPositionCommand(1.0));
+        // controller.povDown().onTrue(turret.setNeutralCommand());
+        // controller.povRight().onTrue(turret.setTestPositionCommand());
+        controller.povLeft().onTrue(turret.setNeutralCommand());
+        
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
@@ -256,23 +306,8 @@ public class RobotContainer {
         // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
-    private void configureOperatorBindings(PatriBoxController controller) {
+    private void configureCalibrationBindings(PatriBoxController controller) {
 
-        // controller.povUp()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() + 0.2));
-        // controller.povDown()
-        //     .whileTrue(krakenTest.setPosition(() -> krakenTest.getPosition() - 0.2));
-        // controller.a()
-        //     .onTrue(krakenTest.setPosition(() -> 0));
-        // controller.b()
-        //     .whileTrue(krakenTest.setVelocity(() -> 500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.x()
-        //     .whileTrue(krakenTest.setVelocity(() -> -500)
-        //         .finallyDo(() -> krakenTest.setVelocity(() -> 0)));
-        // controller.rightTrigger()
-        //     .whileTrue(krakenTest.setPercent(controller::getRightY)
-        //         .finallyDo(() -> krakenTest.setPercent(() -> 0)));
     }
 
     public Command getAutonomousCommand() {
@@ -308,11 +343,11 @@ public class RobotContainer {
                 .onTrue(HDCTuner.multiplyPIDCommand(.5));
     }
 
-    public void refreshPDHData() {
-        totalCurrent = pdh.getTotalCurrent();
-        totalPower = pdh.getTotalPower();
-        voltage = pdh.getVoltage();
-    }
+//     public void refreshPDHData() {
+//         totalCurrent = pdh.getTotalCurrent();
+//         totalPower = pdh.getTotalPower();
+//         voltage = pdh.getVoltage();
+//     }
 
     public void onDisabled() {
         // Stops bot in sim after auto (noramlly motors auto turn off when disabled)

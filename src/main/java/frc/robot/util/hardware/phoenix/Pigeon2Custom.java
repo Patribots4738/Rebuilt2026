@@ -7,6 +7,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Pigeon2Configurator;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -54,20 +55,21 @@ public class Pigeon2Custom extends Pigeon2 {
         super(id, canBus);
 
         restoreFactoryDefaults();
-
+        // configurator.apply(PigeonConstants.POSE_CONFIGS);
+        
         yawSignal = getYaw();
         pitchSignal = getPitch();
         rollSignal = getRoll();
         yawVelocitySignal = getAngularVelocityZWorld();
         pitchVelocitySignal = getAngularVelocityYWorld();
         rollVelocitySignal = getAngularVelocityXWorld();
-
+        
         setTelemetryPreference(TelemetryPreference.DEFAULT);
         applyParameter(
             () -> optimizeBusUtilization(0, 1.0),
             "Optimize Bus Utilization"
-        );
-    }
+            );
+        }
 
     /**
      * Applies a parameter to the Pigeon2Custom device.

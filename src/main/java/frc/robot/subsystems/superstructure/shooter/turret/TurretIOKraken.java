@@ -7,7 +7,6 @@ import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
-import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class TurretIOKraken implements TurretIO {
     private final Kraken motor;
@@ -23,10 +22,11 @@ public class TurretIOKraken implements TurretIO {
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
+        motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
         motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), TurretConstants.GEAR_RATIO);
+            motor.setEncoder(encoder.getDeviceID(), TurretConstants.ENCODER_GEAR_RATIO);
         }
         motor.setGains(TurretConstants.GAINS);
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);
@@ -37,7 +37,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET);
+        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }

@@ -24,11 +24,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,9 +33,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.drive.Drive;
@@ -74,9 +76,6 @@ public class Swerve extends SubsystemBase {
     private final SwerveSetpointGenerator setpointGenerator;
     private SwerveSetpoint previousSetpoint;
 
-    private double maxLinearVelocity;
-    private double maxAngularVelocity;
-    
     private ChassisSpeeds speeds = new ChassisSpeeds();
     
     private final SysIdRoutine driveRoutine, turnRoutine;
@@ -91,7 +90,8 @@ public class Swerve extends SubsystemBase {
                 MK5nSwerveModuleConstants.FRONT_LEFT_DRIVING_CAN_ID,
                 MK5nSwerveModuleConstants.FRONT_LEFT_TURNING_CAN_ID,
                 MK5nSwerveModuleConstants.FRONT_LEFT_CANCODER_CAN_ID,
-                MK5nSwerveModuleConstants.FRONT_LEFT_TURN_ENCODER_OFFSET),
+                MK5nSwerveModuleConstants.FRONT_LEFT_TURN_ENCODER_OFFSET,
+                MK5nSwerveModuleConstants.INVERT_FRONT_LEFT_DRIVE),
             DriveConstants.FRONT_LEFT_INDEX,
             DriveConstants.FRONT_LEFT_CHASSIS_ANGULAR_OFFSET);
 
@@ -100,7 +100,8 @@ public class Swerve extends SubsystemBase {
                 MK5nSwerveModuleConstants.FRONT_RIGHT_DRIVING_CAN_ID,
                 MK5nSwerveModuleConstants.FRONT_RIGHT_TURNING_CAN_ID,
                 MK5nSwerveModuleConstants.FRONT_RIGHT_CANCODER_CAN_ID,
-                MK5nSwerveModuleConstants.FRONT_RIGHT_TURN_ENCODER_OFFSET),
+                MK5nSwerveModuleConstants.FRONT_RIGHT_TURN_ENCODER_OFFSET,
+                MK5nSwerveModuleConstants.INVERT_FRONT_RIGHT_DRIVE),
             DriveConstants.FRONT_RIGHT_INDEX,
             DriveConstants.FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET);
 
@@ -109,7 +110,8 @@ public class Swerve extends SubsystemBase {
                 MK5nSwerveModuleConstants.REAR_LEFT_DRIVING_CAN_ID,
                 MK5nSwerveModuleConstants.REAR_LEFT_TURNING_CAN_ID,
                 MK5nSwerveModuleConstants.REAR_LEFT_CANCODER_CAN_ID,
-                MK5nSwerveModuleConstants.REAR_LEFT_TURN_ENCODER_OFFSET),
+                MK5nSwerveModuleConstants.REAR_LEFT_TURN_ENCODER_OFFSET,
+                MK5nSwerveModuleConstants.INVERT_BACK_LEFT_DRIVE),
             DriveConstants.REAR_LEFT_INDEX,
             DriveConstants.BACK_LEFT_CHASSIS_ANGULAR_OFFSET);
 
@@ -118,7 +120,8 @@ public class Swerve extends SubsystemBase {
                 MK5nSwerveModuleConstants.REAR_RIGHT_DRIVING_CAN_ID,
                 MK5nSwerveModuleConstants.REAR_RIGHT_TURNING_CAN_ID,
                 MK5nSwerveModuleConstants.REAR_RIGHT_CANCODER_CAN_ID,
-                MK5nSwerveModuleConstants.REAR_RIGHT_TURN_ENCODER_OFFSET),
+                MK5nSwerveModuleConstants.REAR_RIGHT_TURN_ENCODER_OFFSET,
+                MK5nSwerveModuleConstants.INVERT_BACK_RIGHT_DRIVE),
             DriveConstants.REAR_RIGHT_INDEX,
             DriveConstants.BACK_RIGHT_CHASSIS_ANGULAR_OFFSET);     
 
@@ -199,12 +202,14 @@ public class Swerve extends SubsystemBase {
         
         driveRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
+                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
+                        Volts.of(0.5).per(Second),
+                        null,
+                        null,
+                        (state) -> Logger.recordOutput("DriveSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> runDriveCharacterization(volts.in(Volts)),
+                        (voltage) -> runDriveCharacterization(voltage.in(Volts)),
                         log -> log.motor("drive")
                                 .voltage(Volts.of(getDriveCharacterizationVoltage()))
                                 .angularPosition(Radians.of(getDriveAveragePosition()))
@@ -215,16 +220,18 @@ public class Swerve extends SubsystemBase {
         
         turnRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
+                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
+                        Volts.of(0.5).per(Second),
+                        null,
+                        null,
+                        (state) -> Logger.recordOutput("TurnSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> runTurnCharacterization(volts.in(Volts)),
-                        log -> log.motor("turn")
-                                .voltage(Volts.of(getTurnCharacterizationVoltage()))
-                                .angularPosition(Radians.of(getTurnAveragePosition()))
-                                .angularVelocity(RadiansPerSecond.of(getTurnCharacterizationVelocity())),
+                        (voltage) -> runTurnCharacterization(voltage.in(Volts)),
+                        log -> log.motor("drive")
+                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getDriveAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
                         this
                 )
         );
@@ -274,10 +281,12 @@ public class Swerve extends SubsystemBase {
 
         if (FieldConstants.IS_SIMULATION) {
             resetOdometry(
-                    currentPose.exp(
-                            new Twist2d(
-                                    0, 0,
-                                    speeds.omegaRadiansPerSecond * .02)));
+                currentPose.exp(
+                    new Twist2d(
+                        0, 0,
+                        speeds.omegaRadiansPerSecond * .02)
+                )
+            );
         }
 
         RobotContainer.field2d.setRobotPose(currentPose);
@@ -293,31 +302,6 @@ public class Swerve extends SubsystemBase {
             RobotContainer.robotPose2d = currentPose;
         }
 
-        double pitch = gyro.getPitch();
-        double roll = gyro.getRoll();
-
-        Rotation3d rotation3d = FieldConstants.IS_SIMULATION 
-            ?  new Rotation3d(
-                Units.degreesToRadians(0), 
-                Units.degreesToRadians(0), 
-                currentPose.getRotation().getRadians())
-            :  new Rotation3d(
-                Units.degreesToRadians(-roll), 
-                Units.degreesToRadians(-pitch+Math.PI), 
-                currentPose.getRotation().getRadians()+Math.PI);
-
-        RobotContainer.robotPose3d = new Pose3d(
-                new Translation3d(
-                        currentPose.getX(),
-                        currentPose.getY(),
-                        Math.hypot(
-                                Rotation2d.fromDegrees(roll).getSin()
-                                        * DriveConstants.ROBOT_LENGTH_METERS / 2.0,
-                                Rotation2d.fromDegrees(pitch).getSin() *
-                                        DriveConstants.ROBOT_LENGTH_METERS / 2.0)),
-            rotation3d);
-
-        Logger.recordOutput("Subsystems/Swerve/RobotPose3d", RobotContainer.robotPose3d);
         Logger.recordOutput("Subsystems/Swerve/ChassisSpeeds", speeds);
 
         Logger.recordOutput("Subsystems/Swerve/Modules/FrontLeft/DesiredState", frontLeft.getDesiredState());
@@ -337,6 +321,10 @@ public class Swerve extends SubsystemBase {
 
     public Rotation2d getGyroRotation2d() {
         return this.gyroRotation2d;
+    }
+
+    public double getGyroYawVelocityRadiansPerSec() {
+        return gyro.getYawVelocity();
     }
 
     public boolean getModuleDrivePositionsFlipped() {
@@ -370,6 +358,11 @@ public class Swerve extends SubsystemBase {
     // Drive method used in teleop
     public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
         ChassisSpeeds robotRelativeSpeeds;
+
+        // account rotational drift caused by torque steering
+        if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
+            rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
+        }
 
         if (fieldRelative) {
             robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, getPose().getRotation());
@@ -449,30 +442,12 @@ public class Swerve extends SubsystemBase {
         return totalVoltage / swerveModules.length;
     }
 
-    public void setSpeedsSlow() {
-        this.maxLinearVelocity = 2.25;
-        this.maxAngularVelocity = 568.605;
-    }
-
-    public void setSpeedsNormal() {
-        this.maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
-        this.maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
-    }
-
-    public Command setSlowDrive() {
-        return run(this::setSpeedsSlow);
-    }
-
-    public Command setNormalDrive() {
-        return run(this::setSpeedsNormal);
-    }
-
     public double getMaxLinearVelocity() {
-        return maxLinearVelocity;
+        return DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     }
 
     public double getMaxAngularVelocity() {
-        return maxAngularVelocity;
+        return DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
     }
 
     public double getDriveMultiplier() {

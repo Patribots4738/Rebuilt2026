@@ -7,6 +7,7 @@ package frc.robot.subsystems.superstructure.kicker;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.subsystems.superstructure.intake.IntakeIO;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 
 import java.util.function.BooleanSupplier;
@@ -40,6 +41,8 @@ public class Kicker extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 	
+    private double testPercent;
+
 	private final SysIdRoutine kickerRoutine;
 	
 	// private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
@@ -51,7 +54,10 @@ public class Kicker extends SubsystemBase {
     
     public Kicker(KickerIO io) {
         this.io = io;
-	    this.kickerRoutine = new SysIdRoutine(
+
+        KickerConstants.LOGGED_KICKER_PERCENT.onChanged(Commands.runOnce(() -> testPercent = KickerConstants.LOGGED_KICKER_PERCENT.get()).ignoringDisable(true));
+
+        	    this.kickerRoutine = new SysIdRoutine(
 			    new SysIdRoutine.Config(
 					    Volts.per(Seconds).of(1),
 					    Volts.of(7),
@@ -123,4 +129,13 @@ public class Kicker extends SubsystemBase {
 	public Command dynamic(SysIdRoutine.Direction direction) {
 		return kickerRoutine.dynamic(direction);
 	}
+    }
+
+    public void setTestPercent() {
+        setPercent(testPercent);
+    }
+
+    public Command setTestPercentCommand() {
+        return Commands.runOnce(() -> setTestPercent());
+    }
 }
