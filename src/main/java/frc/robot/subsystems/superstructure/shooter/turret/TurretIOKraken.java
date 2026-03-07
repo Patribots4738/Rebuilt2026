@@ -7,6 +7,7 @@ import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
+import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class TurretIOKraken implements TurretIO {
     private final Kraken motor;
@@ -52,7 +53,10 @@ public class TurretIOKraken implements TurretIO {
         if (inputs.encoderConnected) {
             inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
             if (!encoderUpdated) {
-                motor.resetEncoder(inputs.encoderAbsPositionRads > TurretConstants.MAX_ANGLE_RADIANS ? inputs.encoderAbsPositionRads - 2 * Math.PI : inputs.encoderAbsPositionRads);
+                motor.resetEncoder(
+                    inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) > TurretConstants.MAX_ANGLE_RADIANS 
+                        ? inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) - 2 * Math.PI 
+                        : inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO));
                 encoderUpdated = true;
             }
         } else {

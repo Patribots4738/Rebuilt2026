@@ -36,13 +36,11 @@ public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
 
-    private State targetState = new State(0, 0);
-    private State setpoint = new State(0, 0);
-    private 
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     private double percentOutput = 0.0;
     
+    private double targetPosition;
     private double testPosition;
 
     private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(HoodConstants.VELOCITY, HoodConstants.ACCELERATION));
@@ -79,20 +77,11 @@ public class Hood extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Shooter/Hood", inputs);
 
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetState.position);
+        Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
-            // TODO: consider if you need a profile since it continuously tracks unique state
-            // it also resets this profile whenever the position changes, 
-            // pretty much negating its use for target tracking
-            // - you don't want predictability/smoothness, you want to get to setpoint ASAP
-            setpoint = profile.calculate(0.02, setpoint, targetState);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
-            io.setPosition(setpoint.position, 0);
+            io.setPosition(targetPosition, 0);
         } else {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
             io.setNeutral();
         }
 
@@ -113,17 +102,10 @@ public class Hood extends SubsystemBase {
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
-        // TODO: This is where the profile is re-initialized
-        // do you even need a profile for this/turret?
-        if (position != targetState.position) {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
-        }
-        targetState.position = position;
+        targetPosition = position;
         shouldRunSetpoint = true;
-        //TODO: create components3d for sim
 
-         RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getY(),
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getZ(),
@@ -166,7 +148,7 @@ public class Hood extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+        return atPosition(targetPosition);
     }
 
     public double getPosition() {
@@ -178,7 +160,7 @@ public class Hood extends SubsystemBase {
     }
 
     public double getTargetPosition() {
-        return targetState.position;
+        return targetPosition;
     }
 
     public void setPercent(double percent) {

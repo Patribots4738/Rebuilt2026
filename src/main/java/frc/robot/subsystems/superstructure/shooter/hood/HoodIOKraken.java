@@ -25,7 +25,7 @@ public class HoodIOKraken implements HoodIO {
         motor.setTorqueCurrentLimits(-HoodConstants.CURRENT_LIMIT, HoodConstants.CURRENT_LIMIT);
         motor.setBrakeMode(HoodConstants.BRAKE_MOTOR);
         motor.resetEncoder(0.0);
-        // motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
+        motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
     }
 
     @Override
@@ -40,26 +40,7 @@ public class HoodIOKraken implements HoodIO {
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
     }
-    
-    @Override
-    public void updateInputs(HoodIOInputs inputs) {
-        inputs.motorConnected = motor.refreshSignals().isOK();
-        inputs.internalPositionRads = motor.getPositionAsDouble();
-        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI; // TODO: Use unit conversion factor
-        inputs.targetPositionRads = motor.getTargetPosition();
-        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
-        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
-        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
-        if (inputs.encoderConnected) {
-            inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
-            if (!encoderUpdated) {
-                motor.resetEncoder(inputs.encoderAbsPositionRads > TurretConstants.MAX_ANGLE_RADIANS ? inputs.encoderAbsPositionRads - 2 * Math.PI : inputs.encoderAbsPositionRads);
-                encoderUpdated = true;
-            }
-        } else {
-            inputs.encoderAbsPositionRads = inputs.internalPositionRads;
-        }
-    }
+
     
     @Override
     public void setPosition(double position, double feedforward) {

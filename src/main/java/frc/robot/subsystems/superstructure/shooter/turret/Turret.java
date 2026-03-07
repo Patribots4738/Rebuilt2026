@@ -1,6 +1,7 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -67,10 +68,12 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
-
+        if (shouldRunSetpoint) {
+            io.setPosition(targetPosition.getRadians(), 0);
+        }
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
-        Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", );
+        Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", getRotation().getDegrees());
     }
 
     /**
@@ -90,33 +93,25 @@ public class Turret extends SubsystemBase {
     public void setPosition(Rotation2d position) {
         if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
             targetPosition = position;
+            shouldRunSetpoint = true;
         }
-        else {
-            targetPosition = inputs.encoderAbsPositionRads * TurretConst
-        }
-        if (position != targetState.position) {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
-        }
-        targetState.position = position;
-        shouldRunSetpoint = true;
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(0, 0, targetPosition.getRadians())
+            new Rotation3d(0, 0, inputs.internalPositionRads)
         );
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
+        return setPositionCommand(rotationSupplier.get()).andThen(Commands.waitUntil(this::atTargetPosition));
     }
 
-    public Command setPositionCommand(double position) {
-        return setPositionCommand(() -> position);
+    public Command setPositionCommand(Rotation2d rotation) {
+        return runOnce(() -> setPosition(rotation));
     }
 
     public void setTestPositionDegrees() {
-        setPosition(Units.degreesToRadians(testPositionDegrees));
+        setPosition(new Rotation2d(Units.degreesToRadians(testPositionDegrees)));
     }
 
     public Command setTestPositionCommand() {
@@ -131,24 +126,28 @@ public class Turret extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
+    public boolean atPosition(Rotation2d position) {
+        return MathUtil.isNear(position.getRadians(), inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+        return atPosition(targetPosition);
     }
 
     public double getPosition() {
         return inputs.internalPositionRads;
     }
 
+    public Rotation2d getRotation() {
+        return new Rotation2d(inputs.internalPositionRads);
+    }
+
     public double getVelocity() {
         return inputs.internalVelocityRadsPerSec;
     }
 
-    public double getTargetPosition() {
-        return targetState.position;
+    public Rotation2d getTargetPosition() {
+        return targetPosition;
     }
     
     public double getVoltage() {

@@ -249,7 +249,6 @@ public class RobotContainer {
         controller.leftTrigger().onTrue(intake.setTestPercentCommand());
         controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
-        controller.rightTrigger().onTrue(Commands.parallel(spindexer.setPercentCommand(0.6), kicker.setTestPercentCommand()));
         controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
         controller.povUp().onTrue(turret.setTestPositionCommand());
@@ -273,37 +272,32 @@ public class RobotContainer {
             ), swerve)
         );
 
-        controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
-        controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
-        controller.rightBumper().onTrue(superstructure.fullStowCommand());
-        controller.rightTrigger().whileTrue(
-            new ActiveConditionalCommand(
-                superstructure.fireCommand(), 
-                Commands.sequence(
-                    shooter.armShooterCommand(), 
-                    Commands.waitUntil(() -> shooter.isReady()),
-                    superstructure.fireCommand()),
-                () -> shooter.isReady()
-            )
-        );
-        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
-        // TODO: make these automatic based on position?
-        // you could have this as some sort of manual override, but seems unecesary with four cameras.
-        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
-        controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
-        // TODO: refactor this to not need a hardcoded onlyif
-        // examples:
-        // povDown.onTrue(commands.either(true,false,povright))
-        // povDown.and(povRight()) / povDown.and(povRight().negate())
-        // or make it a whileTrue with an activeConditionalCommand
-        controller.povDown().onTrue(superstructure.setClimbState(ClimbState.STOW).onlyIf(() -> !controller.povRight().getAsBoolean()));
-        controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
+        // controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
+        // controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
+        // controller.rightBumper().onTrue(superstructure.fullStowCommand());
+        // controller.rightTrigger().whileTrue(
+        //     new ActiveConditionalCommand(
+        //         superstructure.fireCommand(), 
+        //         Commands.sequence(
+        //             shooter.armShooterCommand(), 
+        //             Commands.waitUntil(() -> shooter.isReady()),
+        //             superstructure.fireCommand()),
+        //         () -> shooter.isReady()
+        //     )
+        // );
+        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        // // TODO: make these automatic based on position?
+        // // you could have this as some sort of manual override, but seems unecesary with four cameras.
+        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        // controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
+        // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
+        // controller.povDown().and(controller.povRight().negate()).onTrue(superstructure.setClimbState(ClimbState.STOW));
+        // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
 
-        // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        // controller.b().whileTrue(swerve.driveCharacterization());
-        // controller.y().whileTrue(swerve.getSetWheelsZero());
+        // // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
+        // // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
+        // // controller.b().whileTrue(swerve.driveCharacterization());
+        // // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
     private void configureCalibrationBindings(PatriBoxController controller) {
@@ -363,14 +357,14 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().unless(() -> PoseCalculations.behindTower(swerve.getPose())));
-        NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
-        NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
-        NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
-        NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
-        NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
-        NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
-        NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        // NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().unless(() -> PoseCalculations.behindTower(swerve.getPose())));
+        // NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
+        // NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
+        // NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
+        // NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        // NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        // NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
+        // NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
 
         NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));

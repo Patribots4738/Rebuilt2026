@@ -34,6 +34,8 @@ public class Flywheel extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetSpeedRPM")
     private double targetSpeed = 0.0;
 
+    private double testSpeed;
+
     public Flywheel(FlywheelIO io) {
         this.io = io;
         // NOTE TO SELF CAUSE IM GONNA FORGET: i put this here since itll have to be
@@ -58,7 +60,7 @@ public class Flywheel extends SubsystemBase {
         );
 
         FlywheelConstants.LOGGED_FLYWHEEL_GAINS.onChanged(Commands.runOnce(() -> io.setGains(FlywheelConstants.LOGGED_FLYWHEEL_GAINS.get())).ignoringDisable(true));
-        FlywheelConstants.LOGGED_LINEAR_VELOCITY.onChanged(Commands.runOnce(() -> testLinearVelocity = FlywheelConstants.LOGGED_LINEAR_VELOCITY.get()).ignoringDisable(true));
+        FlywheelConstants.LOGGED_SPEED_RPM.onChanged(Commands.runOnce(() -> testSpeed = FlywheelConstants.LOGGED_SPEED_RPM.get()).ignoringDisable(true));
     }
 
     @Override
@@ -115,6 +117,10 @@ public class Flywheel extends SubsystemBase {
 
     public Command setSpeedRPMCommand(double speed) {
         return setSpeedRPMCommand(() -> speed);
+    }
+
+    public Command setTestSpeedRPMCommand() {
+        return setSpeedRPMCommand(() -> testSpeed);
     }
 
     public Command setNeutralCommand() {

@@ -32,6 +32,7 @@ public class Shooter extends SubsystemBase {
     @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
     private boolean aimHood = true;
     private int passIndex = 0;
+    private Target target;
 
     private ShootingParameters shotParams;
 
@@ -50,36 +51,36 @@ public class Shooter extends SubsystemBase {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
 
-        targetLocation = FieldConstants.SHOT_TARGETS.get("Hub");
-
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
 
         shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
+        target = Target.HUB;
+    }
+
+    public enum Target {
+        HUB(FieldConstants.GET_HUB()),
+        PASS_LEFT(FieldConstants.GET_PASS_LEFT()),
+        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT()),
+        NONE(new Translation3d(0.0, 0.0, 0.0));
+
+        public Translation3d location;
+
+        Target(Translation3d location) {
+            this.location = location;
+        }
     }
 
     @Override
     public void periodic() {
-
         if (partiallyTracking()) {
-            this.setShooterStates();
             updateTarget(robotRelativePose.get());
+            this.setShooterStates();
         }
         else {
-            targetName = "None";
-        }
-        // TODO: (1) Consolidate/flatten state logic in periodic for clarity and reducing repetition in this::setShooterStates
-        if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
+            target = Target.NONE;
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
-        }
-        else if (partiallyTracking()) {
-            updateTarget(robotRelativePose.get());
-            shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
-            this.setShooterStates();
-        }
-        else {
-            targetName = "None";
         }
     }
 
@@ -91,10 +92,6 @@ public class Shooter extends SubsystemBase {
 
     public boolean fullyTracking() {
         return aimHood && aimTurret && spinFlywheel;
-    }
-
-    public BooleanSupplier fullTracking() {
-        return 
     }
 
     public boolean hoodTracking() {
@@ -112,18 +109,18 @@ public class Shooter extends SubsystemBase {
     // TODO: (2) flatten this with the periodic state checks (also try to consolidate these conditions)
     public void setShooterStates() {
         // calculate states for turret, flywheel, and hood based on robot location
-        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
+        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
 
         // set the flywheel and turret states if we want them to track a target
         if (spinFlywheel) flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
         if (aimTurret) turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
 
-        // if the hood is under the trench, the hood should be down
+        // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
         if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
         else if (aimHood){
-            hood.setPosition(shotParams.hoodAngle());
+            hood.setPositionCommand(() -> shotParams.hoodAngle());
         }
     }
 
@@ -155,7 +152,7 @@ public class Shooter extends SubsystemBase {
      * @return whether the shooter is at the right state
      */
     public boolean isReady() {
-        return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
+        return turret.atTargetPosition() && flywheel.atTargetSpeed() && hood.atTargetPosition();
     }
 
     /**
@@ -184,15 +181,14 @@ public class Shooter extends SubsystemBase {
 
     // TODO: use enum to lower multiplicity of values instead of string
     public void updateTarget(Pose2d robotPose) {
-        targetName = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
-                        ? "Hub" 
-                        : passIndex == 0 ? "Pass Left" 
-                        : "Pass Right";
-        targetLocation = FieldConstants.SHOT_TARGETS.get(targetName);
+        target = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
+                        ? Target.HUB 
+                        : passIndex == 0 ? Target.PASS_LEFT 
+                        : Target.PASS_RIGHT;
     }
 
     public void eject() {
-        flywheel.setVelocity(FlywheelConstants.EJECT_VELOCITY);
+        flywheel.setSpeedRPM(FlywheelConstants.EJECT_VELOCITY);
     }
 
     public Command ejectCommand() {
