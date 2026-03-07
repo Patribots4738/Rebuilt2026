@@ -62,8 +62,15 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (partiallyTracking()) {
+            this.setShooterStates();
+            updateTarget(robotRelativePose.get());
+        }
+        else {
+            targetName = "None";
+        }
         // TODO: (1) Consolidate/flatten state logic in periodic for clarity and reducing repetition in this::setShooterStates
-        if (PoseCalculations.inTrench(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
+        if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
         else if (partiallyTracking()) {
@@ -86,6 +93,10 @@ public class Shooter extends SubsystemBase {
         return aimHood && aimTurret && spinFlywheel;
     }
 
+    public BooleanSupplier fullTracking() {
+        return 
+    }
+
     public boolean hoodTracking() {
         return aimHood;
     }
@@ -100,45 +111,42 @@ public class Shooter extends SubsystemBase {
 
     // TODO: (2) flatten this with the periodic state checks (also try to consolidate these conditions)
     public void setShooterStates() {
-        if (spinFlywheel) flywheel.setVelocity(shotParams.flywheelSpeed());
-        if (aimTurret) turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
-        if (PoseCalculations.inTrench(robotRelativePose.get())) { // TODO: shouldn't this be shouldPutHoodDown?
+        // calculate states for turret, flywheel, and hood based on robot location
+        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation);
+
+        // set the flywheel and turret states if we want them to track a target
+        if (spinFlywheel) flywheel.setSpeedRPM(() -> shotParams.flywheelSpeed());
+        if (aimTurret) turret.setPosition(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()).getRadians());
+
+        // if the hood is under the trench, the hood should be down
+        if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
         }
         else if (aimHood){
             hood.setPosition(shotParams.hoodAngle());
         }
     }
-    
-    public void setSpinFlywheel(boolean spinFlywheel) {
-        this.spinFlywheel = spinFlywheel;
-    }
 
-    // TODO: consider runOnce() to implicitly add requirement
     public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
-        return Commands.runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
+        return runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
     }
 
-    // TODO: consider runOnce() to implicitly add requirement
     public Command trackTargetCommand(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
-        return Commands.runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
+        return runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
     }
 
-    // TODO: if you are going to have internal methods such as this::setSpinFlywheel, use them instead of directly setting the bools
     public void setTrackTarget(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
         this.spinFlywheel = spinFlywheel;
         this.aimTurret = aimTurret;
         this.aimHood = aimHood;
     }
 
-    // TODO: consider runOnce() to implicitly add requirement
     public Command armShooterCommand() {
-        return Commands.runOnce(() -> setTrackTarget(true, true, true));
+        return runOnce(() -> setTrackTarget(true, true, true));
     }
 
-    // TODO: consider runOnce() to implicitly add requirement
     public Command disarmShooterCommand() {
-        return Commands.runOnce(() -> setTrackTarget(false, false, false));
+        return runOnce(() -> setTrackTarget(false, false, false));
     }
 
     /**
@@ -150,16 +158,22 @@ public class Shooter extends SubsystemBase {
         return turret.atTargetPosition() && flywheel.atTargetVelocity() && hood.atTargetPosition();
     }
 
+    /**
+     * Sets the pass index of the shooter.
+     * 0 is for the left of driver station and 1 is for the right
+     * 
+     * @param index 
+     */
     public void setPassIndex(int index) {
         passIndex = index;
     }
 
     public Command setPassIndexCommand(int index) {
-        return Commands.runOnce(() -> setPassIndex(index));
+        return runOnce(() -> setPassIndex(index));
     }
 
     public Command setNeutralCommand() {
-        return Commands.runOnce(() -> this.setNeutral());
+        return runOnce(() -> this.setNeutral());
     }
 
     public void setNeutral() {
@@ -181,9 +195,8 @@ public class Shooter extends SubsystemBase {
         flywheel.setVelocity(FlywheelConstants.EJECT_VELOCITY);
     }
 
-    // TODO: add requirement
     public Command ejectCommand() {
-        return Commands.runOnce(() -> this.eject());
+        return runOnce(() -> this.eject());
     }
 
     public Command stowCommand() {

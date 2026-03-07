@@ -40,6 +40,7 @@ public class Hood extends SubsystemBase {
 	
     public Hood(HoodIO io) {
         this.io = io;
+        this.setDefaultCommand(this.setNeutralCommand());
         this.hoodRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),

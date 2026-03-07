@@ -30,8 +30,8 @@ public class Flywheel extends SubsystemBase {
 
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetLinearVelocity")
-    private double targetVelocity = 0.0;
+    @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetSpeedRPM")
+    private double targetSpeed = 0.0;
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -51,7 +51,7 @@ public class Flywheel extends SubsystemBase {
                         log -> log.motor("flywheel")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
                                 .angularPosition(Rotations.of(inputs.positionRotations))
-                                .angularVelocity(RadiansPerSecond.of(inputs.velocityRadsPerSec)),
+                                .angularVelocity(RadiansPerSecond.of(inputs.speedRPM / 60)),
                         this
                 )
         );
@@ -62,9 +62,8 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
 
-        // Run setpoint on RIO to minimize CAN utilization
         if (shouldRunSetpoint) {
-            io.setVelocity(targetVelocity);
+            io.setSpeedRPM(targetSpeed);
         } else {
             io.setNeutral();
         }
@@ -76,42 +75,42 @@ public class Flywheel extends SubsystemBase {
     }
 
     /**
-     * Sets the velocity of the wheel using the desired tangential velocity
+     * Sets the desired speed of the flywheel
      * 
-     * @param velocity tangential velocity
+     * @param speed desired speed in RPM
      */
-    public void setVelocity(double velocity) {
-        targetVelocity = velocity / FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units
+    public void setSpeedRPM(double speed) {
+        targetSpeed = speed;
         shouldRunSetpoint = true;
     }
 
-    public boolean atTargetVelocity() {
-        return atVelocity(targetVelocity);
+    public boolean atTargetSpeed() {
+        return atSpeed(targetSpeed);
     }
 
-    public boolean atVelocity(double velocity) {
-        return MathUtil.isNear(getVelocity(), velocity, FlywheelConstants.VELOCITY_DEADBAND_METERS_PER_SEC); // TODO: use a bigger deadband (this will NEVER be true)
+    public boolean atSpeed(double speed) {
+        return MathUtil.isNear(getSpeedRPM(), speed, FlywheelConstants.VELOCITY_DEADBAND_RPM); 
     }
 
     /**
-     * Returns the tangential velocity of the flywheel
+     * Returns the speed of the flywheel
      * 
-     * @return the tangential velocity of the flywheel
+     * @return speed RPM
      */
-    public double getVelocity() {
-        return inputs.velocityRadsPerSec * FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units & consider using RPM
+    public double getSpeedRPM() {
+        return inputs.speedRPM;
     }
 
-    public double getTargetVelocity() {
-        return targetVelocity * FlywheelConstants.CIRCUMFERENCE_METERS; // TODO: check units
+    public double getTargetSpeedRPM() {
+        return targetSpeed; 
     }
 
-    public Command setVelocityCommand(DoubleSupplier velocitySupplier) {
-        return runOnce(() -> setVelocity(velocitySupplier.getAsDouble()));
+    public Command setSpeedRPMCommand(DoubleSupplier speedSupplier) {
+        return runOnce(() -> setSpeedRPM(speedSupplier.getAsDouble()));
     }
 
-    public Command setVelocityCommand(double velocity) {
-        return setVelocityCommand(() -> velocity);
+    public Command setSpeedRPMCommand(double speed) {
+        return setSpeedRPMCommand(() -> speed);
     }
 
     public Command setNeutralCommand() {

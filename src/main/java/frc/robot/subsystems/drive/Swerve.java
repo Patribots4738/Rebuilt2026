@@ -59,6 +59,8 @@ public class Swerve extends SubsystemBase {
     public static double twistScalar = 4;
     private Rotation2d gyroRotation2d = new Rotation2d();
 
+    private double driveMultiplier;
+
     private final Module frontLeft, frontRight, rearLeft, rearRight;
     // The gyro sensor
     private final Gyro gyro;
@@ -127,6 +129,7 @@ public class Swerve extends SubsystemBase {
             rearRight
         };
 
+        driveMultiplier = 1.0;
         maxLinearVelocity = DriveConstants.MAX_SPEED_METERS_PER_SECOND;
         maxAngularVelocity = DriveConstants.MAX_ANGULAR_SPEED_RADS_PER_SECOND;
             
@@ -476,7 +479,7 @@ public class Swerve extends SubsystemBase {
         // TODO: make this a variable that you can change
         // It's meant to toggle around 0.25 for some driver binding (leftStickDown, for example)
         // it's a manual alignment override scrub for climb, generally
-        return 1.0;
+        return driveMultiplier;
     }
     
     @AutoLogOutput (key = "Subsystems/Swerve/DesiredHDCPose")

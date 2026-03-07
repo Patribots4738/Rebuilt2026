@@ -20,24 +20,14 @@ import frc.robot.util.Constants.SpindexerConstants;
 public class Superstructure {
 
     // TODO: make these final (you'll see why)
-    private Extender extender;
-    private Intake intake;
-    private Climb climb;
-    private Spindexer spindexer;
-    private Shooter shooter;
-    private Kicker kicker;
+    private final Extender extender;
+    private final Intake intake;
+    private final Climb climb;
+    private final Spindexer spindexer;
+    private final Shooter shooter;
+    private final Kicker kicker;
 
     private final Set<Subsystem> requirements;
-
-    // TODO: re-evaluate the need for these variables, since you use the enums but don't need the variables
-    // and their respective .alongWith commands 
-    // (i.e. setting targetClimbState is useless since it just alongWiths a setTargetPosition to be the parameter 
-    // rather than the state you just set (which is what should happen))
-    public ClimbState targetClimbState;
-    public IntakeState targetIntakeState;
-    public HopperState targetHopperState;
-    public ShooterState targetShooterState;
-
 
     public Superstructure(Extender extender, Intake intake, Climb climb, Shooter shooter, Spindexer spindexer, Kicker kicker) {
         this.extender = extender;
@@ -45,14 +35,9 @@ public class Superstructure {
         this.climb = climb;
         this.shooter = shooter;
         this.kicker = kicker;
+        this.spindexer = spindexer;
 
         this.requirements = Set.of(extender, intake, climb, shooter, spindexer, kicker);
-
-        targetClimbState = ClimbState.STOW;
-        targetIntakeState = IntakeState.STOW;
-        targetHopperState = HopperState.OFF;
-        targetShooterState = ShooterState.STOW;
-
     }
 
     public enum ClimbState {
@@ -77,7 +62,7 @@ public class Superstructure {
         public double kickerPercent;
         public double spindexerPercent;
     
-        HopperState(double kickerPercent, double spindexerPerncent) {
+        HopperState(double kickerPercent, double spindexerPercent) {
             this.kickerPercent = kickerPercent;
             this.spindexerPercent = spindexerPercent;
         }
@@ -121,19 +106,16 @@ public class Superstructure {
     }
 
     public Command setIntakeState(IntakeState state) {
-        // TODO: the first lines of these two commands do nothing
-        return Commands.runOnce(() -> targetIntakeState = state)
-                .alongWith(Commands.sequence(extender.setPositionCommand(state.extenderPosition), 
-                intake.setPercentCommand(() -> state.intakePercent)));
+        return Commands.sequence(intake.setPercentCommand(() -> state.intakePercent),
+                            extender.setPositionCommand(() -> state.extenderPosition));
     }
 
     public Command setClimbState(ClimbState state) {
-        return Commands.runOnce(() -> targetClimbState = state)
-            .alongWith(climb.setPositionCommand(() -> state.climbPosition, () -> state.slam));
+        return climb.setPositionCommand(() -> state.climbPosition, () -> state.slam);
     }
 
     public Command setHopperState(HopperState state) {
-        return Commands.sequence(kicker.setPercentCommand(() -> state.kickerPercent),
+        return Commands.parallel(kicker.setPercentCommand(() -> state.kickerPercent),
                                     spindexer.setPercentCommand(() -> state.spindexerPercent));
     }
 
@@ -142,18 +124,16 @@ public class Superstructure {
     // TODO: this logic is only ran once on startup because it is not lazily evaluated like Commands.either() or similar would do
     // i.e. return commands.either(true (the parallel), commands.either(elseif, else, elseif condition), first if condition)
     public Command fireCommand() {
-        if (shooter.fullyTracking() && shooter.isReady()) {
-            return Commands.parallel(
+        return Commands.either(
+            Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)
-            );
-        }
-        else if (!shooter.fullyTracking()) {
-            return shooter.trackTargetCommand(true, true, true);
-        }
-        else {
-            return Commands.none();
-        }
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)),
+            Commands.either(
+                shooter.trackTargetCommand(true, true, true),
+                Commands.none(), 
+                () -> !shooter.fullyTracking()),
+            () -> (shooter.fullyTracking() && shooter.isReady())
+        );
     }
 
     public Command ceaseFireCommand() {

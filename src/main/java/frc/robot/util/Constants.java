@@ -894,9 +894,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        // TODO: wayyyy too small (in 2024, we used 50 RPM -> 628.3185307180 MPS) (please use RPM)
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
+        public static final double VELOCITY_DEADBAND_RPM = 50; 
 
         public static final double EJECT_VELOCITY = 10;
 
@@ -905,7 +903,7 @@ public final class Constants {
 
         // TODO: your circumfrence is NOT 12 meters
         // use the website where you bought your wheels from to get this
-        public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
+        public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards

@@ -14,19 +14,17 @@ public class FlywheelIONeo implements FlywheelIO {
     private void configMotor() {
         motor.setPID(FlywheelConstants.GAINS);
         motor.setInverted(FlywheelConstants.MOTOR_INVERTED);
-        motor.setVelocityConversionFactor(FlywheelConstants.VELOCITY_CONVERSION_FACTOR / 60.0);
         motor.setSmartCurrentLimit((int) FlywheelConstants.CURRENT_LIMIT);
     }
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
         inputs.motorConnected = true;
-        inputs.velocityRadsPerSec = motor.getVelocity() * 2.0 * Math.PI;
-        inputs.targetVelocityRadsPerSec = motor.getTargetVelocity();
+        inputs.speedRPM = motor.getVelocity();
+        inputs.targetSpeedRPM = motor.getTargetVelocity();
         inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
-        inputs.positionRotations = motor.getPosition();
     }
 
     @Override
@@ -45,8 +43,8 @@ public class FlywheelIONeo implements FlywheelIO {
     }
 
     @Override
-    public void setVelocity(double velocity) {
-        motor.setTargetVelocity(velocity);
+    public void setSpeedRPM(double speed) {
+        motor.setTargetVelocity(speed);
     }
 
     @Override

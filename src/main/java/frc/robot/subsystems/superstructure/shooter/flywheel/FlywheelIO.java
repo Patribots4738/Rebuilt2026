@@ -8,9 +8,8 @@ public interface FlywheelIO {
 
         public boolean motorConnected = false;
         public double percentOutput = 0.0;
-        // TODO: these should all be RPM, not rad (rad only for hood/turret)
-        public double targetVelocityRadsPerSec = 0.0;
-        public double velocityRadsPerSec = 0.0;
+        public double targetSpeedRPM = 0.0;
+        public double speedRPM = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
@@ -25,7 +24,7 @@ public interface FlywheelIO {
 
     public default void setBrakeMode(boolean brake) {}
 
-    public default void setVelocity(double velocity) {}
+    public default void setSpeedRPM(double speed) {}
 
     public default void setPercent(double percent) {}
 
