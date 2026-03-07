@@ -890,8 +890,8 @@ public final class Constants {
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double ENCODER_GEAR_RATIO = 10.0;
+        public static final double DISCONTINUITY_POINT = 1.0;
 
-        
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;

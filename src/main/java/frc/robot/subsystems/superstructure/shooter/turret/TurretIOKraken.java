@@ -36,7 +36,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET);
+        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }
