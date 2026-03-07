@@ -349,6 +349,7 @@ public class Swerve extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
         ChassisSpeeds robotRelativeSpeeds;
 
+        // account rotational drift caused by torque steering
         if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
             rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
         }
