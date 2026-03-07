@@ -32,7 +32,6 @@ public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
     private Rotation2d targetPosition;
-    private Rotation2d currentPosition;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
@@ -62,6 +61,8 @@ public class Turret extends SubsystemBase {
                         this
                 )
         );
+
+        targetPosition = new Rotation2d(0, 0);
     }
 
     @Override
