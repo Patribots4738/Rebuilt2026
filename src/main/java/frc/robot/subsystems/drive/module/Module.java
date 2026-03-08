@@ -45,11 +45,7 @@ public class Module {
      * @param desiredState stored rotation 2d and speed 
      */
     public void setDesiredState(SwerveModuleState desiredState, double feedforward) {
-        // TODO: recognize that this file was changed to reflect Hugo's latest setDesiredState version
-        // which fixes various problems with driving
-
         // Apply chassis angular offset to the desired state.
-        this.desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
         this.desiredState.speedMetersPerSecond = desiredState.speedMetersPerSecond;
         this.desiredState.angle = desiredState.angle.plus(Rotation2d.fromRadians(chassisAngularOffset));
 

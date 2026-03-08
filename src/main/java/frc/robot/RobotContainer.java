@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
@@ -54,6 +55,7 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
+import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.Alignment;
@@ -101,7 +103,7 @@ public class RobotContainer {
     private final Spindexer spindexer;
     private final Alignment alignment;
 
-//     private final Superstructure superstructure;
+//  private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -205,14 +207,18 @@ public class RobotContainer {
             case DEV:
                 configureDevBindings(driver);
                 break;
-            case SINGLE:
+            default:
                 configureDriverBindings(driver);
-                break;
-            // TODO: add a case for default (i'd default to driver bindings)
         }
     }
 
-    private void configureTimedEvents() {}
+    private void configureTimedEvents() {
+        // slow down the robot if we are aiming at the hub once the shooter is up to speed 
+        // new Trigger(shooter::isReady && shooter::aimingAtHub)
+        //         .onTrue(swerve.setDriveMultiplierCommand(DriveConstants.SHOOTING_DRIVE_MULTIPLIER))
+        //         .onFalse(swerve.setDriveMultiplierCommand(DriveConstants.DEFAULT_DRIVE_MULTIPLIER));
+
+    }
 
     private void configureDevBindings(PatriBoxController controller) {
         controller.start().onTrue(

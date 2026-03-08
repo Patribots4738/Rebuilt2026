@@ -81,6 +81,7 @@ public class Shooter extends SubsystemBase {
         else {
             target = Target.NONE;
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+            flywheel.setNeutral();
         }
     }
 
@@ -200,5 +201,13 @@ public class Shooter extends SubsystemBase {
                     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
                     this.setNeutralCommand()
                 );
+    }
+
+    public Target getTarget() {
+        return target;
+    }
+
+    public boolean aimingAtHub() {
+        return target == Target.HUB ? true : false;
     }
 }

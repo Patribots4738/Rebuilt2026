@@ -25,7 +25,6 @@ public class ModuleIOKraken implements ModuleIO {
      * @param absoluteEncoderOffset absolute encoder offset used to zero the module
      */
     public ModuleIOKraken(int drivingCANId, int turningCANId, int canCoderId, double absoluteEncoderOffset, boolean invertDrive) {
-        // TODO: CHANGE USETORQUECONTROL TO TRUE ONCE WE HAVE PHOENIX PRO
         driveMotor = new Kraken(drivingCANId, MK5nSwerveModuleConstants.DRIVE_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
         turnMotor = new Kraken(turningCANId, MK5nSwerveModuleConstants.TURN_MOTOR_TYPE, CANConstants.DRIVEBASE_BUS, true, true, ControlPreference.TORQUE_CURRENT);
         turnEncoder = new CANCoderCustom(canCoderId, CANConstants.DRIVEBASE_BUS);
@@ -65,7 +64,7 @@ public class ModuleIOKraken implements ModuleIO {
             turnMotor.setEncoder(turnEncoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
         }
         else {
-            turnMotor.setGearRatio(MK4cSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
+            turnMotor.setGearRatio(MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
         }
 
         turnMotor.setPositionClosedLoopWrappingEnabled(true);

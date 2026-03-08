@@ -69,10 +69,6 @@ public class Drive extends Command {
             x *= -1;
             y *= -1;
         }
-        // TODO: fix this (alexander is dead for this)
-        // https://github.com/Patribots4738/Crescendo2024/commit/234273a92988b1c5032014ff38da3d2bc9c06af7
-        // this needs to be fixed in SwerveCommandBased, use some &&s
-        // alexander here: my defense was the commit was made at 9:02pm on a friday which meant i was getting pushed out the door bc it was time to close up
         if (x + y + rotation == 0 
             && Robot.gameMode == GameMode.TELEOP) {
             swerve.setWheelsX();

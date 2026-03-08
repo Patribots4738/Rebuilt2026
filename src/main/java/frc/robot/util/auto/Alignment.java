@@ -280,8 +280,7 @@ public class Alignment {
 
     public Command autoBumpRotationCommand(Pose2d robotPos) {
         Pose2d desiredPos = new Pose2d(robotPos.getX(), robotPos.getY(), PoseCalculations.getClosestBumpRotation(robotPos));
-        // TODO: consider CommandsrunOnce over Commands.run
-        return Commands.runOnce(() -> this.alignmentMode = AlignmentMode.BUMP).andThen(Commands.run(() -> swerve.setDesiredPose(desiredPos)));
+        return Commands.runOnce(() -> this.alignmentMode = AlignmentMode.BUMP).andThen(Commands.runOnce(() -> swerve.setDesiredPose(desiredPos)));
     }
 
     public Command towerAlignmentCommand(Pose2d robotPos) {

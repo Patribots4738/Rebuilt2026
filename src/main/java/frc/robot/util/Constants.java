@@ -135,6 +135,9 @@ public final class Constants {
         // the robot, rather the allowed maximum speeds
         public static double MAX_SPEED_METERS_PER_SECOND = 2.0;
 
+        public static double DEFAULT_DRIVE_MULTIPLIER = 1.0;
+        public static double SHOOTING_DRIVE_MULTIPLIER = 0.65;
+
         public static double SKID_THRESHOLD = 0.1;
 
         public static final double MAX_ANGULAR_SPEED_RADS_PER_SECOND = Units.degreesToRadians(1137.21); // radians per second
@@ -942,8 +945,6 @@ public final class Constants {
         public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
         public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
 
-        // TODO: your circumfrence is NOT 12 meters
-        // use the website where you bought your wheels from to get this
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
         // TODO: tune these values

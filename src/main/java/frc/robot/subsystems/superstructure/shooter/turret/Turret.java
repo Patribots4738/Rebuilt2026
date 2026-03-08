@@ -84,15 +84,6 @@ public class Turret extends SubsystemBase {
      * Sets the desired rotation of the turret
      * 
      * @param position in radians 
-     * 
-     * TODO: make position more consistent by
-     * - making it a Rotation2d (easier to work with)
-     * - @see MathUtil.angleModulus (or inputModulus(position, 0, 2pi)) rather than normal '%' (negative sign safe) (-1 % 360 = -1)
-     * - check if value is outside of MIN and MAX constants range (inside of hardstop)
-     * - Immediately either: 
-     *      return this function and not set anything, keeping the turret temporarily stationary until valid values are found (oliver and alexander preference)
-     * or
-     *      Get the closest possible value to the deadzone, meaning it would hug the deadzone wall and possibly oscillate
      */
     public void setPosition(Rotation2d position) {
         if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {

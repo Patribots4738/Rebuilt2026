@@ -132,7 +132,7 @@ public class Swerve extends SubsystemBase {
             rearRight
         };
 
-        driveMultiplier = 1.0;
+        driveMultiplier = DriveConstants.DEFAULT_DRIVE_MULTIPLIER;
 
         gyro = new Gyro(new GyroIOPigeon2(DriveConstants.GYRO_CAN_ID));
 
@@ -357,7 +357,7 @@ public class Swerve extends SubsystemBase {
     public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
         ChassisSpeeds robotRelativeSpeeds;
 
-        // account rotational drift caused by torque steering
+        // account for rotational drift caused by torque steering
         if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
             rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
         }
@@ -449,9 +449,6 @@ public class Swerve extends SubsystemBase {
     }
 
     public double getDriveMultiplier() {
-        // TODO: make this a variable that you can change
-        // It's meant to toggle around 0.25 for some driver binding (leftStickDown, for example)
-        // it's a manual alignment override scrub for climb, generally
         return driveMultiplier;
     }
 

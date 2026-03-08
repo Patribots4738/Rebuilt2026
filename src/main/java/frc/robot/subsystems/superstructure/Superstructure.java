@@ -19,7 +19,6 @@ import frc.robot.util.Constants.SpindexerConstants;
 
 public class Superstructure {
 
-    // TODO: make these final (you'll see why)
     private final Extender extender;
     private final Intake intake;
     private final Climb climb;
@@ -121,8 +120,6 @@ public class Superstructure {
 
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
-    // TODO: this logic is only ran once on startup because it is not lazily evaluated like Commands.either() or similar would do
-    // i.e. return commands.either(true (the parallel), commands.either(elseif, else, elseif condition), first if condition)
     public Command fireCommand() {
         return Commands.either(
             Commands.parallel(
