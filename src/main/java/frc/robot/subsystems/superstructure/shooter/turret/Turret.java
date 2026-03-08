@@ -111,12 +111,8 @@ public class Turret extends SubsystemBase {
         return runOnce(() -> setPosition(rotation));
     }
 
-    public void setTestPositionDegrees() {
-        setPosition(new Rotation2d(Units.degreesToRadians(testPositionDegrees)));
-    }
-
     public Command setTestPositionCommand() {
-        return Commands.runOnce(() -> setTestPositionDegrees());
+        return setPositionCommand(() -> new Rotation2d(Units.degreesToRadians(testPositionDegrees)));
     }
 
     public void setNeutral() {
@@ -154,6 +150,7 @@ public class Turret extends SubsystemBase {
     public double getVoltage() {
         return inputs.appliedOutputVolts;
     }
+
 
     public double getCharacterizationVelocity() {
         return inputs.internalVelocityRadsPerSec / TurretConstants.VELOCITY_CONVERSION_FACTOR;

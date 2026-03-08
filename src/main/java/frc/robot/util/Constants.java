@@ -874,7 +874,7 @@ public final class Constants {
         public static final int ENCODER_CAN_ID = 18;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = true;
+        public static final boolean MOTOR_INVERTED = true; //never invert this again
         public static final double CURRENT_LIMIT = 50;
 
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
@@ -892,12 +892,12 @@ public final class Constants {
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 15.232 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 0.36761 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0.02603 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0.25567 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 1.039 : 0;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(

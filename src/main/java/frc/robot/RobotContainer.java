@@ -238,21 +238,21 @@ public class RobotContainer {
         // controller.povLeft().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kForward));
         // controller.povRight().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kReverse));
 
-        controller.a().onTrue(extender.setTestPositionCommand());
-        controller.b().onTrue(extender.setNeutralCommand());
-        controller.x().onTrue(extender.resetEncodersCommand());
+    //    controller.a().onTrue(extender.setTestPositionCommand());
+  //      controller.b().onTrue(extender.setNeutralCommand());
+//        controller.x().onTrue(extender.resetEncodersCommand());
 
-        controller.rightStick().onTrue(extender.resetEncodersCommand());
-        controller.rightTrigger().onTrue(extender.setTestPositionCommand());
-        controller.rightBumper().onTrue(extender.setNeutralCommand());
+        //controller.rightStick().onTrue(extender.resetEncodersCommand());
+      //  controller.rightTrigger().onTrue(extender.setTestPositionCommand());
+    //    controller.rightBumper().onTrue(extender.setNeutralCommand());
 
-        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
-        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
+  //      controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+//        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
-        controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
+        //controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
         controller.povUp().onTrue(turret.setTestPositionCommand());
-        // controller.a().onTrue(turret.setPositionCommand(1.0));
+        //controller.a().onTrue(turret.setPositionCommand(new Rotation2d(45)));
         // controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());
         controller.povLeft().onTrue(turret.setNeutralCommand());

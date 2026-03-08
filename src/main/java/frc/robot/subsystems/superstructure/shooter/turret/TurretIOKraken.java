@@ -38,7 +38,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
+        encoder.configureMagnetSensor(TurretConstants.MOTOR_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }
@@ -50,6 +50,7 @@ public class TurretIOKraken implements TurretIO {
     public void updateInputs(TurretIOInputs inputs) {
         // Call refreshALl() to refresh all status signals, and check in on him :)
         inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.encoderConnected = encoder.refreshSignals().isOK();
         if (inputs.encoderConnected) {
             inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
             if (!encoderUpdated) {
