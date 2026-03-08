@@ -38,7 +38,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(TurretConstants.MOTOR_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
+        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }
@@ -82,7 +82,9 @@ public class TurretIOKraken implements TurretIO {
     }
 
     @Override
-    public void runCharacterization(double input) {}
+    public void runCharacterization(double input) {
+        motor.setVoltage(input);
+    }
 
     @Override
     public void setBrakeMode(boolean brake) {

@@ -69,12 +69,15 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
-        if (shouldRunSetpoint) {
-            io.setPosition(targetPosition.getRadians(), 0);
-        }
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
         Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", getRotation().getDegrees());
+        if (shouldRunSetpoint) {
+            io.setPosition(targetPosition.getRadians(), 0);
+        }
+        else {
+            io.setNeutral();
+        }
     }
 
     /**
@@ -151,7 +154,6 @@ public class Turret extends SubsystemBase {
         return inputs.appliedOutputVolts;
     }
 
-
     public double getCharacterizationVelocity() {
         return inputs.internalVelocityRadsPerSec / TurretConstants.VELOCITY_CONVERSION_FACTOR;
     }
@@ -159,12 +161,20 @@ public class Turret extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
-    
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return turretRoutine.quasistatic(direction);
+
+    public Command sysIdQuasistaticForward() {
+        return turretRoutine.quasistatic(SysIdRoutine.Direction.kForward);
     }
-    
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return turretRoutine.dynamic(direction);
+
+    public Command sysIdQuasistaticReverse() {
+        return turretRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command sysIdDynamicForward() {
+        return turretRoutine.dynamic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdDynamicReverse() {
+        return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
     }
 }

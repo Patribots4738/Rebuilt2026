@@ -772,7 +772,7 @@ public final class Constants {
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
 
-        public static final int CANRANGE_ID = 30; //TODO
+        public static final int CANRANGE_ID = 28; //TODO
     }
     
     public static final class CameraConstants {
@@ -877,7 +877,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true; //never invert this again
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.040039;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double ENCODER_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0;
@@ -1089,7 +1089,7 @@ public final class Constants {
         
         public static final boolean MOTOR_INVERTED = false;
         
-        public static final double GEAR_RATIO = 1.0;
+        public static final double GEAR_RATIO = (22 / 12);
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
         
