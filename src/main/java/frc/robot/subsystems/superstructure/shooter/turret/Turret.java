@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -69,7 +70,6 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
-        Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
         Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", getRotation().getDegrees());
         if (shouldRunSetpoint) {
@@ -98,7 +98,7 @@ public class Turret extends SubsystemBase {
     }
 
     public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
-        return setPositionCommand(rotationSupplier.get()).andThen(Commands.waitUntil(this::atTargetPosition));
+        return setPositionCommand(rotationSupplier.get());
     }
 
     public Command setPositionCommand(Rotation2d rotation) {
@@ -117,12 +117,18 @@ public class Turret extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public boolean atPosition(Rotation2d position) {
-        return MathUtil.isNear(position.getRadians(), inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
+    public boolean atPosition(Rotation2d position, boolean aimingAtHub) {
+        return MathUtil.isNear(position.getRadians(), inputs.internalPositionRads, aimingAtHub 
+                ? TurretConstants.ROTATION_TOLERANCE_RADIANS 
+                : TurretConstants.PASS_ROTATION_TOLERANCE_RADIANS);
     }
 
-    public boolean atTargetPosition() {
-        return atPosition(targetPosition);
+    public boolean atTargetPosition(boolean aimingAtHub) {
+        return atPosition(targetPosition, aimingAtHub);
+    }
+
+    public boolean atTargetPosition(BooleanSupplier aimingAtHub) {
+        return atTargetPosition(aimingAtHub.getAsBoolean());
     }
 
     public double getPosition() {

@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -83,6 +84,8 @@ public class Shooter extends SubsystemBase {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
             flywheel.setNeutral();
         }
+
+        Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
     }
 
     // TODO: consider refactoring this functionality. when do we want partial/full tracking?
@@ -153,7 +156,9 @@ public class Shooter extends SubsystemBase {
      * @return whether the shooter is at the right state
      */
     public boolean isReady() {
-        return turret.atTargetPosition() && flywheel.atTargetSpeed() && hood.atTargetPosition();
+        return turret.atTargetPosition(this::aimingAtHub) 
+                    && flywheel.atTargetSpeed(this::aimingAtHub) 
+                    && hood.atTargetPosition(this::aimingAtHub);
     }
 
     /**
