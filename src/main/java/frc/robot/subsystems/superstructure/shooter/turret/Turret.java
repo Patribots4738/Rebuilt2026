@@ -168,4 +168,8 @@ public class Turret extends SubsystemBase {
     public Command sysIdDynamicReverse() {
         return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
     }
+
+    public Command resetEncoder() {
+        return Commands.runOnce(() -> io.resetEncoder());
+    }
 }

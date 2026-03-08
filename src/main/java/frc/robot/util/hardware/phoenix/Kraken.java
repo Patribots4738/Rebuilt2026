@@ -691,6 +691,30 @@ public class Kraken extends TalonFX {
     }
 
     /**
+     * Sets the encoder for the specified CANCoder ID with the given rotor and sensor to mechanism reduction
+     * 
+     * @param canCoderId The ID of the CANCoder.
+     * @param sensorToMechanismRatio The sensor to mechanism 
+     * @param rotorToSensorRatio 
+     * @return
+     */
+    public StatusCode setEncoder(int canCoderId, double rotorToSensorRatio, double sensorToMechanismRatio) {
+        feedbackConfigs.FeedbackRemoteSensorID = canCoderId;
+        feedbackConfigs.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        feedbackConfigs.SensorToMechanismRatio = sensorToMechanismRatio;
+        feedbackConfigs.RotorToSensorRatio = rotorToSensorRatio;
+        return applyParameter(
+            () -> configurator.apply(feedbackConfigs, 1.0),
+            () -> configurator.refresh(feedbackConfigs, 1.0),
+            () -> feedbackConfigs.FeedbackRemoteSensorID == canCoderId 
+                && feedbackConfigs.FeedbackSensorSource == FeedbackSensorSourceValue.FusedCANcoder
+                && feedbackConfigs.SensorToMechanismRatio != 0 ^ sensorToMechanismRatio == 0
+                && (feedbackConfigs.RotorToSensorRatio != 0 ^ rotorToSensorRatio == 0),
+            "Absolute Encoder Configuration"
+        );
+    }
+
+    /**
      * Sets the position closed loop wrapping enabled flag.
      * 
      * @param enabled true to enable wrapping, false otherwise
