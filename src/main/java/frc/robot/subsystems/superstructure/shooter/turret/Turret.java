@@ -87,7 +87,8 @@ public class Turret extends SubsystemBase {
      */
     public void setPosition(Rotation2d position) {
         if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
-            targetPosition = position;
+            // apply the turret angular offset
+            targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
             shouldRunSetpoint = true;
         }
 
@@ -106,7 +107,7 @@ public class Turret extends SubsystemBase {
     }
 
     public Command setTestPositionCommand() {
-        return setPositionCommand(() -> new Rotation2d(Units.degreesToRadians(testPositionDegrees)));
+        return setPositionCommand(() -> Rotation2d.fromRadians(Units.degreesToRadians(testPositionDegrees)));
     }
 
     public void setNeutral() {
@@ -118,7 +119,7 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean atPosition(Rotation2d position, boolean aimingAtHub) {
-        return MathUtil.isNear(position.getRadians(), inputs.internalPositionRads, aimingAtHub 
+        return MathUtil.isNear(position.getRadians(), getRotation().getRadians(), aimingAtHub 
                 ? TurretConstants.ROTATION_TOLERANCE_RADIANS 
                 : TurretConstants.PASS_ROTATION_TOLERANCE_RADIANS);
     }
@@ -131,12 +132,12 @@ public class Turret extends SubsystemBase {
         return atTargetPosition(aimingAtHub.getAsBoolean());
     }
 
-    public double getPosition() {
+    public double getMotorPosition() {
         return inputs.internalPositionRads;
     }
 
     public Rotation2d getRotation() {
-        return new Rotation2d(inputs.internalPositionRads);
+        return new Rotation2d((inputs.encoderAbsPositionRads - TurretConstants.ANGULAR_OFFSET) / TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
     }
 
     public double getVelocity() {
@@ -173,5 +174,9 @@ public class Turret extends SubsystemBase {
 
     public Command sysIdDynamicReverse() {
         return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command resetEncoder() {
+        return Commands.runOnce(() -> io.resetEncoder());
     }
 }

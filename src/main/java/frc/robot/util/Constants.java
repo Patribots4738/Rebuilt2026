@@ -878,14 +878,17 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = true; //never invert this again
+        public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = -0.040039;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.735596;
         public static final double MOTOR_GEAR_RATIO = 50.0;
-        public static final double ENCODER_GEAR_RATIO = 10.0;
-        public static final double DISCONTINUITY_POINT = 1.0;
-
-        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
+        public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
+        public static final double DISCONTINUITY_POINT = 1.0; //change back to 1?
+        public static final double ANGULAR_OFFSET = 0.0;
+        //conversions from rotations to radians
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
@@ -896,12 +899,12 @@ public final class Constants {
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 15.232 : 0;
+        public static final double P = FieldConstants.IS_REAL ?  15.232 : 0; //
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0.36761 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0.02603 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0.25567 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 1.039 : 0;
+        public static final double V = FieldConstants.IS_REAL ?  1.039 : 0; //
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(

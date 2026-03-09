@@ -149,7 +149,7 @@ public class CANRangeCustom extends CANrange {
         return 
         applyParameter(
             () -> configurator.apply(FOVParamsConfigs, timeoutSeconds),
-            () -> configurator.refresh(FOVParamsConfigs,timeoutSeconds), 
+            () -> configurator.refresh(FOVParamsConfigs, timeoutSeconds), 
             // TODO: more robust check since this never returns true with floating point imprecision, consider xor
             // @see MathUtil.isNear (requires tuning some deadband) 
             // or XOR 0 (checks if it changes to anything at all, and if so, assume it was the right value)
