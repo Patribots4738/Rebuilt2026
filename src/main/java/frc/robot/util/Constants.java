@@ -982,7 +982,7 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 150;
 
-        public static final double GEAR_RATIO = 2.33333333333333;
+        public static final double GEAR_RATIO = 32.45;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 0.6719518; 
