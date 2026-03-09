@@ -86,6 +86,8 @@ public class Shooter extends SubsystemBase {
         }
 
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
     }
 
     // TODO: consider refactoring this functionality. when do we want partial/full tracking?

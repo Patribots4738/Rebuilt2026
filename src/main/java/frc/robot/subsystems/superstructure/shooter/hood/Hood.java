@@ -76,7 +76,6 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Hood", inputs);
 
-        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
@@ -116,7 +115,7 @@ public class Hood extends SubsystemBase {
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
     }
 
     public Command setPositionCommand(double position) {
