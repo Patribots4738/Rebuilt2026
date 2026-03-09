@@ -1,5 +1,10 @@
 package frc.robot.subsystems.superstructure.kicker;
 
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.hardware.CANrange;
+
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.CANRangeConstants;
 import frc.robot.util.Constants.KickerConstants;
@@ -11,12 +16,25 @@ import frc.robot.util.hardware.phoenix.CANRangeCustom;
 public class KickerIOKraken implements KickerIO {
 
     private final Kraken motor;
-    private final CANRangeCustom range;
+    private final CANrange range;
+
+    private final StatusSignal<Double> signalStrength;
+    private final StatusSignal<Boolean> isTripped;
+    private final StatusSignal<Distance> CANRangeDistance;
 
     public KickerIOKraken() {
         motor = new Kraken(KickerConstants.CAN_ID, KickerConstants.MOTOR_TYPE, CANConstants.RIO_BUS,true, true, ControlPreference.TORQUE_CURRENT);
-        range = new CANRangeCustom(CANRangeConstants.CANRANGE_ID);
+        var canRangeConfigs = new CANrangeConfiguration();
+        //TODO jack in the bot numbers
+        canRangeConfigs.ProximityParams.ProximityHysteresis = 0.01;
+        canRangeConfigs.ProximityParams.ProximityThreshold = 0.07;
+        canRangeConfigs.ProximityParams.MinSignalStrengthForValidMeasurement = 8000;
+        range = new CANrange(KickerConstants.CANRANGE_ID, CANConstants.RIO_BUS);
         configMotor();
+
+        signalStrength = range.getSignalStrength();
+        isTripped = range.getIsDetected();
+        CANRangeDistance = range.getDistance();
     }
 
     private void configMotor() {
@@ -37,8 +55,10 @@ public class KickerIOKraken implements KickerIO {
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
         inputs.velocityRotationsPerSec = motor.getVelocityAsDouble();
         inputs.positionRotations = motor.getPositionAsDouble();
-        inputs.isRangeTripped = range.getIsDetectedAsBoolean();
-        inputs.rangeDistance = range.getDistanceAsDouble();
+        
+        inputs.signalStrength = signalStrength.getValueAsDouble();
+        inputs.isRangeTripped = isTripped.getValue();
+        inputs.rangeDistance = CANRangeDistance.getValueAsDouble();
     }
 
     @Override
