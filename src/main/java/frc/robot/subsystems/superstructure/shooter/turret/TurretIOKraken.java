@@ -23,22 +23,25 @@ public class TurretIOKraken implements TurretIO {
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
-        motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), TurretConstants.ENCODER_GEAR_RATIO);
+            motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
+        }
+        else {
+            motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
         }
         motor.setGains(TurretConstants.GAINS);
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-TurretConstants.CURRENT_LIMIT, TurretConstants.CURRENT_LIMIT);
         motor.setBrakeMode(TurretConstants.BRAKE_MOTOR);
         motor.setTelemetryPreference(TelemetryPreference.DEFAULT);
-        motor.setPositionClosedLoopWrappingEnabled(false);
+        motor.setPositionClosedLoopWrappingEnabled(true);
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
+        //v setting to inversion of motor so they stay the same(copying what was done in turret-test branch)
+        encoder.configureMagnetSensor(TurretConstants.CANCODER_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }
@@ -53,15 +56,15 @@ public class TurretIOKraken implements TurretIO {
         inputs.encoderConnected = encoder.refreshSignals().isOK();
         if (inputs.encoderConnected) {
             inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
-            if (!encoderUpdated) {
-                motor.resetEncoder(
-                    inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) > TurretConstants.MAX_ANGLE_RADIANS 
-                        ? inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) - 2 * Math.PI 
-                        : inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO));
-                encoderUpdated = true;
-            }
-        } else {
-            inputs.encoderAbsPositionRads = inputs.internalPositionRads;
+        //     if (!encoderUpdated) {
+        //         motor.resetEncoder(
+        //             inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) > TurretConstants.MAX_ANGLE_RADIANS 
+        //                 ? inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) - 2 * Math.PI 
+        //                 : inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO));
+        //         encoderUpdated = true;
+        //     }
+        // } else {
+        //     inputs.encoderAbsPositionRads = inputs.internalPositionRads;
         }   
         inputs.internalPositionRads = motor.getPositionAsDouble();
         inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
@@ -96,9 +99,8 @@ public class TurretIOKraken implements TurretIO {
         motor.setGains(constants.withG(0.0));
     }
 
-    @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
+    public void resetEncoder() {
+        motor.resetEncoder(0.0);
+        encoder.resetEncoder(0.0);
     }
-
 }

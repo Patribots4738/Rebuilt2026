@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -258,15 +259,17 @@ public class RobotContainer {
         //controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
         controller.povUp().onTrue(turret.setTestPositionCommand());
+        controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(270))));
         //controller.a().onTrue(turret.setPositionCommand(new Rotation2d(45)));
         // controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());
-        controller.povLeft().onTrue(turret.setNeutralCommand());
+        controller.rightBumper().onTrue(turret.setNeutralCommand());
+        controller.povRight().onTrue(turret.resetEncoder());
 
-        controller.a().whileTrue(turret.sysIdDynamicForward());
-        controller.b().whileTrue(turret.sysIdDynamicReverse());
-        controller.x().whileTrue(turret.sysIdQuasistaticForward());
-        controller.y().whileTrue(turret.sysIdQuasistaticReverse());
+        //controller.a().whileTrue(turret.sysIdDynamicForward());
+        //controller.b().whileTrue(turret.sysIdDynamicReverse());
+        //controller.x().whileTrue(turret.sysIdQuasistaticForward());
+        //controller.y().whileTrue(turret.sysIdQuasistaticReverse());
         
     }
 
