@@ -10,7 +10,6 @@ import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 
 public class HoodIOKraken implements HoodIO {
     private final Kraken motor;
-
     public HoodIOKraken() {
         motor = new Kraken(HoodConstants.CAN_ID, HoodConstants.MOTOR_TYPE, true, false, ControlPreference.TORQUE_CURRENT);
         configMotor();
@@ -68,11 +67,6 @@ public class HoodIOKraken implements HoodIO {
     @Override
     public void setGains(GainConstants constants) {
         motor.setGains(constants.withG(0.0));
-    }
-
-    @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
     }
 
     public void setPercent(double percent) {

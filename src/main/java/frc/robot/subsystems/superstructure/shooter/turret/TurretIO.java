@@ -31,6 +31,4 @@ public interface TurretIO {
     public default void setBrakeMode(boolean brake) {}
 
     public default void setGains(GainConstants constants) {}
-
-    public default void resetEncoder() {}
 }

@@ -264,7 +264,6 @@ public class RobotContainer {
         // controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());
         controller.rightBumper().onTrue(turret.setNeutralCommand());
-        controller.povRight().onTrue(turret.resetEncoder());
 
         //controller.a().whileTrue(turret.sysIdDynamicForward());
         //controller.b().whileTrue(turret.sysIdDynamicReverse());

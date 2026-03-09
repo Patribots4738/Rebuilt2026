@@ -34,6 +34,4 @@ public interface HoodIO {
     public default void setGains(GainConstants constants) {}
 
     public default void setPercent(double percent) {}
-
-    public default void configureProfile(double velocity, double acceleration, double jerk) {}
 }

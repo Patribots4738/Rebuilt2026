@@ -881,19 +881,20 @@ public final class Constants {
         public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = -0.735596;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.722656;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0; //change back to 1?
-        public static final double ANGULAR_OFFSET = 0.0;
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(148 + (4.5));
+        // public static final double ANGULAR_OFFSET = - Units.degreesToRadians(4.5);
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4);
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
@@ -936,7 +937,7 @@ public final class Constants {
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = true;
+        public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
         public static final double GEAR_RATIO = 1.0;
@@ -979,13 +980,13 @@ public final class Constants {
         public static final int MOTOR_TYPE = 44;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 150;
 
-        public static final double GEAR_RATIO = 2.33333333333333;
+        public static final double GEAR_RATIO = 32.45;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.6719518; 
+        public static final double MAX_ANGLE_RADIANS = 0.45099; 
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;

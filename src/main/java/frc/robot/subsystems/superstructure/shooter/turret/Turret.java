@@ -94,7 +94,7 @@ public class Turret extends SubsystemBase {
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(0, 0, inputs.internalPositionRads)
+            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
         );
     }
 
@@ -131,7 +131,7 @@ public class Turret extends SubsystemBase {
     }
 
     public Rotation2d getRotation() {
-        return new Rotation2d((inputs.encoderAbsPositionRads - TurretConstants.ANGULAR_OFFSET) / TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
+        return new Rotation2d((inputs.encoderAbsPositionRads / TurretConstants.ENCODER_TO_MECH_GEAR_RATIO) - TurretConstants.ANGULAR_OFFSET);
     }
 
     public double getVelocity() {
@@ -168,9 +168,5 @@ public class Turret extends SubsystemBase {
 
     public Command sysIdDynamicReverse() {
         return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
-    }
-
-    public Command resetEncoder() {
-        return Commands.runOnce(() -> io.resetEncoder());
     }
 }
