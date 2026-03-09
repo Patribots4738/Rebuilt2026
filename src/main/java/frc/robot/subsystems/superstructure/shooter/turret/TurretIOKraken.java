@@ -23,7 +23,7 @@ public class TurretIOKraken implements TurretIO {
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
             motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
