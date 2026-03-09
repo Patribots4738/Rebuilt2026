@@ -259,7 +259,7 @@ public class RobotContainer {
         //controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
         controller.povUp().onTrue(turret.setTestPositionCommand());
-        controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(270))));
+        controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(90))));
         //controller.a().onTrue(turret.setPositionCommand(new Rotation2d(45)));
         // controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());

@@ -17,13 +17,13 @@ public class TurretIOKraken implements TurretIO {
     public TurretIOKraken() {
         motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
-        configMotor();
         configEncoder();
+        configMotor();
     }
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
             motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
@@ -40,6 +40,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
+        
         //v setting to inversion of motor so they stay the same(copying what was done in turret-test branch)
         encoder.configureMagnetSensor(TurretConstants.CANCODER_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
