@@ -1049,6 +1049,7 @@ public final class Constants {
 
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double INTAKE_POSITION_RADIANS = 0.0;
+        public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
