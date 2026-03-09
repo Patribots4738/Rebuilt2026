@@ -128,7 +128,8 @@ public class Superstructure {
         return Commands.either(
             Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)),
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
+                extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
             Commands.either(
                 shooter.trackTargetCommand(true, true, true),
                 Commands.none(), 

@@ -8,7 +8,6 @@ package frc.robot.subsystems.superstructure.extender;
 
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
@@ -45,7 +44,6 @@ public class Extender extends SubsystemBase {
 
     private final SysIdRoutine extenderRoutine;
     private double testPosition;
-    private final Superstructure superstructure;
 
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
@@ -73,8 +71,6 @@ public class Extender extends SubsystemBase {
                         this
                 )
         );
-        //someone please check this because it feels really wrong😭
-        this.superstructure = new Superstructure(this, null, null, null, null, null);
         
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
@@ -120,7 +116,7 @@ public class Extender extends SubsystemBase {
     public Command setTestPositionCommand() {
         return Commands.runOnce(() -> this.setTestPosition());
     }
- 
+
     public void setTestPosition() {
         this.setPosition(testPosition);
     }
@@ -154,7 +150,7 @@ public class Extender extends SubsystemBase {
     }
 
     public Command feedShooterCommand() {
-        return Commands.either(feedShooter(), extendExtender(), () -> superstructure.fireCommand().isScheduled());
+        return runOnce(() -> feedShooter());
     }
 
     public Command halfStowCommand() {
