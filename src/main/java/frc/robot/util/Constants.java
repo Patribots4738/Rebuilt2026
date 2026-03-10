@@ -508,11 +508,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 20.0;
-        public static final double DRIVING_I = 6.0;
-        public static final double DRIVING_D = 1.5;
+        public static final double DRIVING_P = 0.0; //20.0
+        public static final double DRIVING_I = 0.0; //6
+        public static final double DRIVING_D = 0.0; //1.5
         public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.124;
+        public static final double DRIVING_V = 0.0; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -525,9 +525,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 225.0;
-        public static final double TURNING_I = 13.0;
-        public static final double TURNING_D = 8.0;
+        public static final double TURNING_P = 0.0; //225
+        public static final double TURNING_I = 0.0; //13
+        public static final double TURNING_D = 0.0; //8
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -881,19 +881,20 @@ public final class Constants {
         public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = -0.735596;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.722656;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0; //change back to 1?
-        public static final double ANGULAR_OFFSET = 0.0;
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(148 + (4.5));
+        // public static final double ANGULAR_OFFSET = - Units.degreesToRadians(4.5);
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4);
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
@@ -937,7 +938,7 @@ public final class Constants {
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = true;
+        public static final boolean MOTOR_INVERTED = false;
         public static final double CURRENT_LIMIT = 50;
 
         public static final double GEAR_RATIO = 1.0;
@@ -981,13 +982,13 @@ public final class Constants {
         public static final int MOTOR_TYPE = 44;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 150;
 
-        public static final double GEAR_RATIO = 2.33333333333333;
+        public static final double GEAR_RATIO = 32.45;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.6719518; 
+        public static final double MAX_ANGLE_RADIANS = 0.45099; 
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
@@ -999,13 +1000,13 @@ public final class Constants {
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 1700 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 350: 0;
+        public static final double D = FieldConstants.IS_REAL ? 45 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = -21.5; //21.5 amps
+        public static final double G = 0.0; //21.5 amps
 
         public static final GainConstants GAINS = new GainConstants(
             P,

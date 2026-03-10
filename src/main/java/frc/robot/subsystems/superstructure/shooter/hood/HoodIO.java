@@ -35,5 +35,5 @@ public interface HoodIO {
 
     public default void setPercent(double percent) {}
 
-    public default void configureProfile(double velocity, double acceleration, double jerk) {}
+    public default void setCurrent(double amps) {}
 }

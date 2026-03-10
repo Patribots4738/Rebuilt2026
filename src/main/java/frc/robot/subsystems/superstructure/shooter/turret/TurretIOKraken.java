@@ -19,7 +19,7 @@ public class TurretIOKraken implements TurretIO {
         encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
         configEncoder();
         configMotor();
-    }
+    }  
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
@@ -66,7 +66,7 @@ public class TurretIOKraken implements TurretIO {
         //     }
         // } else {
         //     inputs.encoderAbsPositionRads = inputs.internalPositionRads;
-        }   
+        }
         inputs.internalPositionRads = motor.getPositionAsDouble();
         inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
         inputs.targetPositionRads = motor.getTargetPosition();
@@ -98,10 +98,5 @@ public class TurretIOKraken implements TurretIO {
     @Override
     public void setGains(GainConstants constants) {
         motor.setGains(constants.withG(0.0));
-    }
-
-    public void resetEncoder() {
-        motor.resetEncoder(0.0);
-        encoder.resetEncoder(0.0);
     }
 }
