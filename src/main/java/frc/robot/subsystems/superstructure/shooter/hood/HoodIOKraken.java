@@ -19,7 +19,7 @@ public class HoodIOKraken implements HoodIO {
         motor.setGearRatio(HoodConstants.GEAR_RATIO);
         motor.setUnitConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
         motor.setMotorInverted(HoodConstants.MOTOR_INVERTED);
-        motor.setGains(HoodConstants.GAINS);
+        motor.setGains(HoodConstants.GAINS, 0);
         motor.setStatorCurrentLimit(HoodConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-HoodConstants.CURRENT_LIMIT, HoodConstants.CURRENT_LIMIT);
         motor.setBrakeMode(HoodConstants.BRAKE_MOTOR);
@@ -71,5 +71,9 @@ public class HoodIOKraken implements HoodIO {
 
     public void setPercent(double percent) {
         motor.setPercentOutput(percent);
+    }
+
+    public void setCurrent(double amps) {
+        motor.setTorqueCurrentOutput(amps);
     }
 }

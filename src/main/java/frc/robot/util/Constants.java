@@ -508,11 +508,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 20.0;
-        public static final double DRIVING_I = 6.0;
-        public static final double DRIVING_D = 1.5;
+        public static final double DRIVING_P = 0.0; //20.0
+        public static final double DRIVING_I = 0.0; //6
+        public static final double DRIVING_D = 0.0; //1.5
         public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.124;
+        public static final double DRIVING_V = 0.0; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -525,9 +525,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 225.0;
-        public static final double TURNING_I = 13.0;
-        public static final double TURNING_D = 8.0;
+        public static final double TURNING_P = 0.0; //225
+        public static final double TURNING_I = 0.0; //13
+        public static final double TURNING_D = 0.0; //8
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -994,16 +994,16 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.01;
+        public static final double POSITION_DEADBAND_RADIANS = 0.02;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 1700 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 350: 0;
+        public static final double D = FieldConstants.IS_REAL ? 45 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = -21.5; //21.5 amps
+        public static final double G = 0.0; //21.5 amps
 
         public static final GainConstants GAINS = new GainConstants(
             P,

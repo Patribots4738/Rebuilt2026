@@ -12,10 +12,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -74,13 +70,13 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
-        if (shouldRunSetpoint) {
+        // if (shouldRunSetpoint) {
             io.setPosition(targetPosition, 0);
-        } else {
-            io.setNeutral();
-        }
+        // } else {
+        //     io.setNeutral();
+        // }
 
-        RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
+        // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.HOOD_OFFSET,
@@ -99,6 +95,7 @@ public class Hood extends SubsystemBase {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
         targetPosition = position;
         shouldRunSetpoint = true;
+        // io.setPosition(targetPosition, 0);
 
         RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
@@ -107,11 +104,11 @@ public class Hood extends SubsystemBase {
             new Rotation3d(0, position, 0)
         );
 
-        RobotContainer.hoodMechanism.setAngle(position);    
+        // RobotContainer.hoodMechanism.setAngle(position);    
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
     }
 
     public Command setPositionCommand(double position) {
@@ -178,12 +175,20 @@ public class Hood extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
-    
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return hoodRoutine.quasistatic(direction);
+
+    public void setCurrent(double amps) {
+        io.setCurrent(amps);
+    }
+
+    public Command setCurrentCommand(double amps) {
+        return runOnce(() -> setCurrent(amps));
     }
     
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return hoodRoutine.dynamic(direction);
-    }
+    // public Command quasistatic(SysIdRoutine.Direction direction) {
+    //     return hoodRoutine.quasistatic(direction);
+    // }
+    
+    // public Command dynamic(SysIdRoutine.Direction direction) {
+    //     return hoodRoutine.dynamic(direction);
+    // }
 }
