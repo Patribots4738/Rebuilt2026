@@ -19,6 +19,12 @@
                 "data": {
                   "name": "Intake"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
               }
             ]
           }
@@ -36,10 +42,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StopIntake"
+                  "name": "StopShooting"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntake"
           }
         },
         {
@@ -55,7 +67,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLR-CenterLine"
+                  "pathName": "1CLRRotated-BackhubLeft"
                 }
               },
               {
@@ -80,13 +92,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center Line-1CLR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopIntake"
+                  "pathName": "BackHubRight-1CLR"
                 }
               }
             ]
@@ -105,7 +111,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLR-CLLeft"
+                  "pathName": "1CLRRotated-BackhubLeft"
                 }
               },
               {

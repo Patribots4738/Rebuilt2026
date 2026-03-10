@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 6.6827499999999995,
+        "x": 6.683,
         "y": 3.0764659090909094
       },
       "prevControl": {
-        "x": 6.693056818181819,
-        "y": 3.4268977272727272
+        "x": 6.871253012048193,
+        "y": 3.5541807228915667
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -100.0
   },
   "reversed": false,
   "folder": "Starting Line",
