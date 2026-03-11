@@ -57,9 +57,6 @@ public class ModuleIOKraken implements ModuleIO {
         // Set status signal update frequencies, optimized for swerve
         driveMotor.setTelemetryPreference(TelemetryPreference.SWERVE);
         turnMotor.setTelemetryPreference(TelemetryPreference.SWERVE);
-
-        // We only want to ask for the abs encoder in real life
-        // TODO: else set turn motor gear ratio
         if (FieldConstants.IS_REAL) {
             turnMotor.setEncoder(turnEncoder.getDeviceID(), MK5nSwerveModuleConstants.TURNING_MOTOR_REDUCTION);
         }

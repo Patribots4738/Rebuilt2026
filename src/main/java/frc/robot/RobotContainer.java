@@ -317,7 +317,7 @@ public class RobotContainer {
         // // TODO: make these automatic based on position?
         // // you could have this as some sort of manual override, but seems unecesary with four cameras.
         // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        // controller.leftStick().onTrue(shooter.setPassIndexCommand(0));
+        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
         // controller.povDown().and(controller.povRight().negate()).onTrue(superstructure.setClimbState(ClimbState.STOW));
         // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));

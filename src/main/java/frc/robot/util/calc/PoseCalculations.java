@@ -479,4 +479,8 @@ public class PoseCalculations {
         }
         return ans;
     }
+
+    public static boolean fieldHalf(Pose2d pos) {
+        return pos.getX() < (FieldConstants.FIELD_WIDTH / 2);
+    }
 }

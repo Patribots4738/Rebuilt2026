@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -22,7 +23,6 @@ import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
-// TODO: overall the logic in here is convoluted and makes it difficult to follow branches and debug
 public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
@@ -85,8 +85,6 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    // TODO: consider refactoring this functionality. when do we want partial/full tracking?
-    // it looks like they are all unified, and in that case, the redundancy of three variables should be condensed to one
     public boolean partiallyTracking() {
         return aimHood || aimTurret || spinFlywheel;
     }
@@ -158,12 +156,27 @@ public class Shooter extends SubsystemBase {
 
     /**
      * Sets the pass index of the shooter.
-     * 0 is for the left of driver station and 1 is for the right
+     * -1 is for the left and 1 is for the right sides of the field and 0 is for automatic
      * 
      * @param index 
      */
     public void setPassIndex(int index) {
-        passIndex = index;
+        if (passIndex == -1) {
+            passIndex = 0;
+        }
+        passIndex += index;
+
+        //TODO make sure this works idk if it will probably not im stupid
+        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inNeutralZone) {
+            MathUtil.clamp(passIndex, -1, 1);
+        } else {
+            passIndex = 0;
+        }
+
+    }
+
+    public void autoSetPassIndex() {
+        passIndex = PoseCalculations.fieldHalf(robotRelativePose.get()) ? 1 : -1;
     }
 
     public Command setPassIndexCommand(int index) {
@@ -180,12 +193,15 @@ public class Shooter extends SubsystemBase {
         flywheel.setNeutral();
     }
 
-    // TODO: use enum to lower multiplicity of values instead of string
     public void updateTarget(Pose2d robotPose) {
-        target = PoseCalculations.getZone(robotPose) == PoseCalculations.ZONE.inAllianceZone 
-                        ? Target.HUB 
-                        : passIndex == 0 ? Target.PASS_LEFT 
-                        : Target.PASS_RIGHT;
+        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
+            target = Target.HUB;
+            return;
+        } else if (passIndex == 0) {
+            autoSetPassIndex();
+        }
+
+        target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
     }
 
     public void eject() {

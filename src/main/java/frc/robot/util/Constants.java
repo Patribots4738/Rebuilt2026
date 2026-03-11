@@ -749,7 +749,6 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = CANBus.roboRIO();
-         // TODO: must set the name of the CANivore to "Drivebase" and factory default the swerve modules since they were connected to the rio before
         public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
     }
 
@@ -775,7 +774,7 @@ public final class Constants {
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
 
-        public static final int CANRANGE_ID = 28; //TODO
+        public static final int CANRANGE_ID = 28;
     }
     
     public static final class CameraConstants {
