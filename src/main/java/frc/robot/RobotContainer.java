@@ -99,14 +99,14 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    // private final Shooter shooter;
+    private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
     private final Alignment alignment;
 
-//  private final Superstructure superstructure;
+    private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -158,8 +158,8 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOKraken());
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
-        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
-        // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
+        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
         alignment = new Alignment(swerve);
 
         SmartDashboard.putData(field2d);
