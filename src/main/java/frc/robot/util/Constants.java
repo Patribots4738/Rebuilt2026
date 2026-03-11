@@ -885,26 +885,27 @@ public final class Constants {
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
-        public static final double DISCONTINUITY_POINT = 1.0; //change back to 1?
-        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(148 + (4.5));
+        public static final double DISCONTINUITY_POINT = 1.0;
+        public static final double ROBOT_TURRET_OFFSET = -Units.degreesToRadians(4.5);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(0 + ROBOT_TURRET_OFFSET);
         // public static final double ANGULAR_OFFSET = - Units.degreesToRadians(4.5);
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4);
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4.5);
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ?  15.232 : 0; //
+        public static final double P = FieldConstants.IS_REAL ? 300d : 0; //
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0.36761 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0.02603 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0.25567 : 0;
-        public static final double V = FieldConstants.IS_REAL ?  1.039 : 0; //
+        public static final double D = FieldConstants.IS_REAL ? 25d : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0; //
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(

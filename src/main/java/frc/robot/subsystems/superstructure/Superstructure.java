@@ -21,22 +21,22 @@ public class Superstructure {
 
     private final Extender extender;
     private final Intake intake;
-    private final Climb climb;
+    // private final Climb climb;
     private final Spindexer spindexer;
     private final Shooter shooter;
     private final Kicker kicker;
 
     private final Set<Subsystem> requirements;
 
-    public Superstructure(Extender extender, Intake intake, Climb climb, Shooter shooter, Spindexer spindexer, Kicker kicker) {
+    public Superstructure(Extender extender, Intake intake, Shooter shooter, Spindexer spindexer, Kicker kicker) {
         this.extender = extender;
         this.intake = intake;
-        this.climb = climb;
+        // this.climb = climb;
         this.shooter = shooter;
         this.kicker = kicker;
         this.spindexer = spindexer;
 
-        this.requirements = Set.of(extender, intake, climb, shooter, spindexer, kicker);
+        this.requirements = Set.of(extender, intake, shooter, spindexer, kicker);
     }
 
     public enum ClimbState {
@@ -96,22 +96,22 @@ public class Superstructure {
     // because that would create illegal extension over the frame perimeter in multiple directions
     // so whichever one wants to stow, we stow that first
     // we will use this if we have an l3
-    public Command fixIntakeAndClimb(IntakeState intakeState, ClimbState climbState) {
-        return Commands.either(
-            Commands.sequence(setIntakeState(intakeState), setClimbState(climbState)),
-            Commands.sequence(setClimbState(climbState), setIntakeState(intakeState)),
-            () -> climbState != ClimbState.STOW 
-        );
-    }
+    // public Command fixIntakeAndClimb(IntakeState intakeState, ClimbState climbState) {
+    //     return Commands.either(
+    //         Commands.sequence(setIntakeState(intakeState), setClimbState(climbState)),
+    //         Commands.sequence(setClimbState(climbState), setIntakeState(intakeState)),
+    //         () -> climbState != ClimbState.STOW 
+    //     );
+    // }
 
     public Command setIntakeState(IntakeState state) {
         return Commands.sequence(intake.setPercentCommand(() -> state.intakePercent),
                             extender.setPositionCommand(() -> state.extenderPosition));
     }
 
-    public Command setClimbState(ClimbState state) {
-        return climb.setPositionCommand(() -> state.climbPosition, () -> state.slam);
-    }
+    // public Command setClimbState(ClimbState state) {
+    //     return climb.setPositionCommand(() -> state.climbPosition, () -> state.slam);
+    // }
 
     public Command setHopperState(HopperState state) {
         return Commands.parallel(kicker.setPercentCommand(() -> state.kickerPercent),
@@ -144,7 +144,7 @@ public class Superstructure {
     public Command fullStowCommand() {
         return Commands.sequence(
             shooter.stowCommand(),
-            setClimbState(ClimbState.STOW),
+            // setClimbState(ClimbState.STOW),
             setHopperState(HopperState.OFF),
             setIntakeState(IntakeState.STOW)
         );
