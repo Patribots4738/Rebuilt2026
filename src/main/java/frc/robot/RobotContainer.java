@@ -57,9 +57,13 @@ import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.DriveConstants;
+import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.OIConstants;
+import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
@@ -255,7 +259,7 @@ public class RobotContainer {
       //  controller.rightTrigger().onTrue(extender.setTestPositionCommand());
     //    controller.rightBumper().onTrue(extender.setNeutralCommand());
 
-        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        // controller.leftTrigger().onTrue(intake.setTestPercentCommand());
 //        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
         // controller.b().onTrue(kicker.setTestPercentCommand());
@@ -274,10 +278,27 @@ public class RobotContainer {
         //controller.y().whileTrue(turret.sysIdQuasistaticReverse());
 
         //hood
-        controller.povUp().onTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
-        controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
-        controller.a().whileTrue(hood.setCurrentCommand(60));
-        controller.b().whileTrue(hood.setCurrentCommand(-60));
+        controller.rightBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        ));
+
+        controller.leftBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(0.0),
+            spindexer.setPercentCommand(0.0),
+            kicker.setPercentCommand(0.0)
+        ));
+        
+        controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        controller.povDown().onTrue(flywheel.stopCommand());
+        
+        controller.a().whileTrue(hood.setPositionCommand(Units.degreesToRadians(10)));
+        controller.b().whileTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
+        controller.x().whileTrue(hood.setPositionCommand(0));
+        
 
         //flywheel
         // controller.a().onTrue(flywheel.dynamic(SysIdRoutine.Direction.kForward));

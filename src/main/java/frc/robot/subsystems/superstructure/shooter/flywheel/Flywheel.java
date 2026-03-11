@@ -33,8 +33,10 @@ public class Flywheel extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetSpeedRPM")
     private double targetSpeed = 0.0;
+    private double incrementedSpeed = 4000.0;
 
     private double testSpeed;
+    private boolean isCharacterizing = false;
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -50,10 +52,10 @@ public class Flywheel extends SubsystemBase {
                         Seconds.of(10)
                 ),
                 new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        (Voltage volts) -> io.setVoltage(volts.in(Volts)),
                         log -> log.motor("flywheel")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotations.of(inputs.positionRotations))
+                                .angularPosition(Rotations.of(inputs.positionRadians))
                                 .angularVelocity(RadiansPerSecond.of(inputs.speedRPM / 60)),
                         this
                 )
@@ -67,8 +69,8 @@ public class Flywheel extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
-
-        if (shouldRunSetpoint) {
+        
+        if (shouldRunSetpoint && !isCharacterizing) {
             io.setSpeedRPM(targetSpeed);
         } else {
             io.setNeutral();
@@ -107,6 +109,26 @@ public class Flywheel extends SubsystemBase {
         return inputs.speedRPM;
     }
 
+    public void decrementSpeed() {
+        incrementedSpeed -= 100;
+    }
+
+    public void incrementSpeed() {
+        incrementedSpeed += 100;
+    }
+
+    public Command decrementSpeedCommand() {
+        return runOnce(() -> decrementSpeed());
+    }
+
+    public Command incrementSpeedCommand() {
+        return runOnce(() -> incrementSpeed());
+    }
+
+    public Command setIncrementSpeedCommand() {
+        return setSpeedRPMCommand(() -> incrementedSpeed);
+    }
+
     public double getTargetSpeedRPM() {
         return targetSpeed; 
     }
@@ -126,6 +148,15 @@ public class Flywheel extends SubsystemBase {
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
     }
+
+    public void stop() {
+        setNeutral();
+        targetSpeed = 0;
+    }
+
+    public Command stopCommand() {
+        return runOnce(() -> stop());
+    }
     
     public Command runCharacterization(double volts) {
         return runOnce(() -> io.runCharacterization(volts));
@@ -136,10 +167,20 @@ public class Flywheel extends SubsystemBase {
     }
     
     public Command quasistatic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.quasistatic(direction);
+        return flywheelRoutine.quasistatic(direction)
+                .beforeStarting(() -> isCharacterizing = true)
+                .finallyDo(interrupted -> {
+                    isCharacterizing = false;
+                    setNeutral(); // optional safety
+                });
     }
     
     public Command dynamic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.dynamic(direction);
+        return flywheelRoutine.dynamic(direction)
+                .beforeStarting(() -> isCharacterizing = true)
+                .finallyDo(interrupted -> {
+                    isCharacterizing = false;
+                    setNeutral(); // optional safety
+                });
     }
 }

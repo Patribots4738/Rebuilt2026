@@ -937,7 +937,7 @@ public final class Constants {
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
         public static final double GEAR_RATIO = 1.0;
@@ -953,12 +953,12 @@ public final class Constants {
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 0.5 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -1106,8 +1106,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.2;
-        public static final double FORWARD_PERCENT = 0.2;
+        public static final double REVERSE_PERCENT = -0.3;
+        public static final double FORWARD_PERCENT = 0.3;
         
         public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
@@ -1123,7 +1123,7 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 30.0;
+        public static final double CURRENT_LIMIT = 50.0;
 
         public static final boolean MOTOR_INVERTED = true;
         public static final int MOTOR_TYPE = 44;
