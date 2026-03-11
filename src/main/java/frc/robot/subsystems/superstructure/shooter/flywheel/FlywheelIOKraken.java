@@ -31,9 +31,9 @@ public class FlywheelIOKraken implements FlywheelIO {
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        inputs.positionRadians = motor.getPositionAsDouble() * 2.0 * Math.PI;
         inputs.speedRPM = motor.getVelocityAsDouble() * 60;
     }
-
     
     @Override
     public void setNeutral() {

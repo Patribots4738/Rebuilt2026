@@ -35,6 +35,7 @@ public class Flywheel extends SubsystemBase {
     private double targetSpeed = 0.0;
 
     private double testSpeed;
+    private boolean isCharacterizing = false;
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -50,10 +51,10 @@ public class Flywheel extends SubsystemBase {
                         Seconds.of(10)
                 ),
                 new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+                        (Voltage volts) -> io.setVoltage(volts.in(Volts)),
                         log -> log.motor("flywheel")
                                 .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotations.of(inputs.positionRotations))
+                                .angularPosition(Rotations.of(inputs.positionRadians))
                                 .angularVelocity(RadiansPerSecond.of(inputs.speedRPM / 60)),
                         this
                 )
@@ -67,8 +68,8 @@ public class Flywheel extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
-
-        if (shouldRunSetpoint) {
+        
+        if (shouldRunSetpoint && !isCharacterizing) {
             io.setSpeedRPM(targetSpeed);
         } else {
             io.setNeutral();
@@ -136,10 +137,20 @@ public class Flywheel extends SubsystemBase {
     }
     
     public Command quasistatic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.quasistatic(direction);
+        return flywheelRoutine.quasistatic(direction)
+                .beforeStarting(() -> isCharacterizing = true)
+                .finallyDo(interrupted -> {
+                    isCharacterizing = false;
+                    setNeutral(); // optional safety
+                });
     }
     
     public Command dynamic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.dynamic(direction);
+        return flywheelRoutine.dynamic(direction)
+                .beforeStarting(() -> isCharacterizing = true)
+                .finallyDo(interrupted -> {
+                    isCharacterizing = false;
+                    setNeutral(); // optional safety
+                });
     }
 }
