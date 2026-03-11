@@ -60,6 +60,7 @@ import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.OIConstants;
+import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.PoseCalculations;
@@ -260,10 +261,11 @@ public class RobotContainer {
         // controller.b().onTrue(kicker.setTestPercentCommand());
         //controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
 
-        // controller.povUp().onTrue(turret.setTestPositionCommand());
-        //controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(180))));
-        //controller.a().onTrue(turret.setPositionCommand(new Rotation2d(45)));
-        // controller.povDown().onTrue(turret.setNeutralCommand());
+        // controller.povUp().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(TurretConstants.MIN_ANGLE_RADIANS)));
+        // controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(180))));
+        // controller.povRight().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(90)));
+        // controller.povLeft().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(45)));
+        //controller.povDown().onTrue(turret.setNeutralCommand());
         // controller.povRight().onTrue(turret.setTestPositionCommand());
         //controller.rightBumper().onTrue(turret.setNeutralCommand());
         //controller.a().whileTrue(turret.sysIdDynamicForward());
@@ -276,9 +278,13 @@ public class RobotContainer {
         controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
         controller.a().whileTrue(hood.setCurrentCommand(60));
         controller.b().whileTrue(hood.setCurrentCommand(-60));
+
         //flywheel
-        //spindexer
-        controller.x().onTrue(spindexer.setTestPercentCommand());
+        // controller.a().onTrue(flywheel.dynamic(SysIdRoutine.Direction.kForward));
+        // controller.b().onTrue(flywheel.dynamic(SysIdRoutine.Direction.kReverse));
+
+        // controller.x().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kForward));
+        // controller.y().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kReverse));
     }
 
     private void configureDriverBindings(PatriBoxController controller) {

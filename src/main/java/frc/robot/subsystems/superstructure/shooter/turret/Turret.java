@@ -139,7 +139,7 @@ public class Turret extends SubsystemBase {
     }
 
     public Rotation2d getTargetPosition() {
-        return targetPosition;
+        return targetPosition.minus(Rotation2d.fromRadians(TurretConstants.ROBOT_TURRET_OFFSET));
     }
     
     public double getVoltage() {

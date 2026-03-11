@@ -44,7 +44,6 @@ public class Hood extends SubsystemBase {
         HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
         HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
 
-        this.setDefaultCommand(this.setNeutralCommand());
         this.hoodRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -70,11 +69,12 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
-        // if (shouldRunSetpoint) {
+        if (shouldRunSetpoint) {
             io.setPosition(targetPosition, 0);
-        // } else {
-        //     io.setNeutral();
-        // }
+        } 
+        else {
+            io.setNeutral();
+        }
 
         // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
 
@@ -93,9 +93,10 @@ public class Hood extends SubsystemBase {
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
-        targetPosition = position;
         shouldRunSetpoint = true;
+        targetPosition = position;
         // io.setPosition(targetPosition, 0);
+        
 
         RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
@@ -153,19 +154,6 @@ public class Hood extends SubsystemBase {
 
     public double getTargetPosition() {
         return targetPosition;
-    }
-
-    public void setPercent(double percent) {
-        percentOutput = percent;
-        shouldRunSetpoint = true;
-    }
-
-    public Command setPercentCommand(double percent) {
-        return Commands.runOnce(() -> setPercent(percent));
-    }
-
-    public Command setPercentCommand(DoubleSupplier percentSupplier) {
-    return Commands.runOnce(() -> setPercent(percentSupplier.getAsDouble()));
     }
 
     public double getCharacterizationVelocity() {
