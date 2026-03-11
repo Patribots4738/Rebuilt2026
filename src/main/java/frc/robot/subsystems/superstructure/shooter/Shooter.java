@@ -57,6 +57,7 @@ public class Shooter extends SubsystemBase {
 
         shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
         target = Target.HUB;
+        targetLocation = FieldConstants.GET_HUB();
     }
 
     public enum Target {
@@ -209,5 +210,13 @@ public class Shooter extends SubsystemBase {
 
     public boolean aimingAtHub() {
         return target == Target.HUB ? true : false;
+    }
+
+    public Command turretLeftCommand() {
+        return Commands.runOnce(() -> turret.setPosition(Rotation2d.fromDegrees(30)));
+    }
+
+    public Command turretRightCommand() {
+        return Commands.runOnce(() -> turret.setPosition(Rotation2d.fromDegrees(-30)));
     }
 }

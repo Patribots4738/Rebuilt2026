@@ -98,7 +98,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    // private final Shooter shooter;
+    private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
@@ -157,7 +157,7 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOKraken());
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
-        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         // superstructure = new Superstructure(extender, intake, climb, shooter, spindexer, kicker);
         alignment = new Alignment(swerve);
 
@@ -223,7 +223,7 @@ public class RobotContainer {
     }
 
     private void configureDevBindings(PatriBoxController controller) {
-        controller.start().onTrue(
+        /*controller.start().onTrue(
                 Commands.runOnce(() -> swerve.resetOdometry(
                 new Pose2d(
                         swerve.getPose().getTranslation(),
@@ -232,7 +232,7 @@ public class RobotContainer {
                                 ? 0
                                 : 180))
         ), swerve)
-        );
+        ); */
 
         // controller.b().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kForward));
         // controller.a().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kReverse));
@@ -254,7 +254,7 @@ public class RobotContainer {
       //  controller.rightTrigger().onTrue(extender.setTestPositionCommand());
     //    controller.rightBumper().onTrue(extender.setNeutralCommand());
 
-        controller.leftTrigger().onTrue(intake.setTestPercentCommand());
+        //controller.leftTrigger().onTrue(intake.setTestPercentCommand());
 //        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
 
         // controller.b().onTrue(kicker.setTestPercentCommand());
@@ -272,13 +272,23 @@ public class RobotContainer {
         //controller.y().whileTrue(turret.sysIdQuasistaticReverse());
 
         //hood
-        controller.povUp().onTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
-        controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
-        controller.a().whileTrue(hood.setCurrentCommand(60));
-        controller.b().whileTrue(hood.setCurrentCommand(-60));
+        //controller.povUp().onTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
+        //controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+        //controller.a().whileTrue(hood.setCurrentCommand(60));
+        //controller.b().whileTrue(hood.setCurrentCommand(-60));
         //flywheel
         //spindexer
-        controller.x().onTrue(spindexer.setTestPercentCommand());
+        //controller.x().onTrue(spindexer.setTestPercentCommand());
+
+        controller.leftBumper().onTrue(swerve.setWheelsOCommand());
+        controller.rightBumper().onTrue(swerve.getSetWheelsX());
+        controller.povUp().onTrue(swerve.setWheelsZeroCommand());
+        // controller.a().whileTrue(turret.quasistatic(SysIdRoutine.Direction.kForward));
+        // controller.b().whileTrue(turret.quasistatic(SysIdRoutine.Direction.kReverse));
+        // controller.x().whileTrue(turret.dynamic(SysIdRoutine.Direction.kForward));
+        // controller.y().whileTrue(turret.dynamic(SysIdRoutine.Direction.kReverse));
+        controller.a().onTrue(shooter.turretLeftCommand());
+        controller.b().onTrue(shooter.turretRightCommand());
     }
 
     private void configureDriverBindings(PatriBoxController controller) {

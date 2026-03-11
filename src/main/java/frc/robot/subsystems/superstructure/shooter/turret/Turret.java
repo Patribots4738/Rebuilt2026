@@ -78,6 +78,11 @@ public class Turret extends SubsystemBase {
         else {
             io.setNeutral();
         }
+
+        RobotContainer.components3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
+            LoggingConstants.TURRET_OFFSET.getX(), LoggingConstants.TURRET_OFFSET.getY(), inputs.targetPositionRads,
+            new Rotation3d()
+        );
     }
 
     /**
