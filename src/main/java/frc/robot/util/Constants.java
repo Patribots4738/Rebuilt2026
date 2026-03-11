@@ -938,7 +938,7 @@ public final class Constants {
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
         public static final double GEAR_RATIO = 1.0;
