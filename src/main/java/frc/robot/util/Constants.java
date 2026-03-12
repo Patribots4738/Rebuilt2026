@@ -289,13 +289,7 @@ public final class Constants {
         public static final String[] AUTO_NAMES = new String[] {
             "Double Center Rush Left",
             "Double Center Rush Right",
-            "Depot Center Rush",
             "Outpost Center Rush",
-            "Disrupt Left",
-            "Disrupt Right",
-            "Cleanup Left",
-            "Cleanup Middle",
-            "Cleanup Right",
             "Dumby Center"
         };
 
