@@ -320,15 +320,5 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
-
-
-        NamedCommands.registerCommand("WiggleShoot", Commands.parallel(
-                Commands.sequence(Commands.waitSeconds(2.0),
-                        NamedCommands.getCommand("IntakeStow")),
-                Commands.race(
-                        NamedCommands.getCommand("WaitUntilEmptyHopper"),
-                        Commands.waitSeconds(5)
-                )
-        ));
     }
 }

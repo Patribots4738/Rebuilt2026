@@ -64,7 +64,7 @@
         {
           "type": "named",
           "data": {
-            "name": "WiggleShoot"
+            "name": "ShootUntilEmptyHopper"
           }
         },
         {
@@ -107,7 +107,7 @@
         {
           "type": "named",
           "data": {
-            "name": "WiggleShoot"
+            "name": "ShootUntilEmptyHopper"
           }
         },
         {

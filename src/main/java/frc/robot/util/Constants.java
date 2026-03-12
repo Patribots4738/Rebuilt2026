@@ -514,9 +514,9 @@ public final class Constants {
             0.0
         );
 
-        public static final double TURNING_P = FieldConstants.IS_REAL ? 0.0 : 330d;
+        public static final double TURNING_P = FieldConstants.IS_REAL ? 0.0 : 1d;
         public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = FieldConstants.IS_REAL ? 0.0 : 22.5;
+        public static final double TURNING_D = FieldConstants.IS_REAL ? 0.0 : 0d;
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(

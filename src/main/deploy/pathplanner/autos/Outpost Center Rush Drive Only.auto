@@ -13,13 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CLRight-Outpost"
+            "pathName": "Center Line-5CLR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5CLRRotated-Outpost"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 8.0
+            "waitTime": 1.0
           }
         },
         {
@@ -31,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 0.5
           }
         },
         {
