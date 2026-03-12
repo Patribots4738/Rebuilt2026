@@ -116,7 +116,7 @@ public class Extender extends SubsystemBase {
     public Command setTestPositionCommand() {
         return Commands.runOnce(() -> this.setTestPosition());
     }
- 
+
     public void setTestPosition() {
         this.setPosition(testPosition);
     }
@@ -143,6 +143,18 @@ public class Extender extends SubsystemBase {
 
     public Command extendExtender() {
         return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS);
+    }
+    
+    public Command feedShooter() {
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS), Commands.waitSeconds(0.1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(0.1));
+    }
+
+    public Command feedShooterCommand() {
+        return runOnce(() -> feedShooter());
+    }
+
+    public Command halfStowCommand() {
+        return setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS);
     }
 
     public boolean atPosition(double position) {

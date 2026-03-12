@@ -81,7 +81,8 @@ public class Superstructure {
     public enum IntakeState {
         STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0),
         NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
-        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT);
+        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
+        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0);
 
         public double extenderPosition;
         public double intakePercent;
@@ -124,7 +125,8 @@ public class Superstructure {
         return Commands.either(
             Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)),
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
+                extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
             Commands.either(
                 shooter.trackTargetCommand(true, true, true),
                 Commands.none(), 
