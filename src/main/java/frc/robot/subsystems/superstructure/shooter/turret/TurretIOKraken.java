@@ -17,27 +17,32 @@ public class TurretIOKraken implements TurretIO {
     public TurretIOKraken() {
         motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
-        configMotor();
         configEncoder();
-    }
+        configMotor();
+    }  
 
     private void configMotor() {
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), TurretConstants.GEAR_RATIO);
+            motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
+        }
+        else {
+            motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
         }
         motor.setGains(TurretConstants.GAINS);
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-TurretConstants.CURRENT_LIMIT, TurretConstants.CURRENT_LIMIT);
         motor.setBrakeMode(TurretConstants.BRAKE_MOTOR);
         motor.setTelemetryPreference(TelemetryPreference.DEFAULT);
-        motor.setPositionClosedLoopWrappingEnabled(false);
+        motor.setPositionClosedLoopWrappingEnabled(true);
     }
 
     private void configEncoder() {
-        encoder.configureMagnetSensor(false, TurretConstants.ABSOLUTE_ENCODER_OFFSET);
+        
+        //v setting to inversion of motor so they stay the same(copying what was done in turret-test branch)
+        encoder.configureMagnetSensor(TurretConstants.CANCODER_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
     }
@@ -49,15 +54,19 @@ public class TurretIOKraken implements TurretIO {
     public void updateInputs(TurretIOInputs inputs) {
         // Call refreshALl() to refresh all status signals, and check in on him :)
         inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.encoderConnected = encoder.refreshSignals().isOK();
         if (inputs.encoderConnected) {
             inputs.encoderAbsPositionRads = encoder.getPositionAsDouble();
-            if (!encoderUpdated) {
-                motor.resetEncoder(inputs.encoderAbsPositionRads > TurretConstants.MAX_ANGLE_RADIANS ? inputs.encoderAbsPositionRads - 2 * Math.PI : inputs.encoderAbsPositionRads);
-                encoderUpdated = true;
-            }
-        } else {
-            inputs.encoderAbsPositionRads = inputs.internalPositionRads;
-        }   
+        //     if (!encoderUpdated) {
+        //         motor.resetEncoder(
+        //             inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) > TurretConstants.MAX_ANGLE_RADIANS 
+        //                 ? inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO) - 2 * Math.PI 
+        //                 : inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO));
+        //         encoderUpdated = true;
+        //     }
+        // } else {
+        //     inputs.encoderAbsPositionRads = inputs.internalPositionRads;
+        }
         inputs.internalPositionRads = motor.getPositionAsDouble();
         inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
         inputs.targetPositionRads = motor.getTargetPosition();
@@ -77,7 +86,9 @@ public class TurretIOKraken implements TurretIO {
     }
 
     @Override
-    public void runCharacterization(double input) {}
+    public void runCharacterization(double input) {
+        motor.setVoltage(input);
+    }
 
     @Override
     public void setBrakeMode(boolean brake) {
@@ -88,10 +99,4 @@ public class TurretIOKraken implements TurretIO {
     public void setGains(GainConstants constants) {
         motor.setGains(constants.withG(0.0));
     }
-
-    @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
-    }
-
 }

@@ -63,7 +63,6 @@ public class ExtenderIOKraken implements ExtenderIO {
     @Override
     public void resetEncoders(double position) {
         motor.resetEncoder(position);
-
     }
     
     @Override

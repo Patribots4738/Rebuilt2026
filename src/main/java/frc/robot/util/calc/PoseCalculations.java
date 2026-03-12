@@ -424,8 +424,12 @@ public class PoseCalculations {
         return ans;
     }
 
-/**
+    /**
      * Determines if the hood will hit the trench bar and if it should put it down.
+     * TODO: Use a twist w/ robot velocity to estimate if you will soon be in the trench 
+     * if you are speeding towards the trench, you will lose your hood before it knows to start putting itself down
+     *   - if you don't want to use a twist, at least just make the trench width to be larger by some invisable cushion
+     * if you do use a twist, get the amount of time it takes for the hood to go from fully open to fully closed + a cushion as your time
      *
      * @param pos
      * @return true if hood conflicts with trench, false otherwise
@@ -474,5 +478,9 @@ public class PoseCalculations {
             ans = true;
         }
         return ans;
+    }
+
+    public static boolean fieldHalf(Pose2d pos) {
+        return pos.getX() < (FieldConstants.FIELD_WIDTH / 2);
     }
 }

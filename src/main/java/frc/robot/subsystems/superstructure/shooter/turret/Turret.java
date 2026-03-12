@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure.shooter.turret;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -9,37 +10,43 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.Constants.MK5nSwerveModuleConstants;
 import frc.robot.util.Constants.TurretConstants;
-import frc.robot.util.calc.ShotCalculations;
-
 import static edu.wpi.first.units.Units.*;
 
 public class Turret extends SubsystemBase {
     private final TurretIO io;
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
-    private State targetState = new State(0, 0);
-    private State setpoint = new State(0, 0);
+    private Rotation2d targetPosition;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
+    private double testPositionDegrees;
+
     private final SysIdRoutine turretRoutine;
 
-    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(TurretConstants.VELOCITY, TurretConstants.ACCELERATION));
 
     public Turret(TurretIO io) {
         this.io = io;
+
+        TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
+        TurretConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = TurretConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+
         this.turretRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -55,24 +62,20 @@ public class Turret extends SubsystemBase {
                         this
                 )
         );
+
+        targetPosition = new Rotation2d(0, 0);
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
-
-        Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Shooter/Turret/TargetPosition", targetState.position);
-
+        Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
+        Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", getRotation().getDegrees());
         if (shouldRunSetpoint) {
-            setpoint = profile.calculate(0.02, setpoint, targetState);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Velocity", setpoint.velocity);
-            // Logger.recordOutput("Subsystems/Wrist/Step/Position", setpoint.position);
-            io.setPosition(setpoint.position, 0);
-        } else {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
+            io.setPosition(targetPosition.getRadians(), 0);
+        }
+        else {
             io.setNeutral();
         }
     }
@@ -80,16 +83,14 @@ public class Turret extends SubsystemBase {
     /**
      * Sets the desired rotation of the turret
      * 
-     * @param position in radians
+     * @param position in radians 
      */
-    public void setPosition(double position) {
-        position = position % (TurretConstants.MAX_ANGLE_RADIANS - TurretConstants.MIN_ANGLE_RADIANS);
-        if (position != targetState.position) {
-            setpoint.position = inputs.internalPositionRads;
-            setpoint.velocity = inputs.internalVelocityRadsPerSec;
+    public void setPosition(Rotation2d position) {
+        if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
+            // apply the turret angular offset
+            targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
+            shouldRunSetpoint = true;
         }
-        targetState.position = position;
-        shouldRunSetpoint = true;
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
@@ -97,12 +98,16 @@ public class Turret extends SubsystemBase {
         );
     }
 
-    public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble())).andThen(Commands.waitUntil(this::atTargetPosition));
+    public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
+        return setPositionCommand(rotationSupplier.get());
     }
 
-    public Command setPositionCommand(double position) {
-        return setPositionCommand(() -> position);
+    public Command setPositionCommand(Rotation2d rotation) {
+        return runOnce(() -> setPosition(rotation));
+    }
+
+    public Command setTestPositionCommand() {
+        return setPositionCommand(() -> Rotation2d.fromRadians(Units.degreesToRadians(testPositionDegrees)));
     }
 
     public void setNeutral() {
@@ -113,24 +118,34 @@ public class Turret extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 
-    public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, TurretConstants.ROTATION_TOLERANCE_RADIANS);
+    public boolean atPosition(Rotation2d position, boolean aimingAtHub) {
+        return MathUtil.isNear(position.getRadians(), getRotation().getRadians(), aimingAtHub 
+                ? TurretConstants.ROTATION_TOLERANCE_RADIANS 
+                : TurretConstants.PASS_ROTATION_TOLERANCE_RADIANS);
     }
 
-    public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+    public boolean atTargetPosition(boolean aimingAtHub) {
+        return atPosition(targetPosition, aimingAtHub);
     }
 
-    public double getPosition() {
+    public boolean atTargetPosition(BooleanSupplier aimingAtHub) {
+        return atTargetPosition(aimingAtHub.getAsBoolean());
+    }
+
+    public double getMotorPosition() {
         return inputs.internalPositionRads;
+    }
+
+    public Rotation2d getRotation() {
+        return new Rotation2d((inputs.encoderAbsPositionRads / TurretConstants.ENCODER_TO_MECH_GEAR_RATIO) - TurretConstants.ANGULAR_OFFSET);
     }
 
     public double getVelocity() {
         return inputs.internalVelocityRadsPerSec;
     }
 
-    public double getTargetPosition() {
-        return targetState.position;
+    public Rotation2d getTargetPosition() {
+        return targetPosition.minus(Rotation2d.fromRadians(TurretConstants.ROBOT_TURRET_OFFSET));
     }
     
     public double getVoltage() {
@@ -144,12 +159,20 @@ public class Turret extends SubsystemBase {
     public void runCharacterization(double input) {
         io.runCharacterization(input);
     }
-    
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return turretRoutine.quasistatic(direction);
+
+    public Command sysIdQuasistaticForward() {
+        return turretRoutine.quasistatic(SysIdRoutine.Direction.kForward);
     }
-    
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return turretRoutine.dynamic(direction);
+
+    public Command sysIdQuasistaticReverse() {
+        return turretRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+    }
+
+    public Command sysIdDynamicForward() {
+        return turretRoutine.dynamic(SysIdRoutine.Direction.kForward);
+    }
+
+    public Command sysIdDynamicReverse() {
+        return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
     }
 }

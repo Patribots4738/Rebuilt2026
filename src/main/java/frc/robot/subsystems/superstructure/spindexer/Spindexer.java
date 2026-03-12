@@ -4,43 +4,32 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.util.Constants.SpindexerConstants;
-import org.littletonrobotics.junction.Logger;
-
-import static edu.wpi.first.units.Units.*;
 
 public class Spindexer extends SubsystemBase {
 
     private final SpindexerIO io;
     private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
-    
-    private final SysIdRoutine spindexerRoutine;
+
+    private double testPercent;
 	
 	public Spindexer(SpindexerIO io) {
 		this.io = io;
-        this.spindexerRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.setVoltage(volts.in(Volts)),
-                        log -> log.motor("spindexer")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotations.of(inputs.positionRotations))
-                                .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec * SpindexerConstants.SPINDEXER_RADIUS * 2 * Math.PI)),
-                        this
-                )
-        );
+
+        SpindexerConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = SpindexerConstants.TEST_PERCENT.get()).ignoringDisable(true));
 	}
 	
 	@Override
     public void periodic(){
         io.updateInputs(inputs);
-        Logger.processInputs("SubsystemInputs/Spindexer", inputs);
+
+        if (shouldRunSetpoint) {
+            io.setPercent(percentOutput);
+        } else {
+            io.setNeutral();
+        }
     }
 
     private double percentOutput = 0.0;
@@ -55,12 +44,20 @@ public class Spindexer extends SubsystemBase {
         shouldRunSetpoint = false;
     }
 
+    public void setTestPercent() {
+        this.setPercent(testPercent);
+    }
+
     public Command setPercentCommand(DoubleSupplier percentSupplier) {
         return runOnce(() -> setPercent(percentSupplier.getAsDouble()));
     }
 
     public Command setPercentCommand(double percent) {
         return setPercentCommand(() -> percent);
+    }
+
+    public Command setTestPercentCommand() {
+        return Commands.runOnce(() -> setTestPercent());
     }
 
     public Command setNeutralCommand() {
@@ -77,13 +74,5 @@ public class Spindexer extends SubsystemBase {
     
     public void setVoltage(double volts) {
         io.setVoltage(volts);
-    }
-    
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return spindexerRoutine.quasistatic(direction);
-    }
-    
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return spindexerRoutine.dynamic(direction);
     }
 }

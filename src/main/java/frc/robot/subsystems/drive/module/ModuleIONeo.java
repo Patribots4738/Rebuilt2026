@@ -1,29 +1,29 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package frc.robot.subsystems.drive.module;
 
+package frc.robot.subsystems.drive.module;
 import frc.robot.util.Constants.MAXSwerveModuleConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.rev.Neo;
 
 public class ModuleIONeo implements ModuleIO {
-
     private final Neo driveMotor;
     private final Neo turnMotor;
 
     /**
-     * Constructs a MAXSwerveModule and configures the driving and turning
-     * motor, encoder, and PID controller. This configuration is specific to the
-     * REV MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
+     * Constructs a MAXSwerveModule and configures the driving and turning motor,
+     * encoder, and PID controller. This configuration is specific to the REV
+     * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
      * Encoder.
      */
     public ModuleIONeo(int drivingCANId, int turningCANId) {
         driveMotor = new Neo(drivingCANId, true);
-
+        
         // Invert the turning encoder, since the output shaft rotates in the opposite
         // direction of
         // the steering motor in the MAXSwerve Module.
+
         turnMotor = new Neo(turningCANId, false, MAXSwerveModuleConstants.TURNING_ENCODER_INVERTED, true);
         resetDriveEncoder();
         configMotors();
@@ -47,8 +47,8 @@ public class ModuleIONeo implements ModuleIO {
         // to 10 degrees will go through 0 rather than the other direction which is a
         // longer route.
         turnMotor.enablePIDWrapping(
-                MAXSwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MIN_INPUT,
-                MAXSwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MAX_INPUT);
+            MAXSwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MIN_INPUT,
+            MAXSwerveModuleConstants.TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
         setDriveGains(MAXSwerveModuleConstants.DRIVING_PID);
         setTurnGains(MAXSwerveModuleConstants.TURNING_PID);
@@ -67,14 +67,15 @@ public class ModuleIONeo implements ModuleIO {
         // drive motor
         inputs.drivePositionMeters = driveMotor.getPosition();
         inputs.driveVelocityMPS = driveMotor.getVelocity();
-        inputs.driveAppliedVolts = driveMotor.getAppliedOutput();
-        inputs.driveSupplyCurrentAmps = driveMotor.getOutputCurrent();
+        inputs.driveAppliedVolts = driveMotor.getBusVoltage();
+        inputs.driveTorqueCurrentAmps = driveMotor.getOutputCurrent();
+
 
         // turning motor
-        inputs.turnAppliedVolts = turnMotor.getAppliedOutput();
+        inputs.turnAppliedVolts = turnMotor.getBusVoltage();
         inputs.turnInternalPositionRads = turnMotor.getPosition();
         inputs.turnInternalVelocityRadsPerSec = turnMotor.getVelocity();
-        inputs.turnSupplyCurrentAmps = turnMotor.getOutputCurrent();
+        inputs.driveTorqueCurrentAmps = turnMotor.getOutputCurrent();
 
         // Fake it till you make it or something
         inputs.turnEncoderAbsPositionRads = turnMotor.getPosition();
@@ -85,7 +86,7 @@ public class ModuleIONeo implements ModuleIO {
      * Resets drive encoder to 0.
      */
     @Override
-    public void resetDriveEncoder() {
+    public void resetDriveEncoder()  {
         driveMotor.resetEncoder(0);
     }
 
@@ -129,6 +130,11 @@ public class ModuleIONeo implements ModuleIO {
     }
 
     @Override
+    public void setTurnVelocity(double velocity) {
+        turnMotor.setTargetVelocity(velocity);
+    }
+
+    @Override
     public void setDriveGains(GainConstants gains) {
         driveMotor.setPID(gains);
     }
@@ -137,4 +143,5 @@ public class ModuleIONeo implements ModuleIO {
     public void setTurnGains(GainConstants gains) {
         turnMotor.setPID(gains);
     }
+
 }

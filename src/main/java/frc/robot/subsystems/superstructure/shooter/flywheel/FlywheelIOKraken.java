@@ -2,6 +2,7 @@ package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FlywheelConstants;
+import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
 
@@ -26,14 +27,13 @@ public class FlywheelIOKraken implements FlywheelIO {
     public void updateInputs(FlywheelIOInputs inputs) {
         inputs.motorConnected = motor.refreshSignals().isOK();
         inputs.percentOutput = motor.getPercentAsDouble();
-        inputs.targetVelocityRadsPerSec = motor.getTargetVelocity();
+        inputs.targetSpeedRPM = motor.getTargetVelocity() * 60;
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
-        inputs.velocityRadsPerSec = motor.getVelocityAsDouble() * 2.0 * Math.PI;
-        inputs.positionRotations = motor.getPositionAsDouble();
+        inputs.positionRadians = motor.getPositionAsDouble() * 2.0 * Math.PI;
+        inputs.speedRPM = motor.getVelocityAsDouble() * 60;
     }
-
     
     @Override
     public void setNeutral() {
@@ -46,8 +46,8 @@ public class FlywheelIOKraken implements FlywheelIO {
     }
 
     @Override
-    public void setVelocity(double velocity) {
-        motor.setTargetVelocity(velocity);
+    public void setSpeedRPM(double speed) {
+        motor.setTargetVelocity(speed / 60);
     }
 
     @Override
@@ -63,5 +63,10 @@ public class FlywheelIOKraken implements FlywheelIO {
     @Override
     public void setCurrent(double amps) {
         motor.setTorqueCurrentOutput(amps);
+    }
+
+    @Override
+    public void setGains(GainConstants constants) {
+        motor.setGains(constants.withG(0.0));
     }
 }
