@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.flywheel;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.units.measure.Voltage;
@@ -92,12 +93,18 @@ public class Flywheel extends SubsystemBase {
         shouldRunSetpoint = true;
     }
 
-    public boolean atTargetSpeed() {
-        return atSpeed(targetSpeed);
+    public boolean atTargetSpeed(BooleanSupplier aimingAtHub) {
+        return atTargetSpeed(aimingAtHub.getAsBoolean());
     }
 
-    public boolean atSpeed(double speed) {
-        return MathUtil.isNear(getSpeedRPM(), speed, FlywheelConstants.VELOCITY_DEADBAND_RPM); 
+    public boolean atTargetSpeed(boolean aimingAtHub) {
+        return atSpeed(targetSpeed, aimingAtHub);
+    }
+
+    public boolean atSpeed(double speed, boolean aimingAtHub) {
+        return MathUtil.isNear(getSpeedRPM(), speed, aimingAtHub 
+                ? FlywheelConstants.VELOCITY_DEADBAND_RPM 
+                : FlywheelConstants.PASS_VELOCITY_DEADBAND_RPM); 
     }
 
     /**

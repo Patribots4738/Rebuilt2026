@@ -66,7 +66,6 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Hood", inputs);
 
-        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
@@ -136,12 +135,18 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> io.resetEncoders(0));
     }
 
-    public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, HoodConstants.POSITION_DEADBAND_RADIANS);
+    public boolean atPosition(double position, boolean aimingAtHub) {
+        return MathUtil.isNear(position, inputs.internalPositionRads, aimingAtHub 
+                ? HoodConstants.POSITION_DEADBAND_RADIANS
+                : HoodConstants.PASS_POSITION_DEADBAND_RADIANS);
     }
 
-    public boolean atTargetPosition() {
-        return atPosition(targetPosition);
+    public boolean atTargetPosition(boolean aimingAtHub) {
+        return atPosition(targetPosition, aimingAtHub);
+    }
+
+    public boolean atTargetPosition(BooleanSupplier aimingAtHub) {
+        return atTargetPosition(aimingAtHub.getAsBoolean());
     }
 
     public double getPosition() {

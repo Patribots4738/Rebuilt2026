@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -84,6 +85,10 @@ public class Shooter extends SubsystemBase {
             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
             flywheel.setNeutral();
         }
+
+        Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
     }
 
     public boolean partiallyTracking() {
@@ -152,7 +157,9 @@ public class Shooter extends SubsystemBase {
      * @return whether the shooter is at the right state
      */
     public boolean isReady() {
-        return turret.atTargetPosition() && flywheel.atTargetSpeed() && hood.atTargetPosition();
+        return turret.atTargetPosition(this::aimingAtHub) 
+                    && flywheel.atTargetSpeed(this::aimingAtHub) 
+                    && hood.atTargetPosition(this::aimingAtHub);
     }
 
     /**

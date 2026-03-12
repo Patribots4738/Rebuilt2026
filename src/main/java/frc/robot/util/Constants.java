@@ -897,6 +897,7 @@ public final class Constants {
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
+        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 300d : 0; //
@@ -943,6 +944,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 1.0;
 
         public static final double VELOCITY_DEADBAND_RPM = 50; 
+        public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_VELOCITY = 10;
 
@@ -994,7 +996,8 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.02;
+        public static final double POSITION_DEADBAND_RADIANS = 0.1;
+        public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 1700 : 0;
