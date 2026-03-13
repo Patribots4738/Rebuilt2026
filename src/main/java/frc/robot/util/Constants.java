@@ -997,9 +997,9 @@ public final class Constants {
         public static final double POSITION_DEADBAND_RADIANS = 0.02;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 1700 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 350: 0;
-        public static final double D = FieldConstants.IS_REAL ? 45 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 1700 : 600;
+        public static final double I = FieldConstants.IS_REAL ? 350 : 25;
+        public static final double D = FieldConstants.IS_REAL ? 45 : 250;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
