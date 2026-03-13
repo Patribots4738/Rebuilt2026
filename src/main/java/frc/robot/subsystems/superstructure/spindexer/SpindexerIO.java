@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.spindexer;
 import org.littletonrobotics.junction.AutoLog;
+
 public interface SpindexerIO {
     
     @AutoLog
@@ -12,6 +13,7 @@ public interface SpindexerIO {
         public double percentOutput = 0.0;
         public double targetPercentOutput = 0.0;
         public double velocityRotationsPerSec = 0.0;
+        public double positionRotations = 0.0;
     }
 
     public default void updateInputs(SpindexerIOInputs inputs) {}

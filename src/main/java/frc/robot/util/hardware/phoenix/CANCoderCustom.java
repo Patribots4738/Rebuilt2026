@@ -157,23 +157,35 @@ public class CANCoderCustom extends CANcoder {
      * 
      * @param inverted true if the sensor direction is inverted, false otherwise
      * @param offset the magnet offset value
+     * @param discontinuityPoint the rotation at which the absolute position wraps
      * @return the status code indicating the success or failure of the configuration
      */
-    public StatusCode configureMagnetSensor(boolean inverted, double offset) {
+    public StatusCode configureMagnetSensor(boolean inverted, double offset, double discontinuityPoint) {
         SensorDirectionValue sensorDirectionValue = inverted 
             ? SensorDirectionValue.Clockwise_Positive 
             : SensorDirectionValue.CounterClockwise_Positive;
-        magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = 0.5;
+        magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint = discontinuityPoint;
         magnetSensorConfigs.MagnetOffset = offset;
         magnetSensorConfigs.SensorDirection = sensorDirectionValue;
         return applyParameter(
             () -> configurator.apply(magnetSensorConfigs, 1.0), 
             () -> configurator.refresh(magnetSensorConfigs, 1.0),
-            () -> magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint == 0.5 &&
+            () -> magnetSensorConfigs.AbsoluteSensorDiscontinuityPoint == discontinuityPoint &&
                   (magnetSensorConfigs.MagnetOffset != 0 ^ offset == 0) &&
                   magnetSensorConfigs.SensorDirection == sensorDirectionValue,
             "Magnet Sensor Configs"
         );
+    }
+
+    /**
+     * Configures the magnet sensor of the CANCoderCustom.
+     * 
+     * @param inverted true if the sensor direction is inverted, false otherwise
+     * @param offset the magnet offset value
+     * @return the status code indicating the success or failure of the configuration
+     */
+    public StatusCode configureMagnetSensor(boolean inverted, double offset) {
+        return this.configureMagnetSensor(inverted, offset, 0.5);
     }
 
     /**

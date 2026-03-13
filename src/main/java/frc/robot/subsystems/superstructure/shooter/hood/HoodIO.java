@@ -15,8 +15,8 @@ public interface HoodIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
-        public boolean encoderConnected = false;
-        public double encoderAbsPositionRads = 0.0;
+        public double percentOutput = 0.0;
+        public double targetPercentOutput = 0.0;
     }
 
     public default void updateInputs(HoodIOInputs inputs) {}
@@ -28,8 +28,12 @@ public interface HoodIO {
     public default void runCharacterization(double input) {}
 
     public default void setBrakeMode(boolean brake) {}
+
+    public default void resetEncoders(double position) {}
         
     public default void setGains(GainConstants constants) {}
 
-    public default void configureProfile(double velocity, double acceleration, double jerk) {}
+    public default void setPercent(double percent) {}
+
+    public default void setCurrent(double amps) {}
 }

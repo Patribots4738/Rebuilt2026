@@ -5,43 +5,42 @@ import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
-import frc.robot.util.hardware.phoenix.CANCoderCustom;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
-import frc.robot.util.hardware.phoenix.Kraken.TelemetryPreference;
 
 public class HoodIOKraken implements HoodIO {
     private final Kraken motor;
-    private final CANCoderCustom encoder;
-    private boolean encoderUpdated = false;
-
     public HoodIOKraken() {
-        motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
-        encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
+        motor = new Kraken(HoodConstants.CAN_ID, HoodConstants.MOTOR_TYPE, true, false, ControlPreference.TORQUE_CURRENT);
         configMotor();
-        configEncoder();
     }
 
     public void configMotor() {
+        motor.setGearRatio(HoodConstants.GEAR_RATIO);
         motor.setUnitConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
-        motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(HoodConstants.MOTOR_INVERTED);
-        if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), HoodConstants.GEAR_RATIO);
-        }
-        motor.setGains(HoodConstants.GAINS);
+        motor.setGains(HoodConstants.GAINS, 0);
         motor.setStatorCurrentLimit(HoodConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-HoodConstants.CURRENT_LIMIT, HoodConstants.CURRENT_LIMIT);
         motor.setBrakeMode(HoodConstants.BRAKE_MOTOR);
-        motor.setTelemetryPreference(TelemetryPreference.DEFAULT);
+        motor.resetEncoder(0.0);
+        motor.setSoftLimits(HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
     }
 
-    public void configEncoder() {
-        encoder.configureMagnetSensor(false, HoodConstants.ABSOLUTE_ENCODER_OFFSET);
-        encoder.setPositionConversionFactor(HoodConstants.POSITION_CONVERSION_FACTOR);
-        encoder.setVelocityConversionFactor(HoodConstants.VELOCITY_CONVERSION_FACTOR);
+    @Override
+    public void updateInputs(HoodIOInputs inputs) {
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.percentOutput = motor.getPercentAsDouble();
+        inputs.targetPercentOutput = motor.getTargetPercent();
+        inputs.internalPositionRads = motor.getPositionAsDouble();
+        inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
+        inputs.targetPositionRads = motor.getTargetPosition();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
     }
 
+    
     @Override
     public void setPosition(double position, double feedforward) {
         motor.setTargetPosition(position, feedforward);
@@ -50,6 +49,11 @@ public class HoodIOKraken implements HoodIO {
     @Override
     public void setNeutral() {
         motor.setNeutral();
+    }
+
+    @Override
+    public void resetEncoders(double position) {
+        motor.resetEncoder(position);
     }
 
     @Override
@@ -65,8 +69,11 @@ public class HoodIOKraken implements HoodIO {
         motor.setGains(constants.withG(0.0));
     }
 
-    @Override
-    public void configureProfile(double velocity, double acceleration, double jerk) {
-        motor.configureMotionMagic(velocity, acceleration, jerk);
+    public void setPercent(double percent) {
+        motor.setPercentOutput(percent);
+    }
+
+    public void setCurrent(double amps) {
+        motor.setTorqueCurrentOutput(amps);
     }
 }

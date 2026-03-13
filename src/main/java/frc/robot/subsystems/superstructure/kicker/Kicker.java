@@ -4,14 +4,12 @@
 
 package frc.robot.subsystems.superstructure.kicker;
 
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.subsystems.superstructure.intake.IntakeIO;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
-
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -28,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
+import static edu.wpi.first.units.Units.*;
+
 public class Kicker extends SubsystemBase {
 	
 	private final KickerIO io;
@@ -41,8 +41,10 @@ public class Kicker extends SubsystemBase {
 	private double percentOutput = 0.0;
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+	
+    private double testPercent;
 
-    // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
+	// private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
     // private LoggedTunableNumber slowVelocity = new LoggedTunableNumber("Intake/SlowProfile/Velocity", IntakeConstants.SLOW_VELOCITY);
     // private LoggedTunableNumber slowAcceleration = new LoggedTunableNumber("Intake/SlowProfile/Acceleration", IntakeConstants.SLOW_ACCELERATION);
@@ -51,6 +53,8 @@ public class Kicker extends SubsystemBase {
     
     public Kicker(KickerIO io) {
         this.io = io;
+
+        KickerConstants.LOGGED_KICKER_PERCENT.onChanged(Commands.runOnce(() -> testPercent = KickerConstants.LOGGED_KICKER_PERCENT.get()).ignoringDisable(true));
 
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
@@ -100,4 +104,12 @@ public class Kicker extends SubsystemBase {
 	public boolean emptyHopper() {
 		return emptyHopper;
 	}
+	
+    public void setTestPercent() {
+        setPercent(testPercent);
+    }
+
+    public Command setTestPercentCommand() {
+        return Commands.runOnce(() -> setTestPercent());
+    }
 }

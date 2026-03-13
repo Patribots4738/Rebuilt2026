@@ -2,18 +2,20 @@ package frc.robot.subsystems.superstructure.shooter.flywheel;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.util.custom.GainConstants;
+
 public interface FlywheelIO {
     @AutoLog
     class FlywheelIOInputs {
 
         public boolean motorConnected = false;
         public double percentOutput = 0.0;
-        public double targetVelocityRadsPerSec = 0.0;
-        public double velocityRadsPerSec = 0.0;
+        public double targetSpeedRPM = 0.0;
+        public double speedRPM = 0.0;
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
-
+        public double positionRadians = 0.0;
     }
 
     public default void updateInputs(FlywheelIOInputs inputs) {}
@@ -24,11 +26,13 @@ public interface FlywheelIO {
 
     public default void setBrakeMode(boolean brake) {}
 
-    public default void setVelocity(double velocity) {}
+    public default void setSpeedRPM(double speed) {}
 
     public default void setPercent(double percent) {}
 
     public default void setVoltage(double volts) {}
 
     public default void setCurrent(double amps) {}
+
+    public default void setGains(GainConstants constants) {}
 }

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
@@ -24,9 +26,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -34,10 +33,13 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
-import frc.robot.Robot.GameMode;
+import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
+import frc.robot.util.custom.LoggedGainConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
+import frc.robot.util.custom.LoggedTunableConstant;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -132,7 +134,10 @@ public final class Constants {
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
-        public static double MAX_SPEED_METERS_PER_SECOND = 4.5;
+        public static double MAX_SPEED_METERS_PER_SECOND = 2.0;
+
+        public static double DEFAULT_DRIVE_MULTIPLIER = 1.0;
+        public static double SHOOTING_DRIVE_MULTIPLIER = 0.65;
 
         public static double SKID_THRESHOLD = 0.1;
 
@@ -189,10 +194,16 @@ public final class Constants {
 
         // Angular offsets of the modules relative to the chassis in radians
         // add 90 degrees to change the X and Y axis
-        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
-        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
-        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
-        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90);
+        public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90); // invert drive
+        public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0); // good
+        public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-180); // good
+        public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90); // invert drive
+
+
+        // public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(180 + 90);
+        // public static final double FRONT_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(-90 + 90);
+        // public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(90 + 90);
+        // public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.toRadians(0 + 90);
 
         public static final int GYRO_CAN_ID = 29;
         public static final boolean GYRO_REVERSED = true;
@@ -293,10 +304,10 @@ public final class Constants {
             "Dumby Center"
         };
 
-        public static final Rotation2d rotation45 = new Rotation2d().fromDegrees(45);
-        public static final Rotation2d rotation135 = new Rotation2d().fromDegrees(135);
-        public static final Rotation2d rotation225 = new Rotation2d().fromDegrees(225);
-        public static final Rotation2d rotation315 = new Rotation2d().fromDegrees(315);
+        public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
+        public static final Rotation2d rotation135 = Rotation2d.fromDegrees(135);
+        public static final Rotation2d rotation225 = Rotation2d.fromDegrees(225);
+        public static final Rotation2d rotation315 = Rotation2d.fromDegrees(315);
 
         public static final List<Rotation2d> BUMP_ROTATIONS = new ArrayList<Rotation2d>() {{
             Rotation2d rotation1 = rotation45;
@@ -466,16 +477,25 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = 0;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.206787;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367432;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275391;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.331299;
+
+
+        // inversions for different motors may be needed for dual type
+        public static final boolean INVERT_FRONT_LEFT_DRIVE = true;
+        public static final boolean INVERT_FRONT_RIGHT_DRIVE = false;
+        public static final boolean INVERT_BACK_LEFT_DRIVE = false;
+        public static final boolean INVERT_BACK_RIGHT_DRIVE = true;
 
         public static final double TURNING_MOTOR_REDUCTION = 26.09;
 
         public static final double MAX_TURNING_MOTOR_VELOCITY_RADIANS_PER_SEC = 400;
 
         public static final boolean INVERT_TURNING_MOTOR = false;
+
+        public static final boolean INVERT_TURNING_CANCODER = false;
 
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
 
@@ -484,10 +504,10 @@ public final class Constants {
         // **********************************************************************MK5n SWERVE**********************
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
-        public static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_CIRCUMFERENCE_METERS)
-                / CURRENT_GEARING.gearRatio; // meters
-        public static final double DRIVING_ENCODER_VELOCITY_FACTOR = (WHEEL_CIRCUMFERENCE_METERS
-                / CURRENT_GEARING.gearRatio); // meters per second
+        public static final double DRIVE_GEAR_RATIO = CURRENT_GEARING.gearRatio;
+
+        public static final double DRIVING_ENCODER_POSITION_FACTOR = WHEEL_CIRCUMFERENCE_METERS; // meters
+        public static final double DRIVING_ENCODER_VELOCITY_FACTOR = WHEEL_CIRCUMFERENCE_METERS; // meters per second
 
         public static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
         public static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI); // radians per second
@@ -499,11 +519,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = FieldConstants.IS_REAL ? 0 : 25d;
-        public static final double DRIVING_I = 0.0;
-        public static final double DRIVING_D = 0.0;
+        public static final double DRIVING_P = 0.0; //20.0
+        public static final double DRIVING_I = 0.0; //6
+        public static final double DRIVING_D = 0.0; //1.5
         public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.0;
+        public static final double DRIVING_V = 0.0; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -514,9 +534,11 @@ public final class Constants {
             0.0
         );
 
-        public static final double TURNING_P = FieldConstants.IS_REAL ? 0.0 : 1d;
-        public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = FieldConstants.IS_REAL ? 0.0 : 0d;
+        public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
+
+        public static final double TURNING_P = 0.0; //225
+        public static final double TURNING_I = 0.0; //13
+        public static final double TURNING_D = 0.0; //8
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -527,6 +549,12 @@ public final class Constants {
             0.0,
             0.0
         );
+
+        public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
+
+        public static final double DRIFT_MULTIPLIER = 4.0;
+
+        public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
 
     public static final class MK4cSwerveModuleConstants {
@@ -642,7 +670,6 @@ public final class Constants {
         public static final double DRIVER_ALIGN_CANCEL_DEADBAND = 0.15;
 
         public enum DriverMode {
-            DOUBLE,
             SINGLE,
             DEV,
             CALIBRATION
@@ -733,7 +760,6 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = CANBus.roboRIO();
-         // TODO: must set the name of the CANivore to "Drivebase" and factory default the swerve modules since they were connected to the rio before
         public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
     }
 
@@ -746,13 +772,20 @@ public final class Constants {
     public static final class PigeonConstants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
-
+        public static final double YAW_OFFSET = 0.0;
+        public static final double PITCH_OFFSET = 0.0;
+        public static final double ROLL_OFFSET = 0.0;
+        public static final MountPoseConfigs POSE_CONFIGS = new MountPoseConfigs(){{
+            withMountPoseYaw(YAW_OFFSET);
+            withMountPosePitch(PITCH_OFFSET);
+            withMountPoseRoll(ROLL_OFFSET);
+        }};
     }
 
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
 
-        public static final int CANRANGE_ID = 0; //TODO
+        public static final int CANRANGE_ID = 28;
     }
     
     public static final class CameraConstants {
@@ -848,35 +881,42 @@ public final class Constants {
     }
 
     public static final class TurretConstants {
-        public static final int MOTOR_CAN_ID = 0;
+        public static final int MOTOR_CAN_ID = 17;
         public static final int MOTOR_TYPE = 44;
 
-        public static final int ENCODER_CAN_ID = 0;
+        public static final int ENCODER_CAN_ID = 18;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true; //never invert this again
+        public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
-        public static final double GEAR_RATIO = 9.0;
-
-
-        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.722656;
+        public static final double MOTOR_GEAR_RATIO = 50.0;
+        public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
+        public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
+        public static final double DISCONTINUITY_POINT = 1.0;
+        public static final double ROBOT_TURRET_OFFSET = -Units.degreesToRadians(4.5);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(0 + ROBOT_TURRET_OFFSET);
+        // public static final double ANGULAR_OFFSET = - Units.degreesToRadians(4.5);
+        //conversions from rotations to radians
+        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(270); // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4.5);
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
+        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 300d : 0; //
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 25d : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0; //
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -889,9 +929,12 @@ public final class Constants {
             G
         );
 
-        public static final double VELOCITY = 1.6;
-        public static final double ACCELERATION = 4d;
-        public static final double JERK = 20d;
+        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
+
+        public static final double VELOCITY = 1.0;
+        public static final double ACCELERATION = 1.0;
+        public static final double JERK = 0.5;
 
         public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
         public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(
@@ -902,30 +945,33 @@ public final class Constants {
     }
 
     public static final class FlywheelConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 20;
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_DEADBAND_METERS_PER_SEC = 0.1; 
+        public static final double GEAR_RATIO = 1.0;
+
+        public static final double VELOCITY_DEADBAND_RPM = 50; 
+        public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_VELOCITY = 10;
 
         public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
         public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
 
-        public static final double CIRCUMFERENCE_METERS = 4 * Math.PI;
+        public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        // if it's not in sim use first values else use second values: note to self delete this afterwards
+        public static final double P = FieldConstants.IS_REAL ? 0.5 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -937,39 +983,41 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
+        public static final LoggedTunableConstant LOGGED_SPEED_RPM = new LoggedTunableConstant("Shooter/Flyweel/SpeedRPM", 0.0);
     }
 
     public static final class HoodConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 19;
         public static final int MOTOR_TYPE = 44;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0.0;
-
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 40;
+        public static final boolean MOTOR_INVERTED = true;
+        public static final double CURRENT_LIMIT = 150;
 
-        public static final double GEAR_RATIO = 1.0;
+        public static final double GEAR_RATIO = 32.45;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.69813; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = 0.45099; 
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
 
-        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.0;
+        public static final double POSITION_DEADBAND_RADIANS = 0.1;
+        public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 1700 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 350: 0;
+        public static final double D = FieldConstants.IS_REAL ? 45 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double G = 0.0; //21.5 amps
 
         public static final GainConstants GAINS = new GainConstants(
             P,
@@ -980,6 +1028,9 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 3d;
@@ -987,60 +1038,40 @@ public final class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 13;
         public static final int MOTOR_TYPE = 60;
-        public static final double GEAR_RATIO = 0.0;
+        public static final double GEAR_RATIO = 3.33333;
 
-        public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 0;
-
-        public static final double EXTENSION_LEMGTH_METERS = Units.inchesToMeters(9.108);
+        public static final boolean BRAKE_MOTOR = false;
+        public static final boolean MOTOR_INVERTED = true;
+        public static final double CURRENT_LIMIT = 20;
 
         public static final double INTAKE_PERCENT = 0.5;
 
-        public static final double POSITION_CONVERSION_FACTOR = 0.0;
-        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-
-        public static final GainConstants GAINS = new GainConstants(
-            P,
-            I,
-            D,
-            A,
-            S,
-            V,
-            G
-        );
-
-
-
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Intake/Percent", INTAKE_PERCENT);
     }
 
     public static final class ExtenderConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 14;
         public static final int MOTOR_TYPE = 44;
-        public static final double GEAR_RATIO = 0.0;
+        public static final double GEAR_RATIO = 27.0;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 0.0;
+        public static final double CURRENT_LIMIT = 30.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0; // TODO: hood moves from what to what degrees?
+        public static final double MAX_ANGLE_RADIANS = 0.0;
 
         public static final double STOW_POSITION_RADIANS = 0.0;
-        public static final double INTAKE_POSITION_RADIANS = Units.degreesToRadians(110);
+        public static final double INTAKE_POSITION_RADIANS = 0.0;
+        public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
 
-        public static final double POSITION_CONVERSION_FACTOR = 0.0;
-        public static final double VELOCITY_CONVERSION_FACTOR = 0.0;
+        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
+        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
         public static final double DEADBAND_RADIANS = 0.0;
 
@@ -1062,46 +1093,38 @@ public final class Constants {
             V,
             G
         );
+
+        public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
+
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
+
+        public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
     }
 
     public static final class KickerConstants {
-        public static final int CAN_ID = 0;
+        public static final int CAN_ID = 16;
         public static final int MOTOR_TYPE = 60;
+
+        public static final int CANRANGE_ID = 28;
         
         public static final boolean MOTOR_INVERTED = false;
         
-        public static final double GEAR_RATIO = 1.0;
+        public static final double GEAR_RATIO = (22 / 12);
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
         
         public static final double CURRENT_LIMIT = 40.0;
-        public static final boolean BRAKE_MOTOR = true;
+        public static final boolean BRAKE_MOTOR = false;
 
         public static final double DEBOUNCER_TIME = 0.5;
         
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.5;
-        public static final double FORWARD_PERCENT = 0.5;
+        public static final double REVERSE_PERCENT = -0.3;
+        public static final double FORWARD_PERCENT = 0.3;
         
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-        
-        public static final GainConstants GAINS = new GainConstants(
-                P,
-                I,
-                D,
-                A,
-                S,
-                V,
-                G
-        );
+        public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
 
     public static final class GeneralHardwareConstants {
@@ -1110,21 +1133,24 @@ public final class Constants {
     }
 
     public static final class SpindexerConstants {
-        public static final int CAN_ID = 11;
+        public static final int CAN_ID = 15;
 
         public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 15.0;
+        public static final double CURRENT_LIMIT = 50.0;
 
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final int MOTOR_TYPE = 44;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double CLOCKWISE_PERCENT = -0.5;
-        public static final double COUNTERCLOCKWISE_PERCENT = 0.5;
+        public static final double CLOCKWISE_PERCENT = -0.6;
+        public static final double COUNTERCLOCKWISE_PERCENT = 0.6;
+        public static final double FEED_PERCENT = 0.6;
         
-        public static final double GEAR_RATIO = 9;
+        public static final double GEAR_RATIO = 3.0;
+
+        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
     }
 
     public static final class FieldConstants {
@@ -1144,12 +1170,12 @@ public final class Constants {
         public static final double ALLIANCE_LINE_RED = 4.0271;
         public static final double ALLIANCE_LINE_BLUE = 12.5488;
 
-        public static final double FREND_LINE() {
+        public static final double CURRENT_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
             return line;
         }
 
-        public static final double FOW_LINE() {
+        public static final double OPPOSING_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
             return line;
         }
@@ -1188,12 +1214,6 @@ public final class Constants {
             int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_RIGHT_LOCATIONS.get(index);
         }
-
-        public static final HashMap<String, Translation3d> SHOT_TARGETS = new HashMap<String, Translation3d>() {{
-            put("Hub", GET_HUB());
-            put("Pass Left", GET_PASS_LEFT());
-            put("Pass Right", GET_PASS_RIGHT());
-        }};
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
         public static final List<Pose2d> OUTPOSTS = new ArrayList<Pose2d>() {{
@@ -1234,21 +1254,22 @@ public final class Constants {
             Pose2d TowerRed = TOWER_CENTER_RED;
             add(TowerRed);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerRed, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerRed, "RIGHT-SIDE"));
             //BLUE Tower
             Pose2d TowerBlue = PoseCalculations.mirrorPose(TOWER_CENTER_RED);
             add(TowerBlue);
             //Posts
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "PR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-POST"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-POST"));
             //Sides
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SL"));
-            add(PoseCalculations.getTowerDimensions(TowerBlue, "SR"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "LEFT-SIDE"));
+            add(PoseCalculations.getTowerDimensions(TowerBlue, "RIGHT-SIDE"));
         }};
+
 
         public static final Pose2d GET_TOWER_CENTER() {
             int index = Robot.isRedAlliance()? 0 : 5;
@@ -1268,8 +1289,8 @@ public final class Constants {
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
         public static final double TRENCH_WIDTH = 1.5772;
-        public static final List<Pose2d> TRENCHS = new ArrayList<Pose2d>() {{
-            //RED Trenchs
+        public static final List<Pose2d> TRENCHES = new ArrayList<Pose2d>() {{
+            //RED TRENCHES
             //Side 1
             Pose3d trenchRed1 = TRENCH_CENTER_SIDE1_RED;
             add(trenchRed1.toPose2d());
@@ -1284,7 +1305,7 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'R'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'U'));
             add(PoseCalculations.getTrenchDimension(trenchRed2, 'D'));
-            //Blue Trenchs
+            //Blue Trenches
             //Side 1
             Pose3d trenchBlue1 = PoseCalculations.mirrorPose3d(TRENCH_CENTER_SIDE1_RED);
             add(trenchBlue1.toPose2d());
@@ -1301,14 +1322,14 @@ public final class Constants {
             add(PoseCalculations.getTrenchDimension(trenchBlue2, 'D'));
         }};
 
-        public static final List<Pose2d> GET_ALLIANCE_TRENCHS() {
+        public static final List<Pose2d> GET_ALLIANCE_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 0 : 10;
-            return TRENCHS.subList(startindex, startindex + 10);
+            return TRENCHES.subList(startindex, startindex + 10);
         }
 
-        public static final List<Pose2d> GET_ENEMY_TRENCHS() {
+        public static final List<Pose2d> GET_OPPOSING_TRENCHES() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
-            return TRENCHS.subList(startindex, startindex + 8);
+            return TRENCHES.subList(startindex, startindex + 8);
         }
 
         public static final Pose3d BUMP_CENTER_SIDE1_RED = new Pose3d(4.6104, 3.1185, 0.1654, zeroRotation);
@@ -1352,7 +1373,7 @@ public final class Constants {
             return BUMPS.subList(startindex, startindex + 8);
         }
 
-        public static final List<Pose2d> GET_ENEMY_BUMPS() {
+        public static final List<Pose2d> GET_OPPOSING_BUMPS() {
             int startindex = Robot.isRedAlliance()? 8 : 0;
             return BUMPS.subList(startindex, startindex + 8);
         }

@@ -8,7 +8,7 @@ public class HoodIONeo implements HoodIO {
     private final Neo motor;
 
     public HoodIONeo() {
-        motor = new Neo(HoodConstants.CAN_ID, false, false, true);
+        motor = new Neo(HoodConstants.CAN_ID, false, false, false);
         configMotor();
     }
 
@@ -27,10 +27,9 @@ public class HoodIONeo implements HoodIO {
         inputs.internalPositionRads = motor.getPosition();
         inputs.internalVelocityRadsPerSec = motor.getVelocity();
         inputs.targetPositionRads = motor.getTargetPosition();
-        inputs.appliedOutputVolts = motor.getBusVoltage();
+        inputs.appliedOutputVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.torqueCurrentAmps = motor.getOutputCurrent();
         inputs.temperatureCelsius = motor.getMotorTemperature();
-        inputs.encoderAbsPositionRads = inputs.internalPositionRads;
     }
 
     @Override
@@ -55,5 +54,11 @@ public class HoodIONeo implements HoodIO {
     @Override
     public void setGains(GainConstants constants) {
         motor.setPID(constants);
+    }
+
+    @Override
+    public void resetEncoders(double position) {
+        motor.resetEncoder(position);
+
     }
 }
