@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
+import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
@@ -32,7 +34,10 @@ public class Shooter extends SubsystemBase {
     private boolean spinFlywheel = false;
     @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
     private boolean aimHood = true;
+    @AutoLogOutput(key = "Subsystems/Shooter/PassIndex")
     private int passIndex = 0;
+    @AutoLogOutput(key = "Subsystems/Shooter/Manual")
+    private boolean manual = false;
     private Target target;
 
     private ShootingParameters shotParams;
@@ -111,8 +116,22 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
-    // TODO: (2) flatten this with the periodic state checks (also try to consolidate these conditions)
     public void setShooterStates() {
+        if (manual) {
+            setManualStates();
+        }
+        else {
+            setAutoAimStates();
+        }
+    }
+
+    public void setManualStates() {
+        flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM);
+        hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS);
+        turret.setPositionCommand(TurretConstants.HUB_POSITION);
+    }
+
+    public void setAutoAimStates() {
         // calculate states for turret, flywheel, and hood based on robot location
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
 
@@ -156,8 +175,9 @@ public class Shooter extends SubsystemBase {
      * 
      * @return whether the shooter is at the right state
      */
-    public boolean isReady() {
-        return turret.atTargetPosition(this::aimingAtHub) 
+    public boolean isReadyToShoot() {
+        return this.fullyTracking() 
+                    && turret.atTargetPosition(this::aimingAtHub) 
                     && flywheel.atTargetSpeed(this::aimingAtHub) 
                     && hood.atTargetPosition(this::aimingAtHub);
     }
@@ -213,7 +233,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void eject() {
-        flywheel.setSpeedRPM(FlywheelConstants.EJECT_VELOCITY);
+        flywheel.setSpeedRPM(FlywheelConstants.EJECT_RPM);
     }
 
     public Command ejectCommand() {
@@ -233,5 +253,17 @@ public class Shooter extends SubsystemBase {
 
     public boolean aimingAtHub() {
         return target == Target.HUB ? true : false;
+    }
+
+    public void toggleManualShooting() {
+        manual = !manual;
+    }
+
+    public Command toggleManualShootingCommand() {
+        return runOnce(() -> this.toggleManualShooting());
+    }
+
+    public boolean isManual() {
+        return manual;
     }
 }

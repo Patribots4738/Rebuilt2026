@@ -11,8 +11,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -24,8 +22,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -34,17 +30,13 @@ import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
-import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
-import frc.robot.subsystems.superstructure.Superstructure.ClimbState;
-import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
-import frc.robot.subsystems.superstructure.climb.Climb;
-import frc.robot.subsystems.superstructure.climb.ClimbIOKraken;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.intake.IntakeIOKraken;
+import frc.robot.subsystems.superstructure.kicker.Kicker;
+import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
@@ -54,21 +46,12 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
-import frc.robot.subsystems.superstructure.kicker.Kicker;
-import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
-import frc.robot.util.Constants.DriveConstants;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.SpindexerConstants;
-import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.calc.PoseCalculations;
-import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
 
@@ -239,44 +222,6 @@ public class RobotContainer {
         ), swerve)
         );
 
-        // controller.b().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kForward));
-        // controller.a().whileTrue(swerve.driveQuasistatic(SysIdRoutine.Direction.kReverse));
-        
-        // controller.povUp().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kForward));
-        // controller.povDown().whileTrue(swerve.driveDynamic(SysIdRoutine.Direction.kReverse));
-        
-        // controller.x().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kForward));
-        // controller.y().whileTrue(swerve.turnQuasistatic(SysIdRoutine.Direction.kReverse));
-
-        // controller.povLeft().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kForward));
-        // controller.povRight().whileTrue(swerve.turnDynamic(SysIdRoutine.Direction.kReverse));
-
-        //  controller.a().onTrue(extender.setTestPositionCommand());
-  //      controller.b().onTrue(extender.setNeutralCommand());
-//        controller.x().onTrue(extender.resetEncodersCommand());
-
-        //controller.rightStick().onTrue(extender.resetEncodersCommand());
-      //  controller.rightTrigger().onTrue(extender.setTestPositionCommand());
-    //    controller.rightBumper().onTrue(extender.setNeutralCommand());
-
-        // controller.leftTrigger().onTrue(intake.setTestPercentCommand());
-//        controller.leftBumper().onTrue(intake.setPercentCommand(0.0));
-
-        // controller.b().onTrue(kicker.setTestPercentCommand());
-        //controller.rightBumper().onTrue(Commands.parallel(spindexer.setPercentCommand(0.0), kicker.setPercentCommand(0.0)));
-
-        // controller.povUp().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(TurretConstants.MIN_ANGLE_RADIANS)));
-        // controller.povDown().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(180))));
-        // controller.povRight().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(90)));
-        // controller.povLeft().onTrue(turret.setPositionCommand(Rotation2d.fromDegrees(45)));
-        //controller.povDown().onTrue(turret.setNeutralCommand());
-        // controller.povRight().onTrue(turret.setTestPositionCommand());
-        //controller.rightBumper().onTrue(turret.setNeutralCommand());
-        //controller.a().whileTrue(turret.sysIdDynamicForward());
-        //controller.b().whileTrue(turret.sysIdDynamicReverse());
-        //controller.x().whileTrue(turret.sysIdQuasistaticForward());
-        //controller.y().whileTrue(turret.sysIdQuasistaticReverse());
-
         //hood
         controller.rightBumper().onTrue(Commands.parallel(
             intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
@@ -306,6 +251,13 @@ public class RobotContainer {
 
         // controller.x().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kForward));
         // controller.y().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kReverse));
+
+
+        // swerve
+        // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
+        // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
+        // controller.b().whileTrue(swerve.driveCharacterization());
+        // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
@@ -320,33 +272,34 @@ public class RobotContainer {
                         : 180))
             ), swerve)
         );
+        
 
-        // controller.leftBumper().onTrue(superstructure.setIntakeState(IntakeState.INTAKE));
-        // controller.leftTrigger().onTrue(superstructure.setIntakeState(IntakeState.STOW));
-        // controller.rightBumper().onTrue(superstructure.fullStowCommand());
-        // controller.rightTrigger().whileTrue(
-        //     new ActiveConditionalCommand(
-        //         superstructure.fireCommand(), 
-        //         Commands.sequence(
-        //             shooter.armShooterCommand(), 
-        //             Commands.waitUntil(() -> shooter.isReady()),
-        //             superstructure.fireCommand()),
-        //         () -> shooter.isReady()
-        //     )
-        // );
-        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
-        // // TODO: make these automatic based on position?
-        // // you could have this as some sort of manual override, but seems unecesary with four cameras.
-        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
+        controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
+        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        controller.rightTrigger().whileTrue(
+            new ActiveConditionalCommand(
+                superstructure.fireCommand(), 
+                Commands.sequence(
+                    shooter.armShooterCommand(), 
+                    Commands.waitUntil(() -> shooter.isReadyToShoot()),
+                    superstructure.fireCommand()),
+                () -> shooter.isReadyToShoot()
+            )
+        );
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        // TODO: make these automatic based on position?
+        // you could have this as some sort of manual override, but seems unecesary with four cameras.
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+
+        controller.y().onTrue(shooter.toggleManualShootingCommand());
+        controller.b().onTrue(hood.toggleForcedDownCommand());
+
+        // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
         // controller.povDown().and(controller.povRight().negate()).onTrue(superstructure.setClimbState(ClimbState.STOW));
         // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
-
-        // // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        // // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        // // controller.b().whileTrue(swerve.driveCharacterization());
-        // // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
     private void configureCalibrationBindings(PatriBoxController controller) {

@@ -131,7 +131,7 @@ public class Superstructure {
                 shooter.trackTargetCommand(true, true, true),
                 Commands.none(), 
                 () -> !shooter.fullyTracking()),
-            () -> (shooter.fullyTracking() && shooter.isReady())
+            () -> (shooter.fullyTracking() && shooter.isReadyToShoot())
         );
     }
 
@@ -149,6 +149,33 @@ public class Superstructure {
             // setClimbState(ClimbState.STOW),
             setHopperState(HopperState.OFF),
             setIntakeState(IntakeState.STOW)
+        );
+    }
+
+    public Command stowClimbAndIntake() {
+        return Commands.parallel(
+            setIntakeState(IntakeState.STOW)
+            // ,
+            // setClimbState(ClimbState.STOW)
+        );
+    }
+
+    public Command toggleIntakeCommand() {
+        return Commands.either(
+            setIntakeState(IntakeState.INTAKE),
+            setIntakeState(IntakeState.NO_SPIN),
+            () -> (intake.getPercentOutput() != 0.0)
+        );
+    }
+
+    public Command killCommand() {
+        return Commands.parallel(
+            shooter.setNeutralCommand(),
+            // climb.setNeutralCommand(),
+            extender.setNeutralCommand(),
+            intake.setNeutralCommand(),
+            spindexer.setNeutralCommand(),
+            kicker.setNeutralCommand()
         );
     }
 }
