@@ -78,6 +78,10 @@ public class Intake extends SubsystemBase {
         shouldRunSetpoint = true;
     }
 
+    public double getPercentOutput() {
+        return percentOutput;
+    }
+
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
