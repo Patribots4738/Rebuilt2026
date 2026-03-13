@@ -79,7 +79,9 @@ public class Hood extends SubsystemBase {
         // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            LoggingConstants.HOOD_OFFSET,
+            LoggingConstants.HOOD_OFFSET.getX(),
+            LoggingConstants.HOOD_OFFSET.getY(),
+            LoggingConstants.HOOD_OFFSET.getZ(),
             new Rotation3d(0.0, 
                 inputs.internalPositionRads, 
                 RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())

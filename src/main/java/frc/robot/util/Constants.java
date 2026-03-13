@@ -93,8 +93,8 @@ public final class Constants {
 
         public static final int CLIMB_INDEX = 0;
         public static final int EXTENDER_INDEX = 1;
-        public static final int TURRET_INDEX = 2;
-        public static final int HOOD_INDEX = 3;
+        public static final int TURRET_INDEX = 3;
+        public static final int HOOD_INDEX = 4;
 
         public static final Translation3d ROBOT_OFFSET = new Translation3d(
             0.0,
@@ -121,9 +121,9 @@ public final class Constants {
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + -9.392,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 17.156
+            0.0,
+            0.0,
+            0.0
         );
 
         public static final double PHASE_DELAY = 0.03;
