@@ -294,7 +294,6 @@ public class RobotContainer {
         controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
-        controller.b().onTrue(hood.toggleForcedDownCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
