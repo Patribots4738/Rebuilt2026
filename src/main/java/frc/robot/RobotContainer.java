@@ -54,6 +54,8 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
 import frc.robot.util.Constants.DriveConstants;
@@ -109,6 +111,8 @@ public class RobotContainer {
     private final Kicker kicker;
     private final Spindexer spindexer;
     private final Alignment alignment;
+    @SuppressWarnings("unused")
+    private final Vision vision;
 
     private final Superstructure superstructure;
 
@@ -165,6 +169,12 @@ public class RobotContainer {
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
         alignment = new Alignment(swerve);
+        vision = new Vision(swerve.getPoseEstimator(), 
+                new VisionIOLimelight("LL3g", fieldRelativeToggle),
+                new VisionIOLimelight("LL4Left", fieldRelativeToggle),
+                new VisionIOLimelight("LLHalio", fieldRelativeToggle),
+                new VisionIOLimelight("LL4Right", fieldRelativeToggle)
+        );
 
         SmartDashboard.putData(field2d);
         SmartDashboard.putData("Mech2d", mech);

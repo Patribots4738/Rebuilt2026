@@ -780,32 +780,52 @@ public final class Constants {
     public static final class CameraConstants {
 
           public static final int ENABLED_THROTTLE = 0; // Process every frame
-          public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+          public static final int DISABLED_THROTTLE = 150; // Process 1 of every n frames
 
 
-        // UPDATE LATER once we know how many cameras we have and their positions
-     //   public static Pose3d LL3G_POSE = new Pose3d(
-       //     -0.312655,
-         //   -0.120619,
-     //       0.197874,
-       //     new Rotation3d(
-     //           Units.degreesToRadians(0), // -2.303
-       //         Units.degreesToRadians(15),
-         //       Units.degreesToRadians(-141.77)
-      //      )
-       /// );
-       
-        // UPDATE LATER once we know how many cameras we have and their positions
-      //  public static Pose3d LL4_POSE = new Pose3d(
-        //    -0.312655,
-          //  0.120619,
-       //     0.197874,
-         //   new Rotation3d(
-           //     Units.degreesToRadians(0), // 2.303
-             //   Units.degreesToRadians(15),
-               // Units.degreesToRadians(141.77)
-         //   )
-       // );
+        public static Pose3d LL4LeftPose3d = new Pose3d(
+            -0.282,
+            0.308,
+            0.203,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(0)
+            )
+        );
+
+        public static Pose3d LL3gPose3d = new Pose3d(
+            -0.292,
+            0.021,
+            0.339,
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(90d)
+            )
+        );
+
+        public static Pose3d LLHailoPose3d = new Pose3d(
+            0.281,
+            0.290,
+            0.200,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(-34.5)
+            )
+        );
+
+        public static Pose3d LL4RightPose3d = new Pose3d(
+            0.305,
+            0.076,
+            0.197,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(-105)
+            )
+        );
     }
 
     public static final class ClimbConstants {

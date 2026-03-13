@@ -52,13 +52,11 @@ public class Vision extends SubsystemBase {
     // private final LoggedTunableNumber minSingleTagArea = new LoggedTunableNumber("Vision/minSingleTagArea", 0.14);
 
     private final SwerveDrivePoseEstimator poseEstimator;
-    private final Supplier<AlignmentMode> alignmentSupplier;
 
     @AutoLogOutput (key="Subsystems/Vision/RotationUpdated")
     private boolean rotationUpdated = false;
 
-    public Vision(SwerveDrivePoseEstimator poseEstimator, Supplier<AlignmentMode> alignmentSupplier, VisionIO... io) {
-        this.alignmentSupplier = alignmentSupplier;
+    public Vision(SwerveDrivePoseEstimator poseEstimator, VisionIO... io) {
         int cameraCount = io.length;
         cameras = new VisionIO[cameraCount];
         inputs = new VisionIOInputsAutoLogged[cameraCount];
@@ -92,16 +90,6 @@ public class Vision extends SubsystemBase {
 
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT1Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-four").pose);
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT2Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-four").pose);
-
-
-            //when pose calcs are done fix this to align to starting line and ramp
-          //  if (alignmentSupplier.get() == AlignmentMode.RAMP) {
-           //     int reefTag = closestReefTag();
-                // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
-            ///    camera.setUsedTags(new int[] { reefTag });
-           // } else {
-             //   camera.setUsedTags(FieldConstants.REEF_TAGS);
-           // }
         }
 
         updatePoseEstimator();
