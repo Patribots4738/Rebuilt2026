@@ -187,7 +187,7 @@ public class RobotContainer {
         configureButtonBindings();
         configureTimedEvents();
 
-        pathPlannerStorage = new PathPlannerStorage(Set.of(swerve, extender, intake, climb, shooter, spindexer, kicker));
+        pathPlannerStorage = new PathPlannerStorage(Set.of(swerve, extender, intake, shooter, spindexer, kicker));
 
         prepareNamedCommands();
         pathPlannerStorage.configureAutoChooser();
@@ -410,8 +410,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand().until(() -> kicker.emptyHopper()));
         NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
-        NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
-        NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
+        //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
@@ -423,7 +423,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("WaitUntilEmptyHopper", Commands.waitUntil(() -> kicker.emptyHopper()));
         NamedCommands.registerCommand("WaitUntilBehindTower", Commands.waitUntil(() -> PoseCalculations.behindTower(swerve.getPose())));
         NamedCommands.registerCommand("WaitUntilNotBehindTower", Commands.waitUntil(() -> ! (PoseCalculations.behindTower(swerve.getPose()))));
-        NamedCommands.registerCommand("WaitUntilClimb", Commands.waitUntil(() -> superstructure.targetClimbState == ClimbState.UP));
+        //NamedCommands.registerCommand("WaitUntilClimb", Commands.waitUntil(() -> superstructure.targetClimbState == ClimbState.UP));
         NamedCommands.registerCommand("WaitUntilInsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone));
         NamedCommands.registerCommand("WaitUntilOutsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) != PoseCalculations.ZONE.inAllianceZone));
 

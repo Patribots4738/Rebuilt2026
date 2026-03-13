@@ -165,13 +165,13 @@ public class PathPlannerStorage {
         return Commands.defer(() -> Commands.sequence(
                 Commands.parallel(
                     AutoBuilder.followPath(pathToClimbPrep), 
-                    NamedCommands.getCommand("ClimbUp"), 
+                    //NamedCommands.getCommand("ClimbUp"), 
                     NamedCommands.getCommand("StopIntake"),
                     NamedCommands.getCommand("ShootUntilEmptyHopper")
                 ), 
                 AutoBuilder.followPath(pathToClimb), 
-                NamedCommands.getCommand("StopShooting"), 
-                NamedCommands.getCommand("ClimbDown")
+                NamedCommands.getCommand("StopShooting") 
+                //NamedCommands.getCommand("ClimbDown")
         ), requirements);
     }
 
