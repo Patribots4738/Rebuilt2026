@@ -122,17 +122,21 @@ public class Module {
     public double getDrivePositionRadians() {
         return inputs.drivePositionMeters * 2 * Math.PI / MK5nSwerveModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
+    
+    public double getTurnPositionRadians() {
+        return inputs.turnInternalPositionRads;
+    }
 
     public boolean getDrivePositionFlipped() {
         return inputs.drivePositionFlipped;
     }
 
     public double getDriveCharacterizationVelocity() {
-        return inputs.driveVelocityMPS / MK5nSwerveModuleConstants.DRIVING_ENCODER_VELOCITY_FACTOR;
+        return inputs.driveVelocityMPS * 2.0 * Math.PI / MK5nSwerveModuleConstants.DRIVING_ENCODER_VELOCITY_FACTOR;
     }
 
     public double getTurnCharacterizationVelocity() {
-        return inputs.turnInternalVelocityRadsPerSec / MK5nSwerveModuleConstants.TURNING_ENCODER_VELOCITY_FACTOR;
+        return inputs.turnInternalVelocityRadsPerSec;
     }
 
     public double getDriveVoltage() {
@@ -141,5 +145,13 @@ public class Module {
     
     public double getTurnVoltage() {
         return inputs.turnAppliedVolts;
+    }
+    
+    public void setDriveVoltage(double voltage) {
+        io.setDriveVoltage(voltage);
+    }
+    
+    public void setTurnVoltage(double voltage) {
+        io.setTurnVoltage(voltage);
     }
 }
