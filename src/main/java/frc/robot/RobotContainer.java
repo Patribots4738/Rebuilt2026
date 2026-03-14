@@ -244,6 +244,8 @@ public class RobotContainer {
         // controller.x().whileTrue(hood.setPositionCommand(0));
 
         controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
+        controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
         controller.rightTrigger().whileTrue(
             new ActiveConditionalCommand(
                 superstructure.fireCommand(), 
@@ -254,7 +256,7 @@ public class RobotContainer {
                 () -> shooter.isReadyToShoot()
             )
         );
-        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         
 
         //flywheel

@@ -28,11 +28,11 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Susbsytems/Shooter/AimTurret")
+    @AutoLogOutput(key = "Subsytems/Shooter/AimTurret")
     private boolean aimTurret = true;
-    @AutoLogOutput(key = "Susbsytems/Shooter/TrackFlywheel")
+    @AutoLogOutput(key = "Subsytems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
-    @AutoLogOutput(key = "Susbsytems/Shooter/AimHood")
+    @AutoLogOutput(key = "Subsytems/Shooter/AimHood")
     private boolean aimHood = true;
     @AutoLogOutput(key = "Subsystems/Shooter/PassIndex")
     private int passIndex = 0;
@@ -47,8 +47,6 @@ public class Shooter extends SubsystemBase {
     private final Flywheel flywheel;
 
     private Translation3d targetLocation;
-    @AutoLogOutput(key = "Subsystems/Shooter/Target")
-    private String targetName = "None";
 
     private Supplier<Pose2d> robotRelativePose;
     private Supplier<ChassisSpeeds> robotRelativeVelocity;
@@ -67,15 +65,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public enum Target {
-        HUB(FieldConstants.GET_HUB()),
-        PASS_LEFT(FieldConstants.GET_PASS_LEFT()),
-        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT()),
-        NONE(new Translation3d(0.0, 0.0, 0.0));
+        HUB(FieldConstants.GET_HUB(), "Hub"),
+        PASS_LEFT(FieldConstants.GET_PASS_LEFT(), "Pass Left"),
+        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT(), "Pass Right"),
+        NONE(new Translation3d(0.0, 0.0, 0.0), "None");
 
         public Translation3d location;
+        public String name;
 
-        Target(Translation3d location) {
+        Target(Translation3d location, String name) {
             this.location = location;
+            this.name = name;
         }
     }
 
@@ -91,9 +91,11 @@ public class Shooter extends SubsystemBase {
             flywheel.setNeutral();
         }
 
+        Logger.recordOutput("Subsystems/Shooter/Target", target.name);
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
+
     }
 
     public boolean partiallyTracking() {
