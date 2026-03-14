@@ -23,11 +23,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ClimbConstants;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 public class Climb extends SubsystemBase {
     
@@ -41,9 +40,13 @@ public class Climb extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     
     private final SysIdRoutine climbRoutine;
+    private double testPosition;
 
     public Climb(ClimbIO io) {
         this.io = io;
+
+        ClimbConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = ClimbConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+
         this.climbRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -133,6 +136,14 @@ public class Climb extends SubsystemBase {
 
     public double getPosition() {
         return inputs.positionMeters;
+    }
+
+    public void setTestPosition() {
+        setPosition(testPosition, false);
+    }
+
+    public Command setTestPositionCommand() {
+        return Commands.runOnce(() -> setTestPosition());
     }
 
     public double getCharacterizationVelocity() {

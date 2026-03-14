@@ -62,7 +62,7 @@ public final class Constants {
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
-                System.out.println("Incorrect robot type selected, changing to real robot");
+                System.out  .println("Incorrect robot type selected, changing to real robot");
                 robotType = RobotType.COMPBOT;
             }
             return robotType;
@@ -103,9 +103,9 @@ public final class Constants {
         );
 
         public static final Translation3d CLIMB_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.056,
-            ROBOT_OFFSET.getY() + 0.241,
-            ROBOT_OFFSET.getZ() + 0.2735
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(0.056),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.241), 
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(0.2735)
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
@@ -115,9 +115,9 @@ public final class Constants {
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() - 4.5,
-            ROBOT_OFFSET.getY() -4.0,
-            ROBOT_OFFSET.getZ() + 12.594
+            ROBOT_OFFSET.getX() - Units.inchesToMeters(4.5),
+            ROBOT_OFFSET.getY() - Units.inchesToMeters(4.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.594)
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
@@ -868,6 +868,8 @@ public final class Constants {
         
         public static final double VELOCITY_DEADBAND_MPS = 0.2;
         public static final double DEADBAND_METERS = 0.2;
+
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Climb/Position", 0.0);
     }
 
     public static final class TurretConstants {
