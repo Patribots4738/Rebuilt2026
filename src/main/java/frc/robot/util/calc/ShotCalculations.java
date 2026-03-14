@@ -14,6 +14,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
@@ -192,6 +193,9 @@ public class ShotCalculations {
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
         Logger.recordOutput("ShotCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
+        Logger.recordOutput("ShotCalculator/HoodAngleDegrees", Units.radiansToDegrees(latestParameters.hoodAngle));
+        Logger.recordOutput("ShotCalculator/TurretAngleDegrees", latestParameters.turretAngle.getDegrees());
+        Logger.recordOutput("ShotCalculator/FlywheelSpeedRPM", latestParameters.flywheelSpeed);
 
         return latestParameters;
     }
