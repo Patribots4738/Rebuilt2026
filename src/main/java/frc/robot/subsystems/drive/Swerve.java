@@ -200,10 +200,10 @@ public class Swerve extends SubsystemBase {
         
         driveRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                        Volts.of(0.5).per(Second),
-                        null,
-                        null,
+                        // even though our motors primarily run in amps, running them in volts for sysid still returns perfectly fine PID values.
+                        Volts.of(1).per(Second),
+                        Volts.of(5),
+                        Seconds.of(15),
                         (state) -> Logger.recordOutput("DriveSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
@@ -218,18 +218,18 @@ public class Swerve extends SubsystemBase {
         
         turnRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                        Volts.of(0.5).per(Second),
-                        null,
-                        null,
+                        // even though our motors primarily run in amps, running them in volts for sysid still returns perfectly fine PID values.
+                        Volts.of(1).per(Second),
+                        Volts.of(5),
+                        Seconds.of(15),
                         (state) -> Logger.recordOutput("TurnSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
                         (voltage) -> runTurnCharacterization(voltage.in(Volts)),
-                        log -> log.motor("drive")
-                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
-                                .angularPosition(Radians.of(getDriveAveragePosition()))
-                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
+                        log -> log.motor("turn")
+                                .voltage(Volts.of(getTurnCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getTurnAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getTurnCharacterizationVelocity())),
                         this
                 )
         );
@@ -427,7 +427,7 @@ public class Swerve extends SubsystemBase {
     public double getTurnAveragePosition() {
         double average = 0.0;
         for (Module module : swerveModules) {
-            average += module.getPosition().angle.getRadians();
+            average += module.getTurnPositionRadians();
         }
         return average / 4.0;
     }
