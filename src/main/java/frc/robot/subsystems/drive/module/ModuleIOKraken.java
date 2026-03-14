@@ -169,4 +169,13 @@ public class ModuleIOKraken implements ModuleIO {
         turnMotor.setGains(gains);
     }
 
+    @Override
+    public void setDriveVoltage(double voltage) {
+        driveMotor.setVoltageOutput(voltage);
+    }
+    
+    @Override
+    public void setTurnVoltage(double voltage) {
+        turnMotor.setVoltageOutput(voltage);
+    }
 }
