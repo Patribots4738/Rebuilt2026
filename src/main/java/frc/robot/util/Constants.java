@@ -121,9 +121,9 @@ public final class Constants {
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            0.0,
-            0.0,
-            0.0
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-1.517),
+            ROBOT_OFFSET.getY() + 0.0,
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(17.156)
         );
 
         public static final double PHASE_DELAY = 0.03;
