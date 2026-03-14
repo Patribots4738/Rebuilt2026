@@ -32,11 +32,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
+import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
 
@@ -834,50 +837,53 @@ public final class Constants {
         
         public static final double VELOCITY_DEADBAND_MPS = 0.2;
         public static final double DEADBAND_METERS = 0.2;
-    }
-
-    public static final class TurretConstants {
-        public static final int MOTOR_CAN_ID = 0;
-        public static final int MOTOR_TYPE = 44;
-
-        public static final int ENCODER_CAN_ID = 0;
-
-        public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 50;
-
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
-        public static final double GEAR_RATIO = 9.0;
-
-
-        public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
-        public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
-
-        public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); 
-
-        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
-
-        // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double G = FieldConstants.IS_REAL ? 0 : 0;
-
-        public static final GainConstants GAINS = new GainConstants(
-            P,
-            I,
-            D,
-            A,
-            S,
-            V,
-            G
-        );
-
+                public static final GainConstants GAINS = null;
+            }
+        
+            public static final class TurretConstants {
+                public static final int MOTOR_CAN_ID = 0;
+                public static final int MOTOR_TYPE = 44;
+        
+                public static final int ENCODER_CAN_ID = 0;
+        
+                public static final boolean BRAKE_MOTOR = true;
+                public static final boolean MOTOR_INVERTED = false;
+                public static final double CURRENT_LIMIT = 50;
+        
+                public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+                public static final double GEAR_RATIO = 9.0;
+        
+        
+                public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+                public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
+                public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
+        
+                public static final double MIN_ANGLE_RADIANS = 0.0;
+                public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(352); 
+        
+                public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
+        
+                // TODO: tune these values
+                public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double I = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+                public static final double G = FieldConstants.IS_REAL ? 0 : 0;
+        
+                public static final GainConstants GAINS = new GainConstants(
+                    P,
+                    I,
+                    D,
+                    A,
+                    S,
+                    V,
+                    G
+                );
+        
+                public static final LoggedGainConstants LOGGED_CLIMB_GAINS = new LoggedGainConstants(ClimbConstants.GAINS, "Climb/Gains");
+                
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 4d;
         public static final double JERK = 20d;

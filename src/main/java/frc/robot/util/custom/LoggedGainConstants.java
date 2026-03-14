@@ -24,7 +24,7 @@ public class LoggedGainConstants {
         this.sValue = new LoggedTunableNumber(name + "4-S", constants.getS());
         this.vValue = new LoggedTunableNumber(name + "5-V", constants.getV());
         this.gValue = new LoggedTunableNumber(name + "6-G", constants.getG());
-
+        
     }
 
     public Trigger onChanged() {

@@ -24,10 +24,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.custom.LoggedGainConstants;
 
 import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 public class Climb extends SubsystemBase {
     
@@ -154,4 +153,7 @@ public class Climb extends SubsystemBase {
     public Command dynamic(SysIdRoutine.Direction direction) {
         return climbRoutine.dynamic(direction);
     }
-}
+    
+    public LoggedGainConstants LOGGED_CLIMB_GAINS = new LoggedGainConstants(ClimbConstants.GAINS, "Climb/Gains");
+
+    }
