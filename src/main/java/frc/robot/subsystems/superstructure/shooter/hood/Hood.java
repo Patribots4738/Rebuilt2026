@@ -3,13 +3,12 @@ package frc.robot.subsystems.superstructure.shooter.hood;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +31,24 @@ public class Hood extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     private double percentOutput = 0.0;
+    
+    private Transform3d pivotOffset = new Transform3d(
+            new Translation3d(
+                    LoggingConstants.HOOD_OFFSET.getX(),
+                    LoggingConstants.HOOD_OFFSET.getY(),
+                    LoggingConstants.HOOD_OFFSET.getZ()
+            ),
+            new Rotation3d()
+    );
+    
+    private Transform3d counterOffset = new Transform3d(
+            new Translation3d(
+                    -LoggingConstants.HOOD_OFFSET.getX(),
+                    -LoggingConstants.HOOD_OFFSET.getY(),
+                    -LoggingConstants.HOOD_OFFSET.getZ()
+            ),
+            new Rotation3d()
+    );
     
     private double targetPosition;
     private double testPosition;
@@ -78,14 +95,14 @@ public class Hood extends SubsystemBase {
 
         // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
 
-        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            LoggingConstants.HOOD_OFFSET.getX(),
-            LoggingConstants.HOOD_OFFSET.getY(),
-            LoggingConstants.HOOD_OFFSET.getZ(),
-            new Rotation3d(0.0, 
-                inputs.internalPositionRads, 
-                RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
+        Transform3d armRotation = new Transform3d(
+                new Translation3d(),
+                new Rotation3d(0.0,
+                        inputs.internalPositionRads,
+                        RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
         );
+        
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = RobotContainer.robotPose3d.plus(pivotOffset).plus(armRotation).plus(counterOffset);
     }
 
     /**
