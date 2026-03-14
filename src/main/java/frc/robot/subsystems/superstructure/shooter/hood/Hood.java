@@ -1,6 +1,5 @@
 package frc.robot.subsystems.superstructure.shooter.hood;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.*;
@@ -9,18 +8,13 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
-import frc.robot.util.Constants.MK5nSwerveModuleConstants;
-import frc.robot.util.calc.ShotCalculations;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -33,22 +27,16 @@ public class Hood extends SubsystemBase {
     private double percentOutput = 0.0;
     
     private Transform3d pivotOffset = new Transform3d(
-            new Translation3d(
-                    LoggingConstants.HOOD_OFFSET.getX(),
-                    LoggingConstants.HOOD_OFFSET.getY(),
-                    LoggingConstants.HOOD_OFFSET.getZ()
-            ),
+            LoggingConstants.HOOD_OFFSET,
             new Rotation3d()
     );
     
     private Transform3d counterOffset = new Transform3d(
-            new Translation3d(
-                    -LoggingConstants.HOOD_OFFSET.getX(),
-                    -LoggingConstants.HOOD_OFFSET.getY(),
-                    -LoggingConstants.HOOD_OFFSET.getZ()
-            ),
+            LoggingConstants.HOOD_OFFSET,
             new Rotation3d()
     );
+    
+    private Rotation3d desiredArmRotation;
     
     private double targetPosition;
     private double testPosition;
@@ -77,6 +65,23 @@ public class Hood extends SubsystemBase {
                         this
                 )
         );
+        
+        targetPosition = 0.0;
+        
+        desiredArmRotation = new Rotation3d(0.0,
+                targetPosition,
+                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                LoggingConstants.HOOD_OFFSET,
+                desiredArmRotation
+        );
+        
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                LoggingConstants.HOOD_OFFSET,
+                new Rotation3d()
+        );
     }
 
     @Override
@@ -93,16 +98,24 @@ public class Hood extends SubsystemBase {
         //     io.setNeutral();
         // }
 
-        // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
-
-        Transform3d armRotation = new Transform3d(
-                new Translation3d(),
-                new Rotation3d(0.0,
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getTranslation(),
+                new Rotation3d(
+                        0.0,
                         inputs.internalPositionRads,
-                        RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
+                        RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
+                )
         );
         
-        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = RobotContainer.robotPose3d.plus(pivotOffset).plus(armRotation).plus(counterOffset);
+        desiredArmRotation = new Rotation3d(0.0,
+                targetPosition,
+                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getTranslation(),
+                desiredArmRotation
+        );
     }
 
     /**
@@ -116,11 +129,9 @@ public class Hood extends SubsystemBase {
         shouldRunSetpoint = true;
         // io.setPosition(targetPosition, 0);
 
-        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getY(),
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getZ(),
-            new Rotation3d(0, position, 0)
+        desiredArmRotation = new Rotation3d(0.0,
+                targetPosition,
+                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
         );
 
         // RobotContainer.hoodMechanism.setAngle(position);    

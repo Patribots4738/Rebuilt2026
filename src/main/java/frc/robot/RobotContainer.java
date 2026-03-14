@@ -94,7 +94,7 @@ public class RobotContainer {
 
     private final Swerve swerve;
     @SuppressWarnings("unused")
-    private final Climb climb;
+//     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
@@ -149,7 +149,7 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Voltage", voltage);
 
         swerve = new Swerve();
-        climb = new Climb(new ClimbIOKraken());
+        // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -272,20 +272,17 @@ public class RobotContainer {
         //controller.x().whileTrue(turret.sysIdQuasistaticForward());
         //controller.y().whileTrue(turret.sysIdQuasistaticReverse());
 
-        //HOOD
-        //controller.povUp().onTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
-        //controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
-        //controller.a().whileTrue(hood.setCurrentCommand(60));
-        //controller.b().whileTrue(hood.setCurrentCommand(-60));
-
-        //CLIMB
-        controller.a().onTrue(climb.setTestPositionCommand());
-        controller.b().onTrue(climb.setNeutralCommand());
-        
-        //FLYWHEEL
-        
-        //SPINDEXER
-        //controller.x().onTrue(spindexer.setTestPercentCommand());
+        //hood
+        controller.povUp().onTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
+        controller.povDown().onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+//        controller.a().whileTrue(hood.setCurrentCommand(60));
+//        controller.b().whileTrue(hood.setCurrentCommand(-60));
+        controller.a().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(45))));
+        controller.b().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(180))));
+        controller.y().onTrue(turret.setPositionCommand(new Rotation2d(Units.degreesToRadians(225))));
+        //flywheel
+        //spindexer
+        controller.x().onTrue(spindexer.setTestPercentCommand());
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
