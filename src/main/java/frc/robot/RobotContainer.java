@@ -46,6 +46,8 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.subsystems.superstructure.shooter.turret.TurretIOKraken;
 import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.OIConstants;
@@ -82,6 +84,7 @@ public class RobotContainer {
 
     private final Swerve swerve;
     @SuppressWarnings("unused")
+    private final Vision vision;
 //     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
@@ -135,8 +138,14 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Total Power", totalPower);
         // voltage = pdh.getVoltage();
         // SmartDashboard.putNumber("Voltage", voltage);
-
+        
         swerve = new Swerve();
+        alignment = new Alignment(swerve);
+        vision = new Vision(swerve.getPoseEstimator(), 
+            new VisionIOLimelight("limelight-right", true), 
+            new VisionIOLimelight("limelight-left", true), 
+            new VisionIOLimelight("limelight-hailo", true), 
+            new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -147,7 +156,6 @@ public class RobotContainer {
         hood = new Hood(new HoodIOKraken());
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
-        alignment = new Alignment(swerve);
 
         SmartDashboard.putData(field2d);
         SmartDashboard.putData("Mech2d", mech);
@@ -211,19 +219,10 @@ public class RobotContainer {
     }
 
     private void configureDevBindings(PatriBoxController controller) {
-        controller.start().onTrue(
-                Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                        swerve.getPose().getTranslation(),
-                        Rotation2d.fromDegrees(
-                                Robot.isRedAlliance()
-                                ? 0
-                                : 180))
-        ), swerve)
-        );
+        controller.start().onTrue(vision.toggleMT1Command());
 
         //hood
-        controller.rightBumper().onTrue(Commands.parallel(
+        controller.leftTrigger().onTrue(Commands.parallel(
             intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
             spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
             kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
@@ -235,14 +234,27 @@ public class RobotContainer {
             kicker.setPercentCommand(0.0)
         ));
         
-        controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
-        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        controller.povDown().onTrue(flywheel.stopCommand());
+        // controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
+        // controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        // controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        // controller.povDown().onTrue(flywheel.stopCommand());
         
-        controller.a().whileTrue(hood.setPositionCommand(Units.degreesToRadians(10)));
-        controller.b().whileTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
-        controller.x().whileTrue(hood.setPositionCommand(0));
+        // controller.a().whileTrue(hood.setPositionCommand(Units.degreesToRadians(10)));
+        // controller.b().whileTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
+        // controller.x().whileTrue(hood.setPositionCommand(0));
+
+        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        controller.rightTrigger().whileTrue(
+            new ActiveConditionalCommand(
+                superstructure.fireCommand(), 
+                Commands.sequence(
+                    shooter.armShooterCommand(), 
+                    Commands.waitUntil(() -> shooter.isReadyToShoot()),
+                    superstructure.fireCommand()),
+                () -> shooter.isReadyToShoot()
+            )
+        );
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         
 
         //flywheel

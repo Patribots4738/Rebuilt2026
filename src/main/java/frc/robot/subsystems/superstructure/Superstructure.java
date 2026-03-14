@@ -136,7 +136,7 @@ public class Superstructure {
     }
 
     public Command ceaseFireCommand() {
-        return Commands.parallel(
+        return Commands.sequence(
                     shooter.disarmShooterCommand(),
                     shooter.stowCommand(),
                     setHopperState(HopperState.OFF)
