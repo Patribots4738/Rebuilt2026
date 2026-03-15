@@ -133,7 +133,7 @@ public final class Constants {
     public static final class DriveConstants {
         // Driving Parameters - Note that these are not the maximum capable speeds of
         // the robot, rather the allowed maximum speeds
-        public static double MAX_SPEED_METERS_PER_SECOND = 2.0;
+        public static double MAX_SPEED_METERS_PER_SECOND = 4.0;
 
         public static double DEFAULT_DRIVE_MULTIPLIER = 1.0;
         public static double SHOOTING_DRIVE_MULTIPLIER = 0.65;
@@ -525,9 +525,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 225; //225
-        public static final double TURNING_I = 13; //13
-        public static final double TURNING_D = 8; //8
+        public static final double TURNING_P = 700.0; //225
+        public static final double TURNING_I = 0.0; //13
+        public static final double TURNING_D = 12.0; //8
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -993,7 +993,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 0.0; // TODO: find this value
+        public static final double HUB_RPM = 2600.0; 
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1036,7 +1036,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
+        public static final double HUB_POSITION_RADIANS = 0.06981317007977318; 
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1103,6 +1103,7 @@ public final class Constants {
         public static final double STOW_POSITION_RADIANS = 0.2;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
+        public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 0.2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
