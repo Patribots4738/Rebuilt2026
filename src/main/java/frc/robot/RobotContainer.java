@@ -48,6 +48,7 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.OIConstants;
@@ -221,18 +222,23 @@ public class RobotContainer {
     private void configureDevBindings(PatriBoxController controller) {
         controller.start().onTrue(vision.toggleMT1Command());
 
-        //hood
-        controller.leftTrigger().onTrue(Commands.parallel(
-            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        ));
+        // controller.leftTrigger().onTrue(Commands.parallel(
+        //     intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+        //     spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+        //     kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        // ));
 
-        controller.leftBumper().onTrue(Commands.parallel(
-            intake.setPercentCommand(0.0),
-            spindexer.setPercentCommand(0.0),
-            kicker.setPercentCommand(0.0)
-        ));
+        controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
+        controller.leftBumper().onTrue(intake.setPercentCommand(0));
+
+        controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
+        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+
+        // controller.leftBumper().onTrue(Commands.parallel(
+        //     intake.setPercentCommand(0.0),
+        //     spindexer.setPercentCommand(0.0),
+        //     kicker.setPercentCommand(0.0)
+        // ));
         
         // controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
         // controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
@@ -243,19 +249,21 @@ public class RobotContainer {
         // controller.b().whileTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
         // controller.x().whileTrue(hood.setPositionCommand(0));
 
-        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
-        controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
-        controller.rightTrigger().whileTrue(
-            new ActiveConditionalCommand(
-                superstructure.fireCommand(), 
-                Commands.sequence(
-                    shooter.armShooterCommand(), 
-                    Commands.waitUntil(() -> shooter.isReadyToShoot()),
-                    superstructure.fireCommand()),
-                () -> shooter.isReadyToShoot()
-            )
-        );
+        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        // controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
+        // controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
+        // controller.rightTrigger().whileTrue(
+        //     new ActiveConditionalCommand(
+        //         superstructure.fireCommand(), 
+        //         Commands.sequence(
+        //             shooter.armShooterCommand(), 
+        //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
+        //             superstructure.fireCommand()),
+        //         () -> shooter.isReadyToShoot()
+        //     )
+        // );
+
+
         // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         
 

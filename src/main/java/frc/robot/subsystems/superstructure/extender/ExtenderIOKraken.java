@@ -33,7 +33,12 @@ public class ExtenderIOKraken implements ExtenderIO {
 
     @Override
     public void updateInputs(ExtenderIOInputs inputs) {
-  
+        inputs.motorConnected = motor.refreshSignals().isOK();
+        inputs.positionRads = motor.getPositionAsDouble();
+        inputs.targetPositionRads = motor.getTargetPosition();
+        inputs.appliedOutputVolts = motor.getVoltageAsDouble();
+        inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
+        inputs.temperatureCelsius = motor.getTemperatureAsDouble();
     }
 
     @Override

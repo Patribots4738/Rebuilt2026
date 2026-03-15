@@ -64,8 +64,8 @@ public class TurretIOKraken implements TurretIO {
         //                 : inputs.encoderAbsPositionRads * (TurretConstants.MOTOR_GEAR_RATIO / TurretConstants.ENCODER_GEAR_RATIO));
         //         encoderUpdated = true;
         //     }
-        // } else {
-        //     inputs.encoderAbsPositionRads = inputs.internalPositionRads;
+        } else {
+            inputs.encoderAbsPositionRads = inputs.internalPositionRads;
         }
         inputs.internalPositionRads = motor.getPositionAsDouble();
         inputs.internalVelocityRadsPerSec = motor.getVelocityAsDouble();
@@ -78,6 +78,10 @@ public class TurretIOKraken implements TurretIO {
     @Override
     public void setPosition(double position, double feedforward) {
         motor.setTargetPosition(position, feedforward);
+    }
+
+    public double getPosition() {
+        return motor.getPositionAsDouble();
     }
 
     @Override

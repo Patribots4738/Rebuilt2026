@@ -130,13 +130,13 @@ public class Vision extends SubsystemBase {
         int maxTagIndex = 0;
         
         if (camerasToUpdate.size() > 0) {
-            for (int i = 0; i <= camerasToUpdate.size(); i++) {
+            for (int i = 0; i < camerasToUpdate.size(); i++) {
                 if (tagCount[i] > maxTagCount) {
                     maxTagCount = tagCount[i];
                     maxTagIndex = i;
                 } else if (tagCount[i] == maxTagCount) {
                     maxTagArea = tagArea[i];
-                    maxTagIndex= i;
+                    maxTagIndex = i;
                 }
             }
             
@@ -153,7 +153,9 @@ public class Vision extends SubsystemBase {
         }
 
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-        poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
+        if (maxTagCount < 0) {
+            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);    
+        }
         if (!camerasToUpdate.isEmpty()) {
             rotationUpdated = true;
         }

@@ -1078,7 +1078,7 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = true;
-        public static final double CURRENT_LIMIT = 20;
+        public static final double CURRENT_LIMIT = 60;
 
         public static final double INTAKE_PERCENT = 0.5;
 
@@ -1098,17 +1098,16 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 60.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 2.19;
 
-        public static final double STOW_POSITION_RADIANS = 0.0;
-        public static final double INTAKE_POSITION_RADIANS = 0.0;
+        public static final double STOW_POSITION_RADIANS = 0.2;
+        public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double DEADBAND_RADIANS = 0.0;
-
+        public static final double DEADBAND_RADIANS = 0.1;
 
         public static final double P = FieldConstants.IS_REAL ? 100 : 0;
         public static final double I = FieldConstants.IS_REAL ? 15 : 0;
