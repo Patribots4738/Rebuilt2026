@@ -33,8 +33,7 @@ public class Climb extends SubsystemBase {
     private final ClimbIO io;
     private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
-    private State targetState = new State(0, 0);
-    private State setpoint = new State(0, 0);
+    private double targetState;
     private boolean slam = false;
     @AutoLogOutput (key = "Subsystems/Climb/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
@@ -75,13 +74,11 @@ public class Climb extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Climb", inputs);
 
         Logger.recordOutput("Subsystems/Climb/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState.position);
+        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState);
 
         if (shouldRunSetpoint) {
-            io.setPosition(setpoint.position, slam ? 1 : 0);
+            io.setPosition(targetState, slam ? 1 : 0);
         } else {
-            setpoint.position = inputs.positionMeters;
-            setpoint.velocity = inputs.velocityMetersPerSec;
             io.setNeutral();
         }
 
@@ -95,18 +92,14 @@ public class Climb extends SubsystemBase {
 
     public void setPosition(double position, boolean slam) {
         position = MathUtil.clamp(position, 0, ClimbConstants.MAX_DISPLACEMENT_METERS);
-        if (position != targetState.position) {
-            setpoint.position = inputs.positionMeters;
-            setpoint.velocity = inputs.velocityMetersPerSec;
-        }
-        targetState.position = position;
+        targetState = position;
         this.slam = slam;
         shouldRunSetpoint = true;
 
         RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
                 LoggingConstants.CLIMB_OFFSET.getX(),
                 LoggingConstants.CLIMB_OFFSET.getY(),
-                LoggingConstants.CLIMB_OFFSET.getZ() + targetState.position,
+                LoggingConstants.CLIMB_OFFSET.getZ() + targetState,
             new Rotation3d()
         );
     }
@@ -140,7 +133,7 @@ public class Climb extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+        return atPosition(targetState);
     }
 
     public double getPosition() {
