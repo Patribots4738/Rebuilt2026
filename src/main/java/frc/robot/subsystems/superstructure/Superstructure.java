@@ -21,22 +21,22 @@ public class Superstructure {
 
     private final Extender extender;
     private final Intake intake;
-    private final Climb climb;
+    // private final Climb climb;
     private final Spindexer spindexer;
     private final Shooter shooter;
     private final Kicker kicker;
 
     private final Set<Subsystem> requirements;
 
-    public Superstructure(Extender extender, Intake intake, Climb climb, Shooter shooter, Spindexer spindexer, Kicker kicker) {
+    public Superstructure(Extender extender, Intake intake, Shooter shooter, Spindexer spindexer, Kicker kicker) {
         this.extender = extender;
         this.intake = intake;
-        this.climb = climb;
+        // this.climb = climb;
         this.shooter = shooter;
         this.kicker = kicker;
         this.spindexer = spindexer;
 
-        this.requirements = Set.of(extender, intake, climb, shooter, spindexer, kicker);
+        this.requirements = Set.of(extender, intake, shooter, spindexer, kicker);
     }
 
     public enum ClimbState {
@@ -81,7 +81,8 @@ public class Superstructure {
     public enum IntakeState {
         STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0),
         NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
-        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT);
+        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
+        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0);
 
         public double extenderPosition;
         public double intakePercent;
@@ -96,22 +97,22 @@ public class Superstructure {
     // because that would create illegal extension over the frame perimeter in multiple directions
     // so whichever one wants to stow, we stow that first
     // we will use this if we have an l3
-    public Command fixIntakeAndClimb(IntakeState intakeState, ClimbState climbState) {
-        return Commands.either(
-            Commands.sequence(setIntakeState(intakeState), setClimbState(climbState)),
-            Commands.sequence(setClimbState(climbState), setIntakeState(intakeState)),
-            () -> climbState != ClimbState.STOW 
-        );
-    }
+    // public Command fixIntakeAndClimb(IntakeState intakeState, ClimbState climbState) {
+    //     return Commands.either(
+    //         Commands.sequence(setIntakeState(intakeState), setClimbState(climbState)),
+    //         Commands.sequence(setClimbState(climbState), setIntakeState(intakeState)),
+    //         () -> climbState != ClimbState.STOW 
+    //     );
+    // }
 
     public Command setIntakeState(IntakeState state) {
         return Commands.sequence(intake.setPercentCommand(() -> state.intakePercent),
                             extender.setPositionCommand(() -> state.extenderPosition));
     }
 
-    public Command setClimbState(ClimbState state) {
-        return climb.setPositionCommand(() -> state.climbPosition, () -> state.slam);
-    }
+    // public Command setClimbState(ClimbState state) {
+    //     return climb.setPositionCommand(() -> state.climbPosition, () -> state.slam);
+    // }
 
     public Command setHopperState(HopperState state) {
         return Commands.parallel(kicker.setPercentCommand(() -> state.kickerPercent),
@@ -121,20 +122,25 @@ public class Superstructure {
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
     public Command fireCommand() {
-        return Commands.either(
-            Commands.parallel(
+       shooter.trackTargetCommand(true, true, true);
+        return Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent)),
-            Commands.either(
-                shooter.trackTargetCommand(true, true, true),
-                Commands.none(), 
-                () -> !shooter.fullyTracking()),
-            () -> (shooter.fullyTracking() && shooter.isReady())
-        );
+                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
+                extender.feedShooterCommand().until(() -> kicker.emptyHopper()));
+
+        //                 extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
+        //     Commands.either(
+        //         shooter.trackTargetCommand(true, true, true),
+        //         Commands.none(), 
+        //         () -> !shooter.fullyTracking()),
+        //     () -> (shooter.fullyTracking() && shooter.isReadyToShoot())
+        // );
+
+
     }
 
     public Command ceaseFireCommand() {
-        return Commands.parallel(
+        return Commands.sequence(
                     shooter.disarmShooterCommand(),
                     shooter.stowCommand(),
                     setHopperState(HopperState.OFF)
@@ -144,9 +150,36 @@ public class Superstructure {
     public Command fullStowCommand() {
         return Commands.sequence(
             shooter.stowCommand(),
-            setClimbState(ClimbState.STOW),
+            // setClimbState(ClimbState.STOW),
             setHopperState(HopperState.OFF),
             setIntakeState(IntakeState.STOW)
+        );
+    }
+
+    public Command stowClimbAndIntake() {
+        return Commands.parallel(
+            setIntakeState(IntakeState.STOW)
+            // ,
+            // setClimbState(ClimbState.STOW)
+        );
+    }
+
+    public Command toggleIntakeCommand() {
+        return Commands.either(
+            setIntakeState(IntakeState.INTAKE),
+            setIntakeState(IntakeState.NO_SPIN),
+            () -> (intake.getPercentOutput() != 0.0)
+        );
+    }
+
+    public Command killCommand() {
+        return Commands.parallel(
+            shooter.setNeutralCommand(),
+            // climb.setNeutralCommand(),
+            extender.setNeutralCommand(),
+            intake.setNeutralCommand(),
+            spindexer.setNeutralCommand(),
+            kicker.setNeutralCommand()
         );
     }
 }

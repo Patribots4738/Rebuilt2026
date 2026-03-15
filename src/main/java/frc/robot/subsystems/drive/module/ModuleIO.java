@@ -51,4 +51,7 @@ public interface ModuleIO {
 
     default void setTurnGains(GainConstants gains) {}
 
+    default void setDriveVoltage(double voltage) {}
+    
+    default void setTurnVoltage(double voltage) {}
 }

@@ -5,12 +5,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.OIConstants;
@@ -24,107 +21,6 @@ public class PatriBoxController extends CommandXboxController {
 
         this.deadband = deadband;
     }
-
-    // TODO: reevaluate if you still need these
-    // The following 24 methods will be unnecesary in 2025.
-    // They fix a loop overrun issue in 2024's wpilib
-    // more info can be found at https://github.com/Patribots4738/Crescendo2024/issues/144
-    public boolean getAButton() {
-        return super.getHID().getAButton();
-    }
-
-    public boolean getBButton() {
-        return super.getHID().getBButton();
-    }
-
-    public boolean getXButton() {
-        return super.getHID().getXButton();
-    }
-
-    public boolean getYButton() {
-        return super.getHID().getYButton();
-    }
-
-    public double getLeftTriggerAxis() {
-        return super.getHID().getLeftTriggerAxis();
-    }
-
-    public boolean getLeftTrigger() {
-        return super.getHID().getLeftTriggerAxis() > 0.25;
-    }
-
-    public double getRightTriggerAxis() {
-        return super.getHID().getRightTriggerAxis();
-    }
-
-    public boolean getRightTrigger() {
-        return super.getHID().getRightTriggerAxis() > 0.25;
-    }
-
-    public boolean getStartButton() {
-        return super.getHID().getStartButton();
-    }
-
-    public boolean getBackButton() {
-        return super.getHID().getBackButton();
-    }
-
-    public boolean getPOVUp() {
-        return super.getHID().getPOV() == 0;
-    }
-
-    public boolean getPOVRight() {
-        return super.getHID().getPOV() == 90;
-    }
-
-    public boolean getPOVDown() {
-        return super.getHID().getPOV() == 180;
-    }
-
-    public boolean getPOVLeft() {
-        return super.getHID().getPOV() == 270;
-    }
-
-    public boolean getLeftBumper() {
-        return super.getHID().getLeftBumperButton();
-    }
-
-    public boolean getRightBumper() {
-        return super.getHID().getRightBumperButton();
-    }
-
-    public Trigger leftY() {
-        return leftY(0.3, CommandScheduler.getInstance().getDefaultButtonLoop());
-    }
-
-    public Trigger leftX() {
-        return leftX(0.3, CommandScheduler.getInstance().getDefaultButtonLoop());
-    }
-
-    public Trigger rightY() {
-        return rightY(0.3, CommandScheduler.getInstance().getDefaultButtonLoop());
-    }
-
-    public Trigger rightX() {
-        return rightX(0.3, CommandScheduler.getInstance().getDefaultButtonLoop());
-    }
-
-    public Trigger leftY(double threshold, EventLoop loop) {
-        return new Trigger(loop, () -> Math.abs(getLeftY()) > threshold);
-    }
-
-    public Trigger leftX(double threshold, EventLoop loop) {
-        return new Trigger(loop, () -> Math.abs(getLeftX()) > threshold);
-    }
-
-    public Trigger rightY(double threshold, EventLoop loop) {
-        return new Trigger(loop, () -> Math.abs(getRightY()) > threshold);
-    }
-
-    public Trigger rightX(double threshold, EventLoop loop) {
-        return new Trigger(loop, () -> Math.abs(getRightX()) > threshold);
-    }
-    // This marks the end of the methods that should be unnecesary in 2025
 
     @Override
     public double getLeftX() {

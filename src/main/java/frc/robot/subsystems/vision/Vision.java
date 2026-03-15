@@ -24,7 +24,6 @@ import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
-import frc.robot.util.auto.Alignment.AlignmentMode;
 
 public class Vision extends SubsystemBase {
 
@@ -52,13 +51,11 @@ public class Vision extends SubsystemBase {
     // private final LoggedTunableNumber minSingleTagArea = new LoggedTunableNumber("Vision/minSingleTagArea", 0.14);
 
     private final SwerveDrivePoseEstimator poseEstimator;
-    private final Supplier<AlignmentMode> alignmentSupplier;
 
     @AutoLogOutput (key="Subsystems/Vision/RotationUpdated")
     private boolean rotationUpdated = false;
 
-    public Vision(SwerveDrivePoseEstimator poseEstimator, Supplier<AlignmentMode> alignmentSupplier, VisionIO... io) {
-        this.alignmentSupplier = alignmentSupplier;
+    public Vision(SwerveDrivePoseEstimator poseEstimator, VisionIO... io) {
         int cameraCount = io.length;
         cameras = new VisionIO[cameraCount];
         inputs = new VisionIOInputsAutoLogged[cameraCount];
@@ -108,8 +105,8 @@ public class Vision extends SubsystemBase {
     }
 
     private void updatePoseEstimator() {
-        int tagCount = 0;
-        double tagArea = 0;
+        int tagCount[] = new int[cameras.length];
+        double tagArea[] = new double[cameras.length];
 
         List<Integer> camerasToUpdate = new ArrayList<>();
         for (int i = 0; i < cameras.length; i++) {
@@ -117,8 +114,8 @@ public class Vision extends SubsystemBase {
             // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
             if (updateCamera) {
                 camerasToUpdate.add(i);
-                tagCount += inputs[i].tagIds.length;
-                tagArea = (tagArea * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
+                tagCount[1] = inputs[i].tagIds.length;
+                tagArea[1] = (tagArea[1] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
             }
         }
         
@@ -128,33 +125,36 @@ public class Vision extends SubsystemBase {
         double xyStds = 0.0;
         double radStds = 0.0;
 
-        if ((Robot.gameMode == GameMode.DISABLED || 
-            Robot.gameMode == GameMode.AUTONOMOUS
-                && Robot.currentTimestamp - RobotContainer.gameModeStart < 1.75)
-                && camerasToUpdate.size() > 0) {
-            xyStds = 0.001;
-            radStds = 0.001;
-        } else if (camerasToUpdate.size() > 0) {
-            if (tagCount > 1 || tagArea > 4.0) {
-                // Multiple targets or one huge target (like reef tag)
-                // Trust the vision even MORE
-                xyStds = Math.hypot(0.001, 0.001);
-                radStds = 0.003;
+        double maxTagCount = 0;
+        double maxTagArea = 0;
+        int maxTagIndex = 0;
+        
+        if (camerasToUpdate.size() > 0) {
+            for (int i = 0; i < camerasToUpdate.size(); i++) {
+                if (tagCount[i] > maxTagCount) {
+                    maxTagCount = tagCount[i];
+                    maxTagIndex = i;
+                } else if (tagCount[i] == maxTagCount) {
+                    maxTagArea = tagArea[i];
+                    maxTagIndex = i;
+                }
             }
-            // 1 target with large area
-            else if (tagArea > 0.14) {
-                xyStds = Math.hypot(0.01, 0.009);
-                radStds = 0.004;
-            }
-            // Conditions don't match to add a vision measurement
-            else {
-                return;
-            }
+            
+                if (maxTagCount > 1 || maxTagArea > 4.0) {
+                    // Multiple targets or one huge target (like reef tag)
+                    // Trust the vision even MORE
+                    xyStds = Math.hypot(0.001, 0.001);
+                    radStds = 0.003;
+                }
+                // Conditions don't match to add a vision measurement
+                else {
+                    return;
+                }
         }
 
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-        for (int i : camerasToUpdate) {
-            poseEstimator.addVisionMeasurement(inputs[i].robotPose, inputs[i].timestampSeconds);
+        if (maxTagCount < 0) {
+            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);    
         }
         if (!camerasToUpdate.isEmpty()) {
             rotationUpdated = true;

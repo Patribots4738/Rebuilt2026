@@ -12,6 +12,7 @@ import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -20,6 +21,8 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,12 +37,11 @@ public class Extender extends SubsystemBase {
     private final ExtenderIO io;
     private final ExtenderIOInputsAutoLogged inputs = new ExtenderIOInputsAutoLogged();
 
-    private State targetState = new State(0, 0);
-    private State setpoint = new State(0, 0);
+    private double targetPosition = 0.0;
     @AutoLogOutput (key = "Subsystems/Extender/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
-    private final SysIdRoutine extenderRoutine;
+    // private final SysIdRoutine extenderRoutine;
     private double testPosition;
 
 
@@ -52,22 +54,22 @@ public class Extender extends SubsystemBase {
     
     public Extender(ExtenderIO io) {
         this.io = io;
-        this.extenderRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10),
-                        (state) -> Logger.recordOutput("Subsystems/Extender/SysIdState", String.valueOf(state))
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
-                        log -> log.motor("extender")
-                                .voltage(Volts.of(inputs.motorAppliedOutputVolts))
-                                .linearPosition(Meters.of(inputs.positionRads))
-                                .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
-                        this
-                )
-        );
+        // this.extenderRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10),
+        //                 (state) -> Logger.recordOutput("Subsystems/Extender/SysIdState", String.valueOf(state))
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+        //                 log -> log.motor("extender")
+        //                         .voltage(Volts.of(inputs.motorAppliedOutputVolts))
+        //                         .linearPosition(Meters.of(inputs.motorPositionMeters))
+        //                         .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
+        //                 this
+        //         )
+        // );
         
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
@@ -83,13 +85,11 @@ public class Extender extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Extender", inputs);
 
         Logger.recordOutput("Subsystems/Extender/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Extender/TargetPosition", targetState.position);
+        Logger.recordOutput("Subsystems/Extender/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
-            io.setPosition(setpoint.position);
+            io.setPosition(targetPosition);
         } else {
-            setpoint.position = inputs.motorPositionMeters;
-            setpoint.velocity = inputs.motorVelocityMetersPerSecond;
             io.setNeutral();
         }
         
@@ -108,11 +108,7 @@ public class Extender extends SubsystemBase {
 
     public void setPosition(double position) {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
-        if (position != targetState.position) {
-            setpoint.position = inputs.motorPositionMeters;
-            setpoint.velocity = inputs.motorVelocityMetersPerSecond;
-        }
-        targetState.position = position;
+        targetPosition = position;
         shouldRunSetpoint = true;
     }
 
@@ -151,40 +147,52 @@ public class Extender extends SubsystemBase {
     public Command extendExtender() {
         return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS);
     }
+    
+    public Command feedShooter() {
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS), Commands.waitSeconds(0.1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(0.1));
+    }
+
+    public Command feedShooterCommand() {
+        return runOnce(() -> feedShooter());
+    }
+
+    public Command halfStowCommand() {
+        return setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS);
+    }
 
     public boolean atPosition(double position) {
         return MathUtil.isNear(position, inputs.positionRads, ExtenderConstants.DEADBAND_RADIANS);
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetState.position);
+        return atPosition(targetPosition);
     }
 
     public double getPosition() {
         return inputs.positionRads;
     }
 
-    public double getCharacterizationVelocity() {
-        return inputs.motorVelocityMetersPerSecond / ExtenderConstants.VELOCITY_CONVERSION_FACTOR;
-    }
+    // public double getCharacterizationVelocity() {
+    //     return inputs.motorVelocityMetersPerSecond / ExtenderConstants.VELOCITY_CONVERSION_FACTOR;
+    // }
 
-    public double getVelocity() {
-        return (inputs.motorVelocityMetersPerSecond);
-    }
+    // public double getVelocity() {
+    //     return (inputs.motorVelocityMetersPerSecond);
+    // }
 
-    public void runCharacterization(double input) {
-        io.runCharacterization(input);
-    }
+    // public void runCharacterization(double input) {
+    //     io.runCharacterization(input);
+    // }
     
     public double getVoltage() {
-        return inputs.motorAppliedOutputVolts;
+        return inputs.appliedOutputVolts;
     }
     
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return extenderRoutine.quasistatic(direction);
-    }
+    // public Command quasistatic(SysIdRoutine.Direction direction) {
+    //     return extenderRoutine.quasistatic(direction);
+    // }
     
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return extenderRoutine.dynamic(direction);
-    }
+    // public Command dynamic(SysIdRoutine.Direction direction) {
+    //     return extenderRoutine.dynamic(direction);
+    // }
 }

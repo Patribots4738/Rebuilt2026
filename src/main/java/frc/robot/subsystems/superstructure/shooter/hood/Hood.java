@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.hood;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.*;
@@ -24,6 +25,8 @@ public class Hood extends SubsystemBase {
 
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    @AutoLogOutput (key = "Subsystems/Shooter/HoodForcedDown")
+    private boolean forceDown = false;
     private double percentOutput = 0.0;
     
     private Transform3d pivotOffset = new Transform3d(
@@ -49,7 +52,6 @@ public class Hood extends SubsystemBase {
         HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
         HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
 
-        this.setDefaultCommand(this.setNeutralCommand());
         this.hoodRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
                         Volts.per(Seconds).of(1),
@@ -89,14 +91,19 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Hood", inputs);
 
-        Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", atTargetPosition());
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
-        // if (shouldRunSetpoint) {
-            io.setPosition(targetPosition, 0);
-        // } else {
-        //     io.setNeutral();
-        // }
+        if (shouldRunSetpoint) {
+            if (forceDown) {
+                io.setPosition(HoodConstants.STOW_POSITION_RADIANS, 0);
+            }
+            else {
+                io.setPosition(targetPosition, 0);
+            }
+        } 
+        else {
+            io.setNeutral();
+        }
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
                 RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getTranslation(),
@@ -125,9 +132,8 @@ public class Hood extends SubsystemBase {
      */
     public void setPosition(double position) {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
-        targetPosition = position;
         shouldRunSetpoint = true;
-        // io.setPosition(targetPosition, 0);
+        targetPosition = position;
 
         desiredArmRotation = new Rotation3d(0.0,
                 targetPosition,
@@ -165,12 +171,18 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> io.resetEncoders(0));
     }
 
-    public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.internalPositionRads, HoodConstants.POSITION_DEADBAND_RADIANS);
+    public boolean atPosition(double position, boolean aimingAtHub) {
+        return MathUtil.isNear(position, inputs.internalPositionRads, aimingAtHub 
+                ? HoodConstants.POSITION_DEADBAND_RADIANS
+                : HoodConstants.PASS_POSITION_DEADBAND_RADIANS);
     }
 
-    public boolean atTargetPosition() {
-        return atPosition(targetPosition);
+    public boolean atTargetPosition(boolean aimingAtHub) {
+        return atPosition(targetPosition, aimingAtHub);
+    }
+
+    public boolean atTargetPosition(BooleanSupplier aimingAtHub) {
+        return atTargetPosition(aimingAtHub.getAsBoolean());
     }
 
     public double getPosition() {
@@ -183,19 +195,6 @@ public class Hood extends SubsystemBase {
 
     public double getTargetPosition() {
         return targetPosition;
-    }
-
-    public void setPercent(double percent) {
-        percentOutput = percent;
-        shouldRunSetpoint = true;
-    }
-
-    public Command setPercentCommand(double percent) {
-        return Commands.runOnce(() -> setPercent(percent));
-    }
-
-    public Command setPercentCommand(DoubleSupplier percentSupplier) {
-    return Commands.runOnce(() -> setPercent(percentSupplier.getAsDouble()));
     }
 
     public double getCharacterizationVelocity() {
@@ -214,11 +213,11 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> setCurrent(amps));
     }
     
-    // public Command quasistatic(SysIdRoutine.Direction direction) {
-    //     return hoodRoutine.quasistatic(direction);
-    // }
-    
-    // public Command dynamic(SysIdRoutine.Direction direction) {
-    //     return hoodRoutine.dynamic(direction);
-    // }
+    public void toggleForcedDown() {
+        forceDown = !forceDown;
+    }
+
+    public Command toggleForcedDownCommand() {
+        return runOnce(() -> this.toggleForcedDown());
+    }
 }

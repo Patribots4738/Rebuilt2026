@@ -515,11 +515,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.0; //20.0
-        public static final double DRIVING_I = 0.0; //6
-        public static final double DRIVING_D = 0.0; //1.5
+        public static final double DRIVING_P = 20.0; //20.0
+        public static final double DRIVING_I = 6.0; //6
+        public static final double DRIVING_D = 1.5; //1.5
         public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.0; //0.124
+        public static final double DRIVING_V = 0.124; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -532,9 +532,9 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 0.0; //225
-        public static final double TURNING_I = 0.0; //13
-        public static final double TURNING_D = 0.0; //8
+        public static final double TURNING_P = 225; //225
+        public static final double TURNING_I = 13; //13
+        public static final double TURNING_D = 8; //8
         public static final double TURNING_S = 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
@@ -756,7 +756,6 @@ public final class Constants {
 
     public static final class CANConstants {
         public static final CANBus RIO_BUS = CANBus.roboRIO();
-         // TODO: must set the name of the CANivore to "Drivebase" and factory default the swerve modules since they were connected to the rio before
         public static final CANBus DRIVEBASE_BUS =  new CANBus("Drivebase");
     }
 
@@ -782,13 +781,57 @@ public final class Constants {
     public static final class CANRangeConstants {
         public static final double UPDATE_FREQUENCY = 0.03;
 
-        public static final int CANRANGE_ID = 28; //TODO
+        public static final int CANRANGE_ID = 28;
     }
     
     public static final class CameraConstants {
 
-          public static final int ENABLED_THROTTLE = 0; // Process every frame
-          public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+        public static final int ENABLED_THROTTLE = 0; // Process every frame
+        public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+
+        public static final Pose3d LL4_LEFT_POSE = new Pose3d(
+            -0.282,
+            0.308,
+            0.203,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(0)
+            )
+        );
+
+        public static final Pose3d LL3G_POSE = new Pose3d(
+            -0.292,
+            0.021,
+            0.339,
+            new Rotation3d(
+                Units.degreesToRadians(0),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(90d)
+            )
+        );
+
+        public static final Pose3d LLHAILO_POSE = new Pose3d(
+            0.281,
+            0.290,
+            0.200,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(-34.5)
+            )
+        );
+
+        public static final Pose3d LL4_RIGHT_POSE = new Pose3d(
+            0.076,
+            0.305,
+            0.197,
+            new Rotation3d(
+                Units.degreesToRadians(180d),
+                Units.degreesToRadians(25d),
+                Units.degreesToRadians(-105)
+            )
+        );
 
 
         // UPDATE LATER once we know how many cameras we have and their positions
@@ -826,6 +869,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 9.0;
         public static final double MAX_DISPLACEMENT_METERS = 0.58;
         public static final double STOW_POSITION_METERS = 0.0;
+        public static final double CLIMB_POSITION_METERS = 0.0;
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
         
@@ -886,7 +930,7 @@ public final class Constants {
         public static final int ENCODER_CAN_ID = 18;
 
         public static final boolean BRAKE_MOTOR = true;
-        public static final boolean MOTOR_INVERTED = true; //never invert this again
+        public static final boolean MOTOR_INVERTED = true; 
         public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
@@ -894,26 +938,29 @@ public final class Constants {
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
-        public static final double DISCONTINUITY_POINT = 1.0; //change back to 1?
-        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(148 + (4.5));
-        // public static final double ANGULAR_OFFSET = - Units.degreesToRadians(4.5);
+        public static final double DISCONTINUITY_POINT = 1.0;
+        public static final double ROBOT_TURRET_OFFSET = -Units.degreesToRadians(4.5);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(0 + ROBOT_TURRET_OFFSET);
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4);
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); // TODO: find turret rotation limit
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4.5);
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); 
+
+        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
+        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ?  15.232 : 0; //
+        public static final double P = FieldConstants.IS_REAL ? 300d : 0; 
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0.36761 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0.02603 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0.25567 : 0;
-        public static final double V = FieldConstants.IS_REAL ?  1.039 : 0; //
+        public static final double D = FieldConstants.IS_REAL ? 25d : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 0; 
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -946,28 +993,27 @@ public final class Constants {
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;
-        public static final boolean MOTOR_INVERTED = false;
+        public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
         public static final double GEAR_RATIO = 1.0;
 
         public static final double VELOCITY_DEADBAND_RPM = 50; 
+        public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
-        public static final double EJECT_VELOCITY = 10;
-
-        public static final double SHOOT_WAIT_TIME_SECONDS = 0.5;
-        public static final double EJECT_WAIT_TIME_SECONDS = 0.1;
+        public static final double EJECT_RPM = 30.0;
+        public static final double HUB_RPM = 0.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 0.5 : 0;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0;
+        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -999,11 +1045,13 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
+        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.02;
+        public static final double POSITION_DEADBAND_RADIANS = 0.1;
+        public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 1700 : 600;
@@ -1039,7 +1087,7 @@ public final class Constants {
 
         public static final boolean BRAKE_MOTOR = false;
         public static final boolean MOTOR_INVERTED = true;
-        public static final double CURRENT_LIMIT = 20;
+        public static final double CURRENT_LIMIT = 60;
 
         public static final double INTAKE_PERCENT = 0.5;
 
@@ -1052,27 +1100,27 @@ public final class Constants {
     public static final class ExtenderConstants {
         public static final int CAN_ID = 14;
         public static final int MOTOR_TYPE = 44;
-        public static final double GEAR_RATIO = 27.0;
+        public static final double GEAR_RATIO = 60.0;
 
         public static final boolean BRAKE_MOTOR = true;
         public static final boolean MOTOR_INVERTED = false;
-        public static final double CURRENT_LIMIT = 30.0;
+        public static final double CURRENT_LIMIT = 60.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.0;
+        public static final double MAX_ANGLE_RADIANS = 2.19;
 
-        public static final double STOW_POSITION_RADIANS = 0.0;
-        public static final double INTAKE_POSITION_RADIANS = 0.0;
+        public static final double STOW_POSITION_RADIANS = 0.2;
+        public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
+        public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double DEADBAND_RADIANS = 0.0;
+        public static final double DEADBAND_RADIANS = 0.1;
 
-
-        public static final double P = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 100 : 0;
+        public static final double I = FieldConstants.IS_REAL ? 15 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 10 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
@@ -1115,8 +1163,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.2;
-        public static final double FORWARD_PERCENT = 0.2;
+        public static final double REVERSE_PERCENT = -0.3;
+        public static final double FORWARD_PERCENT = 0.3;
         
         public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
@@ -1132,7 +1180,7 @@ public final class Constants {
         public static final boolean BRAKE_MOTOR = false;
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double CURRENT_LIMIT = 30.0;
+        public static final double CURRENT_LIMIT = 50.0;
 
         public static final boolean MOTOR_INVERTED = true;
         public static final int MOTOR_TYPE = 44;
