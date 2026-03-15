@@ -108,7 +108,7 @@ public final class Constants {
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(13.586952), //extends another 10.5" on X axis
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(13.586952), //extends another 10.5" on X axis positively
             ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
             ROBOT_OFFSET.getZ() + Units.inchesToMeters(8.541422)
         );
@@ -122,7 +122,7 @@ public final class Constants {
         public static final Translation3d TURRET_OFFSET = new Translation3d(
             ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505),
             ROBOT_OFFSET.getY() + Units.inchesToMeters(4.0),
-            ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875)
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(14.156250)
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(

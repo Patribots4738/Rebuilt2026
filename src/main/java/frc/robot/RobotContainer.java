@@ -2,6 +2,7 @@ package frc.robot;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.geometry.Rotation3d;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -10,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -30,7 +30,6 @@ import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
 import frc.robot.subsystems.superstructure.intake.Intake;
@@ -50,9 +49,8 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.KickerConstants;
+import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.OIConstants;
-import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.custom.ActiveConditionalCommand;
@@ -72,9 +70,9 @@ public class RobotContainer {
     private EventLoop testButtonBindingLoop = new EventLoop();
     
     @AutoLogOutput (key = "Draggables/Components3d")
-    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    public static Pose3d[] components3d = new Pose3d[5];
     @AutoLogOutput (key = "Draggables/DesiredComponents3d")
-    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    public static Pose3d[] desiredComponents3d = new Pose3d[5];
 
     private final PatriBoxController driver;
     @SuppressWarnings("unused")
@@ -199,6 +197,8 @@ public class RobotContainer {
         CommandScheduler.getInstance().schedule(new NTGainTuner());
 
         prepareNamedCommands();
+        
+        updateAllComponents3d();
     }
 
     private void configureButtonBindings() {
@@ -401,5 +401,37 @@ public class RobotContainer {
         NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
         NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+    }
+    
+    private void updateAllComponents3d() {
+        updateComponents(components3d);
+        
+        updateComponents(desiredComponents3d);
+    }
+    
+    private void updateComponents(Pose3d[] components) {
+        components[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+                LoggingConstants.CLIMB_OFFSET,
+                new Rotation3d()
+        ); // 0 - climb
+        components[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET,
+                new Rotation3d()
+        ); // 1 - extender
+        components[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(0, LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+        ); // 2 - intake
+        components[LoggingConstants.TURRET_INDEX] = new Pose3d(
+                LoggingConstants.TURRET_OFFSET,
+                new Rotation3d()
+        ); // 3 - turret
+        components[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                LoggingConstants.HOOD_OFFSET,
+                new Rotation3d()
+        ).rotateAround(
+                components[LoggingConstants.TURRET_INDEX].getTranslation(),
+                components[LoggingConstants.TURRET_INDEX].getRotation()
+        ); // 4 - hood
     }
 }

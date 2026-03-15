@@ -545,10 +545,17 @@ public class Swerve extends SubsystemBase {
             return;
         }
 
-        poseEstimator.resetPosition(
-            gyroRotation2d.minus(Rotation2d.fromDegrees(180)),
-            getModulePositions(),
-            pose);
+        if (FieldConstants.IS_SIMULATION){
+            poseEstimator.resetPosition(
+                    gyroRotation2d,
+                    getModulePositions(),
+                    pose);
+        } else {
+            poseEstimator.resetPosition(
+                    gyroRotation2d.minus(Rotation2d.fromDegrees(180)),
+                    getModulePositions(),
+                    pose);
+        }
     }
 
     private void resetOdometryAuto(Pose2d pose) {

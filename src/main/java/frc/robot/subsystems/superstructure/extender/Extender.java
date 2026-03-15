@@ -79,9 +79,7 @@ public class Extender extends SubsystemBase {
         ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
         
         RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
-                LoggingConstants.EXTENDER_OFFSET.getX(),
-                LoggingConstants.EXTENDER_OFFSET.getY(),
-                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                LoggingConstants.EXTENDER_OFFSET,
                 new Rotation3d()
         );
         
@@ -107,7 +105,7 @@ public class Extender extends SubsystemBase {
         
         //math for X calculation is only theoretical, actual testing is needed i did this when i was hella tired
         RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
-                LoggingConstants.EXTENDER_OFFSET.getX() + (inputs.positionRads / ((2.0 * Math.PI) * ExtenderConstants.GEAR_RATIO)),
+                LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(inputs.positionRads * 4.25),
                 LoggingConstants.EXTENDER_OFFSET.getY(),
                 LoggingConstants.EXTENDER_OFFSET.getZ(),
                 new Rotation3d()
