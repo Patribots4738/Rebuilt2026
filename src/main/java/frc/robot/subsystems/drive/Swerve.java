@@ -358,9 +358,9 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds robotRelativeSpeeds;
 
         // account for rotational drift caused by torque steering
-        if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
-            rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
-        }
+        // if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
+        //     rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
+        // }
 
         if (fieldRelative) {
             robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, getPose().getRotation());
@@ -546,7 +546,7 @@ public class Swerve extends SubsystemBase {
         }
 
         poseEstimator.resetPosition(
-            gyroRotation2d,
+            gyroRotation2d.minus(Rotation2d.fromDegrees(180)),
             getModulePositions(),
             pose);
     }
@@ -587,6 +587,17 @@ public class Swerve extends SubsystemBase {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
         for (int modNum = 0; modNum < swerveModules.length; modNum++) {
+            positions[modNum] = swerveModules[modNum].getPosition();
+        }
+        return positions;
+
+    }
+
+    public SwerveModulePosition[] getModulePositionsFlipped() {
+
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
+        for (int modNum = swerveModules.length - 1; modNum >= 0; modNum--) {
             positions[modNum] = swerveModules[modNum].getPosition();
         }
         return positions;

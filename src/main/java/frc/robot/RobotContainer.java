@@ -168,8 +168,8 @@ public class RobotContainer {
 
         swerve.setDefaultCommand(new Drive(
                 swerve,
-                () -> -driver.getLeftY(),
-                () -> -driver.getLeftX(),
+                () -> driver.getLeftY(),
+                () -> driver.getLeftX(),
                 () -> -driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
@@ -220,7 +220,17 @@ public class RobotContainer {
     }
 
     private void configureDevBindings(PatriBoxController controller) {
-        controller.start().onTrue(vision.toggleMT1Command());
+
+        controller.start().onTrue(
+            Commands.runOnce(() -> swerve.resetOdometry(
+                new Pose2d(
+                    swerve.getPose().getTranslation(),
+                    Rotation2d.fromDegrees(
+                        Robot.isRedAlliance()
+                        ? 0
+                        : 180))
+            ), swerve)
+        );
 
         // controller.leftTrigger().onTrue(Commands.parallel(
         //     intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
