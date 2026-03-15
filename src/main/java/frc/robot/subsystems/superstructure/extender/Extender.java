@@ -12,7 +12,6 @@ import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -21,8 +20,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,7 +63,7 @@ public class Extender extends SubsystemBase {
                         (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
                         log -> log.motor("extender")
                                 .voltage(Volts.of(inputs.motorAppliedOutputVolts))
-                                .linearPosition(Meters.of(inputs.motorPositionMeters))
+                                .linearPosition(Meters.of(inputs.positionRads))
                                 .linearVelocity(MetersPerSecond.of(inputs.motorVelocityMetersPerSecond)),
                         this
                 )
@@ -96,7 +93,17 @@ public class Extender extends SubsystemBase {
             io.setNeutral();
         }
         
-        RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(LoggingConstants.EXTENDER_OFFSET,  new Rotation3d(0, -inputs.positionRads, 0) );
+        RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET.getX() + inputs.positionRads,
+                LoggingConstants.EXTENDER_OFFSET.getY(),
+                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                new Rotation3d()
+        );
+        
+        RobotContainer.components3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(0, inputs.positionRads, 0)
+        );
     }
 
     public void setPosition(double position) {
@@ -146,7 +153,7 @@ public class Extender extends SubsystemBase {
     }
 
     public boolean atPosition(double position) {
-        return MathUtil.isNear(position, inputs.motorPositionMeters, ExtenderConstants.DEADBAND_RADIANS);
+        return MathUtil.isNear(position, inputs.positionRads, ExtenderConstants.DEADBAND_RADIANS);
     }
 
     public boolean atTargetPosition() {
@@ -154,7 +161,7 @@ public class Extender extends SubsystemBase {
     }
 
     public double getPosition() {
-        return inputs.motorPositionMeters;
+        return inputs.positionRads;
     }
 
     public double getCharacterizationVelocity() {

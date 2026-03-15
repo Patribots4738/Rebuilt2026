@@ -81,7 +81,9 @@ public class Climb extends SubsystemBase {
         }
 
         RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-            LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), inputs.positionMeters,
+            LoggingConstants.CLIMB_OFFSET.getX(),
+            LoggingConstants.CLIMB_OFFSET.getY(),
+            inputs.positionMeters,
             new Rotation3d()
         );
     }
@@ -96,8 +98,10 @@ public class Climb extends SubsystemBase {
         this.slam = slam;
         shouldRunSetpoint = true;
 
-        RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-            LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), position,
+        RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+                LoggingConstants.CLIMB_OFFSET.getX(),
+                LoggingConstants.CLIMB_OFFSET.getY(),
+                position,
             new Rotation3d()
         );
     }

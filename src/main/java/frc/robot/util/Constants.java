@@ -93,6 +93,7 @@ public final class Constants {
 
         public static final int CLIMB_INDEX = 0;
         public static final int EXTENDER_INDEX = 1;
+        public static final int INTAKE_INDEX = 2;
         public static final int TURRET_INDEX = 3;
         public static final int HOOD_INDEX = 4;
 
@@ -103,27 +104,33 @@ public final class Constants {
         );
 
         public static final Translation3d CLIMB_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(0.056),
-            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.241), 
-            ROBOT_OFFSET.getZ() + Units.inchesToMeters(0.2735)
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(10.505), //good
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(-7.5), //good
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875) //good
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-24.086952), //good
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0), //good
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(-8.541422) //good
+        );
+        
+        public static final Translation3d INTAKE_OFFSET = new Translation3d(
+                ROBOT_OFFSET.getX() + Units.inchesToMeters(-12.811890), //good
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(22.582639), //good
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(7.982673) //good
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(0.0), //Units.inchesToMeters(-4.5)
-            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0), //Units.inchesToMeters(4.0)
-            ROBOT_OFFSET.getZ() + Units.inchesToMeters(0.0) //Units.inchesToMeters(12.594)
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505), //good
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(4), //good
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875) //good
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(0), //Units.inchesToMeters(1.517)
-            ROBOT_OFFSET.getY() + Units.inchesToMeters(0), //Units.inchesToMeters(6)
-            ROBOT_OFFSET.getZ() + Units.inchesToMeters(0) //Units.inchesToMeters(17.156)
+                ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.408469), //good
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(1.096141), //good
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(17.156250) //good
         );
 
         public static final double PHASE_DELAY = 0.03;
