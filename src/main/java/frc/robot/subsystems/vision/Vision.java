@@ -125,36 +125,47 @@ public class Vision extends SubsystemBase {
         double xyStds = 0.0;
         double radStds = 0.0;
 
-        double maxTagCount = 0;
-        double maxTagArea = 0;
+        int maxTagCount = 0;
         int maxTagIndex = 0;
+        double maxTagArea = 0;
+
+        ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
         
         if (camerasToUpdate.size() > 0) {
-            for (int i = 0; i < camerasToUpdate.size(); i++) {
+            for (int i = 0; i <= camerasToUpdate.size(); i++) {
                 if (tagCount[i] > maxTagCount) {
                     maxTagCount = tagCount[i];
-                    maxTagIndex = i;
-                } else if (tagCount[i] == maxTagCount) {
+                } else if (tagArea[i] > maxTagArea) {
                     maxTagArea = tagArea[i];
                     maxTagIndex = i;
                 }
+                if (tagCount[i] >= 2) {
+                    twoTagIndex.add(i);
+                }
             }
             
-                if (maxTagCount > 1 || maxTagArea > 4.0) {
-                    // Multiple targets or one huge target (like reef tag)
-                    // Trust the vision even MORE
-                    xyStds = Math.hypot(0.001, 0.001);
-                    radStds = 0.003;
-                }
-                // Conditions don't match to add a vision measurement
-                else {
-                    return;
-                }
+            if (maxTagCount > 1 || maxTagArea > 4.0) {
+                // Multiple targets or one huge target (like reef tag)
+                // Trust the vision even MORE
+                xyStds = Math.hypot(0.001, 0.001);
+                radStds = 0.003;
+            } else if (maxTagArea > 0.5) {
+                xyStds = Math.hypot(0.01, 0.009);
+                radStds = 0.004;
+            }
+            // Conditions don't match to add a vision measurement
+            else {
+                return;
+            }
         }
 
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-        if (maxTagCount < 0) {
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);    
+        if (maxTagCount > 1) {
+            for (int i = 0; i < twoTagIndex.size(); i++) {
+                poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
+            }
+        } else if (maxTagCount == 1) {
+            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
         }
         if (!camerasToUpdate.isEmpty()) {
             rotationUpdated = true;
