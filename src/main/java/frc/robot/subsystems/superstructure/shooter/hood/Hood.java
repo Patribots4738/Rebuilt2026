@@ -34,6 +34,7 @@ public class Hood extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/HoodForcedDown")
     private boolean forceDown = false;
     private double percentOutput = 0.0;
+    private double incrementedPosition = 0.0; //dergees
     
     private double targetPosition;
     private double testPosition;
@@ -71,12 +72,12 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
-            if (forceDown) {
-                io.setPosition(HoodConstants.STOW_POSITION_RADIANS, 0);
-            }
-            else {
+            // if (forceDown) {
+            //     io.setPosition(HoodConstants.STOW_POSITION_RADIANS, 0);
+            // }
+            // else {
                 io.setPosition(targetPosition, 0);
-            }
+            // }
         } 
         else {
             io.setNeutral();
@@ -126,6 +127,26 @@ public class Hood extends SubsystemBase {
 
     public Command setTestPositionCommand() {
         return Commands.runOnce(() -> setTestPosition());
+    }
+
+    public void decrementPosition() {
+        incrementedPosition -= 1;
+    }
+
+    public void incrementPosition() {
+        incrementedPosition += 1;
+    }
+
+    public Command decrementPositionCommand() {
+        return runOnce(() -> decrementPosition());
+    }
+
+    public Command incrementPositionCommand() {
+        return runOnce(() -> incrementPosition());
+    }
+
+    public Command setIncrementedPositionCommand() {
+        return setPositionCommand(() -> Units.degreesToRadians(incrementedPosition));
     }
 
     public void setNeutral() {

@@ -28,12 +28,12 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 
 public class Shooter extends SubsystemBase {
 
-    @AutoLogOutput(key = "Subsytems/Shooter/AimTurret")
-    private boolean aimTurret = true;
-    @AutoLogOutput(key = "Subsytems/Shooter/TrackFlywheel")
+    @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
+    private boolean aimTurret = false;
+    @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
-    @AutoLogOutput(key = "Subsytems/Shooter/AimHood")
-    private boolean aimHood = true;
+    @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
+    private boolean aimHood = false;
     @AutoLogOutput(key = "Subsystems/Shooter/PassIndex")
     private int passIndex = 0;
     @AutoLogOutput(key = "Subsystems/Shooter/Manual")
@@ -83,7 +83,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            this.setShooterStates();
+            this.setAutoAimStates();
         }
         else {
             target = Target.NONE;
@@ -118,12 +118,12 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
-    public void setShooterStates() {
+    public Command setShooterStates() {
         if (manual) {
-            setManualStates();
+            return Commands.runOnce(() -> setManualStates());
         }
         else {
-            setAutoAimStates();
+            return Commands.runOnce(() -> setAutoAimStates());
         }
     }
 
@@ -136,19 +136,31 @@ public class Shooter extends SubsystemBase {
     public void setAutoAimStates() {
         // calculate states for turret, flywheel, and hood based on robot location
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
+        flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+        hood.setPosition(shotParams.hoodAngle());
+        turret.setPosition(shotParams.turretAngle());
 
-        // set the flywheel and turret states if we want them to track a target
-        if (spinFlywheel) flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-        if (aimTurret) turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+        // // set the flywheel and turret states if we want them to track a target
+        // if (spinFlywheel) {
+        //     flywheel.setCalculatedSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+        //     flywheel.runCalculateSpeedCommand();
+        //     // flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+        // }
 
-        // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
-        if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
-        }
-        else if (aimHood){
-            hood.setPositionCommand(() -> shotParams.hoodAngle());
-        }
+        // if (aimTurret) {
+        //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+
+        // }
+
+        // // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
+        // // if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
+        // //     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+        // // }
+        // // else if (aimHood){
+        //     hood.setPositionCommand(() -> shotParams.hoodAngle());
+        // // }
     }
+
 
     public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
         return runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
@@ -224,7 +236,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateTarget(Pose2d robotPose) {
-        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
+        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inOppZone) {
             target = Target.HUB;
             return;
         } else if (passIndex == 0) {

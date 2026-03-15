@@ -189,6 +189,7 @@ public class ShotCalculations {
                     hubShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance) :
                     passingShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance)
             );
+        
 
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
