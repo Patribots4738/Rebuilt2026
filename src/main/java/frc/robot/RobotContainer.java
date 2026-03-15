@@ -239,18 +239,18 @@ public class RobotContainer {
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
         controller.leftTrigger().onTrue(Commands.parallel(
-            // intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
             spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
             kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
         ));
 
         controller.leftBumper().onTrue(Commands.parallel(
-            // intake.setPercentCommand(0.0),
+            intake.setPercentCommand(0.0),
             spindexer.setPercentCommand(0.0),
             kicker.setPercentCommand(0.0)
         ));
         
-        controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
         controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
         controller.povRight().onTrue(flywheel.incrementSpeedCommand());
         controller.povDown().onTrue(flywheel.stopCommand());
@@ -259,6 +259,9 @@ public class RobotContainer {
         controller.b().onTrue(hood.setIncrementedPositionCommand());
         controller.y().onTrue(hood.incrementPositionCommand());
         controller.a().onTrue(hood.decrementPositionCommand());
+
+        controller.rightBumper().onTrue(extender.feedShooter());
+        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
 
         // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
         // controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
