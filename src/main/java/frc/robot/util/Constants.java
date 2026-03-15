@@ -1107,7 +1107,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 60.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 2.19;
+        public static final double MAX_ANGLE_RADIANS = FieldConstants.IS_REAL ? 2.19 : 2.5;
 
         public static final double STOW_POSITION_RADIANS = 0.2;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;

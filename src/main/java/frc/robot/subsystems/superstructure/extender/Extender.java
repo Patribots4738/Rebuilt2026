@@ -124,7 +124,7 @@ public class Extender extends SubsystemBase {
         targetPosition = position;
         shouldRunSetpoint = true;
         RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
-                LoggingConstants.EXTENDER_OFFSET.getX() + (position / ((2.0 * Math.PI) * ExtenderConstants.GEAR_RATIO)),
+                LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(position * 4.25),
                 LoggingConstants.EXTENDER_OFFSET.getY(),
                 LoggingConstants.EXTENDER_OFFSET.getZ(),
                 new Rotation3d()
