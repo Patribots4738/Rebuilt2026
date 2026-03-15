@@ -77,6 +77,18 @@ public class Extender extends SubsystemBase {
         ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
         ExtenderConstants.LOGGED_TEST_POSITION.onChanged(Commands.runOnce(() -> testPosition = Units.degreesToRadians(ExtenderConstants.LOGGED_TEST_POSITION.get())).ignoringDisable(true));
         ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET.getX(),
+                LoggingConstants.EXTENDER_OFFSET.getY(),
+                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                new Rotation3d()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(0, LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+        );
     }
 
     @Override
@@ -93,8 +105,9 @@ public class Extender extends SubsystemBase {
             io.setNeutral();
         }
         
+        //math for X calculation is only theoretical, actual testing is needed i did this when i was hella tired
         RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
-                LoggingConstants.EXTENDER_OFFSET.getX() + inputs.positionRads,
+                LoggingConstants.EXTENDER_OFFSET.getX() + (inputs.positionRads / ((2.0 * Math.PI) * ExtenderConstants.GEAR_RATIO)),
                 LoggingConstants.EXTENDER_OFFSET.getY(),
                 LoggingConstants.EXTENDER_OFFSET.getZ(),
                 new Rotation3d()
@@ -102,7 +115,7 @@ public class Extender extends SubsystemBase {
         
         RobotContainer.components3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
                 LoggingConstants.INTAKE_OFFSET,
-                new Rotation3d(0, inputs.positionRads, 0)
+                new Rotation3d(0, inputs.positionRads + LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
         );
     }
 
@@ -110,6 +123,17 @@ public class Extender extends SubsystemBase {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         targetPosition = position;
         shouldRunSetpoint = true;
+        RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET.getX() + (position / ((2.0 * Math.PI) * ExtenderConstants.GEAR_RATIO)),
+                LoggingConstants.EXTENDER_OFFSET.getY(),
+                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                new Rotation3d()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(0, position + LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+        );
     }
 
     public void setNeutral() {

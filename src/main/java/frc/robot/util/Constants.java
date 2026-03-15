@@ -11,7 +11,6 @@ import java.util.Map;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
@@ -33,7 +32,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
-import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedGainConstants;
@@ -104,34 +102,36 @@ public final class Constants {
         );
 
         public static final Translation3d CLIMB_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(10.505), //good
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(-7.5), //good
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875) //good
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-6),
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(-10.5),
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875)
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(-24.086952), //good
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0), //good
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(-8.541422) //good
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(13.586952), //extends another 10.5" on X axis
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(8.541422)
         );
         
         public static final Translation3d INTAKE_OFFSET = new Translation3d(
-                ROBOT_OFFSET.getX() + Units.inchesToMeters(-12.811890), //good
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(22.582639), //good
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(7.982673) //good
+                ROBOT_OFFSET.getX() + Units.inchesToMeters(11.5),
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(6.750)
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505), //good
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(4), //good
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875) //good
+                ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505),
+                ROBOT_OFFSET.getY() + Units.inchesToMeters(4.0),
+                ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875)
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-                ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.408469), //good
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(1.096141), //good
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(17.156250) //good
+                TURRET_OFFSET.getX() + Units.inchesToMeters(3.341534),
+                TURRET_OFFSET.getY() + Units.inchesToMeters(0.0),
+                TURRET_OFFSET.getZ() + Units.inchesToMeters(4.602426)
         );
+        
+        public static final double INTAKE_ROTATION_OFFSET = Units.degreesToRadians(-145);
 
         public static final double PHASE_DELAY = 0.03;
         public static final double PHASE_PER_SECOND = 1.0 / PHASE_DELAY;

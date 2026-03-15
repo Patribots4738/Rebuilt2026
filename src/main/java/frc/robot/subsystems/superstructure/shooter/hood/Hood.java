@@ -79,11 +79,6 @@ public class Hood extends SubsystemBase {
                 LoggingConstants.HOOD_OFFSET,
                 desiredArmRotation
         );
-        
-        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-                LoggingConstants.HOOD_OFFSET,
-                new Rotation3d()
-        );
     }
 
     @Override
@@ -112,16 +107,6 @@ public class Hood extends SubsystemBase {
                         inputs.internalPositionRads,
                         RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
                 )
-        );
-        
-        desiredArmRotation = new Rotation3d(0.0,
-                targetPosition,
-                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
-        );
-        
-        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-                RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getTranslation(),
-                desiredArmRotation
         );
     }
 
