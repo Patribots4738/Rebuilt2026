@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
-import frc.robot.util.Constants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
@@ -127,10 +126,12 @@ public class Shooter extends SubsystemBase {
         }
     }
 
-    public void setManualStates() {
-        flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM);
-        hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS);
-        turret.setPositionCommand(TurretConstants.HUB_POSITION);
+    public Command setManualStates() {
+        return Commands.sequence(
+            flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
+            hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
+            turret.setPositionCommand(Rotation2d.fromRadians(TurretConstants.MIN_ANGLE_RADIANS))
+        );
     }
 
     public void setAutoAimStates() {
