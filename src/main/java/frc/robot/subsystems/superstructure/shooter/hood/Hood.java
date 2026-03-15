@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -12,12 +11,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
-
-import static edu.wpi.first.units.Units.*;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
@@ -27,48 +23,17 @@ public class Hood extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/HoodForcedDown")
     private boolean forceDown = false;
-    private double percentOutput = 0.0;
-    
-    private Rotation3d desiredArmRotation;
     
     private double targetPosition;
     private double testPosition;
 
-	private final SysIdRoutine hoodRoutine;
-	
     public Hood(HoodIO io) {
         this.io = io;
 
         HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
         HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
-
-        this.hoodRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
-                        log -> log.motor("hood")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Radians.of(inputs.internalPositionRads))
-                                .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
-                        this
-                )
-        );
         
         targetPosition = 0.0;
-        
-        desiredArmRotation = new Rotation3d(0.0,
-                targetPosition,
-                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
-        );
-        
-        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-                LoggingConstants.HOOD_OFFSET,
-                desiredArmRotation
-        );
     }
 
     @Override
@@ -95,8 +60,22 @@ public class Hood extends SubsystemBase {
                 new Rotation3d(
                         0.0,
                         inputs.internalPositionRads,
-                        RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
+                        0.0
                 )
+        ).rotateAround(
+                RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getTranslation(),
+                RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                LoggingConstants.HOOD_OFFSET,
+                new Rotation3d(0.0,
+                        targetPosition,
+                        0.0
+                )
+        ).rotateAround(
+                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getTranslation(),
+                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation()
         );
     }
 
@@ -109,13 +88,6 @@ public class Hood extends SubsystemBase {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
         shouldRunSetpoint = true;
         targetPosition = position;
-
-        desiredArmRotation = new Rotation3d(0.0,
-                targetPosition,
-                RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX].getRotation().getZ()
-        );
-
-        // RobotContainer.hoodMechanism.setAngle(position);    
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
