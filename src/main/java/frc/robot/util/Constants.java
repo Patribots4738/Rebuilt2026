@@ -761,7 +761,7 @@ public final class Constants {
     public static final class PigeonConstants {
 
         public static final double PIGEON_FAST_UPDATE_FREQ_HZ = 250; // TODO: FIND THE SWEET SPOT
-        public static final double YAW_OFFSET = 0.0;
+        public static final double YAW_OFFSET = 180.0;
         public static final double PITCH_OFFSET = 0.0;
         public static final double ROLL_OFFSET = 0.0;
         public static final MountPoseConfigs POSE_CONFIGS = new MountPoseConfigs(){{

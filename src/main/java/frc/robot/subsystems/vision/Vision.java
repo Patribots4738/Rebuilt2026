@@ -64,11 +64,12 @@ public class Vision extends SubsystemBase {
             inputs[i] = new VisionIOInputsAutoLogged();
         }
         this.poseEstimator = poseEstimator;
+        
     }
 
     @Override
     public void periodic() {
-        boolean shouldUseMT2 = !shouldUseMT1();
+        boolean shouldUseMT2 = false;
         double currentYawDegrees = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
         for (int i = 0; i < cameras.length; i++) {
             VisionIO camera = cameras[i];
@@ -114,8 +115,8 @@ public class Vision extends SubsystemBase {
             // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
             if (updateCamera) {
                 camerasToUpdate.add(i);
-                tagCount[1] = inputs[i].tagIds.length;
-                tagArea[1] = (tagArea[1] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
+                tagCount[i] = inputs[i].tagIds.length;
+                tagArea[i] = (tagArea[i] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
             }
         }
         
@@ -132,7 +133,7 @@ public class Vision extends SubsystemBase {
         ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
         
         if (camerasToUpdate.size() > 0) {
-            for (int i = 0; i <= camerasToUpdate.size(); i++) {
+            for (int i = 0; i < camerasToUpdate.size(); i++) {
                 if (tagCount[i] > maxTagCount) {
                     maxTagCount = tagCount[i];
                 } else if (tagArea[i] > maxTagArea) {
