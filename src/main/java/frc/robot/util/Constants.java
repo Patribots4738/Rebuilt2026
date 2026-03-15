@@ -993,7 +993,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 0.0; // TODO: find this value
+        public static final double HUB_RPM = 2600.0; 
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1036,7 +1036,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
+        public static final double HUB_POSITION_RADIANS = 0.06981317007977318; 
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
