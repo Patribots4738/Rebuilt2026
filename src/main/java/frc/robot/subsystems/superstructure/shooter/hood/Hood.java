@@ -29,16 +29,6 @@ public class Hood extends SubsystemBase {
     private boolean forceDown = false;
     private double percentOutput = 0.0;
     
-    private Transform3d pivotOffset = new Transform3d(
-            LoggingConstants.HOOD_OFFSET,
-            new Rotation3d()
-    );
-    
-    private Transform3d counterOffset = new Transform3d(
-            LoggingConstants.HOOD_OFFSET,
-            new Rotation3d()
-    );
-    
     private Rotation3d desiredArmRotation;
     
     private double targetPosition;
@@ -101,7 +91,7 @@ public class Hood extends SubsystemBase {
         }
 
         RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-                RobotContainer.components3d[LoggingConstants.HOOD_INDEX].getTranslation(),
+                LoggingConstants.HOOD_OFFSET,
                 new Rotation3d(
                         0.0,
                         inputs.internalPositionRads,

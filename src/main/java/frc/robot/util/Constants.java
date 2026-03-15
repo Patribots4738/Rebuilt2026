@@ -103,32 +103,32 @@ public final class Constants {
 
         public static final Translation3d CLIMB_OFFSET = new Translation3d(
             ROBOT_OFFSET.getX() + Units.inchesToMeters(-6),
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(-10.5),
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875)
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(-10.5),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875)
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
             ROBOT_OFFSET.getX() + Units.inchesToMeters(13.586952), //extends another 10.5" on X axis
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(8.541422)
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(8.541422)
         );
         
         public static final Translation3d INTAKE_OFFSET = new Translation3d(
-                ROBOT_OFFSET.getX() + Units.inchesToMeters(11.5),
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(6.750)
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(11.5),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(6.75)
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-                ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505),
-                ROBOT_OFFSET.getY() + Units.inchesToMeters(4.0),
-                ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875)
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(4.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.71875)
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-                TURRET_OFFSET.getX() + Units.inchesToMeters(3.341534),
-                TURRET_OFFSET.getY() + Units.inchesToMeters(0.0),
-                TURRET_OFFSET.getZ() + Units.inchesToMeters(4.602426)
+            TURRET_OFFSET.getX() + Units.inchesToMeters(2.909095),
+            TURRET_OFFSET.getY() + Units.inchesToMeters(0),
+            TURRET_OFFSET.getZ() + Units.inchesToMeters(4.4375)
         );
         
         public static final double INTAKE_ROTATION_OFFSET = Units.degreesToRadians(-145);
