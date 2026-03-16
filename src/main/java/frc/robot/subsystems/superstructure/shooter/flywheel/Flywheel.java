@@ -7,10 +7,6 @@ import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +30,7 @@ public class Flywheel extends SubsystemBase {
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetSpeedRPM")
     private double targetSpeed = 0.0;
+    private double calculatedSpeed = 0.0;
     private double incrementedSpeed = 4000.0;
 
     private double testSpeed;
@@ -71,7 +68,7 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("SubsystemInputs/Shooter/Flywheel", inputs);
         
-        if (shouldRunSetpoint && !isCharacterizing) {
+        if (shouldRunSetpoint) {
             io.setSpeedRPM(targetSpeed);
         } else {
             io.setNeutral();
@@ -134,6 +131,26 @@ public class Flywheel extends SubsystemBase {
 
     public Command setIncrementSpeedCommand() {
         return setSpeedRPMCommand(() -> incrementedSpeed);
+    }
+
+    public void setCalculatedSpeedRPM(double speed) {
+        calculatedSpeed = speed;
+    }
+
+    public Command setCalculatedSpeedRPMCommand(double speed) {
+        return runOnce(() -> setCalculatedSpeedRPM(speed));
+    }
+
+    public Command setCalculatedSpeedRPMCommand(DoubleSupplier speed) {
+        return runOnce(() -> setCalculatedSpeedRPM(speed.getAsDouble()));
+    }
+
+    public void runCalculatedSpeed() {
+        setSpeedRPM(calculatedSpeed);
+    }
+
+    public Command runCalculateSpeedCommand() {
+        return setSpeedRPMCommand(() -> calculatedSpeed);
     }
 
     public double getTargetSpeedRPM() {

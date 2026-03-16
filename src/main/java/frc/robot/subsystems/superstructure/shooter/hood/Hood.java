@@ -31,7 +31,10 @@ public class Hood extends SubsystemBase {
 
     @AutoLogOutput (key = "Subsystems/Shooter/Hood/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
+    @AutoLogOutput (key = "Subsystems/Shooter/HoodForcedDown")
+    private boolean forceDown = false;
     private double percentOutput = 0.0;
+    private double incrementedPosition = 0.0; //dergees
     
     private double targetPosition;
     private double testPosition;
@@ -69,7 +72,12 @@ public class Hood extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Hood/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
-            io.setPosition(targetPosition, 0);
+            // if (forceDown) {
+            //     io.setPosition(HoodConstants.STOW_POSITION_RADIANS, 0);
+            // }
+            // else {
+                io.setPosition(targetPosition, 0);
+            // }
         } 
         else {
             io.setNeutral();
@@ -94,8 +102,6 @@ public class Hood extends SubsystemBase {
         position = MathUtil.clamp(position, HoodConstants.MIN_ANGLE_RADIANS, HoodConstants.MAX_ANGLE_RADIANS);
         shouldRunSetpoint = true;
         targetPosition = position;
-        // io.setPosition(targetPosition, 0);
-        
 
         RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
             RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
@@ -121,6 +127,26 @@ public class Hood extends SubsystemBase {
 
     public Command setTestPositionCommand() {
         return Commands.runOnce(() -> setTestPosition());
+    }
+
+    public void decrementPosition() {
+        incrementedPosition -= 1;
+    }
+
+    public void incrementPosition() {
+        incrementedPosition += 1;
+    }
+
+    public Command decrementPositionCommand() {
+        return runOnce(() -> decrementPosition());
+    }
+
+    public Command incrementPositionCommand() {
+        return runOnce(() -> incrementPosition());
+    }
+
+    public Command setIncrementedPositionCommand() {
+        return setPositionCommand(() -> Units.degreesToRadians(incrementedPosition));
     }
 
     public void setNeutral() {
@@ -177,11 +203,11 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> setCurrent(amps));
     }
     
-    // public Command quasistatic(SysIdRoutine.Direction direction) {
-    //     return hoodRoutine.quasistatic(direction);
-    // }
-    
-    // public Command dynamic(SysIdRoutine.Direction direction) {
-    //     return hoodRoutine.dynamic(direction);
-    // }
+    public void toggleForcedDown() {
+        forceDown = !forceDown;
+    }
+
+    public Command toggleForcedDownCommand() {
+        return runOnce(() -> this.toggleForcedDown());
+    }
 }

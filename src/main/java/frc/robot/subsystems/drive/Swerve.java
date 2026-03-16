@@ -200,10 +200,10 @@ public class Swerve extends SubsystemBase {
         
         driveRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                        Volts.of(0.5).per(Second),
-                        null,
-                        null,
+                        // even though our motors primarily run in amps, running them in volts for sysid still returns perfectly fine PID values.
+                        Volts.of(1).per(Second),
+                        Volts.of(5),
+                        Seconds.of(15),
                         (state) -> Logger.recordOutput("DriveSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
@@ -218,18 +218,18 @@ public class Swerve extends SubsystemBase {
         
         turnRoutine = new SysIdRoutine(
                 new SysIdRoutine.Config(
-                        // Gaslight SysId since motor is actually running amps instead of volts, feedforwards should still be accurate
-                        Volts.of(0.5).per(Second),
-                        null,
-                        null,
+                        // even though our motors primarily run in amps, running them in volts for sysid still returns perfectly fine PID values.
+                        Volts.of(1).per(Second),
+                        Volts.of(5),
+                        Seconds.of(15),
                         (state) -> Logger.recordOutput("TurnSysIdState", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
                         (voltage) -> runTurnCharacterization(voltage.in(Volts)),
-                        log -> log.motor("drive")
-                                .voltage(Volts.of(getDriveCharacterizationVoltage()))
-                                .angularPosition(Radians.of(getDriveAveragePosition()))
-                                .angularVelocity(RadiansPerSecond.of(getDriveCharacterizationVelocity())),
+                        log -> log.motor("turn")
+                                .voltage(Volts.of(getTurnCharacterizationVoltage()))
+                                .angularPosition(Radians.of(getTurnAveragePosition()))
+                                .angularVelocity(RadiansPerSecond.of(getTurnCharacterizationVelocity())),
                         this
                 )
         );
@@ -358,9 +358,9 @@ public class Swerve extends SubsystemBase {
         ChassisSpeeds robotRelativeSpeeds;
 
         // account for rotational drift caused by torque steering
-        if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
-            rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
-        }
+        // if (rotSpeed == 0 && ySpeed != 0 && xSpeed != 0) {
+        //     rotSpeed = -getGyroYawVelocityRadiansPerSec() * MK5nSwerveModuleConstants.DRIFT_MULTIPLIER;
+        // }
 
         if (fieldRelative) {
             robotRelativeSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotSpeed, getPose().getRotation());
@@ -376,10 +376,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public void runDriveCharacterization(double input) {
-        frontLeft.runDriveCharacterization(input, Units.degreesToRadians(135 + 270));
-        frontRight.runDriveCharacterization(input, Units.degreesToRadians(45));
-        rearLeft.runDriveCharacterization(input, Units.degreesToRadians(-135 + 180));
-        rearRight.runDriveCharacterization(input, Units.degreesToRadians(-45 + 90));
+        setWheelsO();
+        for (Module module : swerveModules) {
+            module.setDriveVoltage(input);
+        }
     }
 
     public Command driveCharacterization() {
@@ -388,7 +388,7 @@ public class Swerve extends SubsystemBase {
 
     public void runTurnCharacterization(double input) {
         for (Module module : swerveModules) {
-            module.runTurnCharacterization(input);
+            module.setTurnVoltage(input);
         }
     }
 
@@ -427,7 +427,7 @@ public class Swerve extends SubsystemBase {
     public double getTurnAveragePosition() {
         double average = 0.0;
         for (Module module : swerveModules) {
-            average += module.getPosition().angle.getRadians();
+            average += module.getTurnPositionRadians();
         }
         return average / 4.0;
     }
@@ -546,7 +546,7 @@ public class Swerve extends SubsystemBase {
         }
 
         poseEstimator.resetPosition(
-            gyroRotation2d,
+            gyroRotation2d.minus(Rotation2d.fromDegrees(180)),
             getModulePositions(),
             pose);
     }
@@ -587,6 +587,17 @@ public class Swerve extends SubsystemBase {
         SwerveModulePosition[] positions = new SwerveModulePosition[4];
 
         for (int modNum = 0; modNum < swerveModules.length; modNum++) {
+            positions[modNum] = swerveModules[modNum].getPosition();
+        }
+        return positions;
+
+    }
+
+    public SwerveModulePosition[] getModulePositionsFlipped() {
+
+        SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
+        for (int modNum = swerveModules.length - 1; modNum >= 0; modNum--) {
             positions[modNum] = swerveModules[modNum].getPosition();
         }
         return positions;

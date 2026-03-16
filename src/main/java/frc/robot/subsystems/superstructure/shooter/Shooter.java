@@ -20,6 +20,7 @@ import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
@@ -27,12 +28,15 @@ import frc.robot.util.calc.ShotCalculations.ShootingParameters;
 public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
-    private boolean aimTurret = true;
+    private boolean aimTurret = false;
     @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
     @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
-    private boolean aimHood = true;
+    private boolean aimHood = false;
+    @AutoLogOutput(key = "Subsystems/Shooter/PassIndex")
     private int passIndex = 0;
+    @AutoLogOutput(key = "Subsystems/Shooter/Manual")
+    private boolean manual = false;
     private Target target;
 
     private ShootingParameters shotParams;
@@ -42,8 +46,6 @@ public class Shooter extends SubsystemBase {
     private final Flywheel flywheel;
 
     private Translation3d targetLocation;
-    @AutoLogOutput(key = "Subsystems/Shooter/Target")
-    private String targetName = "None";
 
     private Supplier<Pose2d> robotRelativePose;
     private Supplier<ChassisSpeeds> robotRelativeVelocity;
@@ -62,15 +64,17 @@ public class Shooter extends SubsystemBase {
     }
 
     public enum Target {
-        HUB(FieldConstants.GET_HUB()),
-        PASS_LEFT(FieldConstants.GET_PASS_LEFT()),
-        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT()),
-        NONE(new Translation3d(0.0, 0.0, 0.0));
+        HUB(FieldConstants.GET_HUB(), "Hub"),
+        PASS_LEFT(FieldConstants.GET_PASS_LEFT(), "Pass Left"),
+        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT(), "Pass Right"),
+        NONE(new Translation3d(0.0, 0.0, 0.0), "None");
 
         public Translation3d location;
+        public String name;
 
-        Target(Translation3d location) {
+        Target(Translation3d location, String name) {
             this.location = location;
+            this.name = name;
         }
     }
 
@@ -78,7 +82,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            this.setShooterStates();
+            this.setAutoAimStates();
         }
         else {
             target = Target.NONE;
@@ -86,9 +90,11 @@ public class Shooter extends SubsystemBase {
             flywheel.setNeutral();
         }
 
+        Logger.recordOutput("Subsystems/Shooter/Target", target.name);
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
+
     }
 
     public boolean partiallyTracking() {
@@ -111,23 +117,51 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
-    // TODO: (2) flatten this with the periodic state checks (also try to consolidate these conditions)
-    public void setShooterStates() {
-        // calculate states for turret, flywheel, and hood based on robot location
-        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
-
-        // set the flywheel and turret states if we want them to track a target
-        if (spinFlywheel) flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-        if (aimTurret) turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
-
-        // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
-        if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+    public Command setShooterStates() {
+        if (manual) {
+            return Commands.runOnce(() -> setManualStates());
         }
-        else if (aimHood){
-            hood.setPositionCommand(() -> shotParams.hoodAngle());
+        else {
+            return Commands.runOnce(() -> setAutoAimStates());
         }
     }
+
+    public Command setManualStates() {
+        return Commands.sequence(
+            flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
+            hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
+            turret.setPositionCommand(Rotation2d.fromRadians(TurretConstants.MIN_ANGLE_RADIANS))
+        );
+    }
+
+    public void setAutoAimStates() {
+        // calculate states for turret, flywheel, and hood based on robot location
+        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
+        flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+        hood.setPosition(shotParams.hoodAngle());
+        turret.setPosition(shotParams.turretAngle());
+
+        // // set the flywheel and turret states if we want them to track a target
+        // if (spinFlywheel) {
+        //     flywheel.setCalculatedSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+        //     flywheel.runCalculateSpeedCommand();
+        //     // flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+        // }
+
+        // if (aimTurret) {
+        //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+
+        // }
+
+        // // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
+        // // if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
+        // //     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
+        // // }
+        // // else if (aimHood){
+        //     hood.setPositionCommand(() -> shotParams.hoodAngle());
+        // // }
+    }
+
 
     public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
         return runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
@@ -156,8 +190,9 @@ public class Shooter extends SubsystemBase {
      * 
      * @return whether the shooter is at the right state
      */
-    public boolean isReady() {
-        return turret.atTargetPosition(this::aimingAtHub) 
+    public boolean isReadyToShoot() {
+        return this.fullyTracking() 
+                    && turret.atTargetPosition(this::aimingAtHub) 
                     && flywheel.atTargetSpeed(this::aimingAtHub) 
                     && hood.atTargetPosition(this::aimingAtHub);
     }
@@ -202,7 +237,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateTarget(Pose2d robotPose) {
-        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
+        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inOppZone) {
             target = Target.HUB;
             return;
         } else if (passIndex == 0) {
@@ -213,7 +248,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void eject() {
-        flywheel.setSpeedRPM(FlywheelConstants.EJECT_VELOCITY);
+        flywheel.setSpeedRPM(FlywheelConstants.EJECT_RPM);
     }
 
     public Command ejectCommand() {
@@ -233,5 +268,17 @@ public class Shooter extends SubsystemBase {
 
     public boolean aimingAtHub() {
         return target == Target.HUB ? true : false;
+    }
+
+    public void toggleManualShooting() {
+        manual = !manual;
+    }
+
+    public Command toggleManualShootingCommand() {
+        return runOnce(() -> this.toggleManualShooting());
+    }
+
+    public boolean isManual() {
+        return manual;
     }
 }

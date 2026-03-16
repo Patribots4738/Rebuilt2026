@@ -82,7 +82,8 @@ public class Superstructure {
         STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0),
         NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
         INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
-        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0);
+        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0),
+        WIGGLE(ExtenderConstants.WIGGLE_RADIANS, IntakeConstants.INTAKE_PERCENT);
 
         public double extenderPosition;
         public double intakePercent;
@@ -122,21 +123,25 @@ public class Superstructure {
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
     public Command fireCommand() {
-        return Commands.either(
-            Commands.parallel(
+       shooter.trackTargetCommand(true, true, true);
+        return Commands.parallel(
                 spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
                 kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
-                extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
-            Commands.either(
-                shooter.trackTargetCommand(true, true, true),
-                Commands.none(), 
-                () -> !shooter.fullyTracking()),
-            () -> (shooter.fullyTracking() && shooter.isReady())
-        );
+                extender.feedShooterCommand().until(() -> kicker.emptyHopper()));
+
+        //                 extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
+        //     Commands.either(
+        //         shooter.trackTargetCommand(true, true, true),
+        //         Commands.none(), 
+        //         () -> !shooter.fullyTracking()),
+        //     () -> (shooter.fullyTracking() && shooter.isReadyToShoot())
+        // );
+
+
     }
 
     public Command ceaseFireCommand() {
-        return Commands.parallel(
+        return Commands.sequence(
                     shooter.disarmShooterCommand(),
                     shooter.stowCommand(),
                     setHopperState(HopperState.OFF)
@@ -149,6 +154,33 @@ public class Superstructure {
             // setClimbState(ClimbState.STOW),
             setHopperState(HopperState.OFF),
             setIntakeState(IntakeState.STOW)
+        );
+    }
+
+    public Command stowClimbAndIntake() {
+        return Commands.parallel(
+            setIntakeState(IntakeState.STOW)
+            // ,
+            // setClimbState(ClimbState.STOW)
+        );
+    }
+
+    public Command toggleIntakeCommand() {
+        return Commands.either(
+            setIntakeState(IntakeState.INTAKE),
+            setIntakeState(IntakeState.NO_SPIN),
+            () -> (intake.getPercentOutput() != 0.0)
+        );
+    }
+
+    public Command killCommand() {
+        return Commands.parallel(
+            shooter.setNeutralCommand(),
+            // climb.setNeutralCommand(),
+            extender.setNeutralCommand(),
+            intake.setNeutralCommand(),
+            spindexer.setNeutralCommand(),
+            kicker.setNeutralCommand()
         );
     }
 }

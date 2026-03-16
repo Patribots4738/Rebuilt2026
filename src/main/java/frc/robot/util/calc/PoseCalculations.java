@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import frc.robot.Robot;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.LoggingConstants;
@@ -280,12 +281,12 @@ public class PoseCalculations {
      */
     public static ZONE getZone(Pose2d pos) {
         ZONE currentZone = ZONE.inAllianceZone;
-        if (pos.getX() < FieldConstants.CURRENT_ALLIANCE_LINE()) {
-            currentZone = ZONE.inAllianceZone;
-        } else if (pos.getX() > FieldConstants.CURRENT_ALLIANCE_LINE() && pos.getX() < FieldConstants.OPPOSING_ALLIANCE_LINE()) {
+        if (pos.getX() < FieldConstants.ALLIANCE_LINE_RED) {
+            currentZone = Robot.isRedAlliance() ? ZONE.inAllianceZone : ZONE.inOppZone;
+        } else if (pos.getX() > FieldConstants.ALLIANCE_LINE_RED && pos.getX() < FieldConstants.ALLIANCE_LINE_BLUE) {
             currentZone = ZONE.inNeutralZone;
-        } else if (pos.getX() > FieldConstants.OPPOSING_ALLIANCE_LINE()) {
-            currentZone = ZONE.inOppZone;
+        } else if (pos.getX() > FieldConstants.ALLIANCE_LINE_BLUE) {
+            currentZone = Robot.isBlueAlliance() ? ZONE.inAllianceZone : ZONE.inOppZone;
         }
         return currentZone;
     }
