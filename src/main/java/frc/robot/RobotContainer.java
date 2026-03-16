@@ -29,14 +29,12 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
-import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.intake.IntakeIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
-import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
@@ -49,11 +47,12 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.IntakeConstants;
+import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -88,14 +87,14 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    private final Shooter shooter;
+    // private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
     private final Alignment alignment;
 
-    private final Superstructure superstructure;
+    // private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -153,8 +152,8 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOKraken());
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
-        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
-        superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
+        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        // superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
         SmartDashboard.putData("Mech2d", mech);
@@ -232,32 +231,36 @@ public class RobotContainer {
             ), swerve)
         );
 
-        // controller.leftTrigger().onTrue(Commands.parallel(
-        //     intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-        //     spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-        //     kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        // ));
+        // controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
+        // controller.leftBumper().onTrue(intake.setPercentCommand(0));
 
-        controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
-        controller.leftBumper().onTrue(intake.setPercentCommand(0));
+        // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
+        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
-        controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+        controller.leftTrigger().onTrue(Commands.parallel(
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        ));
 
-        // controller.leftBumper().onTrue(Commands.parallel(
-        //     intake.setPercentCommand(0.0),
-        //     spindexer.setPercentCommand(0.0),
-        //     kicker.setPercentCommand(0.0)
-        // ));
+        controller.leftBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(0.0),
+            spindexer.setPercentCommand(0.0),
+            kicker.setPercentCommand(0.0)
+        ));
         
-        // controller.povUp().onTrue(flywheel.setIncrementSpeedCommand());
-        // controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        // controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        // controller.povDown().onTrue(flywheel.stopCommand());
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        controller.povDown().onTrue(flywheel.stopCommand());
         
-        // controller.a().whileTrue(hood.setPositionCommand(Units.degreesToRadians(10)));
-        // controller.b().whileTrue(hood.setPositionCommand(Units.degreesToRadians(20)));
-        // controller.x().whileTrue(hood.setPositionCommand(0));
+        controller.x().onTrue(hood.setPositionCommand(0));
+        controller.b().onTrue(hood.setIncrementedPositionCommand());
+        controller.y().onTrue(hood.incrementPositionCommand());
+        controller.a().onTrue(hood.decrementPositionCommand());
+
+        controller.rightBumper().onTrue(extender.feedShooter());
+        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
 
         // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
         // controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
@@ -305,26 +308,26 @@ public class RobotContainer {
             ), swerve)
         );
 
-        controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
-        controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
-        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        controller.rightTrigger().whileTrue(
-            new ActiveConditionalCommand(
-                superstructure.fireCommand(),
-                Commands.sequence(
-                    shooter.armShooterCommand(),
-                    Commands.waitUntil(() -> shooter.isReadyToShoot()),
-                    superstructure.fireCommand()),
-                () -> shooter.isReadyToShoot()
-            )
-        );
-        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
-        // TODO: make these automatic based on position?
-        // you could have this as some sort of manual override, but seems unecesary with four cameras.
-        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        // controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
+        // controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
+        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        // controller.rightTrigger().whileTrue(
+        //     new ActiveConditionalCommand(
+        //         superstructure.fireCommand(),
+        //         Commands.sequence(
+        //             shooter.armShooterCommand(),
+        //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
+        //             superstructure.fireCommand()),
+        //         () -> shooter.isReadyToShoot()
+        //     )
+        // );
+        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        // // TODO: make these automatic based on position?
+        // // you could have this as some sort of manual override, but seems unecesary with four cameras.
+        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
-        controller.y().onTrue(shooter.toggleManualShootingCommand());
+        // controller.y().onTrue(shooter.toggleManualShootingCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));

@@ -63,27 +63,44 @@ public class ShotCalculations {
         maxDistance = 5.60;
 
         //Hub
-        hubShotAngleHoodMap.put(1.34, Rotation2d.fromDegrees(19.0));
-        hubShotAngleHoodMap.put(1.78, Rotation2d.fromDegrees(19.0));
-        hubShotAngleHoodMap.put(2.17, Rotation2d.fromDegrees(24.0));
-        hubShotAngleHoodMap.put(2.81, Rotation2d.fromDegrees(27.0));
-        hubShotAngleHoodMap.put(3.82, Rotation2d.fromDegrees(29.0));
-        hubShotAngleHoodMap.put(4.09, Rotation2d.fromDegrees(30.0));
-        hubShotAngleHoodMap.put(4.40, Rotation2d.fromDegrees(31.0));
-        hubShotAngleHoodMap.put(4.77, Rotation2d.fromDegrees(32.0));
-        hubShotAngleHoodMap.put(5.57, Rotation2d.fromDegrees(32.0));
-        hubShotAngleHoodMap.put(5.60, Rotation2d.fromDegrees(35.0));
+        hubShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(0.06981317007977318));
+        hubShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(0.13962634015954636));
+        hubShotAngleHoodMap.put(2.20091, Rotation2d.fromRadians(0.13962634015954636));
+        hubShotAngleHoodMap.put(2.50571, Rotation2d.fromRadians(0.17453292519943295));
+        hubShotAngleHoodMap.put(2.81051, Rotation2d.fromRadians(0.19198621771937624));
+        hubShotAngleHoodMap.put(3.36931, Rotation2d.fromRadians(0.17453292519943295));
+        hubShotAngleHoodMap.put(3.67411, Rotation2d.fromRadians(0.22689280275926285));
+        hubShotAngleHoodMap.put(4.28371, Rotation2d.fromRadians(0.24434609527920614));
+        hubShotAngleHoodMap.put(4.84251, Rotation2d.fromRadians(0.22689280275926285));
+        hubShotAngleHoodMap.put(5.14731, Rotation2d.fromRadians(0.24434609527920614));
+        hubShotAngleHoodMap.put(5.45211, Rotation2d.fromRadians(0.2617993877991494));
+        hubShotAngleHoodMap.put(5.75691, Rotation2d.fromRadians(0.2792526803190927));
+        hubShotAngleHoodMap.put(6.06171, Rotation2d.fromRadians(0.2792526803190927));
+        hubShotAngleHoodMap.put(6.36651, Rotation2d.fromRadians(0.3141592653589793));
+        hubShotAngleHoodMap.put(6.67131, Rotation2d.fromRadians(0.3141592653589793));
+        hubShotAngleHoodMap.put(6.97611, Rotation2d.fromRadians(0.33161255787892263));
+        hubShotAngleHoodMap.put(7.28091, Rotation2d.fromRadians(0.3490658503988659));
+        hubShotAngleHoodMap.put(7.58571, Rotation2d.fromRadians(0.3490658503988659));
 
-        hubShotFlywheelSpeedMap.put(1.34, 210.0);
-        hubShotFlywheelSpeedMap.put(1.78, 220.0);
-        hubShotFlywheelSpeedMap.put(2.17, 220.0);
-        hubShotFlywheelSpeedMap.put(2.81, 230.0);
-        hubShotFlywheelSpeedMap.put(3.82, 250.0);
-        hubShotFlywheelSpeedMap.put(4.09, 255.0);
-        hubShotFlywheelSpeedMap.put(4.40, 260.0);
-        hubShotFlywheelSpeedMap.put(4.77, 265.0);
-        hubShotFlywheelSpeedMap.put(5.57, 275.0);
-        hubShotFlywheelSpeedMap.put(5.60, 290.0);
+
+        hubShotFlywheelSpeedMap.put(1.03251, 2600.0);
+        hubShotFlywheelSpeedMap.put(1.64211, 2600.0);
+        hubShotFlywheelSpeedMap.put(2.20091, 3000.0);
+        hubShotFlywheelSpeedMap.put(2.50571, 3100.0);
+        hubShotFlywheelSpeedMap.put(2.81051, 3100.0);
+        hubShotFlywheelSpeedMap.put(3.36931, 3400.0);
+        hubShotFlywheelSpeedMap.put(3.67411, 3400.0);
+        hubShotFlywheelSpeedMap.put(4.28371, 3400.0);
+        hubShotFlywheelSpeedMap.put(4.84251, 3600.0);
+        hubShotFlywheelSpeedMap.put(5.14731, 3600.0);
+        hubShotFlywheelSpeedMap.put(5.45211, 3700.0);
+        hubShotFlywheelSpeedMap.put(5.75691, 3700.0);
+        hubShotFlywheelSpeedMap.put(6.06171, 3900.0);
+        hubShotFlywheelSpeedMap.put(6.36651, 3900.0);
+        hubShotFlywheelSpeedMap.put(6.67131, 4000.0);
+        hubShotFlywheelSpeedMap.put(6.97611, 4100.0);
+        hubShotFlywheelSpeedMap.put(7.28091, 4200.0);
+        hubShotFlywheelSpeedMap.put(7.58571, 4300.0);
 
         hubTimeOfFlightMap.put(5.68, 1.16);
         hubTimeOfFlightMap.put(4.55, 1.12);
@@ -189,6 +206,7 @@ public class ShotCalculations {
                     hubShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance) :
                     passingShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance)
             );
+        
 
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
