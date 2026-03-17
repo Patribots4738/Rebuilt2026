@@ -3,6 +3,8 @@ package frc.robot;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Rotation3d;
+import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.shooter.Shooter;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -46,6 +48,7 @@ import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.Constants.ExtenderConstants;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.Constants.KickerConstants;
@@ -87,14 +90,14 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
-    // private final Shooter shooter;
     private final Intake intake;
     private final Extender extender;
     private final Kicker kicker;
     private final Spindexer spindexer;
     private final Alignment alignment;
-
-    // private final Superstructure superstructure;
+    
+    private final Shooter shooter;
+    private final Superstructure superstructure;
 
     public static Field2d field2d = new Field2d();
 
@@ -152,8 +155,8 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOKraken());
         turret = new Turret(new TurretIOKraken());
         hood = new Hood(new HoodIOKraken());
-        // shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
-        // superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
+        shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
+        superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
         SmartDashboard.putData("Mech2d", mech);
@@ -237,34 +240,39 @@ public class RobotContainer {
         // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
-        controller.leftTrigger().onTrue(Commands.parallel(
-            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        ));
+        // controller.leftTrigger().onTrue(Commands.parallel(
+            //intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            // spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            // kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        // ));
 
-        controller.leftBumper().onTrue(Commands.parallel(
-            intake.setPercentCommand(0.0),
-            spindexer.setPercentCommand(0.0),
-            kicker.setPercentCommand(0.0)
-        ));
-        
-        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
-        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        controller.povDown().onTrue(flywheel.stopCommand());
-        
-        controller.x().onTrue(hood.setPositionCommand(0));
-        controller.b().onTrue(hood.setIncrementedPositionCommand());
-        controller.y().onTrue(hood.incrementPositionCommand());
-        controller.a().onTrue(hood.decrementPositionCommand());
+        // controller.leftBumper().onTrue(Commands.parallel(
+        //     intake.setPercentCommand(0.0),
+            // spindexer.setPercentCommand(0.0),
+            // kicker.setPercentCommand(0.0)
+        // ));
 
-        controller.rightBumper().onTrue(extender.feedShooter());
-        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
+        // controller.x().onTrue(shooter.setManualStates());
+        
+        // controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
+        // controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        // controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        // controller.povDown().onTrue(flywheel.stopCommand());
+        // controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
+        
+        // controller.x().onTrue(hood.setPositionCommand(0));
+        // controller.b().onTrue(hood.setIncrementedPositionCommand());
+        // controller.y().onTrue(hood.incrementPositionCommand());
+        // controller.a().onTrue(hood.decrementPositionCommand());
+
+        // controller.rightBumper().onTrue(extender.feedShooter());
+        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
 
         // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        // controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
-        // controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
+        controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
+        controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
+
+        controller.povDown().onTrue(hood.setPositionCommand(0.0));
         // controller.rightTrigger().whileTrue(
         //     new ActiveConditionalCommand(
         //         superstructure.fireCommand(),
@@ -381,6 +389,7 @@ public class RobotContainer {
     public void onDisabled() {
         // Stops bot in sim after auto (noramlly motors auto turn off when disabled)
         swerve.stopDriving();
+        hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
     }

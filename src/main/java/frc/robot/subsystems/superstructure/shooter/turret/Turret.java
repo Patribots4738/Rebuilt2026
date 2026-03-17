@@ -1,7 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.*;
@@ -10,6 +9,9 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,7 +27,7 @@ public class Turret extends SubsystemBase {
     private final TurretIO io;
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
-    private Rotation2d targetPosition = getRotation();
+    private Rotation2d targetPosition;
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
@@ -69,6 +71,7 @@ public class Turret extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Shooter/Turret", inputs);
         Logger.recordOutput("Subsystems/Shooter/Turret/TargetPositionDegrees", targetPosition.getDegrees());
         Logger.recordOutput("Subsystems/Shooter/Turret/CurrentPositionDegrees", getRotation().getDegrees());
+        Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", targetPosition.getDegrees());
         if (shouldRunSetpoint) {
             io.setPosition(targetPosition.getRadians(), 0);
         }
@@ -88,15 +91,13 @@ public class Turret extends SubsystemBase {
      * @param position in radians 
      */
     public void setPosition(Rotation2d position) {
-        if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
-            // apply the turret angular offset
-            targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
-            shouldRunSetpoint = true;
-            RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
-                LoggingConstants.TURRET_OFFSET,
-                new Rotation3d(0, 0, targetPosition.getRadians())
-            );
-        }
+        Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", position.getDegrees());
+        targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
+        shouldRunSetpoint = true;
+        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+            LoggingConstants.TURRET_OFFSET,
+            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
+        );
     }
 
     public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
