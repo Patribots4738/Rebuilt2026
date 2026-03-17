@@ -102,34 +102,47 @@ public class ShotCalculations {
         hubShotFlywheelSpeedMap.put(7.28091, 4200.0);
         hubShotFlywheelSpeedMap.put(7.58571, 4300.0);
 
-        hubTimeOfFlightMap.put(5.68, 1.16);
-        hubTimeOfFlightMap.put(4.55, 1.12);
-        hubTimeOfFlightMap.put(3.15, 1.11);
-        hubTimeOfFlightMap.put(1.88, 1.09);
-        hubTimeOfFlightMap.put(1.38, 0.90);
+        hubTimeOfFlightMap.put(1.03251, 1d);
+        hubTimeOfFlightMap.put(1.64211, 0.9);
+        hubTimeOfFlightMap.put(2.20091, 1.15);
+        hubTimeOfFlightMap.put(2.50571, 1.2);
+        hubTimeOfFlightMap.put(2.81051, 1.15);
+        hubTimeOfFlightMap.put(3.36931, 1.35);
+        hubTimeOfFlightMap.put(3.67411, 1.25);
+        hubTimeOfFlightMap.put(4.28371, 1.25);
+        hubTimeOfFlightMap.put(4.84251, 1.4);
+        hubTimeOfFlightMap.put(5.14731, 1.35);
+        hubTimeOfFlightMap.put(5.45211, 1.35);
+        hubTimeOfFlightMap.put(5.75691, 1.35);
+        hubTimeOfFlightMap.put(6.06171, 1.5);
+        hubTimeOfFlightMap.put(6.36651, 1.3);
+        hubTimeOfFlightMap.put(6.67131, 1.45);
+        hubTimeOfFlightMap.put(6.97611, 1.45);
+        hubTimeOfFlightMap.put(7.28091, 1.45);
+        hubTimeOfFlightMap.put(7.58571, 1.45);
 
         //Passing
         passingShotAngleHoodMap.put(1.34, Rotation2d.fromDegrees(19.0));
         passingShotAngleHoodMap.put(1.78, Rotation2d.fromDegrees(19.0));
         passingShotAngleHoodMap.put(2.17, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(2.81, Rotation2d.fromDegrees(27.0));
-        passingShotAngleHoodMap.put(3.82, Rotation2d.fromDegrees(29.0));
-        passingShotAngleHoodMap.put(4.09, Rotation2d.fromDegrees(30.0));
-        passingShotAngleHoodMap.put(4.40, Rotation2d.fromDegrees(31.0));
-        passingShotAngleHoodMap.put(4.77, Rotation2d.fromDegrees(32.0));
-        passingShotAngleHoodMap.put(5.57, Rotation2d.fromDegrees(32.0));
-        passingShotAngleHoodMap.put(5.60, Rotation2d.fromDegrees(35.0));
+        passingShotAngleHoodMap.put(2.81, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(3.82, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(4.09, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(4.40, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(4.77, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(5.57, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(5.60, Rotation2d.fromDegrees(24.0));
 
-        passingShotFlywheelSpeedMap.put(1.34, 210.0);
-        passingShotFlywheelSpeedMap.put(1.78, 220.0);
-        passingShotFlywheelSpeedMap.put(2.17, 220.0);
-        passingShotFlywheelSpeedMap.put(2.81, 230.0);
-        passingShotFlywheelSpeedMap.put(3.82, 250.0);
-        passingShotFlywheelSpeedMap.put(4.09, 255.0);
-        passingShotFlywheelSpeedMap.put(4.40, 260.0);
-        passingShotFlywheelSpeedMap.put(4.77, 265.0);
-        passingShotFlywheelSpeedMap.put(5.57, 275.0);
-        passingShotFlywheelSpeedMap.put(5.60, 290.0);
+        passingShotFlywheelSpeedMap.put(1.34, 3000.0);
+        passingShotFlywheelSpeedMap.put(1.78, 3000.0);
+        passingShotFlywheelSpeedMap.put(2.17, 3000.0);
+        passingShotFlywheelSpeedMap.put(2.81, 3000.0);
+        passingShotFlywheelSpeedMap.put(3.82, 3000.0);
+        passingShotFlywheelSpeedMap.put(4.09, 3000.0);
+        passingShotFlywheelSpeedMap.put(4.40, 3000.0);
+        passingShotFlywheelSpeedMap.put(4.77, 3000.0);
+        passingShotFlywheelSpeedMap.put(5.57, 3000.0);
+        passingShotFlywheelSpeedMap.put(5.60, 3000.0);
 
         passingTimeOfFlightMap.put(5.68, 1.16);
         passingTimeOfFlightMap.put(4.55, 1.12);
@@ -206,7 +219,6 @@ public class ShotCalculations {
                     hubShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance) :
                     passingShotFlywheelSpeedMap.get(lookaheadTurretToTargetDistance)
             );
-        
 
         // Log calculated values
         Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
