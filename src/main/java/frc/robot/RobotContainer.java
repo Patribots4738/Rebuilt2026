@@ -1,24 +1,13 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
-import edu.wpi.first.math.geometry.Rotation3d;
-import frc.robot.subsystems.superstructure.Superstructure;
-import frc.robot.subsystems.superstructure.shooter.Shooter;
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,12 +20,14 @@ import frc.robot.commands.drive.Drive;
 import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.subsystems.superstructure.Superstructure;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.intake.IntakeIOKraken;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.kicker.KickerIOKraken;
+import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.flywheel.FlywheelIOKraken;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
@@ -47,16 +38,15 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.SpindexerConstants;
-import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.custom.PatriBoxController;
+import org.littletonrobotics.junction.AutoLogOutput;
+
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
 
@@ -130,6 +120,8 @@ public class RobotContainer {
         driver = new PatriBoxController(OIConstants.DRIVER_CONTROLLER_PORT, OIConstants.DRIVER_DEADBAND);
         operator = new PatriBoxController(OIConstants.OPERATOR_CONTROLLER_PORT, OIConstants.OPERATOR_DEADBAND);
 
+        updateAllComponents3d();
+        
         // pdh = new PowerDistribution(30, ModuleType.kRev);
         // pdh.setSwitchableChannel(false);
 
@@ -199,8 +191,6 @@ public class RobotContainer {
         CommandScheduler.getInstance().schedule(new NTGainTuner());
 
         prepareNamedCommands();
-        
-        updateAllComponents3d();
     }
 
     private void configureButtonBindings() {
@@ -432,7 +422,11 @@ public class RobotContainer {
         ); // 1 - extender
         components[LoggingConstants.INTAKE_INDEX] = new Pose3d(
                 LoggingConstants.INTAKE_OFFSET,
-                new Rotation3d(0, LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+                new Rotation3d(
+                        0,
+                        LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
         ); // 2 - intake
         components[LoggingConstants.TURRET_INDEX] = new Pose3d(
                 LoggingConstants.TURRET_OFFSET,

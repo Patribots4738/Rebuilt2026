@@ -59,7 +59,10 @@ public class Turret extends SubsystemBase {
         
         RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
                 LoggingConstants.TURRET_OFFSET,
-                new Rotation3d(0, 0, targetPosition.getRadians())
+                new Rotation3d(0,
+                        0,
+                        targetPosition.getRadians()
+                )
         );
     }
 
@@ -79,7 +82,11 @@ public class Turret extends SubsystemBase {
         
         RobotContainer.components3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
                 LoggingConstants.TURRET_OFFSET,
-                new Rotation3d(0, 0, inputs.internalPositionRads)
+                new Rotation3d(
+                        0,
+                        0,
+                        inputs.internalPositionRads
+                )
         );
     }
 
@@ -92,9 +99,14 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", position.getDegrees());
         targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
         shouldRunSetpoint = true;
+        
         RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
             LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(0, 0, targetPosition.getRadians())
+            new Rotation3d(
+                    0,
+                    0,
+                    targetPosition.getRadians()
+            )
         );
     }
 

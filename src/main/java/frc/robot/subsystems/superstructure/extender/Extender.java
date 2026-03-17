@@ -5,32 +5,20 @@
 package frc.robot.subsystems.superstructure.extender;
 
 
-
-import edu.wpi.first.units.measure.Voltage;
-import frc.robot.RobotContainer;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.LoggingConstants;
-
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.util.Constants.ExtenderConstants;
+import frc.robot.util.Constants.LoggingConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.*;
+import java.util.function.DoubleSupplier;
 
 public class Extender extends SubsystemBase {
 
@@ -113,7 +101,11 @@ public class Extender extends SubsystemBase {
         
         RobotContainer.components3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
                 LoggingConstants.INTAKE_OFFSET,
-                new Rotation3d(0, inputs.positionRads + LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+                new Rotation3d(
+                        0,
+                        inputs.positionRads + LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
         );
     }
 
@@ -121,6 +113,7 @@ public class Extender extends SubsystemBase {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         targetPosition = position;
         shouldRunSetpoint = true;
+        
         RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
                 LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(position * 4.25),
                 LoggingConstants.EXTENDER_OFFSET.getY(),
@@ -130,7 +123,11 @@ public class Extender extends SubsystemBase {
         
         RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
                 LoggingConstants.INTAKE_OFFSET,
-                new Rotation3d(0, position + LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+                new Rotation3d(
+                        0,
+                        position + LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
         );
     }
 
