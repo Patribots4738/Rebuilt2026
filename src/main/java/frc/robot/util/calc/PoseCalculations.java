@@ -281,11 +281,11 @@ public class PoseCalculations {
      */
     public static ZONE getZone(Pose2d pos) {
         ZONE currentZone = ZONE.inAllianceZone;
-        if (pos.getX() < FieldConstants.ALLIANCE_LINE_RED) {
+        if (pos.getX() > FieldConstants.ALLIANCE_LINE_RED) {
             currentZone = Robot.isRedAlliance() ? ZONE.inAllianceZone : ZONE.inOppZone;
-        } else if (pos.getX() > FieldConstants.ALLIANCE_LINE_RED && pos.getX() < FieldConstants.ALLIANCE_LINE_BLUE) {
+        } else if (pos.getX() < FieldConstants.ALLIANCE_LINE_RED && pos.getX() > FieldConstants.ALLIANCE_LINE_BLUE) {
             currentZone = ZONE.inNeutralZone;
-        } else if (pos.getX() > FieldConstants.ALLIANCE_LINE_BLUE) {
+        } else if (pos.getX() < FieldConstants.ALLIANCE_LINE_BLUE) {
             currentZone = Robot.isBlueAlliance() ? ZONE.inAllianceZone : ZONE.inOppZone;
         }
         return currentZone;

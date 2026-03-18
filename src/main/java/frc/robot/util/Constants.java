@@ -235,13 +235,13 @@ public final class Constants {
 
 
         public static final GainConstants AUTO_XY_GAINS = new GainConstants(
-            4.0,
-            0.0,
-            0.9
+            1d,
+            0.5,
+            0.1
         );
 
         public static final GainConstants TELE_XY_GAINS = new GainConstants(
-            3.6,
+            3.25,
             0,
             0
         );
@@ -249,7 +249,7 @@ public final class Constants {
         // public static final LoggedGainConstants LOGGED_TELE_XY_GAINS = new LoggedGainConstants(AutoConstants.TELE_XY_GAINS, "TeleXY");
 
         public static final GainConstants AUTO_THETA_GAINS = new GainConstants(
-            3.725,
+            2.5,
             0,
             0
         );
@@ -936,20 +936,21 @@ public final class Constants {
         public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
-        public static final double ABSOLUTE_ENCODER_OFFSET = -0.722656;
+        public static final double ABSOLUTE_ENCODER_OFFSET = -0.686768;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0;
-        public static final double ROBOT_TURRET_OFFSET = -Units.degreesToRadians(4.5);
-        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(0 + ROBOT_TURRET_OFFSET);
+        public static final double ROBOT_TURRET_OFFSET = Units.degreesToRadians(4.5);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(180.0);
+
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 
         public static final double VELOCITY_CONVERSION_FACTOR = 2 * Math.PI;
         public static final double ENCODER_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
 
-        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(4.5);
-        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(357); 
+        public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(0);
+        public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(354); 
 
         public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
 
@@ -1004,7 +1005,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 2600.0; 
+        public static final double HUB_RPM = 0.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1047,7 +1048,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.06981317007977318; 
+        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1212,8 +1213,8 @@ public final class Constants {
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
 
         public static final double CENTER_LINE_X = 8.2499;
-        public static final double ALLIANCE_LINE_RED = 4.0271;
-        public static final double ALLIANCE_LINE_BLUE = 12.5488;
+        public static final double ALLIANCE_LINE_BLUE = 4.0271;
+        public static final double ALLIANCE_LINE_RED = 12.5488;
 
         public static final double CURRENT_ALLIANCE_LINE() {
             double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;

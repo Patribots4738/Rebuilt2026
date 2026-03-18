@@ -146,13 +146,12 @@ public class Vision extends SubsystemBase {
             }
             
             if (maxTagCount > 1 || maxTagArea > 4.0) {
-                // Multiple targets or one huge target (like reef tag)
                 // Trust the vision even MORE
-                xyStds = Math.hypot(0.001, 0.001);
-                radStds = 0.003;
-            } else if (maxTagArea > 0.5) {
-                xyStds = Math.hypot(0.01, 0.009);
-                radStds = 0.004;
+                xyStds = Math.hypot(0.004, 0.004);
+                radStds = 0.005;
+            } else if (maxTagArea > 0.14) {
+                xyStds = Math.hypot(0.04, 0.009);
+                radStds = 0.010;
             }
             // Conditions don't match to add a vision measurement
             else {

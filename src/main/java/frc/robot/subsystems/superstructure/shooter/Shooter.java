@@ -82,12 +82,20 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
+            // shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
+            // if (aimTurret) {
+            //     turret.setPositionCommand(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+            // }
+            // if (aimHood) {
+            //     hood.setPositionCommand(() -> shotParams.hoodAngle());
+            // }
+            // if (spinFlywheel) {
+            //     flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+            // }
             this.setAutoAimStates();
         }
         else {
             target = Target.NONE;
-            hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
-            flywheel.setNeutral();
         }
 
         Logger.recordOutput("Subsystems/Shooter/Target", target.name);
@@ -139,7 +147,24 @@ public class Shooter extends SubsystemBase {
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
         flywheel.setSpeedRPM(shotParams.flywheelSpeed());
         hood.setPosition(shotParams.hoodAngle());
-        turret.setPosition(shotParams.turretAngle());
+        turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+        // return Commands.sequence(
+        //     Commands.either(
+        //         flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
+        //         Commands.none(),
+        //         this::flywheelTracking
+        //     ),
+        //     Commands.either(
+        //         hood.setPositionCommand(() -> shotParams.hoodAngle()),
+        //         Commands.none(),
+        //         this::hoodTracking
+        //     ),
+        //     Commands.either(
+        //         turret.setPositionCommand(shotParams.turretAngle().minus(robotRelativePose.get().getRotation())),
+        //         Commands.none(),
+        //         this::turretTracking
+        //     )
+        // );
 
         // // set the flywheel and turret states if we want them to track a target
         // if (spinFlywheel) {
@@ -152,7 +177,6 @@ public class Shooter extends SubsystemBase {
         //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
 
         // }
-
         // // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
         // // if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
         // //     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
@@ -182,7 +206,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command disarmShooterCommand() {
-        return runOnce(() -> setTrackTarget(false, false, false));
+        return Commands.sequence(
+                    this.trackTargetCommand(true, false, false),
+                    hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+                    flywheel.setNeutralCommand()
+                );
     }
 
     /**
@@ -237,7 +265,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateTarget(Pose2d robotPose) {
-        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inOppZone) {
+        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
             target = Target.HUB;
             return;
         } else if (passIndex == 0) {
