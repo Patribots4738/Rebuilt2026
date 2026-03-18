@@ -15,30 +15,6 @@
           "data": {
             "pathName": "CLRight-Outpost"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 8.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Outpost-ClimbPrepRight"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 4.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ClimbPrepRight-ClimbRight"
-          }
         }
       ]
     }

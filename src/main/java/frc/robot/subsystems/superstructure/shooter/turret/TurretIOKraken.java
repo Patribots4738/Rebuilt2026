@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
+import frc.robot.Robot;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.TurretConstants;
@@ -22,15 +23,16 @@ public class TurretIOKraken implements TurretIO {
     }  
 
     private void configMotor() {
-        motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
-        motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         if (FieldConstants.IS_REAL) {
             motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
         }
         else {
             motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
         }
+        motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
+        motor.resetEncoder(TurretConstants.ROBOT_TURRET_OFFSET);
+        // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
+        motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         motor.setGains(TurretConstants.GAINS);
         motor.setStatorCurrentLimit(TurretConstants.CURRENT_LIMIT);
         motor.setTorqueCurrentLimits(-TurretConstants.CURRENT_LIMIT, TurretConstants.CURRENT_LIMIT);
@@ -45,6 +47,7 @@ public class TurretIOKraken implements TurretIO {
         encoder.configureMagnetSensor(TurretConstants.CANCODER_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);
+        encoder.resetEncoder(TurretConstants.ROBOT_TURRET_OFFSET);
     }
 
     /**

@@ -25,7 +25,7 @@ public class Turret extends SubsystemBase {
     private final TurretIO io;
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
 
-    private Rotation2d targetPosition;
+    private Rotation2d targetPosition =  getRotation();
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
@@ -54,9 +54,7 @@ public class Turret extends SubsystemBase {
                         this
                 )
         );
-
-        targetPosition = new Rotation2d(0, 0);
-        
+		
         RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
                 LoggingConstants.TURRET_OFFSET,
                 new Rotation3d(0,
@@ -97,17 +95,57 @@ public class Turret extends SubsystemBase {
      */
     public void setPosition(Rotation2d position) {
         Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", position.getDegrees());
-        targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
-        shouldRunSetpoint = true;
-        
-        RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
-            LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(
-                    0,
-                    0,
-                    targetPosition.getRadians()
-            )
-        );
+        // if (position.getDegrees() < 0) {
+        //     position = position.plus(Rotation2d.fromDegrees(360));
+        // }
+        // if (position.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
+        //     position = position.unaryMinus();
+        //     System.out.println("UNDER MIN");
+    // }
+        // if (position.getRadians() > TurretConstants.MAX_ANGLE_RADIANS) {
+        //     System.out.println("OVER MAX");
+        // }
+
+
+
+            targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
+
+
+
+
+
+
+            // if (targetPosition.getDegrees() < 0) {
+            //     targetPosition = Rotation2d.fromDegrees(180).minus(Rotation2d.fromDegrees(Math.abs(targetPosition.getDegrees()))).plus(Rotation2d.fromDegrees(180));
+            // }
+
+            // TODO: TRY THIS
+            // if (targetPosition.getDegrees() > 360) {
+            //     targetPosition = targetPosition.minus(Rotation2d.fromDegrees(360));
+            // }
+
+
+
+
+            // if (targetPosition.getRadians() > TurretConstants.MAX_ANGLE_RADIANS || targetPosition.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
+            //     targetPosition = targetPosition.plus(Rotation2d.fromDegrees(360));
+            // }
+
+            shouldRunSetpoint = true;
+        //if (position.getRadians() < TurretConstants.MAX_ANGLE_RADIANS && position.getRadians() > TurretConstants.MIN_ANGLE_RADIANS) {
+            // apply the turret angular offset
+            //targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
+            //shouldRunSetpoint = true;
+        //}
+	    
+	    RobotContainer.desiredComponents3d[LoggingConstants.TURRET_INDEX] = new Pose3d(
+			    LoggingConstants.TURRET_OFFSET,
+			    new Rotation3d(
+					    0,
+					    0,
+					    targetPosition.getRadians()
+			    )
+	    );
     }
 
     public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {

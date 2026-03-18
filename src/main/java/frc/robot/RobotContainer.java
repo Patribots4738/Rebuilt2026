@@ -38,9 +38,13 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.OIConstants;
+import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.Constants.KickerConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.custom.PatriBoxController;
@@ -259,6 +263,25 @@ public class RobotContainer {
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
 
         // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+
+        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+        controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
+        
+        controller.leftTrigger().onTrue(Commands.parallel(
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        ));
+
+        controller.leftBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(0.0),
+            spindexer.setPercentCommand(0.0),
+            kicker.setPercentCommand(0.0)
+        ));
+
+        controller.y().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
+        
+        controller.x().onTrue(extender.feedShooterCommand());
+        
         controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
         controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
 
