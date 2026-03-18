@@ -135,10 +135,10 @@ public class RobotContainer {
         swerve = new Swerve();
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(),
-            new VisionIOLimelight("limelight-right", true),
-            new VisionIOLimelight("limelight-left", true),
-            new VisionIOLimelight("limelight-hailo", true),
-            new VisionIOLimelight("limelight-threeg", false));
+            new VisionIOLimelight("limelight-right", true), // Megatron - big t
+            new VisionIOLimelight("limelight-left", true), // Zhao - me
+            new VisionIOLimelight("limelight-hailo", true), // Dialyn - me again
+            new VisionIOLimelight("limelight-threeg", false)); // Linda - big h
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
