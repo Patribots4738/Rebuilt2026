@@ -134,12 +134,26 @@ public class Shooter extends SubsystemBase {
         );
     }
 
-    public void setAutoAimStates() {
+    public Command setAutoAimStates() {
         // calculate states for turret, flywheel, and hood based on robot location
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
-        flywheel.setSpeedRPM(shotParams.flywheelSpeed());
-        hood.setPosition(shotParams.hoodAngle());
-        turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+        return Commands.sequence(
+            Commands.either(
+                flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
+                Commands.none(),
+                this::flywheelTracking
+            ),
+            Commands.either(
+                hood.setPositionCommand(() -> shotParams.hoodAngle()),
+                Commands.none(),
+                this::hoodTracking
+            ),
+            Commands.either(
+                turret.setPositionCommand(shotParams.turretAngle().minus(robotRelativePose.get().getRotation())),
+                Commands.none(),
+                this::turretTracking
+            )
+        );
 
         // // set the flywheel and turret states if we want them to track a target
         // if (spinFlywheel) {
@@ -182,7 +196,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command disarmShooterCommand() {
-        return runOnce(() -> setTrackTarget(false, false, false));
+        return runOnce(() -> setTrackTarget(true, false, false)).andThen(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
     }
 
     /**

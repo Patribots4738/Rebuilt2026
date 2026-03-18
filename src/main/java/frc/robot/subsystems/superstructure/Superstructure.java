@@ -123,28 +123,19 @@ public class Superstructure {
     // if we are tracking a target and our shooter is ready, we will accept the request to outtake
     // if we are tracking and our shooter is not ready, then we will do nothing
     public Command fireCommand() {
-       shooter.trackTargetCommand(true, true, true);
-        return Commands.parallel(
-                spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
-                kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
-                extender.feedShooterCommand().until(() -> kicker.emptyHopper()));
-
-        //                 extender.feedShooterCommand().until(() -> kicker.emptyHopper())),
-        //     Commands.either(
-        //         shooter.trackTargetCommand(true, true, true),
-        //         Commands.none(), 
-        //         () -> !shooter.fullyTracking()),
-        //     () -> (shooter.fullyTracking() && shooter.isReadyToShoot())
-        // );
-
-
+        return shooter.armShooterCommand()
+            .andThen(Commands.waitUntil(() -> shooter.isReadyToShoot()).andThen(
+                Commands.sequence(
+                    spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
+                    kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
+                    extender.feedShooterCommand())));
     }
 
     public Command ceaseFireCommand() {
         return Commands.sequence(
                     shooter.disarmShooterCommand(),
-                    shooter.stowCommand(),
-                    setHopperState(HopperState.OFF)
+                    setHopperState(HopperState.OFF),
+                    setIntakeState(IntakeState.INTAKE)
                 );
     }
 
