@@ -507,11 +507,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 20.0; //20.0
-        public static final double DRIVING_I = 6.0; //6
-        public static final double DRIVING_D = 1.5; //1.5
-        public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.124; //0.124
+        public static final double DRIVING_P = FieldConstants.IS_REAL ? 20.0 : 7.1535; //20.0
+        public static final double DRIVING_I = FieldConstants.IS_REAL ? 6.0 : 0; //6
+        public static final double DRIVING_D = FieldConstants.IS_REAL ? 1.5 : 0.35846; //1.5
+        public static final double DRIVING_S = FieldConstants.IS_REAL ? 0.0 : 0.037637;
+        public static final double DRIVING_V = FieldConstants.IS_REAL ? 0.124 : 0.74799; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -524,10 +524,10 @@ public final class Constants {
 
         public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 700.0; //225
-        public static final double TURNING_I = 0.0; //13
-        public static final double TURNING_D = 12.0; //8
-        public static final double TURNING_S = 0.0;
+        public static final double TURNING_P = FieldConstants.IS_REAL ? 700.0 : 10000; //225
+        public static final double TURNING_I = FieldConstants.IS_REAL ? 0.0 : 5; //13
+        public static final double TURNING_D = FieldConstants.IS_REAL ? 12.0 : 2500; //8
+        public static final double TURNING_S = FieldConstants.IS_REAL ? 0.0 : 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
             TURNING_P,
@@ -947,9 +947,9 @@ public final class Constants {
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 300d : 0; 
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 25d : 0;
+        public static final double P = FieldConstants.IS_REAL ? 300d : 2250;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 1000;
+        public static final double D = FieldConstants.IS_REAL ? 25d : 1350;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0; 
@@ -1000,12 +1000,12 @@ public final class Constants {
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0.5 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 0.5 : 2.5563E-23;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0.03566;
+        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0.012904;
+        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0.7779;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -1111,12 +1111,12 @@ public final class Constants {
 
         public static final double DEADBAND_RADIANS = 0.1;
 
-        public static final double P = FieldConstants.IS_REAL ? 100 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 100 : 38.679;
         public static final double I = FieldConstants.IS_REAL ? 15 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 10 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 10 : 7.6543;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 1.1752;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0.024287;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 6.1972;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
