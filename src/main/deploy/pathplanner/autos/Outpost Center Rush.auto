@@ -81,15 +81,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "StopShooting"
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootUntilEmptyHopper"
+            "name": "StopShooting"
           }
         },
         {

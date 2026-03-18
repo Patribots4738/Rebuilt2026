@@ -421,7 +421,7 @@ public class RobotContainer {
 
     private void prepareNamedCommands() {
         NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().withTimeout(5d));
-        NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand().until(() -> kicker.emptyHopper()));
+        NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
@@ -433,14 +433,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
         NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
-
-        NamedCommands.registerCommand("WaitUntilEmptyHopper", Commands.waitUntil(() -> kicker.emptyHopper()));
-        NamedCommands.registerCommand("WaitUntilBehindTower", Commands.waitUntil(() -> PoseCalculations.behindTower(swerve.getPose())));
-        NamedCommands.registerCommand("WaitUntilNotBehindTower", Commands.waitUntil(() -> ! (PoseCalculations.behindTower(swerve.getPose()))));
-        //NamedCommands.registerCommand("WaitUntilClimb", Commands.waitUntil(() -> superstructure.targetClimbState == ClimbState.UP));
-        NamedCommands.registerCommand("WaitUntilInsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) == PoseCalculations.ZONE.inAllianceZone));
-        NamedCommands.registerCommand("WaitUntilOutsideAllianceZone", Commands.waitUntil(() -> PoseCalculations.getZone(swerve.getPose()) != PoseCalculations.ZONE.inAllianceZone));
-
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
