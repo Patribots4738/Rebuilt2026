@@ -15,6 +15,7 @@ import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
@@ -122,33 +123,63 @@ public class ShotCalculations {
         hubTimeOfFlightMap.put(7.58571, 1.45);
 
         //Passing
-        passingShotAngleHoodMap.put(1.34, Rotation2d.fromDegrees(19.0));
-        passingShotAngleHoodMap.put(1.78, Rotation2d.fromDegrees(19.0));
-        passingShotAngleHoodMap.put(2.17, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(2.81, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(3.82, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(4.09, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(4.40, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(4.77, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(5.57, Rotation2d.fromDegrees(24.0));
-        passingShotAngleHoodMap.put(5.60, Rotation2d.fromDegrees(24.0));
+        passingShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(2.20091, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(2.50571, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(2.81051, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(3.36931, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(3.67411, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(4.28371, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(4.84251, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(5.14731, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(5.45211, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(5.75691, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(6.06171, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(6.36651, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(6.67131, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(6.97611, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(7.28091, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
+        passingShotAngleHoodMap.put(7.58571, Rotation2d.fromRadians(HoodConstants.MAX_ANGLE_RADIANS));
 
-        passingShotFlywheelSpeedMap.put(1.34, 3000.0);
-        passingShotFlywheelSpeedMap.put(1.78, 3000.0);
-        passingShotFlywheelSpeedMap.put(2.17, 3000.0);
-        passingShotFlywheelSpeedMap.put(2.81, 3000.0);
-        passingShotFlywheelSpeedMap.put(3.82, 3000.0);
-        passingShotFlywheelSpeedMap.put(4.09, 3000.0);
-        passingShotFlywheelSpeedMap.put(4.40, 3000.0);
-        passingShotFlywheelSpeedMap.put(4.77, 3000.0);
-        passingShotFlywheelSpeedMap.put(5.57, 3000.0);
-        passingShotFlywheelSpeedMap.put(5.60, 3000.0);
 
-        passingTimeOfFlightMap.put(5.68, 1.16);
-        passingTimeOfFlightMap.put(4.55, 1.12);
-        passingTimeOfFlightMap.put(3.15, 1.11);
-        passingTimeOfFlightMap.put(1.88, 1.09);
-        passingTimeOfFlightMap.put(1.38, 0.90);
+        passingShotFlywheelSpeedMap.put(1.03251, 2600.0);
+        passingShotFlywheelSpeedMap.put(1.64211, 2600.0);
+        passingShotFlywheelSpeedMap.put(2.20091, 3000.0);
+        passingShotFlywheelSpeedMap.put(2.50571, 3100.0);
+        passingShotFlywheelSpeedMap.put(2.81051, 3100.0);
+        passingShotFlywheelSpeedMap.put(3.36931, 3400.0);
+        passingShotFlywheelSpeedMap.put(3.67411, 3400.0);
+        passingShotFlywheelSpeedMap.put(4.28371, 3400.0);
+        passingShotFlywheelSpeedMap.put(4.84251, 3600.0);
+        passingShotFlywheelSpeedMap.put(5.14731, 3600.0);
+        passingShotFlywheelSpeedMap.put(5.45211, 3700.0);
+        passingShotFlywheelSpeedMap.put(5.75691, 3700.0);
+        passingShotFlywheelSpeedMap.put(6.06171, 3900.0);
+        passingShotFlywheelSpeedMap.put(6.36651, 3900.0);
+        passingShotFlywheelSpeedMap.put(6.67131, 4000.0);
+        passingShotFlywheelSpeedMap.put(6.97611, 4100.0);
+        passingShotFlywheelSpeedMap.put(7.28091, 4200.0);
+        passingShotFlywheelSpeedMap.put(7.58571, 4300.0);
+
+        passingTimeOfFlightMap.put(1.03251, 1d);
+        passingTimeOfFlightMap.put(1.64211, 0.9);
+        passingTimeOfFlightMap.put(2.20091, 1.15);
+        passingTimeOfFlightMap.put(2.50571, 1.2);
+        passingTimeOfFlightMap.put(2.81051, 1.15);
+        passingTimeOfFlightMap.put(3.36931, 1.35);
+        passingTimeOfFlightMap.put(3.67411, 1.25);
+        passingTimeOfFlightMap.put(4.28371, 1.25);
+        passingTimeOfFlightMap.put(4.84251, 1.4);
+        passingTimeOfFlightMap.put(5.14731, 1.35);
+        passingTimeOfFlightMap.put(5.45211, 1.35);
+        passingTimeOfFlightMap.put(5.75691, 1.35);
+        passingTimeOfFlightMap.put(6.06171, 1.5);
+        passingTimeOfFlightMap.put(6.36651, 1.3);
+        passingTimeOfFlightMap.put(6.67131, 1.45);
+        passingTimeOfFlightMap.put(6.97611, 1.45);
+        passingTimeOfFlightMap.put(7.28091, 1.45);
+        passingTimeOfFlightMap.put(7.58571, 1.45);
     }
 
     public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier, Translation3d target, boolean hub) {

@@ -87,16 +87,37 @@ public class Turret extends SubsystemBase {
     public void setPosition(Rotation2d position) {
         Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", position.getDegrees());
         // if (position.getDegrees() < 0) {
-        //     position.plus(Rotation2d.fromDegrees(360));
+        //     position = position.plus(Rotation2d.fromDegrees(360));
         // }
         // if (position.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
         //     position = position.unaryMinus();
         //     System.out.println("UNDER MIN");
-        // }
+    // }
         // if (position.getRadians() > TurretConstants.MAX_ANGLE_RADIANS) {
         //     System.out.println("OVER MAX");
         // }
+
+
+
             targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
+
+
+
+
+
+
+            // if (targetPosition.getDegrees() < 0) {
+            //     targetPosition = Rotation2d.fromDegrees(180).minus(Rotation2d.fromDegrees(Math.abs(targetPosition.getDegrees()))).plus(Rotation2d.fromDegrees(180));
+            // }
+
+            // TODO: TRY THIS
+            // if (targetPosition.getDegrees() > 360) {
+            //     targetPosition = targetPosition.minus(Rotation2d.fromDegrees(360));
+            // }
+
+
+
+
             // if (targetPosition.getRadians() > TurretConstants.MAX_ANGLE_RADIANS || targetPosition.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
             //     targetPosition = targetPosition.plus(Rotation2d.fromDegrees(360));
             // }

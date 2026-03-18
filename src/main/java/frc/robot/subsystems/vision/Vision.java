@@ -150,7 +150,7 @@ public class Vision extends SubsystemBase {
                 // Trust the vision even MORE
                 xyStds = Math.hypot(0.001, 0.001);
                 radStds = 0.003;
-            } else if (maxTagArea > 0.5) {
+            } else if (maxTagArea > 0.14) {
                 xyStds = Math.hypot(0.01, 0.009);
                 radStds = 0.004;
             }
