@@ -29,8 +29,8 @@ public class TurretIOKraken implements TurretIO {
         else {
             motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
         }
-        motor.resetEncoder(TurretConstants.ROBOT_TURRET_OFFSET);
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
+        motor.resetEncoder(TurretConstants.ROBOT_TURRET_OFFSET);
         // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         motor.setGains(TurretConstants.GAINS);

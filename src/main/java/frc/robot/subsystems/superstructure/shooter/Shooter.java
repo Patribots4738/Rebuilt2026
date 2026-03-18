@@ -86,8 +86,6 @@ public class Shooter extends SubsystemBase {
         }
         else {
             target = Target.NONE;
-            // hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
-            // flywheel.setNeutral();
         }
 
         Logger.recordOutput("Subsystems/Shooter/Target", target.name);
@@ -196,7 +194,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command disarmShooterCommand() {
-        return runOnce(() -> setTrackTarget(true, false, false)).andThen(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+        return Commands.sequence(
+                    this.trackTargetCommand(true, false, false),
+                    hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+                    flywheel.setNeutralCommand()
+                );
     }
 
     /**
