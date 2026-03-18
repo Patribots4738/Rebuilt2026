@@ -934,7 +934,7 @@ public final class Constants {
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0;
         public static final double ROBOT_TURRET_OFFSET = Units.degreesToRadians(4.5);
-        public static final double ANGULAR_OFFSET = Units.degreesToRadians(0.0);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(180.0);
 
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 

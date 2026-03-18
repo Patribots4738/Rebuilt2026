@@ -42,8 +42,7 @@ public class TurretIOKraken implements TurretIO {
     }
 
     private void configEncoder() {
-        
-        //v setting to inversion of motor so they stay the same(copying what was done in turret-test branch)
+        // setting to inversion of motor so they stay the same(copying what was done in turret-test branch)
         encoder.configureMagnetSensor(TurretConstants.CANCODER_INVERTED, TurretConstants.ABSOLUTE_ENCODER_OFFSET, TurretConstants.DISCONTINUITY_POINT);
         encoder.setPositionConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
         encoder.setVelocityConversionFactor(TurretConstants.VELOCITY_CONVERSION_FACTOR);

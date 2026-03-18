@@ -101,14 +101,14 @@ public class Turret extends SubsystemBase {
 
             targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
 
-
-
-
-
-
             // if (targetPosition.getDegrees() < 0) {
             //     targetPosition = Rotation2d.fromDegrees(180).minus(Rotation2d.fromDegrees(Math.abs(targetPosition.getDegrees()))).plus(Rotation2d.fromDegrees(180));
             // }
+
+
+
+
+            
 
             // TODO: TRY THIS
             // if (targetPosition.getDegrees() > 360) {
