@@ -338,26 +338,19 @@ public class RobotContainer {
         );
         
 
-        // controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
-        // controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
-        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        // controller.rightTrigger().whileTrue(
-        //     new ActiveConditionalCommand(
-        //         superstructure.fireCommand(), 
-        //         Commands.sequence(
-        //             shooter.armShooterCommand(), 
-        //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
-        //             superstructure.fireCommand()),
-        //         () -> shooter.isReadyToShoot()
-        //     )
-        // );
-        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
+        controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
+        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        controller.rightTrigger().whileTrue(superstructure.fireCommand());
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         // // TODO: make these automatic based on position?
         // // you could have this as some sort of manual override, but seems unecesary with four cameras.
-        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
-        // controller.y().onTrue(shooter.toggleManualShootingCommand());
+        shooter.trackTargetCommand(false, false, false);
+
+        controller.y().onTrue(shooter.toggleManualShootingCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
