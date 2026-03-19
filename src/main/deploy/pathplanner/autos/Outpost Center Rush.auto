@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "PassLeft"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -62,7 +68,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -89,13 +95,26 @@
         {
           "type": "named",
           "data": {
-            "name": "Wiggle Intake"
+            "name": "StopIntake"
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "StopIntake"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wiggle Intake"
+                }
+              }
+            ]
           }
         },
         {

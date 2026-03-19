@@ -298,7 +298,7 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            "Double Center Rush Left",
+            //"Double Center Rush Left",
             "Double Center Rush Right",
             "Outpost Center Rush",
             "Dumby Center",
@@ -679,7 +679,7 @@ public final class Constants {
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
+        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
 
     }
 
@@ -958,8 +958,8 @@ public final class Constants {
 
         public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
 
-        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
-        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
+        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
+        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 300d : 0; 
@@ -1005,7 +1005,7 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 1.0;
 
-        public static final double VELOCITY_DEADBAND_RPM = 50; 
+        public static final double VELOCITY_DEADBAND_RPM = 125; 
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
@@ -1057,7 +1057,7 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.1;
+        public static final double POSITION_DEADBAND_RADIANS = 0.15;
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
