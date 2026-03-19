@@ -313,6 +313,11 @@ public class Shooter extends SubsystemBase {
 
     public void toggleManualShooting() {
         manual = !manual;
+        if (manual) {
+            flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
+            hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
+            turret.setPositionCommand(TurretConstants.HUB_POSITION);
+        }
     }
 
     public Command toggleManualShootingCommand() {
