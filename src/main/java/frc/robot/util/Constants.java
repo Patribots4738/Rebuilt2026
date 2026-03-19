@@ -1167,8 +1167,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.3;
-        public static final double FORWARD_PERCENT = 0.3;
+        public static final double REVERSE_PERCENT = -0.5;
+        public static final double FORWARD_PERCENT = 0.5;
         
         public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
