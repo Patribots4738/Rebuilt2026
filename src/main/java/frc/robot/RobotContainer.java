@@ -21,6 +21,7 @@ import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
+import frc.robot.subsystems.superstructure.Superstructure.HopperState;
 import frc.robot.subsystems.superstructure.Superstructure.IntakeState;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.extender.ExtenderIOKraken;
@@ -330,10 +331,16 @@ public class RobotContainer {
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
         controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
         controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        controller.rightTrigger().whileTrue(superstructure.fireCommand());
-        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
-        // // TODO: make these automatic based on position?
-        // // you could have this as some sort of manual override, but seems unecesary with four cameras.
+        controller.rightTrigger().whileTrue(
+            Commands.either(
+                superstructure.setHopperState(HopperState.FORWARD).andThen(extender.feedShooterCommand()),
+                superstructure.fireCommand(),
+                shooter::isManual));
+        controller.rightTrigger().toggleOnFalse(
+            Commands.either(
+                superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
+                superstructure.ceaseFireCommand(),
+                shooter::isManual));
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
@@ -405,8 +412,9 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", Commands.sequence(shooter.armShooterCommand(), superstructure.fireNoFeedShooterCommand()));
+        NamedCommands.registerCommand("Shoot", Commands.sequence(superstructure.fireNoFeedShooterCommand()));
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
+        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
         NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand());
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());

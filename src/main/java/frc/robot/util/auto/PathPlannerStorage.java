@@ -165,8 +165,8 @@ public class PathPlannerStorage {
         return Commands.defer(() -> Commands.sequence(
                 Commands.parallel(
                     AutoBuilder.followPath(pathToClimbPrep), 
-                    //NamedCommands.getCommand("ClimbUp"), 
-                    NamedCommands.getCommand("StopIntake"),
+                    // NamedCommands.getCommand("ClimbUp"), 
+                    // NamedCommands.getCommand("StopIntake"),
                     NamedCommands.getCommand("ShootUntilEmptyHopper")
                 ), 
                 AutoBuilder.followPath(pathToClimb), 
@@ -188,9 +188,9 @@ public class PathPlannerStorage {
         }
         return Commands.defer(() -> Commands.sequence(
             Commands.parallel(
-                AutoBuilder.followPath(pathToStartingLine),
-                NamedCommands.getCommand("StopIntake"),
-                NamedCommands.getCommand("WaitUntilEmptyHopper")
+                AutoBuilder.followPath(pathToStartingLine)
+                // NamedCommands.getCommand("StopIntake"),
+                // NamedCommands.getCommand("WaitUntilEmptyHopper")
             ), Commands.parallel(
                 AutoBuilder.followPath(pathToCenterLine),
                 NamedCommands.getCommand("Intake"),

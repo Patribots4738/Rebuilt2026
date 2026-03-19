@@ -1010,7 +1010,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 0.0; // TODO: find this value
+        public static final double HUB_RPM = 3000.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
