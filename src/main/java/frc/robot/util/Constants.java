@@ -236,8 +236,8 @@ public final class Constants {
 
         public static final GainConstants AUTO_XY_GAINS = new GainConstants(
             1d,
-            0.5,
-            0.1
+            0.1,
+            0.0
         );
 
         public static final GainConstants TELE_XY_GAINS = new GainConstants(
@@ -249,7 +249,7 @@ public final class Constants {
         // public static final LoggedGainConstants LOGGED_TELE_XY_GAINS = new LoggedGainConstants(AutoConstants.TELE_XY_GAINS, "TeleXY");
 
         public static final GainConstants AUTO_THETA_GAINS = new GainConstants(
-            2.5,
+            2.25,
             0,
             0
         );
@@ -301,7 +301,11 @@ public final class Constants {
             "Double Center Rush Left",
             "Double Center Rush Right",
             "Outpost Center Rush",
-            "Dumby Center"
+            "Dumby Center",
+            "Test",
+            "Double Center Rush Left Drive Only",
+            "Double Center Rush Right Drive Only",
+            "Outpost Center Rush Drive Only"
         };
 
         public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
@@ -500,7 +504,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
 
         // **********************************************************************MK5n SWERVE**********************
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(2 * 2); //TODO: run wheel radius characterization
+        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.902374664049277 * 2); //TODO: run wheel radius characterization
         // **********************************************************************MK5n SWERVE**********************
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
