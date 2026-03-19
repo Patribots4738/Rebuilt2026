@@ -235,8 +235,8 @@ public final class Constants {
 
         public static final GainConstants AUTO_XY_GAINS = new GainConstants(
             1d,
-            0.5,
-            0.1
+            0.1,
+            0.0
         );
 
         public static final GainConstants TELE_XY_GAINS = new GainConstants(
@@ -248,7 +248,7 @@ public final class Constants {
         // public static final LoggedGainConstants LOGGED_TELE_XY_GAINS = new LoggedGainConstants(AutoConstants.TELE_XY_GAINS, "TeleXY");
 
         public static final GainConstants AUTO_THETA_GAINS = new GainConstants(
-            2.5,
+            2.25,
             0,
             0
         );
@@ -297,10 +297,14 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            "Double Center Rush Left",
+            //"Double Center Rush Left",
             "Double Center Rush Right",
             "Outpost Center Rush",
-            "Dumby Center"
+            "Dumby Center",
+            "Test",
+            "Double Center Rush Left Drive Only",
+            "Double Center Rush Right Drive Only",
+            "Outpost Center Rush Drive Only"
         };
 
         public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
@@ -499,7 +503,7 @@ public final class Constants {
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
 
         // **********************************************************************MK5n SWERVE**********************
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(2 * 2); //TODO: run wheel radius characterization
+        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.902374664049277 * 2); //TODO: run wheel radius characterization
         // **********************************************************************MK5n SWERVE**********************
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
@@ -674,7 +678,7 @@ public final class Constants {
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
+        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
 
     }
 
@@ -955,8 +959,8 @@ public final class Constants {
 
         public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
 
-        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(2);
-        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
+        public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
+        public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
 
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 300d : 2250;
@@ -1002,7 +1006,7 @@ public final class Constants {
 
         public static final double GEAR_RATIO = 1.0;
 
-        public static final double VELOCITY_DEADBAND_RPM = 50; 
+        public static final double VELOCITY_DEADBAND_RPM = 125; 
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
@@ -1054,7 +1058,7 @@ public final class Constants {
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
 
-        public static final double POSITION_DEADBAND_RADIANS = 0.1;
+        public static final double POSITION_DEADBAND_RADIANS = 0.15;
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
@@ -1168,8 +1172,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.3;
-        public static final double FORWARD_PERCENT = 0.3;
+        public static final double REVERSE_PERCENT = -0.5;
+        public static final double FORWARD_PERCENT = 0.5;
         
         public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }

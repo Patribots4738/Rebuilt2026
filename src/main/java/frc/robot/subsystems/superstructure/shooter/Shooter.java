@@ -81,17 +81,24 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            // shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
-            // if (aimTurret) {
-            //     turret.setPositionCommand(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+            setAutoAimStates();
+            // if (manual) {
+            //     turret.setPositionCommand(TurretConstants.HUB_POSITION);
+            //     flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
+            //     hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS);
             // }
-            // if (aimHood) {
-            //     hood.setPositionCommand(() -> shotParams.hoodAngle());
+            // else {
+                // shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
+                // // if (aimTurret) {
+                //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
+                // // }
+                // // if (aimHood) {
+                //     hood.setPositionCommand(() -> shotParams.hoodAngle());
+                // // }
+                // // if (spinFlywheel) {
+                //     flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
+                // }
             // }
-            // if (spinFlywheel) {
-            //     flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-            // }
-            this.setAutoAimStates();
         }
         else {
             target = Target.NONE;
@@ -141,6 +148,7 @@ public class Shooter extends SubsystemBase {
         );
     }
 
+    // maybe delete this
     public void setAutoAimStates() {
         // calculate states for turret, flywheel, and hood based on robot location
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
@@ -201,12 +209,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command armShooterCommand() {
-        return runOnce(() -> setTrackTarget(true, true, true));
+        return trackTargetCommand(true, true, true);
     }
 
     public Command disarmShooterCommand() {
         return Commands.sequence(
-                    this.trackTargetCommand(true, false, false),
+                    this.trackTargetCommand(false, false, false),
                     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
                     flywheel.setNeutralCommand()
                 );
@@ -219,7 +227,6 @@ public class Shooter extends SubsystemBase {
      */
     public boolean isReadyToShoot() {
         return this.fullyTracking() 
-                    && turret.atTargetPosition(this::aimingAtHub) 
                     && flywheel.atTargetSpeed(this::aimingAtHub) 
                     && hood.atTargetPosition(this::aimingAtHub);
     }

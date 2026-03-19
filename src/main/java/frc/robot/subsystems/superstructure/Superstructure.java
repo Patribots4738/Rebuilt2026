@@ -128,7 +128,16 @@ public class Superstructure {
                 Commands.sequence(
                     spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
                     kicker.setPercentCommand(HopperState.FORWARD.kickerPercent),
+                    intake.setPercentCommand(0.0),
                     extender.feedShooterCommand())));
+    }
+
+    public Command fireNoFeedShooterCommand() {
+        return shooter.armShooterCommand()
+            .andThen(Commands.waitUntil(() -> shooter.isReadyToShoot()).andThen(
+                Commands.sequence(
+                    spindexer.setPercentCommand(HopperState.FORWARD.spindexerPercent),
+                    kicker.setPercentCommand(HopperState.FORWARD.kickerPercent))));
     }
 
     public Command ceaseFireCommand() {
@@ -160,7 +169,7 @@ public class Superstructure {
         return Commands.either(
             setIntakeState(IntakeState.INTAKE),
             setIntakeState(IntakeState.NO_SPIN),
-            () -> (intake.getPercentOutput() != 0.0)
+            () -> (intake.getPercentOutput() == 0.0)
         );
     }
 

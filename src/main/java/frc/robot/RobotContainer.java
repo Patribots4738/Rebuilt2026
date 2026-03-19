@@ -277,8 +277,8 @@ public class RobotContainer {
         
         controller.x().onTrue(extender.feedShooterCommand());
 
-        controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
-        controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
+        controller.a().onTrue(shooter.armShooterCommand());
+        controller.b().whileTrue(superstructure.fireCommand());
 
         controller.povDown().onTrue(hood.setPositionCommand(0.0));
 
@@ -286,9 +286,9 @@ public class RobotContainer {
         controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
         // controller.rightTrigger().whileTrue(
         //     new ActiveConditionalCommand(
-        //         superstructure.fireCommand(),
+        //         superstructure.fireCommand(), 
         //         Commands.sequence(
-        //             shooter.armShooterCommand(),
+        //             shooter.armShooterCommand(), 
         //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
         //             superstructure.fireCommand()),
         //         () -> shooter.isReadyToShoot()
@@ -327,26 +327,19 @@ public class RobotContainer {
             ), swerve)
         );
 
-        // controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
-        // controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
-        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-        // controller.rightTrigger().whileTrue(
-        //     new ActiveConditionalCommand(
-        //         superstructure.fireCommand(),
-        //         Commands.sequence(
-        //             shooter.armShooterCommand(),
-        //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
-        //             superstructure.fireCommand()),
-        //         () -> shooter.isReadyToShoot()
-        //     )
-        // );
-        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
+        controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
+        controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
+        controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
+        controller.rightTrigger().whileTrue(superstructure.fireCommand());
+        controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
         // // TODO: make these automatic based on position?
         // // you could have this as some sort of manual override, but seems unecesary with four cameras.
-        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
-        // controller.y().onTrue(shooter.toggleManualShootingCommand());
+        shooter.trackTargetCommand(false, false, false);
+
+        controller.y().onTrue(shooter.toggleManualShootingCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
@@ -412,9 +405,11 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().withTimeout(5d));
+        NamedCommands.registerCommand("Shoot", Commands.sequence(shooter.armShooterCommand(), superstructure.fireNoFeedShooterCommand()));
+        NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
+        NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand());
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
-        NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
+        NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
         //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
@@ -422,9 +417,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
 
-        NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
-        NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
-        NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+        // NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
+        // NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
+        // NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
