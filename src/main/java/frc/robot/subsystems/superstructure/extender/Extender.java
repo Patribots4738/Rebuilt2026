@@ -138,12 +138,8 @@ public class Extender extends SubsystemBase {
         return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS);
     }
     
-    public Command feedShooter() {
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
-    }
-
     public Command feedShooterCommand() {
-        return runOnce(() -> feedShooter());
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
     }
 
     public Command halfStowCommand() {
