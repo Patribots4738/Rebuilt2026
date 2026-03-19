@@ -1,0 +1,107 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5CLR-CLRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Line-5CLR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooting"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5CLRRotated-Outpost"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbOrNoClimbOutpost"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Full Autos",
+  "choreoAuto": false
+}

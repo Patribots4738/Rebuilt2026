@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedTunableConstant;
@@ -48,7 +49,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.DEVBOT;
+        private static RobotType robotType = RobotType.SIMBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -296,8 +297,10 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            "Test",
-            "Outpost Center Rush Drive Only"
+            "Double Center Rush Left",
+            "Double Center Rush Right",
+            "Outpost Center Rush",
+            "Dumby Center"
         };
 
         public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
@@ -318,6 +321,11 @@ public final class Constants {
 
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
+
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", true);
+        
+        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", true);
+
     }
 
     public static final class MAXSwerveModuleConstants {
@@ -935,7 +943,7 @@ public final class Constants {
         public static final double ENCODER_TO_MECH_GEAR_RATIO = 10.0;
         public static final double DISCONTINUITY_POINT = 1.0;
         public static final double ROBOT_TURRET_OFFSET = Units.degreesToRadians(4.5);
-        public static final double ANGULAR_OFFSET = Units.degreesToRadians(0.0);
+        public static final double ANGULAR_OFFSET = -Units.degreesToRadians(180.0);
 
         //conversions from rotations to radians
         public static final double POSITION_CONVERSION_FACTOR = 2 * Math.PI; 

@@ -1,0 +1,94 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1CLR-CLLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CLLeft-1CLR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootUntilEmptyHopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1CLR-ThroughDepot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootUntilEmptyHopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ClimbOrNoClimbThroughDepot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Full Autos",
+  "choreoAuto": false
+}

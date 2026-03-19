@@ -1,0 +1,99 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.7345421686746985,
+        "y": 3.499542168674699
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.057024096385543,
+        "y": 4.734373493975904
+      },
+      "isLocked": false,
+      "linkedName": "Center Line Right"
+    },
+    {
+      "anchor": {
+        "x": 5.84951204819277,
+        "y": 3.6252108433734938
+      },
+      "prevControl": {
+        "x": 5.887759036144576,
+        "y": 4.269945783132529
+      },
+      "nextControl": {
+        "x": 5.765626311084201,
+        "y": 2.2111369892575965
+      },
+      "isLocked": false,
+      "linkedName": "CBCenterLineRight"
+    },
+    {
+      "anchor": {
+        "x": 6.133632530120482,
+        "y": 0.8113253012048198
+      },
+      "prevControl": {
+        "x": 6.221054216867472,
+        "y": 1.472451807228916
+      },
+      "nextControl": {
+        "x": 6.084945841162673,
+        "y": 0.44313221596139807
+      },
+      "isLocked": false,
+      "linkedName": "CBCLR5"
+    },
+    {
+      "anchor": {
+        "x": 4.079222891566265,
+        "y": 0.6091626506024101
+      },
+      "prevControl": {
+        "x": 4.441473412088889,
+        "y": 0.6154621027536913
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "5CLRRotated"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.790866141732279,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.3124409448818841,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.283779527559059,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Center Line",
+  "idealStartingState": {
+    "velocity": 2.0,
+    "rotation": 105.00000000000001
+  },
+  "useDefaultConstraints": true
+}
