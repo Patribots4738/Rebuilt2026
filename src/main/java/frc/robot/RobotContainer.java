@@ -286,11 +286,14 @@ public class RobotContainer {
         controller.y().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
         
         controller.x().onTrue(extender.feedShooterCommand());
-        
+
         controller.a().onTrue(shooter.trackTargetCommand(true, true, true));
         controller.b().onTrue(shooter.trackTargetCommand(false, false, false));
 
         controller.povDown().onTrue(hood.setPositionCommand(0.0));
+
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
         // controller.rightTrigger().whileTrue(
         //     new ActiveConditionalCommand(
         //         superstructure.fireCommand(), 

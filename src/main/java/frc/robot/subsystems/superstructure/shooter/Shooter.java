@@ -273,6 +273,12 @@ public class Shooter extends SubsystemBase {
         }
 
         target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
+
+        targetLocation = target == Target.HUB 
+                                    ? Target.HUB.location 
+                                    : target == Target.PASS_LEFT 
+                                            ? Target.PASS_LEFT.location 
+                                            : Target.PASS_RIGHT.location;
     }
 
     public void eject() {
