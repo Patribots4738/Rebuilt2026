@@ -17,13 +17,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "StopIntake"
+                  "name": "Shoot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "StopIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "WaitUntilEmptyHopper"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
                 }
               }
             ]
@@ -74,9 +93,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "ClimbPrepMiddle-ClimbMiddle"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ClimbPrepMiddle-ClimbMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeStow"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
           }
         },
         {

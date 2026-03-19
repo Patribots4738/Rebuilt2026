@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "5CLR-CLRight"
@@ -19,37 +13,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CLRight-5CLR"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
+            "pathName": "Center Line-5CLR"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "5CLR-CLRight"
+            "pathName": "5CLRRotated-BackHubRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CLRight-ClimbPrepRight"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
+            "pathName": "BackHubRight-Center Line"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbPrepRight-ClimbRight"
+            "pathName": "Center Line-5CLRRotated"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5CLRRotated-BackHubRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BackHubRight-Center Line"
           }
         }
       ]

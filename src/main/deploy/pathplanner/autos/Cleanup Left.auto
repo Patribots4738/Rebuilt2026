@@ -49,9 +49,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Outpost-ClimbPrepRight"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "WaitUntilEmptyHopper"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              }
+            ]
           }
         },
         {
@@ -61,7 +74,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "ClimbPrepRight-ClimbRight"
+                  "pathName": "Outpost-ClimbPrepRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeStow"
                 }
               },
               {
@@ -71,6 +90,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepRight-ClimbRight"
           }
         },
         {

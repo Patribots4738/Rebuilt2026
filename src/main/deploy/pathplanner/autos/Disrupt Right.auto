@@ -1,0 +1,50 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5CLR-Disrupt"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DisruptL-DisruptShortR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DisruptShortR-DisruptL"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Full Autos",
+  "choreoAuto": false
+}

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.312181818181818,
-        "y": 0.5100681818181818
+        "x": 4.418320645970759,
+        "y": 0.5541847674600957
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.981886363636363,
-        "y": 0.5306818181818187
+        "x": 6.088025191425304,
+        "y": 0.5747984038237326
       },
       "isLocked": false,
       "linkedName": "5CLR"
     },
     {
       "anchor": {
-        "x": 6.713670454545454,
-        "y": 4.653409090909091
+        "x": 5.776,
+        "y": 5.251
       },
       "prevControl": {
-        "x": 6.734284090909091,
-        "y": 0.7058977272727267
+        "x": 5.796613636363636,
+        "y": 1.3034886363636362
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Starting Line",

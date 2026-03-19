@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -179,8 +180,9 @@ public class RobotContainer {
         configureButtonBindings();
         configureTimedEvents();
 
-        pathPlannerStorage = new PathPlannerStorage();
+        pathPlannerStorage = new PathPlannerStorage(Set.of(swerve, extender, intake, shooter, spindexer, kicker));
 
+        prepareNamedCommands();
         pathPlannerStorage.configureAutoChooser();
         pathPlannerStorage.getAutoChooser().addOption("WheelRadiusCharacterization",
                 swerve.setWheelsOCommand()
@@ -198,8 +200,6 @@ public class RobotContainer {
                 swerve::getTurnCharacterizationVelocity));
 
         CommandScheduler.getInstance().schedule(new NTGainTuner());
-
-        prepareNamedCommands();
     }
 
     private void configureButtonBindings() {
@@ -420,17 +420,21 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        // NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().unless(() -> PoseCalculations.behindTower(swerve.getPose())));
-        // NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
-        // NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
-        // NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
-        // NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
-        // NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
-        // NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
-        // NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        NamedCommands.registerCommand("Shoot", shooter.armShooterCommand().withTimeout(5d));
+        NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
+        NamedCommands.registerCommand("StopShooting", shooter.disarmShooterCommand());
+        NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
+        //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
+        //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
+        NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
 
         NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
         NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+
+        NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
+        NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
     }
 }
