@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 0.5089659090909089,
-        "y": 6.9930568181818185
+        "y": 7.04080603692533
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.034375,
-        "y": 7.178579545454545
+        "y": 7.2263287641980565
       },
       "isLocked": false,
       "linkedName": "DepotLeft"

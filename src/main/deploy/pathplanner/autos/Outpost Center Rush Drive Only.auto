@@ -13,7 +13,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CLRight-Outpost"
+            "pathName": "Center Line-5CLR"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5CLRRotated-Outpost"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost-ClimbPrepRight"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ClimbPrepRight-ClimbRight"
           }
         }
       ]

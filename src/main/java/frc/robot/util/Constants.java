@@ -36,6 +36,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedTunableConstant;
@@ -58,7 +59,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.DEVBOT;
+        private static RobotType robotType = RobotType.SIMBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -297,8 +298,10 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            "Test",
-            "Outpost Center Rush Drive Only"
+            "Double Center Rush Left",
+            "Double Center Rush Right",
+            "Outpost Center Rush",
+            "Dumby Center"
         };
 
         public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);
@@ -319,6 +322,11 @@ public final class Constants {
 
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
+
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", true);
+        
+        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", true);
+
     }
 
     public static final class MAXSwerveModuleConstants {

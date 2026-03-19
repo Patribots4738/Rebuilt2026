@@ -1,5 +1,5 @@
 {
-  "robotWidth": 0.838,
+  "robotWidth": 0.8636,
   "robotLength": 0.838,
   "holonomicMode": true,
   "pathFolders": [
@@ -39,7 +39,7 @@
   "bumperOffsetY": 0.0,
   "robotFeatures": [
     "{\"name\":\"Circle\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":-0.15,\"y\":0.15},\"radius\":0.2286,\"strokeWidth\":0.01,\"filled\":false}}",
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.55,\"y\":0.0},\"size\":{\"width\":0.838,\"length\":0.254},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}",
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.127127,\"y\":-0.292},\"size\":{\"width\":0.0762,\"length\":0.127},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":-0.127127,\"y\":-0.292},\"size\":{\"width\":0.0762,\"length\":0.127},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}",
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.52,\"y\":0.0},\"size\":{\"width\":0.7112,\"length\":0.1778},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
   ]
 }

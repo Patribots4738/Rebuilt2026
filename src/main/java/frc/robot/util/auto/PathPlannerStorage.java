@@ -1,6 +1,7 @@
 package frc.robot.util.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -9,7 +10,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.util.Constants.AutoConstants;
+import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Robot.GameMode;
@@ -17,8 +20,12 @@ import frc.robot.Robot.GameMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
+import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -32,14 +39,18 @@ public class PathPlannerStorage {
 
     private final LoggedDashboardChooser<Command> autoChooser;
 
+    private final Set<Subsystem> requirements;
+
     public static final ArrayList<Pose2d> AUTO_STARTING_POSITIONS = new ArrayList<Pose2d>();
 
     public static final HashMap<String, List<PathPlannerPath>> AUTO_PATHS = new HashMap<String, List<PathPlannerPath>>();
     /**
      * Creates a new AutoPathStorage object.
      */
-    public PathPlannerStorage() {
+    public PathPlannerStorage(Set<Subsystem> requirements) {
         autoChooser = new LoggedDashboardChooser<>("Auto Routine");
+
+        this.requirements = requirements;
     }
 
     public void configureAutoChooser() {
@@ -131,5 +142,60 @@ public class PathPlannerStorage {
         }
     
         return autoPoses;
+    }
+
+    public Command climbOrNoClimb(String startingPose) {
+        return Commands.defer(() -> (AutoConstants.LOGGED_CLIMB_BOOLEAN.get() ?
+            climbAuto(startingPose, AutoConstants.LOGGED_LEFT_BOOLEAN.get() ? "Middle" : "Right") :
+            noClimbAuto(startingPose, AutoConstants.LOGGED_LEFT_BOOLEAN.get() ? 1 : 5)), requirements);
+    }
+
+    private Command climbAuto(String startingPose, String side) {
+        String pathToClimbNamePrep = startingPose + "-ClimbPrep" + side;
+        String pathToClimbName = "ClimbPrep" + side + "-Climb" + side;
+        PathPlannerPath pathToClimbPrep;
+        PathPlannerPath pathToClimb;
+        try {
+            pathToClimbPrep = PathPlannerPath.fromPathFile(pathToClimbNamePrep);
+            pathToClimb = PathPlannerPath.fromPathFile(pathToClimbName);
+        } catch (Exception e) {
+            return Commands.none();
+        }
+
+        return Commands.defer(() -> Commands.sequence(
+                Commands.parallel(
+                    AutoBuilder.followPath(pathToClimbPrep), 
+                    //NamedCommands.getCommand("ClimbUp"), 
+                    NamedCommands.getCommand("StopIntake"),
+                    NamedCommands.getCommand("ShootUntilEmptyHopper")
+                ), 
+                AutoBuilder.followPath(pathToClimb), 
+                NamedCommands.getCommand("StopShooting") 
+                //NamedCommands.getCommand("ClimbDown")
+        ), requirements);
+    }
+
+    private Command noClimbAuto(String startingPose, int index) {
+        String pathToStartingLineName = startingPose + "-" + index + "CLR";
+        String pathToCenterLineName = index + "CLR-CL" + (index == 1 ? "Left" : "Right");
+        PathPlannerPath pathToStartingLine;
+        PathPlannerPath pathToCenterLine;
+        try {
+            pathToStartingLine = PathPlannerPath.fromPathFile(pathToStartingLineName);
+            pathToCenterLine = PathPlannerPath.fromPathFile(pathToCenterLineName);
+        } catch (Exception e) {
+            return Commands.none();
+        }
+        return Commands.defer(() -> Commands.sequence(
+            Commands.parallel(
+                AutoBuilder.followPath(pathToStartingLine),
+                NamedCommands.getCommand("StopIntake"),
+                NamedCommands.getCommand("WaitUntilEmptyHopper")
+            ), Commands.parallel(
+                AutoBuilder.followPath(pathToCenterLine),
+                NamedCommands.getCommand("Intake"),
+                NamedCommands.getCommand("StopShooting")
+            )
+        ), requirements);
     }
 }

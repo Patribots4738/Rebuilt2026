@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "1CLR-CLLeft"
@@ -23,33 +17,33 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "1CLRRotated-BackHubLeft"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1CLR-CLLeft"
+            "pathName": "BackHubLeft-Center Line"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CLLeft-ClimbPrepLeft"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
+            "pathName": "Center Line-1CLRRotated"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "ClimbPrepLeft-ClimbLeft"
+            "pathName": "1CLRRotated-BackHubLeft"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BackHubLeft-Center Line"
           }
         }
       ]
