@@ -416,8 +416,9 @@ public class RobotContainer {
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", Commands.sequence(shooter.armShooterCommand(), superstructure.fireNoFeedShooterCommand()));
+        NamedCommands.registerCommand("Shoot", Commands.sequence(superstructure.fireNoFeedShooterCommand()));
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
+        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
         NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand());
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
