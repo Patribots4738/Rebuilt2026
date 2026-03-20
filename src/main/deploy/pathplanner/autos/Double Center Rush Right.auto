@@ -19,6 +19,38 @@
                 "data": {
                   "name": "Intake"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Line-5CLR"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
               },
               {
                 "type": "sequential",
@@ -33,64 +65,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "Wiggle Intake"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Center Line-5CLR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooting"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShooting"
           }
         },
         {
@@ -101,6 +82,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "5CLRRotated-BackHubRight"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooting"
                 }
               },
               {
@@ -129,19 +116,31 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "Shoot"
+                        "waitTime": 1.0
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 5.0
+                        "name": "Wiggle Intake"
                       }
                     }
                   ]
