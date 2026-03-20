@@ -59,7 +59,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.COMPBOT;
+        private static RobotType robotType = RobotType.SIMBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -327,9 +327,9 @@ public final class Constants {
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
 
-        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", true);
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", false);
         
-        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", true);
+        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", false);
 
     }
 
@@ -538,7 +538,7 @@ public final class Constants {
             0.0
         );
 
-        public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
+        // public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
         public static final double TURNING_P = 700.0; //225
         public static final double TURNING_I = 0.0; //13
@@ -554,11 +554,11 @@ public final class Constants {
             0.0
         );
 
-        public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
+        // public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
 
         public static final double DRIFT_MULTIPLIER = 4.0;
 
-        public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
+        // public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
 
     public static final class MK4cSwerveModuleConstants {
@@ -980,8 +980,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
+        // public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.0;
         public static final double ACCELERATION = 1.0;
@@ -1033,8 +1033,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
-        public static final LoggedTunableConstant LOGGED_SPEED_RPM = new LoggedTunableConstant("Shooter/Flyweel/SpeedRPM", 0.0);
+        // public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
+        // public static final LoggedTunableConstant LOGGED_SPEED_RPM = new LoggedTunableConstant("Shooter/Flyweel/SpeedRPM", 0.0);
     }
 
     public static final class HoodConstants {
@@ -1079,8 +1079,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
+        // public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 3d;
@@ -1144,11 +1144,11 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
+        // public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
 
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
 
-        public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
+        // public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
     }
 
     public static final class KickerConstants {
@@ -1174,7 +1174,7 @@ public final class Constants {
         public static final double REVERSE_PERCENT = -0.5;
         public static final double FORWARD_PERCENT = 0.5;
         
-        public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
+        // public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
 
     public static final class GeneralHardwareConstants {
@@ -1200,7 +1200,7 @@ public final class Constants {
         
         public static final double GEAR_RATIO = 3.0;
 
-        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
+        // public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
     }
 
     public static final class FieldConstants {
