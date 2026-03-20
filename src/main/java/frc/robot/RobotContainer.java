@@ -239,40 +239,8 @@ public class RobotContainer {
         // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
-        // controller.leftTrigger().onTrue(Commands.parallel(
-            //intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-            // spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-            // kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        // ));
-
-        // controller.leftBumper().onTrue(Commands.parallel(
-        //     intake.setPercentCommand(0.0),
-            // spindexer.setPercentCommand(0.0),
-            // kicker.setPercentCommand(0.0)
-        // ));
-
-        // controller.x().onTrue(shooter.setManualStates());
-        
-        // controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
-        // controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        // controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        // controller.povDown().onTrue(flywheel.stopCommand());
-        // controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
-        
-        // controller.x().onTrue(hood.setPositionCommand(0));
-        // controller.b().onTrue(hood.setIncrementedPositionCommand());
-        // controller.y().onTrue(hood.incrementPositionCommand());
-        // controller.a().onTrue(hood.decrementPositionCommand());
-
-        // controller.rightBumper().onTrue(extender.feedShooter());
-        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-
-        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-
-        controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
-        controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-        
         controller.leftTrigger().onTrue(Commands.parallel(
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
             spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
             kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
         ));
@@ -283,17 +251,49 @@ public class RobotContainer {
             kicker.setPercentCommand(0.0)
         ));
 
-        controller.y().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
+        controller.x().onTrue(shooter.setManualStates());
         
-        controller.x().onTrue(extender.feedShooterCommand());
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        controller.povDown().onTrue(flywheel.stopCommand());
+        controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
+        
+        controller.x().onTrue(hood.setPositionCommand(0));
+        controller.b().onTrue(hood.setIncrementedPositionCommand());
+        controller.y().onTrue(hood.incrementPositionCommand());
+        controller.a().onTrue(hood.decrementPositionCommand());
 
-        controller.a().onTrue(shooter.armShooterCommand());
-        controller.b().whileTrue(superstructure.fireCommand());
+        // controller.rightBumper().onTrue(extender.feedShooter());
+        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
 
-        controller.povDown().onTrue(hood.setPositionCommand(0.0));
+        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
 
-        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+        // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
+        
+        // controller.leftTrigger().onTrue(Commands.parallel(
+        //     spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+        //     kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        // ));
+
+        // controller.leftBumper().onTrue(Commands.parallel(
+        //     intake.setPercentCommand(0.0),
+        //     spindexer.setPercentCommand(0.0),
+        //     kicker.setPercentCommand(0.0)
+        // ));
+
+        // controller.y().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
+        
+        // controller.x().onTrue(extender.feedShooterCommand());
+
+        // controller.a().onTrue(shooter.armShooterCommand());
+        // controller.b().whileTrue(superstructure.fireCommand());
+
+        // controller.povDown().onTrue(hood.setPositionCommand(0.0));
+
+        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
+        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
         // controller.rightTrigger().whileTrue(
         //     new ActiveConditionalCommand(
         //         superstructure.fireCommand(), 
