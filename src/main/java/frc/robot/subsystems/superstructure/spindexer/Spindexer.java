@@ -13,12 +13,12 @@ public class Spindexer extends SubsystemBase {
     private final SpindexerIO io;
     private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
 
-    private double testPercent;
+    // private double testPercent;
 	
 	public Spindexer(SpindexerIO io) {
 		this.io = io;
 
-        SpindexerConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = SpindexerConstants.TEST_PERCENT.get()).ignoringDisable(true));
+        // SpindexerConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = SpindexerConstants.TEST_PERCENT.get()).ignoringDisable(true));
 	}
 	
 	@Override
@@ -44,9 +44,9 @@ public class Spindexer extends SubsystemBase {
         shouldRunSetpoint = false;
     }
 
-    public void setTestPercent() {
-        this.setPercent(testPercent);
-    }
+    // public void setTestPercent() {
+    //     this.setPercent(testPercent);
+    // }
 
     public Command setPercentCommand(DoubleSupplier percentSupplier) {
         return runOnce(() -> setPercent(percentSupplier.getAsDouble()));
@@ -56,9 +56,9 @@ public class Spindexer extends SubsystemBase {
         return setPercentCommand(() -> percent);
     }
 
-    public Command setTestPercentCommand() {
-        return Commands.runOnce(() -> setTestPercent());
-    }
+    // public Command setTestPercentCommand() {
+    //     return Commands.runOnce(() -> setTestPercent());
+    // }
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);

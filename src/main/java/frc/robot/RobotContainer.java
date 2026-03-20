@@ -200,7 +200,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
+        // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {

@@ -37,31 +37,31 @@ public class Hood extends SubsystemBase {
     private double incrementedPosition = 0.0; //dergees
     
     private double targetPosition;
-    private double testPosition;
+    // private double testPosition;
 
-	private final SysIdRoutine hoodRoutine;
+	// private final SysIdRoutine hoodRoutine;
 	
     public Hood(HoodIO io) {
         this.io = io;
 
-        HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
-        HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+        // HoodConstants.LOGGED_HOOD_GAINS.onChanged(Commands.runOnce(() -> io.setGains(HoodConstants.LOGGED_HOOD_GAINS.get())).ignoringDisable(true));
+        // HoodConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = HoodConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
 
-        this.hoodRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
-                        log -> log.motor("hood")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Radians.of(inputs.internalPositionRads))
-                                .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
-                        this
-                )
-        );
+        // this.hoodRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10)
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+        //                 log -> log.motor("hood")
+        //                         .voltage(Volts.of(inputs.appliedOutputVolts))
+        //                         .angularPosition(Radians.of(inputs.internalPositionRads))
+        //                         .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
+        //                 this
+        //         )
+        // );
     }
 
     @Override
@@ -85,12 +85,12 @@ public class Hood extends SubsystemBase {
 
         // RobotContainer.hoodMechanism.setAngle(inputs.internalPositionRads);
 
-        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            LoggingConstants.HOOD_OFFSET,
-            new Rotation3d(0.0, 
-                inputs.internalPositionRads, 
-                RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
-        );
+        // RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+        //     LoggingConstants.HOOD_OFFSET,
+        //     new Rotation3d(0.0, 
+        //         inputs.internalPositionRads, 
+        //         RobotContainer.components3d[LoggingConstants.TURRET_INDEX].getRotation().getAngle())
+        // );
     }
 
     /**
@@ -103,12 +103,12 @@ public class Hood extends SubsystemBase {
         shouldRunSetpoint = true;
         targetPosition = position;
 
-        RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getY(),
-            RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getZ(),
-            new Rotation3d(0, position, 0)
-        );
+        // RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+        //     RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getX(), 
+        //     RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getY(),
+        //     RobotContainer.desiredComponents3d[LoggingConstants.HOOD_INDEX].getZ(),
+        //     new Rotation3d(0, position, 0)
+        // );
 
         // RobotContainer.hoodMechanism.setAngle(position);    
     }
@@ -121,13 +121,13 @@ public class Hood extends SubsystemBase {
         return setPositionCommand(() -> position);
     }
 
-    public void setTestPosition() {
-        setPosition(testPosition);
-    }
+    // public void setTestPosition() {
+    //     setPosition(testPosition);
+    // }
 
-    public Command setTestPositionCommand() {
-        return Commands.runOnce(() -> setTestPosition());
-    }
+    // public Command setTestPositionCommand() {
+    //     return Commands.runOnce(() -> setTestPosition());
+    // }
 
     public void decrementPosition() {
         incrementedPosition -= 1;
