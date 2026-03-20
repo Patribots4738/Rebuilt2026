@@ -53,7 +53,7 @@ public final class Constants {
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
-                System.out  .println("Incorrect robot type selected, changing to real robot");
+                System.out.println("Incorrect robot type selected, changing to real robot");
                 robotType = RobotType.COMPBOT;
             }
             return robotType;
@@ -678,7 +678,7 @@ public final class Constants {
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
+        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
 
     }
 
@@ -1062,9 +1062,9 @@ public final class Constants {
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 1700 : 600;
-        public static final double I = FieldConstants.IS_REAL ? 350 : 25;
-        public static final double D = FieldConstants.IS_REAL ? 45 : 250;
+        public static final double P = FieldConstants.IS_REAL ? 5050 : 600;
+        public static final double I = FieldConstants.IS_REAL ? 0: 25;
+        public static final double D = FieldConstants.IS_REAL ? 30 : 250;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;

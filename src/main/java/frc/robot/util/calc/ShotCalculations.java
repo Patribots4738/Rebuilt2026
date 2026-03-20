@@ -251,11 +251,11 @@ public class ShotCalculations {
             );
 
         // Log calculated values
-        Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
-        Logger.recordOutput("ShotCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
-        Logger.recordOutput("ShotCalculator/HoodAngleDegrees", Units.radiansToDegrees(latestParameters.hoodAngle));
-        Logger.recordOutput("ShotCalculator/TurretAngleDegrees", latestParameters.turretAngle.getDegrees());
-        Logger.recordOutput("ShotCalculator/FlywheelSpeedRPM", latestParameters.flywheelSpeed);
+        // Logger.recordOutput("ShotCalculator/LookaheadPose", lookaheadPose);
+        // Logger.recordOutput("ShotCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
+        // Logger.recordOutput("ShotCalculator/HoodAngleDegrees", Units.radiansToDegrees(latestParameters.hoodAngle));
+        // Logger.recordOutput("ShotCalculator/TurretAngleDegrees", latestParameters.turretAngle.getDegrees());
+        // Logger.recordOutput("ShotCalculator/FlywheelSpeedRPM", latestParameters.flywheelSpeed);
 
         return latestParameters;
     }
