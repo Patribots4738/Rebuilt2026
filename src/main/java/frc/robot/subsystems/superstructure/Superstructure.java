@@ -167,6 +167,8 @@ public class Superstructure {
 
     public Command toggleIntakeCommand() {
         return Commands.either(
+// extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)),
+//             extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS).alongWith(intake.setPercentCommand(0.0)),
             setIntakeState(IntakeState.INTAKE),
             setIntakeState(IntakeState.NO_SPIN),
             () -> (intake.getPercentOutput() == 0.0)
