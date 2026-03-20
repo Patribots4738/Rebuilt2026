@@ -31,6 +31,7 @@ public class Extender extends SubsystemBase {
 
     // private final SysIdRoutine extenderRoutine;
     private double testPosition;
+    private boolean wiggle;
 
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
@@ -168,7 +169,15 @@ public class Extender extends SubsystemBase {
     }
     
     public Command feedShooterCommand() {
+        wiggle = true;
         return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
+    }
+
+    public Command feedShooterToggleCommand() {
+        wiggle = !wiggle;
+        return Commands.either(setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), 
+            feedShooterCommand(),
+            () -> !wiggle);
     }
 
     public Command halfStowCommand() {

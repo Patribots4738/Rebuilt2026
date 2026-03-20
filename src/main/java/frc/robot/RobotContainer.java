@@ -333,8 +333,8 @@ public class RobotContainer {
         controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
         controller.rightTrigger().whileTrue(
             Commands.either(
-                superstructure.setHopperState(HopperState.FORWARD).andThen(extender.feedShooterCommand()),
-                superstructure.fireCommand(),
+                superstructure.setHopperState(HopperState.FORWARD),
+                superstructure.fireNoFeedShooterCommand(),
                 shooter::isManual));
         controller.rightTrigger().toggleOnFalse(
             Commands.either(
@@ -347,6 +347,8 @@ public class RobotContainer {
         shooter.trackTargetCommand(false, false, false);
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
+
+        controller.povLeft().onTrue(extender.feedShooterToggleCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
