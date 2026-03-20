@@ -359,7 +359,9 @@ public class RobotContainer {
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
-        controller.povLeft().onTrue(extender.feedShooterToggleCommand());
+        controller.povLeft().onTrue(extender.feedShooterToggleCommand().alongWith(intake.setPercentCommand(0.0)));
+
+        controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));

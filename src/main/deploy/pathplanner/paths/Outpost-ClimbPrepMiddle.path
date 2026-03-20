@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.6116100178890873,
-        "y": 0.7655813953488371
+        "x": 0.6901539942252166,
+        "y": 0.7557459095283923
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8030736698243656,
-        "y": 1.1602288934090514
+        "x": 0.8816176461604949,
+        "y": 1.1503934075886066
       },
       "isLocked": false,
       "linkedName": "Outpost"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 6.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

@@ -129,6 +129,7 @@ public class Vision extends SubsystemBase {
         int maxTagCount = 0;
         int maxTagIndex = 0;
         double maxTagArea = 0;
+        boolean updatedSTDs = false;
 
         ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
         
@@ -162,8 +163,15 @@ public class Vision extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
         if (maxTagCount > 1) {
             for (int i = 0; i < twoTagIndex.size(); i++) {
-                poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
+                if (tagArea[twoTagIndex.get(i)] > 0.15) {
+                    poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
+                    updatedSTDs = true;
+                }
             }
+        } else if (updatedSTDs) {
+            xyStds = Math.hypot(0.10, 0.10);
+            radStds = 0.02;
+            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
         } else if (maxTagCount == 1) {
             poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
         }

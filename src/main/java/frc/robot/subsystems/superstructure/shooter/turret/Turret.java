@@ -174,7 +174,7 @@ public class Turret extends SubsystemBase {
     }
 
     public Rotation2d getRotation() {
-        return new Rotation2d((inputs.encoderAbsPositionRads / TurretConstants.ENCODER_TO_MECH_GEAR_RATIO) - TurretConstants.ANGULAR_OFFSET);
+        return new Rotation2d(inputs.internalPositionRads - TurretConstants.ANGULAR_OFFSET);
     }
 
     public double getVelocity() {

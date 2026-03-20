@@ -132,24 +132,24 @@ public class ShotCalculations {
         hubTimeOfFlightMap.put(Units.inchesToMeters(292.65), 1.53);
 
         //Passing
-        passingShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(2.20091, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(2.50571, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(2.81051, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(3.36931, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(3.67411, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(4.28371, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(4.84251, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(5.14731, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(5.45211, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(5.75691, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(6.06171, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(6.36651, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(6.67131, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(6.97611, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(7.28091, Rotation2d.fromRadians(0.3490658503988659));
-        passingShotAngleHoodMap.put(7.58571, Rotation2d.fromRadians(0.3490658503988659));
+        passingShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(2.20091, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(2.50571, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(2.81051, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(3.36931, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(3.67411, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(4.28371, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(4.84251, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(5.14731, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(5.45211, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(5.75691, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(6.06171, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(6.36651, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(6.67131, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(6.97611, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(7.28091, Rotation2d.fromRadians(0.314159));
+        passingShotAngleHoodMap.put(7.58571, Rotation2d.fromRadians(0.314159));
 
 
         passingShotFlywheelSpeedMap.put(1.03251, 2600.0);

@@ -18,19 +18,19 @@ public class TurretIOKraken implements TurretIO {
     public TurretIOKraken() {
         motor = new Kraken(TurretConstants.MOTOR_CAN_ID, TurretConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
         encoder = new CANCoderCustom(TurretConstants.ENCODER_CAN_ID);
-        configEncoder();
+        // configEncoder();
         configMotor();
     }  
 
     private void configMotor() {
-        if (FieldConstants.IS_REAL) {
-            motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
-        }
-        else {
+        // if (FieldConstants.IS_REAL) {
+        //     motor.setEncoder(encoder.getDeviceID(), TurretConstants.MOTOR_TO_ENCODER_GEAR_RATIO, TurretConstants.ENCODER_TO_MECH_GEAR_RATIO);
+        // }
+        // else {
             motor.setGearRatio(TurretConstants.MOTOR_GEAR_RATIO);
-        }
+        // }
         motor.setUnitConversionFactor(TurretConstants.POSITION_CONVERSION_FACTOR);
-        motor.resetEncoder(TurretConstants.ROBOT_TURRET_OFFSET);
+        motor.resetEncoder(0.0);
         // motor.setSoftLimits(TurretConstants.MIN_ANGLE_RADIANS, TurretConstants.MAX_ANGLE_RADIANS);
         motor.setMotorInverted(TurretConstants.MOTOR_INVERTED);
         motor.setGains(TurretConstants.GAINS);

@@ -274,18 +274,19 @@ public class Shooter extends SubsystemBase {
     public void updateTarget(Pose2d robotPose) {
         if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
             target = Target.HUB;
-            return;
-        } else if (passIndex == 0) {
+            targetLocation = Target.HUB.location;
+        } 
+        else if (passIndex == 0) {
             autoSetPassIndex();
         }
+        else {
+            target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
+            targetLocation = target == Target.PASS_LEFT 
+                                                ? Target.PASS_LEFT.location 
+                                                : Target.PASS_RIGHT.location;
+        }
 
-        target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
 
-        targetLocation = target == Target.HUB 
-                                    ? Target.HUB.location 
-                                    : target == Target.PASS_LEFT 
-                                            ? Target.PASS_LEFT.location 
-                                            : Target.PASS_RIGHT.location;
     }
 
     public void eject() {
