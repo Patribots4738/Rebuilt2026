@@ -162,7 +162,7 @@ public class RobotContainer {
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
-        // SmartDashboard.putData(field2d);
+        SmartDashboard.putData(field2d);
         // SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
@@ -328,16 +328,7 @@ public class RobotContainer {
 
     private void configureDriverBindings(PatriBoxController controller) {
 
-        controller.start().onTrue(
-            Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                    swerve.getPose().getTranslation(),
-                    Rotation2d.fromDegrees(
-                        Robot.isRedAlliance()
-                        ? 0
-                        : 180))
-            ), swerve)
-        );
+        controller.start().onTrue(vision.toggleMT1Command());
         
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
