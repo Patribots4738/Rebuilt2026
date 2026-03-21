@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -19,25 +19,6 @@
                 "data": {
                   "name": "Intake"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -50,12 +31,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "CLLeft-1CLR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooting"
                 }
               }
             ]
@@ -87,13 +62,13 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
+                  "pathName": "1CLRRotated-BackHubLeft"
                 }
               },
               {
@@ -149,13 +124,13 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
+                  "pathName": "1CLRRotated-BackHubLeft"
                 }
               },
               {

@@ -797,49 +797,49 @@ public final class Constants {
         public static final int ENABLED_THROTTLE = 0; // Process every frame
         public static final int DISABLED_THROTTLE = 0; // Process 1 of every n frames
 
-        public static final Pose3d LL4_LEFT_POSE = new Pose3d(
-            -0.282,
-            0.308,
-            0.203,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(0)
-            )
-        );
+        // public static final Pose3d LL4_LEFT_POSE = new Pose3d(
+        //     -0.282,
+        //     0.308,
+        //     0.203,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(0)
+        //     )
+        // );
 
-        public static final Pose3d LL3G_POSE = new Pose3d(
-            -0.292,
-            0.021,
-            0.339,
-            new Rotation3d(
-                Units.degreesToRadians(0),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(90d)
-            )
-        );
+        // public static final Pose3d LL3G_POSE = new Pose3d(
+        //     -0.292,
+        //     0.021,
+        //     0.339,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(0),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(90d)
+        //     )
+        // );
 
-        public static final Pose3d LLHAILO_POSE = new Pose3d(
-            0.281,
-            0.290,
-            0.200,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(-34.5)
-            )
-        );
+        // public static final Pose3d LLHAILO_POSE = new Pose3d(
+        //     0.281,
+        //     0.290,
+        //     0.200,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(-34.5)
+        //     )
+        // );
 
-        public static final Pose3d LL4_RIGHT_POSE = new Pose3d(
-            0.076,
-            0.305,
-            0.197,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(-105)
-            )
-        );
+        // public static final Pose3d LL4_RIGHT_POSE = new Pose3d(
+        //     0.076,
+        //     0.305,
+        //     0.197,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(-105)
+        //     )
+        // );
 
 
         // UPDATE LATER once we know how many cameras we have and their positions
@@ -956,7 +956,7 @@ public final class Constants {
         public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(0);
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(354); 
 
-        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
+        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(180.0)); // TODO: find this value
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
@@ -1009,7 +1009,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 3000.0; // TODO: find this value
+        public static final double HUB_RPM = 3200.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1052,7 +1052,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
+        public static final double HUB_POSITION_RADIANS = 0.10472; // TODO: find this value
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1119,7 +1119,7 @@ public final class Constants {
         public static final double STOW_POSITION_RADIANS = 0.2;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
-        public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 1.5;
+        public static final double WIGGLE_RADIANS = 0.2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;

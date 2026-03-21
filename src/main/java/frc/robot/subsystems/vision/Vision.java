@@ -24,6 +24,8 @@ import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
+import frc.robot.util.auto.Alignment.AlignmentMode;
+import frc.robot.util.calc.PoseCalculations;
 
 public class Vision extends SubsystemBase {
 
@@ -64,7 +66,6 @@ public class Vision extends SubsystemBase {
             inputs[i] = new VisionIOInputsAutoLogged();
         }
         this.poseEstimator = poseEstimator;
-        
     }
 
     @Override
@@ -91,23 +92,21 @@ public class Vision extends SubsystemBase {
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT1Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-four").pose);
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT2Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-four").pose);
 
-
-            //when pose calcs are done fix this to align to starting line and ramp
-          //  if (alignmentSupplier.get() == AlignmentMode.RAMP) {
-           //     int reefTag = closestReefTag();
-                // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
-            ///    camera.setUsedTags(new int[] { reefTag });
-           // } else {
-             //   camera.setUsedTags(FieldConstants.REEF_TAGS);
-           // }
+            // if (alignmentSupplier.get() == AlignmentMode.REEF) {
+            //     int reefTag = closestReefTag();
+            //     // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
+            //     camera.setUsedTags(new int[] { reefTag });
+            // } else {
+            //     camera.setUsedTags(FieldConstants.REEF_TAGS);
+            // }
         }
 
         updatePoseEstimator();
     }
 
     private void updatePoseEstimator() {
-        int tagCount[] = new int[cameras.length];
-        double tagArea[] = new double[cameras.length];
+        int tagCount = 0;
+        double tagArea = 0;
 
         List<Integer> camerasToUpdate = new ArrayList<>();
         for (int i = 0; i < cameras.length; i++) {
@@ -115,8 +114,8 @@ public class Vision extends SubsystemBase {
             // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
             if (updateCamera) {
                 camerasToUpdate.add(i);
-                tagCount[i] = inputs[i].tagIds.length;
-                tagArea[i] = (tagArea[i] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
+                tagCount += inputs[i].tagIds.length;
+                tagArea = (tagArea * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
             }
         }
         
@@ -126,33 +125,23 @@ public class Vision extends SubsystemBase {
         double xyStds = 0.0;
         double radStds = 0.0;
 
-        int maxTagCount = 0;
-        int maxTagIndex = 0;
-        double maxTagArea = 0;
-        boolean updatedSTDs = false;
-
-        ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
-        
-        if (camerasToUpdate.size() > 0) {
-            for (int i = 0; i < camerasToUpdate.size(); i++) {
-                if (tagCount[i] > maxTagCount) {
-                    maxTagCount = tagCount[i];
-                } else if (tagArea[i] > maxTagArea) {
-                    maxTagArea = tagArea[i];
-                    maxTagIndex = i;
-                }
-                if (tagCount[i] >= 2) {
-                    twoTagIndex.add(i);
-                }
-            }
-            
-            if (maxTagCount > 1 || maxTagArea > 4.0) {
+        if ((Robot.gameMode == GameMode.DISABLED || 
+            Robot.gameMode == GameMode.AUTONOMOUS
+                && Robot.currentTimestamp - RobotContainer.gameModeStart < 1.75)
+                && camerasToUpdate.size() > 0) {
+            xyStds = 0.001;
+            radStds = 0.001;
+        } else if (camerasToUpdate.size() > 0) {
+            if (tagCount > 1 || tagArea > 4.0) {
+                // Multiple targets or one huge target (like reef tag)
                 // Trust the vision even MORE
-                xyStds = Math.hypot(0.004, 0.004);
-                radStds = 0.005;
-            } else if (maxTagArea > 0.14) {
-                xyStds = Math.hypot(0.04, 0.009);
-                radStds = 0.010;
+                xyStds = Math.hypot(0.001, 0.001);
+                radStds = 0.003;
+            }
+            // 1 target with large area
+            else if (tagArea > 0.14) {
+                xyStds = Math.hypot(0.01, 0.009);
+                radStds = 0.004;
             }
             // Conditions don't match to add a vision measurement
             else {
@@ -161,19 +150,9 @@ public class Vision extends SubsystemBase {
         }
 
         poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-        if (maxTagCount > 1) {
-            for (int i = 0; i < twoTagIndex.size(); i++) {
-                if (tagArea[twoTagIndex.get(i)] > 0.15) {
-                    poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
-                    updatedSTDs = true;
-                }
-            }
-        } else if (updatedSTDs) {
-            xyStds = Math.hypot(0.10, 0.10);
-            radStds = 0.02;
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
-        } else if (maxTagCount == 1) {
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
+        for (int i : camerasToUpdate) {
+            
+            poseEstimator.addVisionMeasurement(inputs[i].robotPose, inputs[i].timestampSeconds);
         }
         if (!camerasToUpdate.isEmpty()) {
             rotationUpdated = true;
@@ -196,6 +175,9 @@ public class Vision extends SubsystemBase {
         return true;
     }
 
+    // private int closestReefTag() {
+    //     return PoseCalculations.getClosestReefSide(poseEstimator.getEstimatedPosition()).getTagId();
+    // }
 
     public Command toggleMT1Command() {
         return runOnce(() -> this.useMT1Override = !this.useMT1Override);

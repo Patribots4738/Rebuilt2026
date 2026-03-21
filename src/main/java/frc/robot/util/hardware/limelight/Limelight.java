@@ -20,7 +20,7 @@ public class Limelight {
     }
 
     public void setThrottle(int throttle) {
-        LimelightHelpers.setThrottle(name, throttle);
+        LimelightHelpers.SetThrottle(name, throttle);
     }
 
     public void setPipelineIndex(int newIndex) {

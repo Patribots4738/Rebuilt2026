@@ -73,7 +73,6 @@ public class Kicker extends SubsystemBase {
         } else {
             io.setNeutral();
         }
-
     }
 
     public void setPercent(double percent) {

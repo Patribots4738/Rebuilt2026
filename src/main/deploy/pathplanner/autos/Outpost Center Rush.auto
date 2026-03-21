@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "PassLeft"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -25,25 +19,6 @@
                 "data": {
                   "name": "Intake"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -56,12 +31,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Center Line-5CLR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopShooting"
                 }
               }
             ]
@@ -93,12 +62,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
@@ -115,18 +78,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShooting"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ClimbOrNoClimbOutpost"
           }
         }
       ]
