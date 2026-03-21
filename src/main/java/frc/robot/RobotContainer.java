@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -161,8 +162,8 @@ public class RobotContainer {
         shooter = new Shooter(swerve::getPose, swerve::getRobotRelativeVelocity, turret, flywheel, hood);
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
-        SmartDashboard.putData(field2d);
-        SmartDashboard.putData("Mech2d", mech);
+        // SmartDashboard.putData(field2d);
+        // SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -446,5 +447,17 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
+    }
+
+    // https://www.chiefdelphi.com/t/auto-init-overrun/494848/33
+    public static Command threadRTCommand() {
+        return Commands.sequence(
+            // Wait 20 seconds to dodge any additional initialization after robotInit()
+            Commands.waitSeconds(20),
+            Commands.runOnce(() -> {
+                Threads.setCurrentThreadPriority(true, 10);
+                System.err.println("Set main thread RT priority");
+            })
+        ).ignoringDisable(true);
     }
 }
