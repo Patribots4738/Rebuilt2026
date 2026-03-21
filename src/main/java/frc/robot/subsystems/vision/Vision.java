@@ -6,7 +6,6 @@ package frc.robot.subsystems.vision;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -19,13 +18,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
-import frc.robot.RobotContainer;
 import frc.robot.util.Constants.CameraConstants;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
-import frc.robot.util.auto.Alignment.AlignmentMode;
-import frc.robot.util.calc.PoseCalculations;
 
 public class Vision extends SubsystemBase {
 
@@ -70,7 +65,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        boolean shouldUseMT2 = false;
+        boolean shouldUseMT2 = !shouldUseMT1();
         double currentYawDegrees = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
         for (int i = 0; i < cameras.length; i++) {
             VisionIO camera = cameras[i];
@@ -143,7 +138,7 @@ public class Vision extends SubsystemBase {
                     twoTagIndex.add(i);
                 }
             }
-            if (maxTagCount > 1 && maxTagArea > 0.15) {
+            if (maxTagCount > 1 && maxTagArea > 0.08) {
                 // Multiple targets or one huge target (like reef tag)
                 // Trust the vision even MORE
                 xyStds = Math.hypot(0.005, 0.005);
@@ -210,7 +205,7 @@ public class Vision extends SubsystemBase {
 
     @AutoLogOutput (key = "Subsystems/Vision/MT1")
     private boolean shouldUseMT1() {
-        return true;
+        return (!(Robot.exitAuto)) && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION && (Robot.gameMode == GameMode.DISABLED || !rotationUpdated) || useMT1Override;
     }
 
 }
