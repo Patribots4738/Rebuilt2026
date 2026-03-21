@@ -4,12 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,6 +15,11 @@ import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vision extends SubsystemBase {
 
@@ -208,4 +207,19 @@ public class Vision extends SubsystemBase {
         return (!(Robot.exitAuto)) && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION && (Robot.gameMode == GameMode.DISABLED || !rotationUpdated) || useMT1Override;
     }
 
+    public void controlRecording(boolean control) {
+        if (control) {
+	        for (VisionIO camera : cameras) {
+		        if (camera.getIsLL4()) {
+			        camera.startRecording();
+		        }
+	        }
+        } else {
+	        for (VisionIO camera : cameras) {
+		        if (camera.getIsLL4()) {
+			        camera.endRecording();
+		        }
+	        }
+        }
+    }
 }

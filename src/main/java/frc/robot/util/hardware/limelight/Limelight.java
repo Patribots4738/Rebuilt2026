@@ -125,4 +125,8 @@ public class Limelight {
     public void setUseMT2(boolean megaTag2) {
         useMT2 = megaTag2;
     }
+    
+    public String getName() {
+        return name;
+    }
 }
