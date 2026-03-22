@@ -11,10 +11,22 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3-ClimbPrepMiddle"
+                  "pathName": "2-Allaince Zone"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntake"
           }
         },
         {

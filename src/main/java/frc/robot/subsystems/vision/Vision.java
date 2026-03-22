@@ -145,7 +145,7 @@ public class Vision extends SubsystemBase {
             }
             // 1 target with large area
             else if (maxTagArea > 0.14) {
-                xyStds = Math.hypot(0.09, 0.009);
+                xyStds = Math.hypot(0.009, 0.009);
                 radStds = 0.01;
             }
             
@@ -159,11 +159,11 @@ public class Vision extends SubsystemBase {
         if (maxTagCount > 1) {
             for (int i = 0; i < twoTagIndex.size(); i++) {
                 if (tagArea[twoTagIndex.get(i)] > 0.15) {
-                    poseEstimator.addVisionMeasurement(inputs[i].robotPose, inputs[i].timestampSeconds);
+                    poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
                 }
             }
         } else if (maxTagCount == 1) {
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
+            poseEstimator.addVisionMeasurement(inputs[camerasToUpdate.get(maxTagIndex)].robotPose, inputs[camerasToUpdate.get(maxTagIndex)].timestampSeconds);
         }
         if (!camerasToUpdate.isEmpty()) {
             rotationUpdated = true;

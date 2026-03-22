@@ -135,7 +135,6 @@ public class RobotContainer {
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
             new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-hailo", true), 
             new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
