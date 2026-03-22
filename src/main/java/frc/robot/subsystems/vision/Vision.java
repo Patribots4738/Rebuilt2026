@@ -136,7 +136,7 @@ public class Vision extends SubsystemBase {
                     maxTagCount = inputs[camerasToUpdate.get(i)].tagIds.length;
                     maxCountIndex = camerasToUpdate.get(i);
                 }
-                if (inputs[camerasToUpdate.get(i)].averageTA > maxTagCount) { // find the max tag area
+                if (inputs[camerasToUpdate.get(i)].averageTA > maxTagArea) { // find the max tag area
                     maxTagArea = inputs[camerasToUpdate.get(i)].averageTA;
                     maxAreaIndex = camerasToUpdate.get(i);
                 }
