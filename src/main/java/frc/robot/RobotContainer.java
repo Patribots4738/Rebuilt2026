@@ -395,7 +395,7 @@ public class RobotContainer {
         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
-        vision.controlRecording(false);
+        vision.controlRecording(false, freshCode);
     }
 
     public void onEnabled() {
