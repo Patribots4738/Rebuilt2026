@@ -251,19 +251,31 @@ public class Vision extends SubsystemBase {
         return (!(Robot.exitAuto)) && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION && (Robot.gameMode == GameMode.DISABLED || !rotationUpdated) || useMT1Override;
     }
 
-    public void controlRecording(boolean control) {
-        if (control) {
-	        for (VisionIO camera : cameras) {
-		        if (camera.getIsLL4()) {
-			        camera.startRecording();
-		        }
-	        }
+    public void controlRecording(boolean control, boolean fromBoot) {
+        if (!fromBoot) {
+            if (control) {
+                for (VisionIO camera : cameras) {
+                    if (camera.getIsLL4()) {
+                        camera.startRecording();
+                    }
+                }
+            } else {
+                for (VisionIO camera : cameras) {
+                    if (camera.getIsLL4()) {
+                        camera.endRecording();
+                    }
+                }
+            }
         } else {
-	        for (VisionIO camera : cameras) {
-		        if (camera.getIsLL4()) {
-			        camera.endRecording();
-		        }
-	        }
+            for (VisionIO camera : cameras) {
+                if (camera.getIsLL4()) {
+                    camera.endRecording();
+                }
+            }
         }
+    }
+    
+    public void controlRecording(boolean control) {
+        controlRecording(control, false);
     }
 }
