@@ -124,10 +124,9 @@ public class Vision extends SubsystemBase {
         double radStds = 0.0;
 
         int maxTagCount = 0;
-        int maxTagIndex = 0;
+        int maxCountIndex = 0;
         double maxTagArea = 0;
-
-        ArrayList<Integer> trustedCameras = new ArrayList<Integer>();
+        int maxAreaIndex = 0;
 
         if (camerasToUpdate.size() > 0) {
             // first find the greatest tag count and area
@@ -135,32 +134,35 @@ public class Vision extends SubsystemBase {
 
                 if (inputs[camerasToUpdate.get(i)].tagIds.length > maxTagCount) { // find the max tag count
                     maxTagCount = inputs[camerasToUpdate.get(i)].tagIds.length;
+                    maxCountIndex = camerasToUpdate.get(i);
                 }
                 if (inputs[camerasToUpdate.get(i)].averageTA > maxTagCount) { // find the max tag area
                     maxTagArea = inputs[camerasToUpdate.get(i)].averageTA;
+                    maxAreaIndex = camerasToUpdate.get(i);
                 }
             }
 
-            // add cameras that have the max tag count and max tag area
-            for (int i = 0; i < camerasToUpdate.size(); i++) {
-                if (inputs[camerasToUpdate.get(i)].tagIds.length == maxTagCount && inputs[camerasToUpdate.get(i)].averageTA == maxTagArea) {
-                    trustedCameras.add(camerasToUpdate.get(i));
-                }
+            if (maxTagCount > 1 && maxTagArea > 0.08) {
+                // Multiple targets or one huge target 
+                // Trust the vision more
+                xyStds = Math.hypot(0.005, 0.005);
+                radStds = 0.007;
             }
-
-            // if that list is size of zero, add camera that has max tag count but not max tag area
-            if (trustedCameras.isEmpty()) {
-                for (int i = 0; i < camerasToUpdate.size(); i++) {
-                    if (inputs[camerasToUpdate.get(i)].tagIds.length == maxTagCount) {
-                        trustedCameras.add(camerasToUpdate.get(i));
-                    }
-                }
+            // 1 target with large area
+            else if (maxTagArea > 0.14) {
+                xyStds = Math.hypot(0.009, 0.009);
+                radStds = 0.01;
+            } else {
+                return;
             }
 
             // update the pose estimator
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-            for (int i = 0; i < trustedCameras.size(); i++) {
-                poseEstimator.addVisionMeasurement(inputs[trustedCameras.get(i)].robotPose, inputs[trustedCameras.get(i)].timestampSeconds);
+            if (maxTagCount > 1) {
+                poseEstimator.addVisionMeasurement(inputs[maxCountIndex].robotPose, inputs[maxCountIndex].timestampSeconds);
+            }
+            else {
+                poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
             }
         }
 
