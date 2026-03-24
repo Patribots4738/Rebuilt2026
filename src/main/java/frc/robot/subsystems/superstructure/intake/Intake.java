@@ -31,29 +31,29 @@ public class Intake extends SubsystemBase {
     private double percentOutput = 0.0;
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
-		private final SysIdRoutine intakeRoutine;
+	// private final SysIdRoutine intakeRoutine;
 	
 	private double testPercent;
 
     public Intake(IntakeIO io) {
         this.io = io;
-        this.intakeRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.setVoltage(volts.in(Volts)),
-                        log -> log.motor("intake")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotations.of(inputs.positionRotations))
-                                .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec)),
-                        this
-                )
-        );
+        // this.intakeRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10)
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.setVoltage(volts.in(Volts)),
+        //                 log -> log.motor("intake")
+        //                         .voltage(Volts.of(inputs.appliedOutputVolts))
+        //                         .angularPosition(Rotations.of(inputs.positionRotations))
+        //                         .angularVelocity(RotationsPerSecond.of(inputs.velocityRotationsPerSec)),
+        //                 this
+        //         )
+        // );
         
-        IntakeConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = IntakeConstants.TEST_PERCENT.get()).ignoringDisable(true));
+        // IntakeConstants.TEST_PERCENT.onChanged(Commands.runOnce(() -> testPercent = IntakeConstants.TEST_PERCENT.get()).ignoringDisable(true));
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
@@ -106,11 +106,11 @@ public class Intake extends SubsystemBase {
         return runOnce(this::setNeutral);
     }
 	
-	public Command quasistatic(SysIdRoutine.Direction direction) {
-		return intakeRoutine.quasistatic(direction);
-	}
+	// public Command quasistatic(SysIdRoutine.Direction direction) {
+	// 	return intakeRoutine.quasistatic(direction);
+	// }
 	
-	public Command dynamic(SysIdRoutine.Direction direction) {
-		return intakeRoutine.dynamic(direction);
-	}
+	// public Command dynamic(SysIdRoutine.Direction direction) {
+	// 	return intakeRoutine.dynamic(direction);
+	// }
 }

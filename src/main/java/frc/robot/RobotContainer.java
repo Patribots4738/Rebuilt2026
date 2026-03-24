@@ -1,23 +1,13 @@
 package frc.robot;
 
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,7 +17,6 @@ import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
 import frc.robot.commands.drive.Drive;
-import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -50,16 +39,14 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.KickerConstants;
-import frc.robot.util.Constants.OIConstants;
-import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.Constants.*;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.custom.ActiveConditionalCommand;
 import frc.robot.util.custom.PatriBoxController;
+import org.littletonrobotics.junction.AutoLogOutput;
+
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
 
@@ -148,7 +135,6 @@ public class RobotContainer {
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
             new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-hailo", true), 
             new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
@@ -162,7 +148,7 @@ public class RobotContainer {
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
-        SmartDashboard.putData("Mech2d", mech);
+        // SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -200,7 +186,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
+        // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {
@@ -327,16 +313,7 @@ public class RobotContainer {
 
     private void configureDriverBindings(PatriBoxController controller) {
 
-        controller.start().onTrue(
-            Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                    swerve.getPose().getTranslation(),
-                    Rotation2d.fromDegrees(
-                        Robot.isRedAlliance()
-                        ? 0
-                        : 180))
-            ), swerve)
-        );
+        controller.start().onTrue(vision.toggleMT1Command());
         
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
@@ -418,12 +395,14 @@ public class RobotContainer {
         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
+        vision.controlRecording(false, freshCode);
     }
 
     public void onEnabled() {
         gameModeStart = Robot.currentTimestamp;
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
+        vision.controlRecording(true);
     }
 
     private void prepareNamedCommands() {
@@ -446,5 +425,17 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
+    }
+
+    // https://www.chiefdelphi.com/t/auto-init-overrun/494848/33
+    public static Command threadRTCommand() {
+        return Commands.sequence(
+            // Wait 20 seconds to dodge any additional initialization after robotInit()
+            Commands.waitSeconds(20),
+            Commands.runOnce(() -> {
+                Threads.setCurrentThreadPriority(true, 10);
+                System.err.println("Set main thread RT priority");
+            })
+        ).ignoringDisable(true);
     }
 }

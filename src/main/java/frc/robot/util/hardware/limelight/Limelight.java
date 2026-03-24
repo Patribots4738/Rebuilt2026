@@ -20,7 +20,7 @@ public class Limelight {
     }
 
     public void setThrottle(int throttle) {
-        LimelightHelpers.setThrottle(name, throttle);
+        LimelightHelpers.SetThrottle(name, throttle);
     }
 
     public void setPipelineIndex(int newIndex) {
@@ -124,5 +124,9 @@ public class Limelight {
     
     public void setUseMT2(boolean megaTag2) {
         useMT2 = megaTag2;
+    }
+    
+    public String getName() {
+        return name;
     }
 }

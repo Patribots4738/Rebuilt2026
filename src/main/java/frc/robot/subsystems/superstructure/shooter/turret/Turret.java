@@ -36,32 +36,32 @@ public class Turret extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Shooter/Turret/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
-    private double testPositionDegrees;
+    // private double testPositionDegrees;
 
-    private final SysIdRoutine turretRoutine;
+    // private final SysIdRoutine turretRoutine;
 
 
     public Turret(TurretIO io) {
         this.io = io;
 
-        TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
-        TurretConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = TurretConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
+        // TurretConstants.LOGGED_TURRET_GAINS.onChanged(Commands.runOnce(() -> io.setGains(TurretConstants.LOGGED_TURRET_GAINS.get())).ignoringDisable(true));
+        // TurretConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPositionDegrees = TurretConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
 
-        this.turretRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
-                        log -> log.motor("turret")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Radians.of(inputs.internalPositionRads))
-                                .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
-                        this
-                )
-        );
+        // this.turretRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10)
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+        //                 log -> log.motor("turret")
+        //                         .voltage(Volts.of(inputs.appliedOutputVolts))
+        //                         .angularPosition(Radians.of(inputs.internalPositionRads))
+        //                         .angularVelocity(RadiansPerSecond.of(inputs.internalVelocityRadsPerSec)),
+        //                 this
+        //         )
+        // );
     }
 
     @Override
@@ -86,40 +86,10 @@ public class Turret extends SubsystemBase {
      */
     public void setPosition(Rotation2d position) {
         Logger.recordOutput("Subsystems/Shooter/Turret/ShotCalcRoboRelativePosition", position.getDegrees());
-        // if (position.getDegrees() < 0) {
-        //     position = position.plus(Rotation2d.fromDegrees(360));
-        // }
-        // if (position.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
-        //     position = position.unaryMinus();
-        //     System.out.println("UNDER MIN");
-    // }
-        // if (position.getRadians() > TurretConstants.MAX_ANGLE_RADIANS) {
-        //     System.out.println("OVER MAX");
-        // }
-
-
-
             targetPosition = position.plus(Rotation2d.fromRadians(TurretConstants.ANGULAR_OFFSET));
 
             // if (targetPosition.getDegrees() < 0) {
             //     targetPosition = Rotation2d.fromDegrees(180).minus(Rotation2d.fromDegrees(Math.abs(targetPosition.getDegrees()))).plus(Rotation2d.fromDegrees(180));
-            // }
-
-
-
-
-            
-
-            // TODO: TRY THIS
-            // if (targetPosition.getDegrees() > 360) {
-            //     targetPosition = targetPosition.minus(Rotation2d.fromDegrees(360));
-            // }
-
-
-
-
-            // if (targetPosition.getRadians() > TurretConstants.MAX_ANGLE_RADIANS || targetPosition.getRadians() < TurretConstants.MIN_ANGLE_RADIANS) {
-            //     targetPosition = targetPosition.plus(Rotation2d.fromDegrees(360));
             // }
 
             shouldRunSetpoint = true;
@@ -129,10 +99,10 @@ public class Turret extends SubsystemBase {
             //shouldRunSetpoint = true;
         //}
 
-        RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
-            LoggingConstants.TURRET_OFFSET,
-            new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
-        );
+        // RobotContainer.components3d[LoggingConstants.HOOD_INDEX] = new Pose3d(
+        //     LoggingConstants.TURRET_OFFSET,
+        //     new Rotation3d(0, 0, inputs.encoderAbsPositionRads)
+        // );
     }
 
     public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
@@ -143,9 +113,9 @@ public class Turret extends SubsystemBase {
         return runOnce(() -> setPosition(rotation));
     }
 
-    public Command setTestPositionCommand() {
-        return setPositionCommand(() -> Rotation2d.fromRadians(Units.degreesToRadians(testPositionDegrees)));
-    }
+    // public Command setTestPositionCommand() {
+    //     return setPositionCommand(() -> Rotation2d.fromRadians(Units.degreesToRadians(testPositionDegrees)));
+    // }
 
     public void setNeutral() {
         shouldRunSetpoint = false;
@@ -197,19 +167,19 @@ public class Turret extends SubsystemBase {
         io.runCharacterization(input);
     }
 
-    public Command sysIdQuasistaticForward() {
-        return turretRoutine.quasistatic(SysIdRoutine.Direction.kForward);
-    }
+    // public Command sysIdQuasistaticForward() {
+    //     return turretRoutine.quasistatic(SysIdRoutine.Direction.kForward);
+    // }
 
-    public Command sysIdQuasistaticReverse() {
-        return turretRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
-    }
+    // public Command sysIdQuasistaticReverse() {
+    //     return turretRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
+    // }
 
-    public Command sysIdDynamicForward() {
-        return turretRoutine.dynamic(SysIdRoutine.Direction.kForward);
-    }
+    // public Command sysIdDynamicForward() {
+    //     return turretRoutine.dynamic(SysIdRoutine.Direction.kForward);
+    // }
 
-    public Command sysIdDynamicReverse() {
-        return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
-    }
+    // public Command sysIdDynamicReverse() {
+    //     return turretRoutine.dynamic(SysIdRoutine.Direction.kReverse);
+    // }
 }

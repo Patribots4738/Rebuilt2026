@@ -11,13 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3-ClimbPrepMiddle"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ClimbUp"
+                  "pathName": "2-Allaince Zone"
                 }
               }
             ]
@@ -26,25 +20,37 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootUntilEmptyHopper"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopIntake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wiggle Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 8.0
           }
         },
         {
           "type": "named",
           "data": {
             "name": "StopShooting"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ClimbPrepMiddle-ClimbMiddle"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ClimbDown"
           }
         }
       ]

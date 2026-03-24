@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import frc.robot.util.hardware.limelight.Limelight;
+import frc.robot.util.hardware.limelight.LimelightHelpers;
 import frc.robot.util.hardware.limelight.LimelightHelpers.RawFiducial;
 
 public class VisionIOLimelight implements VisionIO {
@@ -64,5 +65,19 @@ public class VisionIOLimelight implements VisionIO {
         camera.setValidTags(tagIds);
     }
 
+    @Override
+    public boolean getIsLL4() {
+        return camera.getIsLL4();
+    }
 
+    @Override
+    public void startRecording() {
+        LimelightHelpers.setRewindEnabled(camera.getName(), true);
+    }
+    
+    @Override
+    public void endRecording() {
+        LimelightHelpers.triggerRewindCapture(camera.getName(), 165);
+        LimelightHelpers.setRewindEnabled(camera.getName(), false);
+    }
 }

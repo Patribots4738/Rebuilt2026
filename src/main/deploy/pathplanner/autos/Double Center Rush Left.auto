@@ -43,7 +43,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -57,25 +57,6 @@
                 "data": {
                   "waitTime": 5.0
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Wiggle Intake"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -87,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
+                  "pathName": "1CLRRotated-BackHubLeft"
                 }
               },
               {
@@ -118,7 +99,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -131,25 +112,6 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Wiggle Intake"
-                      }
-                    }
-                  ]
                 }
               }
             ]
@@ -168,7 +130,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
+                  "pathName": "1CLRRotated-BackHubLeft"
                 }
               },
               {

@@ -75,9 +75,9 @@ public class Extender extends SubsystemBase {
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
 
-        ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
-        ExtenderConstants.LOGGED_TEST_POSITION.onChanged(Commands.runOnce(() -> testPosition = Units.degreesToRadians(ExtenderConstants.LOGGED_TEST_POSITION.get())).ignoringDisable(true));
-        ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
+        // ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
+        // ExtenderConstants.LOGGED_TEST_POSITION.onChanged(Commands.runOnce(() -> testPosition = Units.degreesToRadians(ExtenderConstants.LOGGED_TEST_POSITION.get())).ignoringDisable(true));
+        // ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class Extender extends SubsystemBase {
     
     public Command feedShooterCommand() {
         wiggle = true;
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(0.35), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
     }
 
     public Command feedShooterToggleCommand() {
