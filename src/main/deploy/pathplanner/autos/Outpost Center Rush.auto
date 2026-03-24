@@ -62,15 +62,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "StopShooting"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ClimbOrNoClimbOutpost"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wiggle Intake"
+                }
+              }
+            ]
           }
         }
       ]

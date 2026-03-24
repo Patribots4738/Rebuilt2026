@@ -42,7 +42,7 @@ public class Kicker extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Intake/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 	
-    private double testPercent;
+    // private double testPercent;
 
 	// private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Intake/FastProfile/Velocity", IntakeConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Intake/FastProfile/Acceleration", IntakeConstants.FAST_ACCELERATION);
@@ -54,7 +54,7 @@ public class Kicker extends SubsystemBase {
     public Kicker(KickerIO io) {
         this.io = io;
 
-        KickerConstants.LOGGED_KICKER_PERCENT.onChanged(Commands.runOnce(() -> testPercent = KickerConstants.LOGGED_KICKER_PERCENT.get()).ignoringDisable(true));
+        // KickerConstants.LOGGED_KICKER_PERCENT.onChanged(Commands.runOnce(() -> testPercent = KickerConstants.LOGGED_KICKER_PERCENT.get()).ignoringDisable(true));
 
         // fastVelocity.onChanged().or(fastAcceleration.onChanged()).onTrue(Commands.runOnce(() -> fastProfile = new TrapezoidProfile(new Constraints(fastVelocity.get(), fastAcceleration.get()))).ignoringDisable(true));
         // slowVelocity.onChanged().or(slowAcceleration.onChanged()).onTrue(Commands.runOnce(() -> slowProfile = new TrapezoidProfile(new Constraints(slowVelocity.get(), slowAcceleration.get()))).ignoringDisable(true));
@@ -73,7 +73,6 @@ public class Kicker extends SubsystemBase {
         } else {
             io.setNeutral();
         }
-
     }
 
     public void setPercent(double percent) {
@@ -105,11 +104,11 @@ public class Kicker extends SubsystemBase {
 		return emptyHopper;
 	}
 	
-    public void setTestPercent() {
-        setPercent(testPercent);
-    }
+    // public void setTestPercent() {
+    //     setPercent(testPercent);
+    // }
 
-    public Command setTestPercentCommand() {
-        return Commands.runOnce(() -> setTestPercent());
-    }
+    // public Command setTestPercentCommand() {
+    //     return Commands.runOnce(() -> setTestPercent());
+    // }
 }

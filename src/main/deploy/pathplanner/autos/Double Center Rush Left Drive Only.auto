@@ -19,12 +19,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1CLRRotated-BackHubLeft"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "BackHubLeft-Center Line"
           }
         },
@@ -32,12 +26,6 @@
           "type": "path",
           "data": {
             "pathName": "Center Line-1CLRRotated"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1CLRRotated-BackHubLeft"
           }
         },
         {

@@ -20,52 +20,40 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ClimbConstants;
-import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
-
-import static edu.wpi.first.units.Units.*;
 
 public class Climb extends SubsystemBase {
     
     private final ClimbIO io;
     private final ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
-    private double targetState;
+    private State targetState = new State(0, 0);
+    private State setpoint = new State(0, 0);
     private boolean slam = false;
     @AutoLogOutput (key = "Subsystems/Climb/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     
-    private final SysIdRoutine climbRoutine;
-    private double testPosition;
+    // private final SysIdRoutine climbRoutine;
 
     public Climb(ClimbIO io) {
         this.io = io;
-
-        ClimbConstants.LOGGED_TEST_POSITION_DEGREES.onChanged(Commands.runOnce(() -> testPosition = ClimbConstants.LOGGED_TEST_POSITION_DEGREES.get()).ignoringDisable(true));
-
-        this.climbRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
-                        log -> log.motor("climb")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .linearPosition(Meters.of(inputs.positionMeters))
-                                .linearVelocity(MetersPerSecond.of(inputs.velocityMetersPerSec)),
-                        this
-                )
-        );
-        
-        RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-                LoggingConstants.CLIMB_OFFSET,
-                new Rotation3d()
-        );
+        // this.climbRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10)
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.runCharacterization(volts.in(Volts)),
+        //                 log -> log.motor("climb")
+        //                         .voltage(Volts.of(inputs.appliedOutputVolts))
+        //                         .linearPosition(Meters.of(inputs.positionMeters))
+        //                         .linearVelocity(MetersPerSecond.of(inputs.velocityMetersPerSec)),
+        //                 this
+        //         )
+        // );
     }
 
     @Override
@@ -74,11 +62,13 @@ public class Climb extends SubsystemBase {
         Logger.processInputs("SubsystemInputs/Climb", inputs);
 
         Logger.recordOutput("Subsystems/Climb/AtTargetPosition", atTargetPosition());
-        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState);
+        Logger.recordOutput("Subsystems/Climb/TargetPosition", targetState.position);
 
         if (shouldRunSetpoint) {
-            io.setPosition(targetState, slam ? 1 : 0);
+            io.setPosition(setpoint.position, slam ? 1 : 0);
         } else {
+            setpoint.position = inputs.positionMeters;
+            setpoint.velocity = inputs.velocityMetersPerSec;
             io.setNeutral();
         }
 
@@ -92,14 +82,18 @@ public class Climb extends SubsystemBase {
 
     public void setPosition(double position, boolean slam) {
         position = MathUtil.clamp(position, 0, ClimbConstants.MAX_DISPLACEMENT_METERS);
-        targetState = position;
+        if (position != targetState.position) {
+            setpoint.position = inputs.positionMeters;
+            setpoint.velocity = inputs.velocityMetersPerSec;
+        }
+        targetState.position = position;
         this.slam = slam;
         shouldRunSetpoint = true;
 
         RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
                 LoggingConstants.CLIMB_OFFSET.getX(),
                 LoggingConstants.CLIMB_OFFSET.getY(),
-                LoggingConstants.CLIMB_OFFSET.getZ() + targetState,
+                LoggingConstants.CLIMB_OFFSET.getZ() + targetState.position,
             new Rotation3d()
         );
     }
@@ -133,19 +127,11 @@ public class Climb extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return atPosition(targetState);
+        return atPosition(targetState.position);
     }
 
     public double getPosition() {
         return inputs.positionMeters;
-    }
-
-    public void setTestPosition() {
-        setPosition(testPosition, false);
-    }
-
-    public Command setTestPositionCommand() {
-        return Commands.runOnce(() -> setTestPosition());
     }
 
     public double getCharacterizationVelocity() {
@@ -160,11 +146,11 @@ public class Climb extends SubsystemBase {
         return inputs.appliedOutputVolts;
     }
     
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return climbRoutine.quasistatic(direction);
-    }
+    // public Command quasistatic(SysIdRoutine.Direction direction) {
+    //     return climbRoutine.quasistatic(direction);
+    // }
     
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return climbRoutine.dynamic(direction);
-    }
+    // public Command dynamic(SysIdRoutine.Direction direction) {
+    //     return climbRoutine.dynamic(direction);
+    // }
 }

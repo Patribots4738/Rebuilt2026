@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.418320645970759,
-        "y": 0.5541847674600957
+        "x": 3.5978103616813293,
+        "y": 0.6187292277614858
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.116510340581611,
-        "y": 0.743949110462688
+        "x": 5.278084066471163,
+        "y": 0.6444477028348001
       },
       "isLocked": false,
       "linkedName": "5CLR"
@@ -44,7 +44,12 @@
       "linkedName": "Center Line Right"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.26056338028169046,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [
     {

@@ -29,17 +29,17 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     
-    private final SysIdRoutine flywheelRoutine;
+    // private final SysIdRoutine flywheelRoutine;
 
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
     @AutoLogOutput (key = "Subsystems/Shooter/Flywheel/TargetSpeedRPM")
     private double targetSpeed = 0.0;
-    private double calculatedSpeed = 0.0;
+    // private double calculatedSpeed = 0.0;
     private double incrementedSpeed = 4000.0;
 
-    private double testSpeed;
-    private boolean isCharacterizing = false;
+    // private double testSpeed;
+    // private boolean isCharacterizing = false;
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -48,24 +48,24 @@ public class Flywheel extends SubsystemBase {
         // it would like uhh make a new one every time it was called probably so im very
         // very smart for this (maybe (maybe not))
 
-        this.flywheelRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        Volts.per(Seconds).of(1),
-                        Volts.of(7),
-                        Seconds.of(10)
-                ),
-                new SysIdRoutine.Mechanism(
-                        (Voltage volts) -> io.setVoltage(volts.in(Volts)),
-                        log -> log.motor("flywheel")
-                                .voltage(Volts.of(inputs.appliedOutputVolts))
-                                .angularPosition(Rotations.of(inputs.positionRadians))
-                                .angularVelocity(RadiansPerSecond.of(inputs.speedRPM / 60)),
-                        this
-                )
-        );
+        // this.flywheelRoutine = new SysIdRoutine(
+        //         new SysIdRoutine.Config(
+        //                 Volts.per(Seconds).of(1),
+        //                 Volts.of(7),
+        //                 Seconds.of(10)
+        //         ),
+        //         new SysIdRoutine.Mechanism(
+        //                 (Voltage volts) -> io.setVoltage(volts.in(Volts)),
+        //                 log -> log.motor("flywheel")
+        //                         .voltage(Volts.of(inputs.appliedOutputVolts))
+        //                         .angularPosition(Rotations.of(inputs.positionRadians))
+        //                         .angularVelocity(RadiansPerSecond.of(inputs.speedRPM / 60)),
+        //                 this
+        //         )
+        // );
 
-        FlywheelConstants.LOGGED_FLYWHEEL_GAINS.onChanged(Commands.runOnce(() -> io.setGains(FlywheelConstants.LOGGED_FLYWHEEL_GAINS.get())).ignoringDisable(true));
-        FlywheelConstants.LOGGED_SPEED_RPM.onChanged(Commands.runOnce(() -> testSpeed = FlywheelConstants.LOGGED_SPEED_RPM.get()).ignoringDisable(true));
+        // FlywheelConstants.LOGGED_FLYWHEEL_GAINS.onChanged(Commands.runOnce(() -> io.setGains(FlywheelConstants.LOGGED_FLYWHEEL_GAINS.get())).ignoringDisable(true));
+        // FlywheelConstants.LOGGED_SPEED_RPM.onChanged(Commands.runOnce(() -> testSpeed = FlywheelConstants.LOGGED_SPEED_RPM.get()).ignoringDisable(true));
     }
 
     @Override
@@ -138,25 +138,25 @@ public class Flywheel extends SubsystemBase {
         return setSpeedRPMCommand(() -> incrementedSpeed);
     }
 
-    public void setCalculatedSpeedRPM(double speed) {
-        calculatedSpeed = speed;
-    }
+    // public void setCalculatedSpeedRPM(double speed) {
+    //     calculatedSpeed = speed;
+    // }
 
-    public Command setCalculatedSpeedRPMCommand(double speed) {
-        return runOnce(() -> setCalculatedSpeedRPM(speed));
-    }
+    // public Command setCalculatedSpeedRPMCommand(double speed) {
+    //     return runOnce(() -> setCalculatedSpeedRPM(speed));
+    // }
 
-    public Command setCalculatedSpeedRPMCommand(DoubleSupplier speed) {
-        return runOnce(() -> setCalculatedSpeedRPM(speed.getAsDouble()));
-    }
+    // public Command setCalculatedSpeedRPMCommand(DoubleSupplier speed) {
+    //     return runOnce(() -> setCalculatedSpeedRPM(speed.getAsDouble()));
+    // }
 
-    public void runCalculatedSpeed() {
-        setSpeedRPM(calculatedSpeed);
-    }
+    // public void runCalculatedSpeed() {
+    //     setSpeedRPM(calculatedSpeed);
+    // }
 
-    public Command runCalculateSpeedCommand() {
-        return setSpeedRPMCommand(() -> calculatedSpeed);
-    }
+    // public Command runCalculateSpeedCommand() {
+    //     return setSpeedRPMCommand(() -> calculatedSpeed);
+    // }
 
     public double getTargetSpeedRPM() {
         return targetSpeed; 
@@ -170,9 +170,9 @@ public class Flywheel extends SubsystemBase {
         return setSpeedRPMCommand(() -> speed);
     }
 
-    public Command setTestSpeedRPMCommand() {
-        return setSpeedRPMCommand(() -> testSpeed);
-    }
+    // public Command setTestSpeedRPMCommand() {
+    //     return setSpeedRPMCommand(() -> testSpeed);
+    // }
 
     public Command setNeutralCommand() {
         return runOnce(this::setNeutral);
@@ -195,21 +195,21 @@ public class Flywheel extends SubsystemBase {
         return inputs.appliedOutputVolts;
     }
     
-    public Command quasistatic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.quasistatic(direction)
-                .beforeStarting(() -> isCharacterizing = true)
-                .finallyDo(interrupted -> {
-                    isCharacterizing = false;
-                    setNeutral(); // optional safety
-                });
-    }
+    // public Command quasistatic(SysIdRoutine.Direction direction) {
+    //     return flywheelRoutine.quasistatic(direction)
+    //             .beforeStarting(() -> isCharacterizing = true)
+    //             .finallyDo(interrupted -> {
+    //                 isCharacterizing = false;
+    //                 setNeutral(); // optional safety
+    //             });
+    // }
     
-    public Command dynamic(SysIdRoutine.Direction direction) {
-        return flywheelRoutine.dynamic(direction)
-                .beforeStarting(() -> isCharacterizing = true)
-                .finallyDo(interrupted -> {
-                    isCharacterizing = false;
-                    setNeutral(); // optional safety
-                });
-    }
+    // public Command dynamic(SysIdRoutine.Direction direction) {
+    //     return flywheelRoutine.dynamic(direction)
+    //             .beforeStarting(() -> isCharacterizing = true)
+    //             .finallyDo(interrupted -> {
+    //                 isCharacterizing = false;
+    //                 setNeutral(); // optional safety
+    //             });
+    // }
 }

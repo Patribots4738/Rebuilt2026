@@ -1,8 +1,7 @@
 package frc.robot.subsystems.vision;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import edu.wpi.first.math.geometry.Pose2d;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
 
@@ -30,4 +29,11 @@ public interface VisionIO {
 
     public default void setUsedTags(int[] tagIds) {}
     
+    public default boolean getIsLL4() {
+        return false;
+    }
+    
+    public default void startRecording() {}
+    
+    public default void endRecording() {}
 }

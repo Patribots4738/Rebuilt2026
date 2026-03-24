@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -17,7 +18,6 @@ import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
 import frc.robot.commands.drive.Drive;
-import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -135,11 +135,10 @@ public class RobotContainer {
 
         swerve = new Swerve();
         alignment = new Alignment(swerve);
-        vision = new Vision(swerve.getPoseEstimator(),
-            new VisionIOLimelight("limelight-right", true), // Megatron - big t
-            new VisionIOLimelight("limelight-left", true), // Zhao - me
-            new VisionIOLimelight("limelight-hailo", true), // Dialyn - me again
-            new VisionIOLimelight("limelight-threeg", false)); // Linda - big h
+        vision = new Vision(swerve.getPoseEstimator(), 
+            new VisionIOLimelight("limelight-right", true), 
+            new VisionIOLimelight("limelight-left", true), 
+            new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -152,7 +151,7 @@ public class RobotContainer {
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
-        SmartDashboard.putData("Mech2d", mech);
+        // SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -190,7 +189,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
+        // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {
@@ -317,16 +316,8 @@ public class RobotContainer {
 
     private void configureDriverBindings(PatriBoxController controller) {
 
-        controller.start().onTrue(
-            Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                    swerve.getPose().getTranslation(),
-                    Rotation2d.fromDegrees(
-                        Robot.isRedAlliance()
-                        ? 0
-                        : 180))
-            ), swerve)
-        );
+        controller.start().onTrue(vision.toggleMT1Command());
+        
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
         controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
@@ -407,12 +398,14 @@ public class RobotContainer {
         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
+        vision.controlRecording(false, freshCode);
     }
 
     public void onEnabled() {
         gameModeStart = Robot.currentTimestamp;
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
+        vision.controlRecording(true);
     }
 
     private void prepareNamedCommands() {
@@ -435,6 +428,18 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
+    }
+
+    // https://www.chiefdelphi.com/t/auto-init-overrun/494848/33
+    public static Command threadRTCommand() {
+        return Commands.sequence(
+            // Wait 20 seconds to dodge any additional initialization after robotInit()
+            Commands.waitSeconds(20),
+            Commands.runOnce(() -> {
+                Threads.setCurrentThreadPriority(true, 10);
+                System.err.println("Set main thread RT priority");
+            })
+        ).ignoringDisable(true);
     }
     
     private void updateAllComponents3d() {
