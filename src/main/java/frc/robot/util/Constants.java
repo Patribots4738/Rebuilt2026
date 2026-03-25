@@ -333,6 +333,8 @@ public final class Constants {
 
     }
 
+    // 2023-2024 Swerve Module
+
     public static final class MAXSwerveModuleConstants {
         // https://www.revrobotics.com/rev-21-3005/
         private enum SwerveGearing {
@@ -443,6 +445,8 @@ public final class Constants {
         public static final int TURNING_MOTOR_CURRENT_LIMIT = 20; // amps
 
     }
+
+    // 2026 Swerve Module
 
     public static final class MK5nSwerveModuleConstants {
         // Driving motors CAN IDs
@@ -560,6 +564,8 @@ public final class Constants {
 
         // public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
+
+    // 2025 Swerve Module
 
     public static final class MK4cSwerveModuleConstants {
         // Driving motors CAN IDs
@@ -1108,7 +1114,7 @@ public final class Constants {
 
     public static final class ExtenderConstants {
         public static final int CAN_ID = 14;
-        public static final int MOTOR_TYPE = 44;
+        public static final int MOTOR_TYPE = 60;
         public static final double GEAR_RATIO = 60.0;
 
         public static final boolean BRAKE_MOTOR = true;

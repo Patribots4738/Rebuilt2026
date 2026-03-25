@@ -338,6 +338,8 @@ public class RobotContainer {
 
         controller.povLeft().onTrue(extender.feedShooterToggleCommand().alongWith(intake.setPercentCommand(0.0)));
 
+        controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS));
+
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
         // uncomment these when we have climb

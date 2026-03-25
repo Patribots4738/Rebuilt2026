@@ -10,7 +10,7 @@ public class ExtenderIOKraken implements ExtenderIO {
     private final Kraken motor;
 
     public ExtenderIOKraken() {
-        motor = new Kraken(ExtenderConstants.CAN_ID, ExtenderConstants.MOTOR_TYPE, true, true, ControlPreference.TORQUE_CURRENT);
+        motor = new Kraken(ExtenderConstants.CAN_ID, ExtenderConstants.MOTOR_TYPE, true, true, ControlPreference.VOLTAGE);
         configMotors();
     }
 
