@@ -302,6 +302,7 @@ public final class Constants {
             "Double Center Rush Right",
             "Outpost Center Rush",
             "Dumby Center",
+            "Right Bump",
             "Test",
             "Double Center Rush Left Drive Only",
             "Double Center Rush Right Drive Only",
@@ -865,6 +866,13 @@ public final class Constants {
                // Units.degreesToRadians(141.77)
          //   )
        // );
+
+       public final static int[] ALL_TAGS = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+       public final static int[] HUB_TAGS = new int[] {2, 3, 4, 5, 8, 9, 10, 11, 19, 20, 25, 26, 24, 21, 18, 27};
+       public final static int[] OUTPOST_TAGS = new int[] {13, 14, 29, 30};
+       public final static int[] TOWER_TAGS =  new int[] {15, 16, 31, 32};
+       public final static int[] TRENCH_TAGS = new int[] {1, 6, 7, 12, 17, 22, 23, 28};
+       public final static int[] VALID_TAGS = new int[] {2, 11, 10, 9, 8, 5, 21, 24, 18, 27, 26, 25};
     }
 
     public static final class ClimbConstants {
@@ -1097,6 +1105,8 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 60;
 
         public static final double INTAKE_PERCENT = 0.5;
+
+        public static final double REVERSE_PERCENT = - 0.5;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;

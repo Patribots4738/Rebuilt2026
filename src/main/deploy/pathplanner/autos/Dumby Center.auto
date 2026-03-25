@@ -5,31 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "3-ClimbPrepMiddle"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "ClimbUp"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootUntilEmptyHopper"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "StopShooting"
@@ -42,9 +17,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 6.0
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ClimbDown"
+            "name": "StopShooting"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2-Allaince Zone"
           }
         }
       ]

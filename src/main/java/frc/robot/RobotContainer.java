@@ -87,8 +87,8 @@ public class RobotContainer {
     private final BooleanSupplier robotRelativeSupplier;
 
     private final Swerve swerve;
-    @SuppressWarnings("unused")
-    private final Vision vision;
+    //@SuppressWarnings("unused")
+    //private final Vision vision;
 //     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
@@ -145,11 +145,10 @@ public class RobotContainer {
         
         swerve = new Swerve();
         alignment = new Alignment(swerve);
-        vision = new Vision(swerve.getPoseEstimator(), 
-            new VisionIOLimelight("limelight-right", true), 
-            new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-hailo", true), 
-            new VisionIOLimelight("limelight-threeg", false));
+        //vision = new Vision(swerve.getPoseEstimator(), 
+            //new VisionIOLimelight("limelight-right", true), 
+            // new VisionIOLimelight("limelight-left", true), 
+            //new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -327,16 +326,7 @@ public class RobotContainer {
 
     private void configureDriverBindings(PatriBoxController controller) {
 
-        controller.start().onTrue(
-            Commands.runOnce(() -> swerve.resetOdometry(
-                new Pose2d(
-                    swerve.getPose().getTranslation(),
-                    Rotation2d.fromDegrees(
-                        Robot.isRedAlliance()
-                        ? 0
-                        : 180))
-            ), swerve)
-        );
+        //controller.start().onTrue(vision.toggleMT1Command());
         
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
@@ -362,6 +352,8 @@ public class RobotContainer {
         controller.povLeft().onTrue(extender.feedShooterToggleCommand().alongWith(intake.setPercentCommand(0.0)));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
+
+        controller.povUp().onTrue(intake.setPercentCommand(IntakeConstants.REVERSE_PERCENT));
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
@@ -418,12 +410,14 @@ public class RobotContainer {
         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         pathPlannerStorage.configureAutoChooser();
+        //vision.controlRecording(false, freshCode);
     }
 
     public void onEnabled() {
         gameModeStart = Robot.currentTimestamp;
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
+        //vision.controlRecording(true);
     }
 
     private void prepareNamedCommands() {
