@@ -101,7 +101,7 @@ public class Vision extends SubsystemBase {
                 camera.setUsedTags(CameraConstants.ALL_TAGS);
             }
             else {
-                camera.setUsedTags(CameraConstants.OUTPOST_TAGS);
+                camera.setUsedTags(CameraConstants.HUB_TAGS);
             }
 
 
@@ -137,7 +137,7 @@ public class Vision extends SubsystemBase {
      */
     private int chooseCamera() {
         double minTagDistance = Integer.MAX_VALUE;
-        int camIndex;
+        int camIndex = 0;
 
         for (int i = 0; i < cameras.length; i++) {
             if (cameras[i].getAverageTagDistance() < minTagDistance) {
