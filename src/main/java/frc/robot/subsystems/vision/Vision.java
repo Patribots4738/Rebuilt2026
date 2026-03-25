@@ -101,7 +101,7 @@ public class Vision extends SubsystemBase {
                 camera.setUsedTags(CameraConstants.ALL_TAGS);
             }
             else {
-                camera.setUsedTags(CameraConstants.OUTPOST_TAGS);
+                camera.setUsedTags(CameraConstants.VALID_TAGS);
             }
 
 
@@ -145,6 +145,8 @@ public class Vision extends SubsystemBase {
                 camIndex += i;
             }
         }
+
+        System.out.println("Camera index to use: " + camIndex);
 
         return camIndex;
     }
