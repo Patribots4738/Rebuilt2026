@@ -128,7 +128,7 @@ public class Vision extends SubsystemBase {
 
         updatePoseEstimator();
     }
-
+    
     /**
      * Finds the most reliable camera depending on how far the tags are
      * from the center of the FOV
@@ -137,12 +137,12 @@ public class Vision extends SubsystemBase {
      */
     private int chooseCamera() {
         double minTagDistance = Integer.MAX_VALUE;
-        int camIndex;
+        int camIndex = 0;
 
         for (int i = 0; i < cameras.length; i++) {
             if (cameras[i].getAverageTagDistance() < minTagDistance) {
                 minTagDistance = cameras[i].getAverageTagDistance();
-                camIndex = i;
+                camIndex += i;
             }
         }
 

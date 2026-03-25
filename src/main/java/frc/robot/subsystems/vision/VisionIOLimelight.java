@@ -1,5 +1,8 @@
 package frc.robot.subsystems.vision;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import frc.robot.util.hardware.limelight.Limelight;
 import frc.robot.util.hardware.limelight.LimelightHelpers.RawFiducial;
 
@@ -62,6 +65,30 @@ public class VisionIOLimelight implements VisionIO {
     @Override
     public void setUsedTags(int[] tagIds) {
         camera.setValidTags(tagIds);
+    }
+
+    @Override
+    public double getAverageTagDistance(){
+        double totalTX = 0;
+        double totalTY = 0;
+        RawFiducial[] tags = camera.getRawFiducials();
+
+        if (tags == null || tags.length < 2){
+            totalTX += camera.getTX();
+            totalTY += camera.getTY();
+        }else{
+            Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.txnc)));
+            double tx1 = tags[0].txnc;
+            double tx2 = tags[1].txnc;
+            Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.tync)));
+            double ty1 = tags[0].tync;
+            double ty2 =  tags[1].tync;
+
+            totalTX += (tx1 + tx2);
+            totalTY += (ty1 + ty2);
+        }
+
+        return Math.sqrt(((Math.pow(totalTX, 2))+(Math.pow(totalTY, 2))));
     }
 
 

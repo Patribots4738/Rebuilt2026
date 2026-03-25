@@ -536,7 +536,6 @@ public class LimelightHelpers {
         public double tagSpan;
         public double avgTagDist;
         public double avgTagArea;
-
         public RawFiducial[] rawFiducials; 
         public boolean isMegaTag2;
 
