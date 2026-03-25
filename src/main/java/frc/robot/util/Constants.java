@@ -326,9 +326,9 @@ public final class Constants {
         public static final double TOWER_ALIGNMENT_OFFSET = 1;
         public static final double TOWER_ALIGNMENT_OFFSET_Y = 0;
 
-        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", true);
+        public static final LoggedTunableBoolean LOGGED_CLIMB_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Climb", false);
         
-        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", true);
+        public static final LoggedTunableBoolean LOGGED_LEFT_BOOLEAN = new LoggedTunableBoolean("Tunnable/Constants/Left", false);
 
     }
 
@@ -537,7 +537,7 @@ public final class Constants {
             0.0
         );
 
-        public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
+        // public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
         public static final double TURNING_P = FieldConstants.IS_REAL ? 700.0 : 10000; //225
         public static final double TURNING_I = FieldConstants.IS_REAL ? 0.0 : 5; //13
@@ -553,11 +553,11 @@ public final class Constants {
             0.0
         );
 
-        public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
+        // public static final LoggedGainConstants LOGGED_TURNING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.TURNING_GAINS, "Swerve/Turn");
 
         public static final double DRIFT_MULTIPLIER = 4.0;
 
-        public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
+        // public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
 
     public static final class MK4cSwerveModuleConstants {
@@ -794,51 +794,51 @@ public final class Constants {
     public static final class CameraConstants {
 
         public static final int ENABLED_THROTTLE = 0; // Process every frame
-        public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+        public static final int DISABLED_THROTTLE = 0; // Process 1 of every n frames
 
-        public static final Pose3d LL4_LEFT_POSE = new Pose3d(
-            -0.282,
-            0.308,
-            0.203,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(0)
-            )
-        );
+        // public static final Pose3d LL4_LEFT_POSE = new Pose3d(
+        //     -0.282,
+        //     0.308,
+        //     0.203,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(0)
+        //     )
+        // );
 
-        public static final Pose3d LL3G_POSE = new Pose3d(
-            -0.292,
-            0.021,
-            0.339,
-            new Rotation3d(
-                Units.degreesToRadians(0),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(90d)
-            )
-        );
+        // public static final Pose3d LL3G_POSE = new Pose3d(
+        //     -0.292,
+        //     0.021,
+        //     0.339,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(0),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(90d)
+        //     )
+        // );
 
-        public static final Pose3d LLHAILO_POSE = new Pose3d(
-            0.281,
-            0.290,
-            0.200,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(-34.5)
-            )
-        );
+        // public static final Pose3d LLHAILO_POSE = new Pose3d(
+        //     0.281,
+        //     0.290,
+        //     0.200,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(-34.5)
+        //     )
+        // );
 
-        public static final Pose3d LL4_RIGHT_POSE = new Pose3d(
-            0.076,
-            0.305,
-            0.197,
-            new Rotation3d(
-                Units.degreesToRadians(180d),
-                Units.degreesToRadians(25d),
-                Units.degreesToRadians(-105)
-            )
-        );
+        // public static final Pose3d LL4_RIGHT_POSE = new Pose3d(
+        //     0.076,
+        //     0.305,
+        //     0.197,
+        //     new Rotation3d(
+        //         Units.degreesToRadians(180d),
+        //         Units.degreesToRadians(25d),
+        //         Units.degreesToRadians(-105)
+        //     )
+        // );
 
 
         // UPDATE LATER once we know how many cameras we have and their positions
@@ -864,6 +864,8 @@ public final class Constants {
                // Units.degreesToRadians(141.77)
          //   )
        // );
+
+       public final static int[] ALL_TAGS = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
     }
 
     public static final class ClimbConstants {
@@ -957,7 +959,7 @@ public final class Constants {
         public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(0);
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(354); 
 
-        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
+        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(180.0)); // TODO: find this value
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
@@ -981,8 +983,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
+        // public static final LoggedGainConstants LOGGED_TURRET_GAINS = new LoggedGainConstants(TurretConstants.GAINS, "Shooter/Turret/Gains");
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Turret/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.0;
         public static final double ACCELERATION = 1.0;
@@ -1010,7 +1012,7 @@ public final class Constants {
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
         public static final double EJECT_RPM = 30.0;
-        public static final double HUB_RPM = 3000.0; // TODO: find this value
+        public static final double HUB_RPM = 3200.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1034,8 +1036,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
-        public static final LoggedTunableConstant LOGGED_SPEED_RPM = new LoggedTunableConstant("Shooter/Flyweel/SpeedRPM", 0.0);
+        // public static final LoggedGainConstants LOGGED_FLYWHEEL_GAINS = new LoggedGainConstants(FlywheelConstants.GAINS, "Shooter/Flywheel/Gains");
+        // public static final LoggedTunableConstant LOGGED_SPEED_RPM = new LoggedTunableConstant("Shooter/Flyweel/SpeedRPM", 0.0);
     }
 
     public static final class HoodConstants {
@@ -1053,7 +1055,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
+        public static final double HUB_POSITION_RADIANS = 0.10472; // TODO: find this value
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1080,8 +1082,8 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
+        // public static final LoggedGainConstants LOGGED_HOOD_GAINS = new LoggedGainConstants(HoodConstants.GAINS, "Shooter/Hood/Gains");
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Shooter/Hood/PositionDegrees", 0.0);
 
         public static final double VELOCITY = 1.6;
         public static final double ACCELERATION = 3d;
@@ -1120,7 +1122,7 @@ public final class Constants {
         public static final double STOW_POSITION_RADIANS = 0.2;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
-        public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 1.5;
+        public static final double WIGGLE_RADIANS = 0.2;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1145,11 +1147,11 @@ public final class Constants {
             G
         );
 
-        public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
+        // public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
 
-        public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
+        // public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
 
-        public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
+        // public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
     }
 
     public static final class KickerConstants {
@@ -1175,7 +1177,7 @@ public final class Constants {
         public static final double REVERSE_PERCENT = -0.5;
         public static final double FORWARD_PERCENT = 0.5;
         
-        public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
+        // public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
 
     public static final class GeneralHardwareConstants {
@@ -1201,7 +1203,7 @@ public final class Constants {
         
         public static final double GEAR_RATIO = 3.0;
 
-        public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
+        // public static final LoggedTunableConstant TEST_PERCENT = new LoggedTunableConstant("Hopper/Spindexer/PercentOutput", SpindexerConstants.FEED_PERCENT);
     }
 
     public static final class FieldConstants {

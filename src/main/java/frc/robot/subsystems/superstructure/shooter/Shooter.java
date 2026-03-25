@@ -318,6 +318,10 @@ public class Shooter extends SubsystemBase {
             hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
             turret.setPositionCommand(TurretConstants.HUB_POSITION);
         }
+        else {
+            flywheel.stopCommand();
+            hood.setPosition(0.0);
+        }
     }
 
     public Command toggleManualShootingCommand() {

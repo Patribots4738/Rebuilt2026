@@ -80,6 +80,8 @@ public class Robot extends LoggedRobot {
 
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
+
+        RobotContainer.threadRTCommand().schedule();
     }
 
     /**

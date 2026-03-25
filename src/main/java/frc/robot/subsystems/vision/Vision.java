@@ -4,13 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,11 +12,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
-import frc.robot.RobotContainer;
 import frc.robot.util.Constants.CameraConstants;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vision extends SubsystemBase {
 
@@ -64,12 +60,11 @@ public class Vision extends SubsystemBase {
             inputs[i] = new VisionIOInputsAutoLogged();
         }
         this.poseEstimator = poseEstimator;
-        
     }
 
     @Override
     public void periodic() {
-        boolean shouldUseMT2 = false;
+        boolean shouldUseMT2 = !shouldUseMT1();
         double currentYawDegrees = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
         for (int i = 0; i < cameras.length; i++) {
             VisionIO camera = cameras[i];
@@ -87,97 +82,138 @@ public class Vision extends SubsystemBase {
             camera.setRobotOrientation(currentYawDegrees);
             camera.updateInputs(inputs[i]);
             Logger.processInputs("SubsystemInputs/Vision/Camera" + i, inputs[i]);
+            camera.setUsedTags(CameraConstants.ALL_TAGS);
 
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT1Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-four").pose);
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT2Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-four").pose);
 
-
-            //when pose calcs are done fix this to align to starting line and ramp
-          //  if (alignmentSupplier.get() == AlignmentMode.RAMP) {
-           //     int reefTag = closestReefTag();
-                // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
-            ///    camera.setUsedTags(new int[] { reefTag });
-           // } else {
-             //   camera.setUsedTags(FieldConstants.REEF_TAGS);
-           // }
+            // if (alignmentSupplier.get() == AlignmentMode.REEF) {
+            //     int reefTag = closestReefTag();
+            //     // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
+            //     camera.setUsedTags(new int[] { reefTag });
+            // } else {
+            //     camera.setUsedTags(FieldConstants.REEF_TAGS);
+            // }
         }
 
         updatePoseEstimator();
     }
 
     private void updatePoseEstimator() {
-        int tagCount[] = new int[cameras.length];
-        double tagArea[] = new double[cameras.length];
+        int[] tagCount = new int[cameras.length];
+        double[] tagArea = new double[cameras.length];
+        ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
 
         List<Integer> camerasToUpdate = new ArrayList<>();
+
         for (int i = 0; i < cameras.length; i++) {
             boolean updateCamera = cameraHasTarget(i);
             // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
             if (updateCamera) {
                 camerasToUpdate.add(i);
                 tagCount[i] = inputs[i].tagIds.length;
-                tagArea[i] = (tagArea[i] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
+                tagArea[i] = inputs[i].averageTA;
             }
         }
+        // System.out.println("# Updated cams" + camerasToUpdate.size());
         
-        Logger.recordOutput("Subsystems/Vision/TagCount", tagCount);
-        Logger.recordOutput("Subsystems/Vision/TagArea", tagArea);
+        // Logger.recordOutput("Subsystems/Vision/TagCount", tagCount);
+        // Logger.recordOutput("Subsystems/Vision/TagArea", tagArea);
 
         double xyStds = 0.0;
         double radStds = 0.0;
 
         int maxTagCount = 0;
-        int maxTagIndex = 0;
+        int maxCountIndex = 0;
         double maxTagArea = 0;
-        boolean updatedSTDs = false;
+        int maxAreaIndex = 0;
 
-        ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
-        
         if (camerasToUpdate.size() > 0) {
+            // first find the greatest tag count and area
             for (int i = 0; i < camerasToUpdate.size(); i++) {
-                if (tagCount[i] > maxTagCount) {
-                    maxTagCount = tagCount[i];
-                } else if (tagArea[i] > maxTagArea) {
-                    maxTagArea = tagArea[i];
-                    maxTagIndex = i;
+
+                if (inputs[camerasToUpdate.get(i)].tagIds.length > maxTagCount) { // find the max tag count
+                    maxTagCount = inputs[camerasToUpdate.get(i)].tagIds.length;
+                    maxCountIndex = camerasToUpdate.get(i);
                 }
-                if (tagCount[i] >= 2) {
-                    twoTagIndex.add(i);
+                if (inputs[camerasToUpdate.get(i)].averageTA > maxTagArea) { // find the max tag area
+                    maxTagArea = inputs[camerasToUpdate.get(i)].averageTA;
+                    maxAreaIndex = camerasToUpdate.get(i);
                 }
             }
-            
-            if (maxTagCount > 1 || maxTagArea > 4.0) {
-                // Trust the vision even MORE
-                xyStds = Math.hypot(0.004, 0.004);
-                radStds = 0.005;
-            } else if (maxTagArea > 0.14) {
-                xyStds = Math.hypot(0.04, 0.009);
-                radStds = 0.010;
+
+            if (maxTagCount > 1 && maxTagArea > 0.08) {
+                // Multiple targets or one huge target 
+                // Trust the vision more
+                xyStds = Math.hypot(0.005, 0.005);
+                radStds = 0.007;
             }
-            // Conditions don't match to add a vision measurement
-            else {
+            // 1 target with large area
+            else if (maxTagArea > 0.14) {
+                xyStds = Math.hypot(0.009, 0.009);
+                radStds = 0.01;
+            } else {
                 return;
             }
+
+            // update the pose estimator
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
+            if (maxTagCount > 1) {
+                poseEstimator.addVisionMeasurement(inputs[maxCountIndex].robotPose, inputs[maxCountIndex].timestampSeconds);
+            }
+            else {
+                poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
+            }
         }
 
-        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-        if (maxTagCount > 1) {
-            for (int i = 0; i < twoTagIndex.size(); i++) {
-                if (tagArea[twoTagIndex.get(i)] > 0.15) {
-                    poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
-                    updatedSTDs = true;
-                }
-            }
-        } else if (updatedSTDs) {
-            xyStds = Math.hypot(0.10, 0.10);
-            radStds = 0.02;
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
-        } else if (maxTagCount == 1) {
-            poseEstimator.addVisionMeasurement(inputs[maxTagIndex].robotPose, inputs[maxTagIndex].timestampSeconds);
-        }
-        if (!camerasToUpdate.isEmpty()) {
-            rotationUpdated = true;
-        }
+
+        // cheese
+        // if (camerasToUpdate.size() > 0) {
+        //     for (int i = 0; i < camerasToUpdate.size(); i++) {
+        //         if (tagCount[camerasToUpdate.get(i)] > maxTagCount) {
+        //             maxTagCount = tagCount[camerasToUpdate.get(i)];
+        //         } 
+        //         if (tagArea[camerasToUpdate.get(i)] > maxTagArea) {
+        //             maxTagArea = tagArea[camerasToUpdate.get(i)];
+        //             maxTagIndex = i;
+        //         }
+        //         if (tagCount[camerasToUpdate.get(i)] >= 2) {
+        //             twoTagIndex.add(camerasToUpdate.get(i));
+        //         }
+        //     }
+        //     if (maxTagCount > 1 && maxTagArea > 0.08) {
+        //         // Multiple targets or one huge target (like reef tag)
+        //         // Trust the vision even MORE
+        //         xyStds = Math.hypot(0.005, 0.005);
+        //         radStds = 0.007;
+        //     }
+        //     // 1 target with large area
+        //     else if (maxTagArea > 0.14) {
+        //         xyStds = Math.hypot(0.009, 0.009);
+        //         radStds = 0.01;
+        //     } else {
+        //         return;
+        //     }
+        //     // Conditions don't match to add a vision measurement
+        // }
+
+        // poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
+        // if (maxTagCount > 1) {
+        //     for (int i = 0; i < twoTagIndex.size(); i++) {
+        //         //if (tagArea[twoTagIndex.get(i)] > 0.15) {
+        //             poseEstimator.addVisionMeasurement(inputs[twoTagIndex.get(i)].robotPose, inputs[twoTagIndex.get(i)].timestampSeconds);
+        //         //}
+        //         System.out.println("Update camera: " + twoTagIndex.get(i));
+        //     }
+        // } 
+        // if (maxTagCount == 1) {
+        //     poseEstimator.addVisionMeasurement(inputs[camerasToUpdate.get(maxTagIndex)].robotPose, inputs[camerasToUpdate.get(maxTagIndex)].timestampSeconds);
+        //     System.out.println("Update camera: " + camerasToUpdate.get(maxTagIndex));
+        // }
+        // if (!camerasToUpdate.isEmpty()) {
+        //     rotationUpdated = true;
+        // }
+        // System.out.println("Max tag count: " + maxTagCount);
 
         // Logger.recordOutput("Subsystems/Vision/XYStdDev", xyStds);
         // Logger.recordOutput("Subsystems/Vision/ThetaStdDev", radStds);
@@ -196,6 +232,9 @@ public class Vision extends SubsystemBase {
         return true;
     }
 
+    // private int closestReefTag() {
+    //     return PoseCalculations.getClosestReefSide(poseEstimator.getEstimatedPosition()).getTagId();
+    // }
 
     public Command toggleMT1Command() {
         return runOnce(() -> this.useMT1Override = !this.useMT1Override);
@@ -214,4 +253,31 @@ public class Vision extends SubsystemBase {
         return (!(Robot.exitAuto)) && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION && (Robot.gameMode == GameMode.DISABLED || !rotationUpdated) || useMT1Override;
     }
 
+    public void controlRecording(boolean control, boolean fromBoot) {
+        if (!fromBoot) {
+            if (control) {
+                for (VisionIO camera : cameras) {
+                    if (camera.getIsLL4()) {
+                        camera.startRecording();
+                    }
+                }
+            } else {
+                for (VisionIO camera : cameras) {
+                    if (camera.getIsLL4()) {
+                        camera.endRecording();
+                    }
+                }
+            }
+        } else {
+            for (VisionIO camera : cameras) {
+                if (camera.getIsLL4()) {
+                    camera.endRecording();
+                }
+            }
+        }
+    }
+    
+    public void controlRecording(boolean control) {
+        controlRecording(control, false);
+    }
 }
