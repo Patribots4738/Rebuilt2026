@@ -129,6 +129,26 @@ public class Vision extends SubsystemBase {
         updatePoseEstimator();
     }
 
+    /**
+     * Finds the most reliable camera depending on how far the tags are
+     * from the center of the FOV
+     * 
+     * @return index of the camera we want to use
+     */
+    private int chooseCamera() {
+        double minTagDistance = Integer.MAX_VALUE;
+        int camIndex;
+
+        for (int i = 0; i < cameras.length; i++) {
+            if (cameras[i].getAverageTagDistance() < minTagDistance) {
+                minTagDistance = cameras[i].getAverageTagDistance();
+                camIndex = i;
+            }
+        }
+
+        return camIndex;
+    }
+
     private void updatePoseEstimator() {
         int[] tagCount = new int[cameras.length];
         double[] tagArea = new double[cameras.length];
@@ -145,7 +165,9 @@ public class Vision extends SubsystemBase {
                     tagArea[i] = (tagArea[i] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
                 }
             }
-
+        }
+        else {
+            camerasToUpdate.add(this.chooseCamera());
         }
 
         
@@ -209,8 +231,10 @@ public class Vision extends SubsystemBase {
 
             // update the pose estimator
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
+            for (int cam : camerasToUpdate) {
+                poseEstimator.addVisionMeasurement(inputs[cam].robotPose, inputs[cam].timestampSeconds);
+            }
             // poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
-        }
 
 
         // cheese
