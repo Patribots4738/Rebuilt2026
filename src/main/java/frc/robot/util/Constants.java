@@ -41,7 +41,7 @@ import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedTunableConstant;
 import frc.robot.util.hardware.phoenix.Kraken;
-import frc.robot.util.hardware.rev.Neo;
+// import frc.robot.util.hardware.rev.Neo;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -334,116 +334,116 @@ public final class Constants {
 
     }
 
-    public static final class MAXSwerveModuleConstants {
-        // https://www.revrobotics.com/rev-21-3005/
-        private enum SwerveGearing {
-            LOW         (12, 22, 4.12, 4.92),
-            MEDIUM      (13, 22, 4.46, 5.33),
-            HIGH        (14, 22, 4.8, 5.5/*5.74*/),
+    // public static final class MAXSwerveModuleConstants {
+    //     // https://www.revrobotics.com/rev-21-3005/
+    //     private enum SwerveGearing {
+    //         LOW         (12, 22, 4.12, 4.92),
+    //         MEDIUM      (13, 22, 4.46, 5.33),
+    //         HIGH        (14, 22, 4.8, 5.5/*5.74*/),
 
-            EXTRA_HIGH_1(14, 21, 5.03, 6.01),
-            EXTRA_HIGH_2(14, 20, 5.28, 6.32),
-            EXTRA_HIGH_3(15, 20, 5.66, 6.77),
-            EXTRA_HIGH_4(16, 20, 6.04, 7.22),
-            EXTRA_HIGH_5(16, 19, 6.36, 7.60);
+    //         EXTRA_HIGH_1(14, 21, 5.03, 6.01),
+    //         EXTRA_HIGH_2(14, 20, 5.28, 6.32),
+    //         EXTRA_HIGH_3(15, 20, 5.66, 6.77),
+    //         EXTRA_HIGH_4(16, 20, 6.04, 7.22),
+    //         EXTRA_HIGH_5(16, 19, 6.36, 7.60);
 
-            private final double 
-                pinionTeeth, 
-                spurTeeth, 
-                maxSpeedNeo,
-                maxSpeedVortex;
+    //         private final double 
+    //             pinionTeeth, 
+    //             spurTeeth, 
+    //             maxSpeedNeo,
+    //             maxSpeedVortex;
 
-            SwerveGearing(
-                int pinionTeeth, 
-                int spurTeeth, 
-                double maxSpeedNeo,
-                double maxSpeedVortex)
-            {
-                this.pinionTeeth = pinionTeeth;
-                this.spurTeeth = spurTeeth;
-                this.maxSpeedNeo = maxSpeedNeo;
-                this.maxSpeedVortex = maxSpeedVortex;
-            }
+    //         SwerveGearing(
+    //             int pinionTeeth, 
+    //             int spurTeeth, 
+    //             double maxSpeedNeo,
+    //             double maxSpeedVortex)
+    //         {
+    //             this.pinionTeeth = pinionTeeth;
+    //             this.spurTeeth = spurTeeth;
+    //             this.maxSpeedNeo = maxSpeedNeo;
+    //             this.maxSpeedVortex = maxSpeedVortex;
+    //         }
             
-        }
+    //     }
 
-        public static final SwerveGearing CURRENT_GEARING = SwerveGearing.HIGH;
+    //     public static final SwerveGearing CURRENT_GEARING = SwerveGearing.HIGH;
 
-        // Driving motors CAN IDs (EVEN)
-        public static final int FRONT_LEFT_DRIVING_CAN_ID = 3;
-        public static final int REAR_LEFT_DRIVING_CAN_ID = 5;
-        public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
-        public static final int REAR_RIGHT_DRIVING_CAN_ID = 7;
+    //     // Driving motors CAN IDs (EVEN)
+    //     public static final int FRONT_LEFT_DRIVING_CAN_ID = 3;
+    //     public static final int REAR_LEFT_DRIVING_CAN_ID = 5;
+    //     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
+    //     public static final int REAR_RIGHT_DRIVING_CAN_ID = 7;
 
-        // Turning motors CAN IDs (ODD)
-        public static final int FRONT_LEFT_TURNING_CAN_ID = 4;
-        public static final int REAR_LEFT_TURNING_CAN_ID = 6;
-        public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
-        public static final int REAR_RIGHT_TURNING_CAN_ID = 8;
+    //     // Turning motors CAN IDs (ODD)
+    //     public static final int FRONT_LEFT_TURNING_CAN_ID = 4;
+    //     public static final int REAR_LEFT_TURNING_CAN_ID = 6;
+    //     public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
+    //     public static final int REAR_RIGHT_TURNING_CAN_ID = 8;
 
-        // Invert the turning encoder, since the output shaft rotates in the opposite
-        // direction of
-        // the steering motor in the MAXSwerve Module.
-        public static final boolean TURNING_ENCODER_INVERTED = true;
+    //     // Invert the turning encoder, since the output shaft rotates in the opposite
+    //     // direction of
+    //     // the steering motor in the MAXSwerve Module.
+    //     public static final boolean TURNING_ENCODER_INVERTED = true;
 
-        // Calculations required for driving motor conversion factors and feed forward
-        public static final double DRIVING_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.VORTEX_FREE_SPEED_RPM / 60;
-        // **********************************************************************MAX SWERVE**********************
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.4642497827983136*2.0);
-        // **********************************************************************MAX SWERVE**********************
-        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
-        // 45 teeth on the wheel's bevel gear, 15 teeth on the bevel pinion
-        public static final double DRIVING_MOTOR_REDUCTION = (45.0 * CURRENT_GEARING.spurTeeth) / (CURRENT_GEARING.pinionTeeth * 15.0);
-        public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVING_MOTOR_FREE_SPEED_RPS
-                * WHEEL_CIRCUMFERENCE_METERS)
-                / DRIVING_MOTOR_REDUCTION;
+    //     // Calculations required for driving motor conversion factors and feed forward
+    //     public static final double DRIVING_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.VORTEX_FREE_SPEED_RPM / 60;
+    //     // **********************************************************************MAX SWERVE**********************
+    //     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.4642497827983136*2.0);
+    //     // **********************************************************************MAX SWERVE**********************
+    //     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
+    //     // 45 teeth on the wheel's bevel gear, 15 teeth on the bevel pinion
+    //     public static final double DRIVING_MOTOR_REDUCTION = (45.0 * CURRENT_GEARING.spurTeeth) / (CURRENT_GEARING.pinionTeeth * 15.0);
+    //     public static final double DRIVE_WHEEL_FREE_SPEED_RPS = (DRIVING_MOTOR_FREE_SPEED_RPS
+    //             * WHEEL_CIRCUMFERENCE_METERS)
+    //             / DRIVING_MOTOR_REDUCTION;
 
-        public static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_CIRCUMFERENCE_METERS)
-                / DRIVING_MOTOR_REDUCTION; // meters
-        public static final double DRIVING_ENCODER_VELOCITY_FACTOR = (WHEEL_CIRCUMFERENCE_METERS
-                / DRIVING_MOTOR_REDUCTION) / 60.0; // meters per second
+    //     public static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_CIRCUMFERENCE_METERS)
+    //             / DRIVING_MOTOR_REDUCTION; // meters
+    //     public static final double DRIVING_ENCODER_VELOCITY_FACTOR = (WHEEL_CIRCUMFERENCE_METERS
+    //             / DRIVING_MOTOR_REDUCTION) / 60.0; // meters per second
 
-        public static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
-        public static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
+    //     public static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
+    //     public static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI) / 60.0; // radians per second
 
-        public static final double TURNING_ENCODER_POSITION_PID_MIN_INPUT = 0; // radians
-        public static final double TURNING_ENCODER_POSITION_PID_MAX_INPUT = TURNING_ENCODER_POSITION_FACTOR; // radians
+    //     public static final double TURNING_ENCODER_POSITION_PID_MIN_INPUT = 0; // radians
+    //     public static final double TURNING_ENCODER_POSITION_PID_MAX_INPUT = TURNING_ENCODER_POSITION_FACTOR; // radians
 
-        public static final double DRIVING_P = 0.256;
-        public static final double DRIVING_I = 0;
-        public static final double DRIVING_D = 0.255;
-        public static final double DRIVING_FF = 0.20217;
-        public static final double DRIVING_MIN_OUTPUT = -1;
-        public static final double DRIVING_MAX_OUTPUT = 1;
-        public static final GainConstants DRIVING_PID = new GainConstants(
-            DRIVING_P,
-            DRIVING_I,
-            DRIVING_D,
-            DRIVING_FF,
-            DRIVING_MIN_OUTPUT,
-            DRIVING_MAX_OUTPUT
-        );
+    //     public static final double DRIVING_P = 0.256;
+    //     public static final double DRIVING_I = 0;
+    //     public static final double DRIVING_D = 0.255;
+    //     public static final double DRIVING_FF = 0.20217;
+    //     public static final double DRIVING_MIN_OUTPUT = -1;
+    //     public static final double DRIVING_MAX_OUTPUT = 1;
+    //     public static final GainConstants DRIVING_PID = new GainConstants(
+    //         DRIVING_P,
+    //         DRIVING_I,
+    //         DRIVING_D,
+    //         DRIVING_FF,
+    //         DRIVING_MIN_OUTPUT,
+    //         DRIVING_MAX_OUTPUT
+    //     );
 
-        public static final double TURNING_P = Robot.isSimulation() ? 0.5 : 1.5;
-        public static final double TURNING_I = 0;
-        public static final double TURNING_D = 1;
-        public static final double TURNING_FF = 0;
-        public static final double TURNING_MIN_OUTPUT = -1;
-        public static final double TURNING_MAX_OUTPUT = 1;
-        public static final GainConstants TURNING_PID = new GainConstants(
-            TURNING_P,
-            TURNING_I,
-            TURNING_D,
-            TURNING_FF,
-            TURNING_MIN_OUTPUT,
-            TURNING_MAX_OUTPUT
-        );
+    //     public static final double TURNING_P = Robot.isSimulation() ? 0.5 : 1.5;
+    //     public static final double TURNING_I = 0;
+    //     public static final double TURNING_D = 1;
+    //     public static final double TURNING_FF = 0;
+    //     public static final double TURNING_MIN_OUTPUT = -1;
+    //     public static final double TURNING_MAX_OUTPUT = 1;
+    //     public static final GainConstants TURNING_PID = new GainConstants(
+    //         TURNING_P,
+    //         TURNING_I,
+    //         TURNING_D,
+    //         TURNING_FF,
+    //         TURNING_MIN_OUTPUT,
+    //         TURNING_MAX_OUTPUT
+    //     );
 
-        public static final int NEO_CURRENT_LIMIT = 50; // amps
-        public static final int VORTEX_CURRENT_LIMIT = 80; // amps
-        public static final int TURNING_MOTOR_CURRENT_LIMIT = 20; // amps
+    //     public static final int NEO_CURRENT_LIMIT = 50; // amps
+    //     public static final int VORTEX_CURRENT_LIMIT = 80; // amps
+    //     public static final int TURNING_MOTOR_CURRENT_LIMIT = 20; // amps
 
-    }
+    // }
 
     public static final class MK5nSwerveModuleConstants {
         // Driving motors CAN IDs
@@ -562,101 +562,101 @@ public final class Constants {
         public static final LoggedTunableConstant LOGGED_DRIFT_MULTIPLIER = new LoggedTunableConstant("Swerve/DriftMultiplier", DRIFT_MULTIPLIER);
     }
 
-    public static final class MK4cSwerveModuleConstants {
-        // Driving motors CAN IDs
-        public static final int FRONT_LEFT_DRIVING_CAN_ID = 4;
-        public static final int REAR_LEFT_DRIVING_CAN_ID = 7;
-        public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
-        public static final int REAR_RIGHT_DRIVING_CAN_ID = 10;
+    // public static final class MK4cSwerveModuleConstants {
+    //     // Driving motors CAN IDs
+    //     public static final int FRONT_LEFT_DRIVING_CAN_ID = 4;
+    //     public static final int REAR_LEFT_DRIVING_CAN_ID = 7;
+    //     public static final int FRONT_RIGHT_DRIVING_CAN_ID = 1;
+    //     public static final int REAR_RIGHT_DRIVING_CAN_ID = 10;
 
-        // Turning motors CAN IDs
-        public static final int FRONT_LEFT_TURNING_CAN_ID = 5;
-        public static final int REAR_LEFT_TURNING_CAN_ID = 8;
-        public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
-        public static final int REAR_RIGHT_TURNING_CAN_ID = 11;
+    //     // Turning motors CAN IDs
+    //     public static final int FRONT_LEFT_TURNING_CAN_ID = 5;
+    //     public static final int REAR_LEFT_TURNING_CAN_ID = 8;
+    //     public static final int FRONT_RIGHT_TURNING_CAN_ID = 2;
+    //     public static final int REAR_RIGHT_TURNING_CAN_ID = 11;
 
-        // CANcoders CAN IDs
-        public static final int FRONT_LEFT_CANCODER_CAN_ID = 6;
-        public static final int REAR_LEFT_CANCODER_CAN_ID = 9;
-        public static final int FRONT_RIGHT_CANCODER_CAN_ID = 3;
-        public static final int REAR_RIGHT_CANCODER_CAN_ID = 12;
+    //     // CANcoders CAN IDs
+    //     public static final int FRONT_LEFT_CANCODER_CAN_ID = 6;
+    //     public static final int REAR_LEFT_CANCODER_CAN_ID = 9;
+    //     public static final int FRONT_RIGHT_CANCODER_CAN_ID = 3;
+    //     public static final int REAR_RIGHT_CANCODER_CAN_ID = 12;
 
-        private enum SwerveGearing {
+    //     private enum SwerveGearing {
 
-            L1(7.13),
-            L2(5.9),
-            L3(5.36);
+    //         L1(7.13),
+    //         L2(5.9),
+    //         L3(5.36);
 
-            private final double gearRatio;
+    //         private final double gearRatio;
 
-            SwerveGearing(double gearRatio) {
-                this.gearRatio = gearRatio;
-            }
+    //         SwerveGearing(double gearRatio) {
+    //             this.gearRatio = gearRatio;
+    //         }
             
-        };
+    //     };
 
-        public static final SwerveGearing CURRENT_GEARING = SwerveGearing.L2;
+    //     public static final SwerveGearing CURRENT_GEARING = SwerveGearing.L2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.287354;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = -0.116732;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.282227;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.080322;
+    //     public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.287354;
+    //     public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = -0.116732;
+    //     public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.282227;
+    //     public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.080322;
 
-        public static final double TURNING_MOTOR_REDUCTION = 12.8;
+    //     public static final double TURNING_MOTOR_REDUCTION = 12.8;
 
-        public static final boolean INVERT_TURNING_MOTOR = false;
+    //     public static final boolean INVERT_TURNING_MOTOR = false;
 
-        public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
-        // **********************************************************************MK4c SWERVE**********************
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.9548910849480585 * 2);
-        // **********************************************************************MK4c SWERVE**********************
-        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
+    //     public static final double DRIVING_MOTOR_FREE_SPEED_RPS = KrakenMotorConstants.KRAKENX60_FREE_SPEED_RPM_FOC / 60;
+    //     // **********************************************************************MK4c SWERVE**********************
+    //     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(1.9548910849480585 * 2);
+    //     // **********************************************************************MK4c SWERVE**********************
+    //     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
 
-        public static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_CIRCUMFERENCE_METERS)
-                / CURRENT_GEARING.gearRatio; // meters
-        public static final double DRIVING_ENCODER_VELOCITY_FACTOR = (WHEEL_CIRCUMFERENCE_METERS
-                / CURRENT_GEARING.gearRatio); // meters per second
+    //     public static final double DRIVING_ENCODER_POSITION_FACTOR = (WHEEL_CIRCUMFERENCE_METERS)
+    //             / CURRENT_GEARING.gearRatio; // meters
+    //     public static final double DRIVING_ENCODER_VELOCITY_FACTOR = (WHEEL_CIRCUMFERENCE_METERS
+    //             / CURRENT_GEARING.gearRatio); // meters per second
 
-        public static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
-        public static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI); // radians per second
+    //     public static final double TURNING_ENCODER_POSITION_FACTOR = (2 * Math.PI); // radians
+    //     public static final double TURNING_ENCODER_VELOCITY_FACTOR = (2 * Math.PI); // radians per second
 
-        public static final double DRIVING_MOTOR_STATOR_LIMIT_AMPS = 80.0;
-        public static final double DRIVING_MOTOR_SUPPLY_LIMIT_AMPS = 80.0;
-        public static final double TURNING_MOTOR_STATOR_LIMIT_AMPS = 80.0;
-        public static final double TURNING_MOTOR_SUPPLY_LIMIT_AMPS = 80.0;
-        public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
-        public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
+    //     public static final double DRIVING_MOTOR_STATOR_LIMIT_AMPS = 80.0;
+    //     public static final double DRIVING_MOTOR_SUPPLY_LIMIT_AMPS = 80.0;
+    //     public static final double TURNING_MOTOR_STATOR_LIMIT_AMPS = 80.0;
+    //     public static final double TURNING_MOTOR_SUPPLY_LIMIT_AMPS = 80.0;
+    //     public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
+    //     public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 0.02;
-        public static final double DRIVING_I = 0;
-        public static final double DRIVING_D = 0;
-        public static final double DRIVING_S = 0.07193;
-        public static final double DRIVING_V = 0.11441;
+    //     public static final double DRIVING_P = 0.02;
+    //     public static final double DRIVING_I = 0;
+    //     public static final double DRIVING_D = 0;
+    //     public static final double DRIVING_S = 0.07193;
+    //     public static final double DRIVING_V = 0.11441;
 
-        public static final GainConstants DRIVING_GAINS = new GainConstants(
-            DRIVING_P,
-            DRIVING_I,
-            DRIVING_D,
-            DRIVING_S,
-            DRIVING_V,
-            0.0
-        );
+    //     public static final GainConstants DRIVING_GAINS = new GainConstants(
+    //         DRIVING_P,
+    //         DRIVING_I,
+    //         DRIVING_D,
+    //         DRIVING_S,
+    //         DRIVING_V,
+    //         0.0
+    //     );
 
-        public static final double TURNING_P = 23.0;
-        public static final double TURNING_I = 0.0;
-        public static final double TURNING_D = 0.2;
-        public static final double TURNING_S = 0.30000900000007824;
+    //     public static final double TURNING_P = 23.0;
+    //     public static final double TURNING_I = 0.0;
+    //     public static final double TURNING_D = 0.2;
+    //     public static final double TURNING_S = 0.30000900000007824;
 
-        public static final GainConstants TURNING_GAINS = new GainConstants(
-            TURNING_P,
-            TURNING_I,
-            TURNING_D,
-            TURNING_S,
-            0.0,
-            0.0
-        );
+    //     public static final GainConstants TURNING_GAINS = new GainConstants(
+    //         TURNING_P,
+    //         TURNING_I,
+    //         TURNING_D,
+    //         TURNING_S,
+    //         0.0,
+    //         0.0
+    //     );
 
-    }
+    // }
     
     public static final class OIConstants {
 
@@ -684,50 +684,50 @@ public final class Constants {
 
     }
 
-    public static final class NeoMotorConstants {
-        public static final double VORTEX_FREE_SPEED_RPM = 6784;
+    // public static final class NeoMotorConstants {
+    //     public static final double VORTEX_FREE_SPEED_RPM = 6784;
 
-        public static ArrayList<SparkBase> motors = new ArrayList<SparkBase>();
+    //     public static ArrayList<SparkBase> motors = new ArrayList<SparkBase>();
 
-        public static final boolean SAFE_SPARK_MODE = false;
-        public static final double NEO_FREE_SPEED_RPM = 5676;
+    //     public static final boolean SAFE_SPARK_MODE = false;
+    //     public static final double NEO_FREE_SPEED_RPM = 5676;
 
-        public static final int MAX_PERIODIC_STATUS_TIME_MS = 32766;
-        public static final int FAST_PERIODIC_STATUS_TIME_MS = 15;
-        // This gets filled out as motors are created on the robot
-        public static final HashMap<Integer, Neo> NEO_MOTOR_MAP = new HashMap<Integer, Neo>();
+    //     public static final int MAX_PERIODIC_STATUS_TIME_MS = 32766;
+    //     public static final int FAST_PERIODIC_STATUS_TIME_MS = 15;
+    //     // This gets filled out as motors are created on the robot
+    //     public static final HashMap<Integer, Neo> NEO_MOTOR_MAP = new HashMap<Integer, Neo>();
 
-        public static final HashMap<Integer, String> CAN_ID_MAP = new HashMap<Integer, String>() {{
-            /*  1  */ put(MAXSwerveModuleConstants.FRONT_LEFT_DRIVING_CAN_ID, "FrontRightDrive");
-            /*  2  */ put(MAXSwerveModuleConstants.FRONT_RIGHT_TURNING_CAN_ID, "FrontRightTurn");
-            /*  3  */ put(MAXSwerveModuleConstants.FRONT_LEFT_DRIVING_CAN_ID, "FrontLeftDrive");
-            /*  4  */ put(MAXSwerveModuleConstants.FRONT_LEFT_TURNING_CAN_ID, "FrontLeftTurn");
-            /*  5  */ put(MAXSwerveModuleConstants.REAR_LEFT_DRIVING_CAN_ID, "RearLeftDrive");
-            /*  6  */ put(MAXSwerveModuleConstants.REAR_LEFT_TURNING_CAN_ID, "RearLeftTurn");
-            /*  7  */ put(MAXSwerveModuleConstants.REAR_RIGHT_DRIVING_CAN_ID, "RearRightDrive");
-            /*  8  */ put(MAXSwerveModuleConstants.REAR_RIGHT_TURNING_CAN_ID, "RearRightTurn");
-        }};
+    //     public static final HashMap<Integer, String> CAN_ID_MAP = new HashMap<Integer, String>() {{
+    //         /*  1  */ put(MAXSwerveModuleConstants.FRONT_LEFT_DRIVING_CAN_ID, "FrontRightDrive");
+    //         /*  2  */ put(MAXSwerveModuleConstants.FRONT_RIGHT_TURNING_CAN_ID, "FrontRightTurn");
+    //         /*  3  */ put(MAXSwerveModuleConstants.FRONT_LEFT_DRIVING_CAN_ID, "FrontLeftDrive");
+    //         /*  4  */ put(MAXSwerveModuleConstants.FRONT_LEFT_TURNING_CAN_ID, "FrontLeftTurn");
+    //         /*  5  */ put(MAXSwerveModuleConstants.REAR_LEFT_DRIVING_CAN_ID, "RearLeftDrive");
+    //         /*  6  */ put(MAXSwerveModuleConstants.REAR_LEFT_TURNING_CAN_ID, "RearLeftTurn");
+    //         /*  7  */ put(MAXSwerveModuleConstants.REAR_RIGHT_DRIVING_CAN_ID, "RearRightDrive");
+    //         /*  8  */ put(MAXSwerveModuleConstants.REAR_RIGHT_TURNING_CAN_ID, "RearRightTurn");
+    //     }};
 
-        public static final HashMap<String, List<Neo>> NEO_MOTOR_GROUPS = new HashMap<String, List<Neo>>();
+    //     public static final HashMap<String, List<Neo>> NEO_MOTOR_GROUPS = new HashMap<String, List<Neo>>();
 
-        public static Map<String, List<Neo>> initializeMotorGroupMap() {
-            // NEO_MOTOR_GROUPS.put("Drive", new ArrayList<Neo>() {{
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_LEFT_DRIVING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_RIGHT_DRIVING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.REAR_LEFT_DRIVING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.REAR_RIGHT_DRIVING_CAN_ID));
-            // }});
-            // NEO_MOTOR_GROUPS.put("Turn", new ArrayList<Neo>() {{
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_LEFT_TURNING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_RIGHT_TURNING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.REAR_LEFT_TURNING_CAN_ID));
-            //     add(NEO_MOTOR_MAP.get(DriveConstants.REAR_RIGHT_TURNING_CAN_ID));
-            // }});
+    //     public static Map<String, List<Neo>> initializeMotorGroupMap() {
+    //         NEO_MOTOR_GROUPS.put("Drive", new ArrayList<Neo>() {{
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_LEFT_DRIVING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_RIGHT_DRIVING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.REAR_LEFT_DRIVING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.REAR_RIGHT_DRIVING_CAN_ID));
+    //         }});
+    //         NEO_MOTOR_GROUPS.put("Turn", new ArrayList<Neo>() {{
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_LEFT_TURNING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.FRONT_RIGHT_TURNING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.REAR_LEFT_TURNING_CAN_ID));
+    //             add(NEO_MOTOR_MAP.get(DriveConstants.REAR_RIGHT_TURNING_CAN_ID));
+    //         }});
 
-            return NEO_MOTOR_GROUPS;
-        }
+    //         return NEO_MOTOR_GROUPS;
+    //     }
 
-    }
+    // }
 
     public static final class KrakenMotorConstants {
 
@@ -1231,13 +1231,22 @@ public final class Constants {
         public static final double ALLIANCE_LINE_RED = 12.5488;
 
         public static final double CURRENT_ALLIANCE_LINE() {
-            double line = Robot.isRedAlliance()? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
+            double line = Robot.isRedAlliance() ? ALLIANCE_LINE_RED : ALLIANCE_LINE_BLUE;
             return line;
         }
 
         public static final double OPPOSING_ALLIANCE_LINE() {
-            double line = Robot.isRedAlliance()? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
+            double line = Robot.isRedAlliance() ? ALLIANCE_LINE_BLUE : ALLIANCE_LINE_RED;
             return line;
+        }
+
+        public static final double GET_ALLIANCE_SHOT_LINE() {
+            if (Robot.isRedAlliance()) {
+                return ALLIANCE_LINE_RED +
+            }
+            else {
+
+            }
         }
 
         public static final Translation3d HUB_RED = new Translation3d(4.6209, 4.041, 1.8288);

@@ -81,7 +81,7 @@ public class VisionIOLimelight implements VisionIO {
         if (tags == null || tags.length < 2){
             totalTX += camera.getTX();
             totalTY += camera.getTY();
-        }else{
+        } //else{
             // Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.txnc)));
             // double tx1 = tags[0].txnc;
             // double tx2 = tags[1].txnc;
@@ -92,7 +92,7 @@ public class VisionIOLimelight implements VisionIO {
             // totalTX += (tx1 + tx2);
             // totalTY += (ty1 + ty2);
 
-        }
+        //}
         ArrayList<Double[]> tagDistance = new ArrayList<Double[]>();
         for (int i = 0; i < tags.length; i++) {
             tagDistance.add(new Double[] {Math.hypot(tags[i].txnc, tags[i].tync), (double)tags[i].id});

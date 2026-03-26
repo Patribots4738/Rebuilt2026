@@ -87,8 +87,8 @@ public class RobotContainer {
     private final BooleanSupplier robotRelativeSupplier;
 
     private final Swerve swerve;
-    //@SuppressWarnings("unused")
-    //private final Vision vision;
+    @SuppressWarnings("unused")
+    private final Vision vision;
 //     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
@@ -145,10 +145,10 @@ public class RobotContainer {
         
         swerve = new Swerve();
         alignment = new Alignment(swerve);
-        //vision = new Vision(swerve.getPoseEstimator(), 
-            //new VisionIOLimelight("limelight-right", true), 
+        vision = new Vision(swerve.getPoseEstimator(), 
+            new VisionIOLimelight("limelight-right", true), 
             // new VisionIOLimelight("limelight-left", true), 
-            //new VisionIOLimelight("limelight-threeg", false));
+            new VisionIOLimelight("limelight-threeg", false));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
