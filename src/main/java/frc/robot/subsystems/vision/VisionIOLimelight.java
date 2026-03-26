@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+import java.lang.Double;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -72,23 +74,41 @@ public class VisionIOLimelight implements VisionIO {
         double totalTX = 0;
         double totalTY = 0;
         RawFiducial[] tags = camera.getRawFiducials();
+        if (tags == null) {
+            return -1;
+        }
 
         if (tags == null || tags.length < 2){
             totalTX += camera.getTX();
             totalTY += camera.getTY();
         }else{
-            Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.txnc)));
-            double tx1 = tags[0].txnc;
-            double tx2 = tags[1].txnc;
-            Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.tync)));
-            double ty1 = tags[0].tync;
-            double ty2 =  tags[1].tync;
+            // Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.txnc)));
+            // double tx1 = tags[0].txnc;
+            // double tx2 = tags[1].txnc;
+            // Arrays.sort(tags, Comparator.comparingDouble(tag -> Math.abs(tag.tync)));
+            // double ty1 = tags[0].tync;
+            // double ty2 =  tags[1].tync;
 
-            totalTX += (tx1 + tx2);
-            totalTY += (ty1 + ty2);
+            // totalTX += (tx1 + tx2);
+            // totalTY += (ty1 + ty2);
+
+        }
+        ArrayList<Double[]> tagDistance = new ArrayList<Double[]>();
+        for (int i = 0; i < tags.length; i++) {
+            tagDistance.add(new Double[] {Math.hypot(tags[i].txnc, tags[i].tync), (double)tags[i].id});
+        }
+        tagDistance.sort(Comparator.comparingDouble(a -> a[0]));
+
+        if (tags.length > 1) {
+            return (tagDistance.get(0)[0] + tagDistance.get(1)[0]) / 2.0;
+        }
+        else if (tags.length == 1) {
+            return tagDistance.get(0)[0];
+        } else {
+            return -1;
         }
 
-        return Math.sqrt(((Math.pow(totalTX, 2))+(Math.pow(totalTY, 2))));
+        //return Math.sqrt(((Math.pow(totalTX, 2))+(Math.pow(totalTY, 2))));
     }
 
 

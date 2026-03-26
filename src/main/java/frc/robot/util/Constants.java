@@ -59,7 +59,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.COMPBOT;
+        private static RobotType robotType = RobotType.SIMBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -299,14 +299,14 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {
             //"Double Center Rush Left",
-            "Double Center Rush Right",
-            "Outpost Center Rush",
-            "Dumby Center",
-            "Right Bump",
-            "Test",
-            "Double Center Rush Left Drive Only",
-            "Double Center Rush Right Drive Only",
-            "Outpost Center Rush Drive Only"
+            // "Double Center Rush Right",
+            // "Outpost Center Rush",
+            // "Dumby Center",
+            // "Right Bump",
+            // "Test",
+            // "Double Center Rush Left Drive Only",
+            // "Double Center Rush Right Drive Only",
+            // "Outpost Center Rush Drive Only"
         };
 
         public static final Rotation2d rotation45  = Rotation2d.fromDegrees(45);

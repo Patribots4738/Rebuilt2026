@@ -138,15 +138,18 @@ public class Vision extends SubsystemBase {
     private int chooseCamera() {
         double minTagDistance = Integer.MAX_VALUE;
         int camIndex = 0;
+        // what happens if no cameras have tags
 
         for (int i = 0; i < cameras.length; i++) {
-            if (cameras[i].getAverageTagDistance() < minTagDistance) {
+            if (cameras[i].getAverageTagDistance() == -1) {}
+            else if (cameras[i].getAverageTagDistance() < minTagDistance) {
                 minTagDistance = cameras[i].getAverageTagDistance();
-                camIndex += i;
+                camIndex = i;
             }
         }
 
-        System.out.println("Camera index to use: " + camIndex);
+        Logger.recordOutput("Subsystems/Vision/camIndex", camIndex);
+        Logger.recordOutput("Subsystems/Vision/minTagDistance", minTagDistance);
 
         return camIndex;
     }
@@ -236,6 +239,8 @@ public class Vision extends SubsystemBase {
             for (int cam : camerasToUpdate) {
                 poseEstimator.addVisionMeasurement(inputs[cam].robotPose, inputs[cam].timestampSeconds);
             }
+            Logger.recordOutput("Subsystems/Vision/xyStds", xyStds);
+            Logger.recordOutput("Subsystems/Vision/radStds", radStds);
             // poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
 
 
