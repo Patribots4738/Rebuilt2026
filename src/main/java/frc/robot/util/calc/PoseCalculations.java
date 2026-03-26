@@ -292,6 +292,19 @@ public class PoseCalculations {
     }
 
     /**
+     * Returns whether or not we are in an area that we can shoot at the hub
+     * which is an area slightly bigger than the alliance zone since the robot needs to be partially
+     * in the alliance zone to score
+     * 
+     * @param pos of the robot
+     * @return if we are in a shooting zone
+     */
+    public static boolean inShootingZone(Pose2d pos) {
+        return (Robot.isRedAlliance() && pos.getX() > FieldConstants.ALLIANCE_LINE_RED - FieldConstants.ALLIANCE_SHOT_TOLERANCE) 
+            || (!Robot.isRedAlliance() && pos.getX() < FieldConstants.ALLIANCE_LINE_BLUE + FieldConstants.ALLIANCE_SHOT_TOLERANCE);
+    }
+
+    /**
      * Returns a new pose translated forward along its rotation.
      *
      * @param pos original pose

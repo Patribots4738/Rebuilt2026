@@ -1223,6 +1223,8 @@ public final class Constants {
         public static final double FIELD_LENGTH = 16.5890;
         public static final double FIELD_WIDTH = 8.0756;
 
+        public static final double ALLIANCE_SHOT_TOLERANCE = 0.5;
+
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
 
@@ -1242,10 +1244,10 @@ public final class Constants {
 
         public static final double GET_ALLIANCE_SHOT_LINE() {
             if (Robot.isRedAlliance()) {
-                return ALLIANCE_LINE_RED +
+                return ALLIANCE_LINE_RED - 0.5;
             }
             else {
-
+                return ALLIANCE_LINE_BLUE + 0.5;
             }
         }
 

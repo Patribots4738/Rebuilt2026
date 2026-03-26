@@ -272,7 +272,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateTarget(Pose2d robotPose) {
-        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inAllianceZone) {
+        if (PoseCalculations.inShootingZone(robotRelativePose.get())) {
             target = Target.HUB;
             targetLocation = Target.HUB.location;
         } 
