@@ -76,7 +76,6 @@ public class RobotContainer {
     private final Swerve swerve;
     @SuppressWarnings("unused")
     private final Vision vision;
-//     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
@@ -136,7 +135,6 @@ public class RobotContainer {
             new VisionIOLimelight("limelight-right", true), 
             new VisionIOLimelight("limelight-left", true), 
             new VisionIOLimelight("limelight-threeg", false));
-        // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -317,7 +315,7 @@ public class RobotContainer {
         
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
-        controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
+        controller.leftBumper().onTrue(superstructure.stowIntake());
         controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
         controller.rightTrigger().whileTrue(
             Commands.either(
@@ -341,11 +339,6 @@ public class RobotContainer {
         controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
-
-        // uncomment these when we have climb
-        // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
-        // controller.povDown().and(controller.povRight().negate()).onTrue(superstructure.setClimbState(ClimbState.STOW));
-        // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
     }
 
     private void configureCalibrationBindings(PatriBoxController controller) {
@@ -415,16 +408,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
-        //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
-        //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
 
+        // left these here in vase we want to align to the tower for whatever reason
         // NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         // NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
         // NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
 
+        // TODO: have cedar fix autos to not use these commands
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
     }

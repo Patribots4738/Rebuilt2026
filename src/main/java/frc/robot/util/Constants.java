@@ -4,44 +4,32 @@
 
 package frc.robot.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
-import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
-import frc.robot.util.custom.LoggedTunableBoolean;
-import frc.robot.util.custom.LoggedGainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedTunableConstant;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -57,6 +45,7 @@ import frc.robot.util.hardware.rev.Neo;
  */
 public final class Constants {
 
+    // TODO: remember to fix LoggingConstants once CADtimept3 is merged to main
     public static final class LoggingConstants {
         
         private static RobotType robotType = RobotType.SIMBOT;
@@ -873,68 +862,6 @@ public final class Constants {
        // );
 
        public final static int[] ALL_TAGS = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
-    }
-
-    public static final class ClimbConstants {
-        
-        public static final int CAN_ID = 13;
-        public static final int MOTOR_TYPE = 60;
-        
-        public static final boolean MOTOR_INVERTED = false;
-        
-        public static final double GEAR_RATIO = 9.0;
-        public static final double MAX_DISPLACEMENT_METERS = 0.58;
-        public static final double STOW_POSITION_METERS = 0.0;
-        public static final double CLIMB_POSITION_METERS = 0.0;
-        public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
-        public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
-        
-        public static final double CURRENT_LIMIT = 120.0;
-        public static final boolean BRAKE_MOTOR = true;
-        
-        //TODO: tune these gains
-        public static final double P_FAST = FieldConstants.IS_REAL ? 0d : 0d; // used to pull robot up
-        public static final double I_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double D_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double A_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double S_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double V_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double G_FAST = FieldConstants.IS_REAL ? 0d : 0d;
-
-        public static final double P_SLOW = FieldConstants.IS_REAL ? 0d : 0d; // used to bring hooks up
-        public static final double I_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double D_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double A_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double S_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double V_SLOW = FieldConstants.IS_REAL ? 0d : 0d;
-        public static final double G_SLOW = FieldConstants.IS_REAL ? 0d : 0d; //TODO: calculate g gain for weight of the robot
-
-        public static final GainConstants SLOW_GAINS = new GainConstants(
-            P_SLOW,
-            I_SLOW,
-            D_SLOW,
-            A_SLOW,
-            S_SLOW,
-            V_SLOW,
-            G_SLOW
-        );
-
-        public static final GainConstants FAST_GAINS = new GainConstants(
-            P_SLOW,
-            I_SLOW,
-            D_SLOW,
-            A_SLOW,
-            S_SLOW,
-            V_SLOW,
-            G_SLOW
-        );
-        
-        public static final double VELOCITY = Math.PI;
-        public static final double ACCELERATION = 20d;
-        public static final double JERK = 200d;
-        
-        public static final double VELOCITY_DEADBAND_MPS = 0.2;
-        public static final double DEADBAND_METERS = 0.2;
     }
 
     public static final class TurretConstants {
