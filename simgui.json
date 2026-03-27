@@ -24,6 +24,7 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Routine": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Mech2d": "Mechanism2d",
       "/SmartDashboard/PathPlanner": "Alerts"
     }
   },

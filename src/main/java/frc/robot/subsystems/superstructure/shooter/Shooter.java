@@ -61,6 +61,7 @@ public class Shooter extends SubsystemBase {
         shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
         target = Target.HUB;
         targetLocation = FieldConstants.GET_HUB();
+
     }
 
     public enum Target {

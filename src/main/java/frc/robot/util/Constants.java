@@ -298,10 +298,12 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            //"Double Center Rush Left",
+            //"Double Center Rush Left", //this path has issues
             // "Double Center Rush Right",
             // "Outpost Center Rush",
-            // "Dumby Center",
+             "Dumby Center",
+             "Cleanup Left",
+             "Depot Center Rush"
             // "Right Bump",
             // "Test",
             // "Double Center Rush Left Drive Only",
@@ -796,7 +798,7 @@ public final class Constants {
     public static final class CameraConstants {
 
         public static final int ENABLED_THROTTLE = 0; // Process every frame
-        public static final int DISABLED_THROTTLE = 50; // Process 1 of every n frames
+        public static final int DISABLED_THROTTLE = 5; // Process 1 of every n frames
 
         public static final Pose3d LL4_LEFT_POSE = new Pose3d(
             -0.282,
