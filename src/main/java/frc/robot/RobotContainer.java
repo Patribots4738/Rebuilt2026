@@ -218,7 +218,7 @@ public class RobotContainer {
         //         .onFalse(swerve.setDriveMultiplierCommand(DriveConstants.DEFAULT_DRIVE_MULTIPLIER));
 
         new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose(), swerve.getFieldRelativeVelocity())).and(() -> shooter.isManual())
-            .onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+            .whileTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
 
     }
 
