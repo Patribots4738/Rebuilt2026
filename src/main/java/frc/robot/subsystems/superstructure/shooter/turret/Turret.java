@@ -136,11 +136,11 @@ public class Turret extends SubsystemBase {
     }
 
     public Command setPositionCommand(Supplier<Rotation2d> rotationSupplier) {
-        return runOnce(() -> setPosition(rotationSupplier.get()));
+        return run(() -> setPosition(rotationSupplier.get()));
     }
 
     public Command setPositionCommand(Rotation2d rotation) {
-        return runOnce(() -> setPosition(rotation));
+        return run(() -> setPosition(rotation));
     }
 
     public Command setTestPositionCommand() {

@@ -158,7 +158,7 @@ public class Flywheel extends SubsystemBase {
     }
 
     public Command setSpeedRPMCommand(DoubleSupplier speedSupplier) {
-        return runOnce(() -> setSpeedRPM(speedSupplier.getAsDouble()));
+        return run(() -> setSpeedRPM(speedSupplier.getAsDouble()));
     }
 
     public Command setSpeedRPMCommand(double speed) {

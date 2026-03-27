@@ -114,7 +114,7 @@ public class Hood extends SubsystemBase {
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
+        return run(() -> setPosition(positionSupplier.getAsDouble()));
     }
 
     public Command setPositionCommand(double position) {

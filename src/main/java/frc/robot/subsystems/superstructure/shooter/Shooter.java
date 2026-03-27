@@ -67,25 +67,23 @@ public class Shooter extends SubsystemBase {
 
         turret.setDefaultCommand(
             new ActiveConditionalCommand(
-                    Commands.defer(() ->    turret.setPositionCommand(shotParams::turretAngle), Set.of(turret))
-                    .andThen(
-                        Commands.defer(() -> Commands.print(String.valueOf(shotParams.turretAngle())), Set.of())),
+                    turret.setPositionCommand(() -> shotParams.turretAngle()),
                     turret.setNeutralCommand(), 
-                    this::turretTracking)
+                    () -> this.turretTracking())
         );
 
         flywheel.setDefaultCommand(
             new ActiveConditionalCommand(
-                flywheel.setSpeedRPMCommand(shotParams::flywheelSpeed),
+                flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
                 flywheel.stopCommand(), 
-                this::flywheelTracking)
+                () -> this.flywheelTracking())
         );
 
         hood.setDefaultCommand(
             new ActiveConditionalCommand(
-                hood.setPositionCommand(shotParams::hoodAngle),
+                hood.setPositionCommand(() -> shotParams.hoodAngle()),
                 hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
-                this::hoodTracking)
+                () -> this.hoodTracking())
         );
     }
 
@@ -351,6 +349,4 @@ public class Shooter extends SubsystemBase {
     public boolean isManual() {
         return manual;
     }
-
-    public ShootingParameters getShotParams()
 }
