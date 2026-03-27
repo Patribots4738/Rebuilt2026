@@ -1067,6 +1067,8 @@ public final class Constants {
 
         public static final double POSITION_DEADBAND_RADIANS = 0.15;
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
+
+        public static final double STOW_TIME = 0.25;
         
         // TODO: tune these values
         public static final double P = FieldConstants.IS_REAL ? 5050 : 0;

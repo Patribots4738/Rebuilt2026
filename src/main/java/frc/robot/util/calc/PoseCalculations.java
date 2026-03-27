@@ -17,11 +17,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Robot;
+import frc.robot.util.Constants;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 public class PoseCalculations {
@@ -448,12 +453,17 @@ public class PoseCalculations {
      * @param pos
      * @return true if hood conflicts with trench, false otherwise
      */
-	public static boolean shouldPutHoodDown(Pose2d pos) {
+	public static boolean shouldPutHoodDown(Pose2d pos, ChassisSpeeds fieldRelativeSpeeds) {
 		Pose2d hoodPose = new Pose2d(
 				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
 				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
 				pos.getRotation()
 		);
+
+        double dx = fieldRelativeSpeeds.vxMetersPerSecond * HoodConstants.STOW_TIME;
+        double dy = fieldRelativeSpeeds.vyMetersPerSecond * HoodConstants.STOW_TIME;
+
+        pos.transformBy(new Transform2d(dx, dy, pos.getRotation()));
 		return inTrench(hoodPose);
 	}
 	

@@ -474,6 +474,10 @@ public class Swerve extends SubsystemBase {
         return speeds;
     }
 
+    public ChassisSpeeds getFieldRelativeVelocity() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(speeds, this.getPose().getRotation());
+    }
+
     /**
      * Sets the wheels into an X formation to prevent movement.
      */
