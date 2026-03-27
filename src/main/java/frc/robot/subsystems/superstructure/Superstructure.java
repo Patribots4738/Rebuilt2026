@@ -5,7 +5,6 @@ import java.util.Set;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
@@ -142,7 +141,7 @@ public class Superstructure {
 
     public Command ceaseFireCommand() {
         return Commands.sequence(
-                    shooter.disarmShooterCommand(),
+                    shooter.disarmShooterCommand(true),
                     setHopperState(HopperState.OFF),
                     setIntakeState(IntakeState.INTAKE)
                 );

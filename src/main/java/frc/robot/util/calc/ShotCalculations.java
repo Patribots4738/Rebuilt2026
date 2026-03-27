@@ -236,7 +236,7 @@ public class ShotCalculations {
         }
 
         // Calculate parameters accounted for imparted velocity
-        turretAngle = target.toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
+        turretAngle = target.toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle().minus(robotPoseSupplier.get().getRotation());
         hoodAngleRadians = hub ? hubShotAngleHoodMap.get(lookaheadTurretToTargetDistance).getRadians() : passingShotAngleHoodMap.get(lookaheadTurretToTargetDistance).getRadians();
         if (lastTurretAngle == null) lastTurretAngle = turretAngle;
         if (Double.isNaN(lastHoodAngleRadians)) lastHoodAngleRadians = hoodAngleRadians;
