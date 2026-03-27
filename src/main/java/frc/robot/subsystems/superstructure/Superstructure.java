@@ -143,7 +143,7 @@ public class Superstructure {
         return Commands.sequence(
                     shooter.disarmShooterCommand(true),
                     setHopperState(HopperState.OFF),
-                    setIntakeState(IntakeState.INTAKE)
+                    setIntakeState(IntakeState.INTAKE) //this guy along with the intake named command being in a parallel sequence together are causing the input output error
                 );
     }
 

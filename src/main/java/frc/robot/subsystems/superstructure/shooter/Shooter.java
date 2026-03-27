@@ -1,5 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -66,7 +67,9 @@ public class Shooter extends SubsystemBase {
 
         turret.setDefaultCommand(
             new ActiveConditionalCommand(
-                    turret.setPositionCommand(shotParams::turretAngle),
+                    Commands.defer(() ->    turret.setPositionCommand(shotParams::turretAngle), Set.of(turret))
+                    .andThen(
+                        Commands.defer(() -> Commands.print(String.valueOf(shotParams.turretAngle())), Set.of())),
                     turret.setNeutralCommand(), 
                     this::turretTracking)
         );
@@ -103,15 +106,18 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        updateTarget(robotRelativePose.get());
+        calculateShotParams();
+        // set turret's param in turret
+        turret.setPosition(shotParams.turretAngle());
         
         if (partiallyTracking()) {
-            updateTarget(robotRelativePose.get());
-            calculateShotParams();
         }
         else {
             target = Target.NONE;
         }
 
+        Logger.recordOutput("Subsystems/Shooter/ShotParamFlywheelSpeed", shotParams.flywheelSpeed());
         Logger.recordOutput("Subsystems/Shooter/Target", target.name);
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
@@ -345,4 +351,6 @@ public class Shooter extends SubsystemBase {
     public boolean isManual() {
         return manual;
     }
+
+    public ShootingParameters getShotParams()
 }
