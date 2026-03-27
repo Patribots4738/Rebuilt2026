@@ -24,11 +24,12 @@ import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
+import frc.robot.util.custom.ActiveConditionalCommand;
 
 public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
-    private boolean aimTurret = false;
+    private boolean aimTurret = true;
     @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
     private boolean spinFlywheel = false;
     @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
@@ -58,10 +59,31 @@ public class Shooter extends SubsystemBase {
         this.hood = hood;
         this.flywheel = flywheel;
 
-        shotParams = new ShootingParameters(false, new Rotation2d(0.0), 0.0, 0.0, 0.0, 0.0);
+        
         target = Target.HUB;
         targetLocation = FieldConstants.GET_HUB();
+        calculateShotParams();
 
+        turret.setDefaultCommand(
+            new ActiveConditionalCommand(
+                    turret.setPositionCommand(shotParams::turretAngle),
+                    turret.setNeutralCommand(), 
+                    this::turretTracking)
+        );
+
+        flywheel.setDefaultCommand(
+            new ActiveConditionalCommand(
+                flywheel.setSpeedRPMCommand(shotParams::flywheelSpeed),
+                flywheel.stopCommand(), 
+                this::flywheelTracking)
+        );
+
+        hood.setDefaultCommand(
+            new ActiveConditionalCommand(
+                hood.setPositionCommand(shotParams::hoodAngle),
+                hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+                this::hoodTracking)
+        );
     }
 
     public enum Target {
@@ -81,26 +103,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         if (partiallyTracking()) {
             updateTarget(robotRelativePose.get());
-            setAutoAimStates();
-            // if (manual) {
-            //     turret.setPositionCommand(TurretConstants.HUB_POSITION);
-            //     flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
-            //     hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS);
-            // }
-            // else {
-                // shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
-                // // if (aimTurret) {
-                //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
-                // // }
-                // // if (aimHood) {
-                //     hood.setPositionCommand(() -> shotParams.hoodAngle());
-                // // }
-                // // if (spinFlywheel) {
-                //     flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-                // }
-            // }
+            calculateShotParams();
         }
         else {
             target = Target.NONE;
@@ -153,10 +159,8 @@ public class Shooter extends SubsystemBase {
     // maybe delete this
     public void setAutoAimStates() {
         // calculate states for turret, flywheel, and hood based on robot location
-        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
         flywheel.setSpeedRPM(shotParams.flywheelSpeed());
         hood.setPosition(shotParams.hoodAngle());
-        turret.setPosition(shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
         // return Commands.sequence(
         //     Commands.either(
         //         flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
@@ -204,6 +208,14 @@ public class Shooter extends SubsystemBase {
         return runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
     }
 
+    public void toggleTrackTurret() {
+        aimTurret = !aimTurret;
+    }
+
+    public Command toggleTrackTurretCommand() {
+        return runOnce(() -> toggleTrackTurret());
+    }
+
     public void setTrackTarget(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
         this.spinFlywheel = spinFlywheel;
         this.aimTurret = aimTurret;
@@ -214,9 +226,9 @@ public class Shooter extends SubsystemBase {
         return trackTargetCommand(true, true, true);
     }
 
-    public Command disarmShooterCommand() {
+    public Command disarmShooterCommand(boolean trackTurret) {
         return Commands.sequence(
-                    this.trackTargetCommand(false, false, false),
+                    this.trackTargetCommand(trackTurret, false, false),
                     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
                     flywheel.setNeutralCommand()
                 );
@@ -288,6 +300,10 @@ public class Shooter extends SubsystemBase {
         }
 
 
+    }
+
+    public void calculateShotParams() {
+        shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
     }
 
     public void eject() {

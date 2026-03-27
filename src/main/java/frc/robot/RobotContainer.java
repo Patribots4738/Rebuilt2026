@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -50,7 +50,6 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
@@ -58,7 +57,7 @@ import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.custom.ActiveConditionalCommand;
+import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -218,6 +217,9 @@ public class RobotContainer {
         //         .onTrue(swerve.setDriveMultiplierCommand(DriveConstants.SHOOTING_DRIVE_MULTIPLIER))
         //         .onFalse(swerve.setDriveMultiplierCommand(DriveConstants.DEFAULT_DRIVE_MULTIPLIER));
 
+        new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose())).and(() -> shooter.isManual())
+            .onTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+
     }
 
     private void configureDevBindings(PatriBoxController controller) {
@@ -345,7 +347,7 @@ public class RobotContainer {
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
-        shooter.trackTargetCommand(false, false, false);
+        controller.povDown().onTrue(shooter.trackTargetCommand(false, false, false));
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
