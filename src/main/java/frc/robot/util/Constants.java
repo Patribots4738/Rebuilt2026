@@ -127,7 +127,7 @@ public final class Constants {
             ROBOT_OFFSET.getZ() + 17.156
         );
 
-        public static final double PHASE_DELAY = 0.03;
+        public static final double PHASE_DELAY = 0.02;
         public static final double PHASE_PER_SECOND = 1.0 / PHASE_DELAY;
     }
 

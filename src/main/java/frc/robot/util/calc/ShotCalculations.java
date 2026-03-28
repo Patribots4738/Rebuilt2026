@@ -192,7 +192,8 @@ public class ShotCalculations {
     }
 
     public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier, Translation3d target, boolean hub) {
-        // Calculate estimated pose while accounting for phase delay
+        // Calculate estimated pose while accounting for phase delay of one code loop
+        double timeOfFlight;
         Pose2d estimatedPose = robotPoseSupplier.get();
         ChassisSpeeds robotRelativeVelocity = robotRelativeVelocitySupplier.get();
         estimatedPose =
@@ -205,6 +206,13 @@ public class ShotCalculations {
         // Calculate distance from turret to target
         Pose2d turretPosition = estimatedPose.transformBy(TurretConstants.TURRET_TO_ROBOT_TRANSFORM2D);
         double turretToTargetDistance = target.toTranslation2d().getDistance(turretPosition.getTranslation());
+
+        timeOfFlight = hub ? hubTimeOfFlightMap.get(turretToTargetDistance) : passingTimeOfFlightMap.get(turretToTargetDistance);
+        estimatedPose.exp(
+            new Twist2d(
+                robotRelativeVelocity.vxMetersPerSecond * timeOfFlight,
+                robotRelativeVelocity.vyMetersPerSecond * timeOfFlight,
+                robotRelativeVelocity.omegaRadiansPerSecond * timeOfFlight));
 
         // Calculate field relative turret velocity
         ChassisSpeeds robotVelocity = robotRelativeVelocitySupplier.get();
@@ -221,7 +229,6 @@ public class ShotCalculations {
                         - TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getY() * Math.sin(robotAngle));
 
         // Account for imparted velocity by robot (turret) to offset
-        double timeOfFlight;
         Pose2d lookaheadPose = turretPosition;
         double lookaheadTurretToTargetDistance = turretToTargetDistance;
         for (int i = 0; i < 20; i++) {
