@@ -140,6 +140,7 @@ public class Vision extends SubsystemBase {
         int camIndex = 0;
         // what happens if no cameras have tags
 
+        // TODO: if we are using megatag one, only use tags that are less than 2-3 meters away
         for (int i = 0; i < cameras.length; i++) {
             if (cameras[i].getAverageTagDistance() == -1) {}
             else if (cameras[i].getAverageTagDistance() < minTagDistance) {

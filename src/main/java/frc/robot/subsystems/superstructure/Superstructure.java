@@ -140,10 +140,12 @@ public class Superstructure {
     }
 
     public Command ceaseFireCommand() {
-        return Commands.sequence(
+        return Commands.parallel(
                     shooter.disarmShooterCommand(true),
-                    setHopperState(HopperState.OFF),
-                    setIntakeState(IntakeState.INTAKE) //this guy along with the intake named command being in a parallel sequence together are causing the input output error
+                    spindexer.setPercentCommand(0.0),
+                    kicker.setPercentCommand(0.0),
+                    intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+                    extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS)
                 );
     }
 

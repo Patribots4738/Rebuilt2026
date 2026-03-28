@@ -52,6 +52,8 @@ public class Shooter extends SubsystemBase {
     private Supplier<Pose2d> robotRelativePose;
     private Supplier<ChassisSpeeds> robotRelativeVelocity;
 
+    private Set<SubsystemBase> requirements;
+
     public Shooter(Supplier<Pose2d> robotRelativePose, Supplier<ChassisSpeeds> robotRelativeVelocity, Turret turret, Flywheel flywheel, Hood hood) {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
@@ -60,31 +62,33 @@ public class Shooter extends SubsystemBase {
         this.hood = hood;
         this.flywheel = flywheel;
 
+        requirements = Set.of(turret, hood, flywheel, this);
+
         
         target = Target.HUB;
         targetLocation = FieldConstants.GET_HUB();
         calculateShotParams();
 
-        turret.setDefaultCommand(
-            new ActiveConditionalCommand(
-                    turret.setPositionCommand(() -> shotParams.turretAngle()),
-                    turret.setNeutralCommand(), 
-                    () -> this.turretTracking())
-        );
+        // turret.setDefaultCommand(
+        //     new ActiveConditionalCommand(
+        //             turret.setPositionCommand(() -> shotParams.turretAngle()),
+        //             turret.setNeutralCommand(), 
+        //             () -> this.turretTracking()).alongWith(Commands.print("Turret default"))
+        // );
 
-        flywheel.setDefaultCommand(
-            new ActiveConditionalCommand(
-                flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
-                flywheel.stopCommand(), 
-                () -> this.flywheelTracking())
-        );
+        // flywheel.setDefaultCommand(
+        //     new ActiveConditionalCommand(
+        //         flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
+        //         flywheel.stopCommand(), 
+        //         () -> this.flywheelTracking())
+        // );
 
-        hood.setDefaultCommand(
-            new ActiveConditionalCommand(
-                hood.setPositionCommand(() -> shotParams.hoodAngle()),
-                hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
-                () -> this.hoodTracking())
-        );
+        // hood.setDefaultCommand(
+        //     new ActiveConditionalCommand(
+        //         hood.setPositionCommand(() -> shotParams.hoodAngle()),
+        //         hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+        //         () -> this.hoodTracking())
+        // );
     }
 
     public enum Target {
@@ -107,11 +111,17 @@ public class Shooter extends SubsystemBase {
         updateTarget(robotRelativePose.get());
         calculateShotParams();
         // set turret's param in turret
-        turret.setPosition(shotParams.turretAngle());
-        
-        if (partiallyTracking()) {
+    
+        if (turretTracking()) {
+            turret.setPosition(shotParams.turretAngle());
+        }
+        if (fullyTracking()) {
+            flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+            hood.setPosition(shotParams.hoodAngle());
         }
         else {
+            flywheel.stop();
+            hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
             target = Target.NONE;
         }
 
@@ -143,15 +153,6 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
-    public Command setShooterStates() {
-        if (manual) {
-            return Commands.runOnce(() -> setManualStates());
-        }
-        else {
-            return Commands.runOnce(() -> setAutoAimStates());
-        }
-    }
-
     public Command setManualStates() {
         return Commands.sequence(
             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
@@ -159,50 +160,6 @@ public class Shooter extends SubsystemBase {
             turret.setPositionCommand(Rotation2d.fromRadians(TurretConstants.MIN_ANGLE_RADIANS))
         );
     }
-
-    // maybe delete this
-    public void setAutoAimStates() {
-        // calculate states for turret, flywheel, and hood based on robot location
-        flywheel.setSpeedRPM(shotParams.flywheelSpeed());
-        hood.setPosition(shotParams.hoodAngle());
-        // return Commands.sequence(
-        //     Commands.either(
-        //         flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
-        //         Commands.none(),
-        //         this::flywheelTracking
-        //     ),
-        //     Commands.either(
-        //         hood.setPositionCommand(() -> shotParams.hoodAngle()),
-        //         Commands.none(),
-        //         this::hoodTracking
-        //     ),
-        //     Commands.either(
-        //         turret.setPositionCommand(shotParams.turretAngle().minus(robotRelativePose.get().getRotation())),
-        //         Commands.none(),
-        //         this::turretTracking
-        //     )
-        // );
-
-        // // set the flywheel and turret states if we want them to track a target
-        // if (spinFlywheel) {
-        //     flywheel.setCalculatedSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-        //     flywheel.runCalculateSpeedCommand();
-        //     // flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed());
-        // }
-
-        // if (aimTurret) {
-        //     turret.setPositionCommand(() -> shotParams.turretAngle().minus(robotRelativePose.get().getRotation()));
-
-        // }
-        // // if the hood is under the trench, the hood should be down, otherwise it can be tracking the target
-        // // if (PoseCalculations.shouldPutHoodDown(robotRelativePose.get())) {
-        // //     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS);
-        // // }
-        // // else if (aimHood){
-        //     hood.setPositionCommand(() -> shotParams.hoodAngle());
-        // // }
-    }
-
 
     public Command trackTargetCommand(BooleanSupplier aimTurret, BooleanSupplier aimHood, BooleanSupplier spinFlywheel) {
         return runOnce(() -> setTrackTarget(aimTurret.getAsBoolean(), aimHood.getAsBoolean(), spinFlywheel.getAsBoolean()));
@@ -279,13 +236,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public Command setNeutralCommand() {
-        return runOnce(() -> this.setNeutral());
-    }
-
-    public void setNeutral() {
-        turret.setNeutral();
-        hood.setNeutral();
-        flywheel.setNeutral();
+        return Commands.parallel(
+                turret.setNeutralCommand(),
+                hood.setNeutralCommand(),
+                flywheel.setNeutralCommand()
+            );
     }
 
     public void updateTarget(Pose2d robotPose) {
@@ -310,12 +265,8 @@ public class Shooter extends SubsystemBase {
         shotParams = ShotCalculations.getParameters(robotRelativePose, robotRelativeVelocity, targetLocation, target == Target.HUB);
     }
 
-    public void eject() {
-        flywheel.setSpeedRPM(FlywheelConstants.EJECT_RPM);
-    }
-
     public Command ejectCommand() {
-        return runOnce(() -> this.eject());
+        return flywheel.setSpeedRPMCommand(FlywheelConstants.EJECT_RPM);
     }
 
     public Command stowCommand() {
@@ -345,6 +296,37 @@ public class Shooter extends SubsystemBase {
     public Command toggleManualShootingCommand() {
         return runOnce(() -> this.toggleManualShooting());
     }
+
+    // public Command setManualShootingCommand(boolean manual) {
+    //     return Commands.runOnce(() -> this.manual = manual);
+    // }
+
+    // public Command toggleManualShootingCommand() {
+    //     return Commands.parallel(
+    //             this.setManualShootingCommand(true),
+    //             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
+    //             hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
+    //             turret.setPositionCommand(TurretConstants.HUB_POSITION),
+    //             Commands.print("Turret manual")
+    //     ).repeatedly();
+    // }
+
+    // public Command enableManualCommand() {
+    //     return Commands.parallel(
+    //             this.setManualShootingCommand(true),
+    //             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
+    //             hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
+    //             turret.setPositionCommand(TurretConstants.HUB_POSITION));
+    // }
+
+    // public Command disableManualCommand() {
+    //     return Commands.parallel(
+    //             this.setManualShootingCommand(false),
+    //             flywheel.stopCommand(),
+    //             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
+    //             turret.setNeutralCommand());
+    // }
+
 
     public boolean isManual() {
         return manual;

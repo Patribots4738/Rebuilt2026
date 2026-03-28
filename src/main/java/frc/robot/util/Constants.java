@@ -64,7 +64,7 @@ public final class Constants {
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
                 System.out.println("Incorrect robot type selected, changing to real robot");
-                robotType = RobotType.COMPBOT;
+                robotType = RobotType.DEVBOT;
             }
             return robotType;
         }
@@ -299,8 +299,8 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {
             //"Double Center Rush Left", //this path has issues
-            // "Double Center Rush Right",
-            // "Outpost Center Rush",
+            // "Double Center Rush Right", // this path also has issues
+            "Outpost Center Rush",
              "Dumby Center",
              "Cleanup Left",
              "Depot Center Rush"
@@ -798,7 +798,7 @@ public final class Constants {
     public static final class CameraConstants {
 
         public static final int ENABLED_THROTTLE = 0; // Process every frame
-        public static final int DISABLED_THROTTLE = 5; // Process 1 of every n frames
+        public static final int DISABLED_THROTTLE = 0; // Process 1 of every n frames
 
         public static final Pose3d LL4_LEFT_POSE = new Pose3d(
             -0.282,
@@ -1062,7 +1062,7 @@ public final class Constants {
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
-        public static final double HUB_POSITION_RADIANS = 0.0; // TODO: find this value
+        public static final double HUB_POSITION_RADIANS = 0.1; // TODO: find this value
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;

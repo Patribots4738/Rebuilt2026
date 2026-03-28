@@ -129,11 +129,11 @@ public class Hood extends SubsystemBase {
         return Commands.runOnce(() -> setTestPosition());
     }
 
-    public void decrementPosition() {
+    private void decrementPosition() {
         incrementedPosition -= 1;
     }
 
-    public void incrementPosition() {
+    private void incrementPosition() {
         incrementedPosition += 1;
     }
 
@@ -195,7 +195,7 @@ public class Hood extends SubsystemBase {
         io.runCharacterization(input);
     }
 
-    public void setCurrent(double amps) {
+    private void setCurrent(double amps) {
         io.setCurrent(amps);
     }
 
@@ -203,7 +203,7 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> setCurrent(amps));
     }
     
-    public void toggleForcedDown() {
+    private void toggleForcedDown() {
         forceDown = !forceDown;
     }
 

@@ -182,6 +182,10 @@ public class Extender extends SubsystemBase {
     public double getVoltage() {
         return inputs.appliedOutputVolts;
     }
+
+    public void setBrakeMode(boolean brake) {
+        io.setBrakeMode(brake);
+    }
     
     // public Command quasistatic(SysIdRoutine.Direction direction) {
     //     return extenderRoutine.quasistatic(direction);

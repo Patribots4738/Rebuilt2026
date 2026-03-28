@@ -50,6 +50,7 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.KickerConstants;
@@ -146,8 +147,9 @@ public class RobotContainer {
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
-            // new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-threeg", false));
+            new VisionIOLimelight("limelight-left", true), 
+            new VisionIOLimelight("limelight-threeg", false),
+            new VisionIOLimelight("limelight-hailo", true));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -198,7 +200,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
+        // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {
@@ -339,15 +341,18 @@ public class RobotContainer {
                 superstructure.setHopperState(HopperState.FORWARD),
                 superstructure.fireNoFeedShooterCommand(),
                 shooter::isManual));
-        controller.rightTrigger().toggleOnFalse(
+        controller.rightTrigger().onFalse(
             Commands.either(
-                superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
+            superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
                 superstructure.ceaseFireCommand(),
                 shooter::isManual));
         controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
         controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
 
         controller.povDown().onTrue(shooter.trackTargetCommand(false, false, false));
+
+        // controller.y().onTrue(shooter.enableManualCommand())
+        //                 .onFalse(shooter.disableManualCommand());
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
@@ -409,8 +414,9 @@ public class RobotContainer {
     public void onDisabled() {
         // Stops bot in sim after auto (noramlly motors auto turn off when disabled)
         swerve.stopDriving();
-        hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
+        CommandScheduler.getInstance().schedule(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+        extender.setBrakeMode(false);
         pathPlannerStorage.configureAutoChooser();
         //vision.controlRecording(false, freshCode);
     }
@@ -419,13 +425,16 @@ public class RobotContainer {
         gameModeStart = Robot.currentTimestamp;
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
+        extender.setBrakeMode(true);
+        CommandScheduler.getInstance().schedule(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+
         //vision.controlRecording(true);
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", Commands.sequence(superstructure.fireNoFeedShooterCommand()));
+        NamedCommands.registerCommand("Shoot", superstructure.fireNoFeedShooterCommand());
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
-        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
+        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1   ));
         NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(0.0)));
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());

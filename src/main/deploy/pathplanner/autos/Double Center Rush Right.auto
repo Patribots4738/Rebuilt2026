@@ -79,12 +79,6 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "5CLRRotated-BackHubRight"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "StopShooting"
@@ -94,6 +88,12 @@
                 "type": "named",
                 "data": {
                   "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5CLRRotated-BackHubRight"
                 }
               }
             ]
