@@ -24,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -32,12 +32,18 @@
                 "data": {
                   "pathName": "Center Line-5CLR"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampFlywheel"
+                }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -63,9 +69,16 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Wiggle Intake"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
@@ -75,21 +88,28 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "StopShooting"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
               {
                 "type": "path",
                 "data": {
@@ -106,13 +126,26 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Center Line-5CLRRotated"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Line-5CLRRotated"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampFlywheel"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -134,7 +167,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 4.0
                       }
                     },
                     {
@@ -150,9 +183,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "StopShooting"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooting"
+                }
+              }
+            ]
           }
         },
         {
@@ -172,7 +218,7 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "deadline",
                 "data": {
                   "commands": [
                     {

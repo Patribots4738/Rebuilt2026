@@ -416,6 +416,7 @@ public class RobotContainer {
         swerve.stopDriving();
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         CommandScheduler.getInstance().schedule(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+        CommandScheduler.getInstance().schedule(superstructure.ceaseFireCommand());
         extender.setBrakeMode(false);
         pathPlannerStorage.configureAutoChooser();
         //vision.controlRecording(false, freshCode);
@@ -423,12 +424,19 @@ public class RobotContainer {
 
     public void onEnabled() {
         gameModeStart = Robot.currentTimestamp;
+        extender.setBrakeMode(true);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
-        extender.setBrakeMode(true);
-        CommandScheduler.getInstance().schedule(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+        // CommandScheduler.getInstance().schedule(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
         //vision.controlRecording(true);
+    }
+
+    public void settleRobot() {
+        shooter.setTrackTarget(true, false, false);
+        shooter.stow();
+        spindexer.setPercent(0.0);
+        kicker.setPercent(0.0);
     }
 
     private void prepareNamedCommands() {
@@ -444,10 +452,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));
+        NamedCommands.registerCommand("StowHood", shooter.forceHoodDownCommand());
 
         // NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         // NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
-        // NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+        // NamedCommands.registerCommand("TowerAlignCenter", alignment.pautonoumusTowerAlignmentCommand(swerve.getPose(), 0));
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));

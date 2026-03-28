@@ -299,11 +299,12 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {
             //"Double Center Rush Left", //this path has issues
-            // "Double Center Rush Right", // this path also has issues
+            "Double Center Rush Right", // this path also has issues
             "Outpost Center Rush",
-             "Dumby Center",
-             "Cleanup Left",
-             "Depot Center Rush"
+            "Dumby Center",
+            "Cleanup Left",
+            "Depot Center Rush",
+            "Half Center Line Pass Right"
             // "Right Bump",
             // "Test",
             // "Double Center Rush Left Drive Only",
@@ -1130,7 +1131,7 @@ public final class Constants {
         public static final double MIN_ANGLE_RADIANS = 0.0;
         public static final double MAX_ANGLE_RADIANS = 2.19;
 
-        public static final double STOW_POSITION_RADIANS = 0.2;
+        public static final double STOW_POSITION_RADIANS = 0.3;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
         public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 1.5;
@@ -1209,8 +1210,8 @@ public final class Constants {
 
         public static final double IDLE_PERCENT = 0.0;
         public static final double CLOCKWISE_PERCENT = -0.6;
-        public static final double COUNTERCLOCKWISE_PERCENT = 0.6;
-        public static final double FEED_PERCENT = 0.6;
+        public static final double COUNTERCLOCKWISE_PERCENT = 0.4; // 0.6
+        public static final double FEED_PERCENT = 0.4;
         
         public static final double GEAR_RATIO = 3.0;
 
@@ -1227,7 +1228,7 @@ public final class Constants {
         public static final double FIELD_LENGTH = 16.5890;
         public static final double FIELD_WIDTH = 8.0756;
 
-        public static final double ALLIANCE_SHOT_TOLERANCE = 0.5;
+        public static final double ALLIANCE_SHOT_TOLERANCE = 0.55;
 
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
@@ -1267,7 +1268,8 @@ public final class Constants {
             return HUBS.get(index);
         }
         
-        public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(4.0566, 5.5642, 0);
+        // public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(4.0566, 5.5642, 0);
+        public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(2, 2, 0);
         public static final Translation3d PASS_RIGHT_LOCATION = PoseCalculations.flipTranslation3dY(PASS_LEFT_LOCATION);
 
         public static final List<Translation3d> PASS_LEFT_LOCATIONS = new ArrayList<Translation3d>() {{

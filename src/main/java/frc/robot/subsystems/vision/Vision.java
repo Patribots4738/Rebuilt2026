@@ -163,7 +163,8 @@ public class Vision extends SubsystemBase {
 
         if (Robot.gameMode == GameMode.DISABLED) {
             for (int i = 0; i < cameras.length; i++) {
-                boolean updateCamera = cameraHasTarget(i);
+                // TODO: test this
+                boolean updateCamera = cameraHasTarget(i) && !(shouldUseMT1() && inputs[i].averageTD > 2);
                 // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
                 if (updateCamera) {
                     camerasToUpdate.add(i);

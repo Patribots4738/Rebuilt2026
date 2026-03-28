@@ -115,11 +115,21 @@ public class Shooter extends SubsystemBase {
         if (turretTracking()) {
             turret.setPosition(shotParams.turretAngle());
         }
-        if (fullyTracking()) {
+        
+        if (flywheelTracking()) {
             flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+        }
+        else {
+            flywheel.stop();
+        }
+
+        if (hoodTracking()) {
             hood.setPosition(shotParams.hoodAngle());
         }
         else {
+            hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+        }
+        if (!partiallyTracking()) {
             flywheel.stop();
             hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
             target = Target.NONE;
@@ -167,6 +177,14 @@ public class Shooter extends SubsystemBase {
 
     public Command trackTargetCommand(boolean aimTurret, boolean aimHood, boolean spinFlywheel) {
         return runOnce(() -> setTrackTarget(aimTurret, aimHood, spinFlywheel));
+    }
+
+    public void setTrackFlywheel(boolean track) {
+        spinFlywheel = track;
+    }
+
+    public Command setTrackFlywheelCommand(boolean track)  {
+        return runOnce(() -> setTrackFlywheel(track));
     }
 
     public void toggleTrackTurret() {
@@ -235,6 +253,12 @@ public class Shooter extends SubsystemBase {
         return runOnce(() -> setPassIndex(index));
     }
 
+    public void setNeutral() {
+        turret.setNeutral();
+        hood.setNeutral();
+        flywheel.setNeutral();
+    }
+
     public Command setNeutralCommand() {
         return Commands.parallel(
                 turret.setNeutralCommand(),
@@ -274,6 +298,20 @@ public class Shooter extends SubsystemBase {
                     hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
                     this.setNeutralCommand()
                 );
+    }
+
+    public void stow() {
+        hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+        this.setNeutral();
+    }
+
+    public void forceHoodDown() {
+        aimHood = false;
+        hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+    }
+
+    public Command forceHoodDownCommand() {
+        return runOnce(() -> forceHoodDown());
     }
 
     public Target getTarget() {

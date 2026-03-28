@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.KrakenMotorConstants;
 import frc.robot.util.Constants.LoggingConstants;
 // import frc.robot.util.Constants.NeoMotorConstants;
@@ -149,6 +150,7 @@ public class Robot extends LoggedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
+        robotContainer.settleRobot();
         exitAuto = true;
     }
 
@@ -156,6 +158,7 @@ public class Robot extends LoggedRobot {
     public void teleopInit() {
         Robot.gameMode = GameMode.TELEOP;
         robotContainer.onEnabled();
+        robotContainer.settleRobot();
     }
 
     @Override
