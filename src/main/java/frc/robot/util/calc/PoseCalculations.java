@@ -190,16 +190,16 @@ public class PoseCalculations {
         Pose2d newPos = new Pose2d();
         switch(side) {
             case 'L':
-                newPos = new Pose2d((pos.getX() - FieldConstants.TRENCH_LENGTH), pos.getY(), pos.getRotation().toRotation2d());
+                newPos = new Pose2d((pos.getX() - (FieldConstants.TRENCH_X_DIM / 2)), pos.getY(), pos.getRotation().toRotation2d());
             break;
             case 'R':
-                newPos = new Pose2d((pos.getX() + FieldConstants.TRENCH_LENGTH), pos.getY(), pos.getRotation().toRotation2d());
+                newPos = new Pose2d((pos.getX() + (FieldConstants.TRENCH_X_DIM / 2)), pos.getY(), pos.getRotation().toRotation2d());
             break;
             case 'U':
-                newPos = new Pose2d(pos.getX(), (pos.getY() + FieldConstants.TRENCH_WIDTH), pos.getRotation().toRotation2d());
+                newPos = new Pose2d(pos.getX(), (pos.getY() + (FieldConstants.TRENCH_Y_DIM / 2)), pos.getRotation().toRotation2d());
             break;
             case 'D':
-                newPos = new Pose2d(pos.getX(), (pos.getY() - FieldConstants.TRENCH_WIDTH), pos.getRotation().toRotation2d());
+                newPos = new Pose2d(pos.getX(), (pos.getY() - FieldConstants.TRENCH_Y_DIM), pos.getRotation().toRotation2d());
             break;
         }
         return newPos;
@@ -412,12 +412,12 @@ public class PoseCalculations {
     public static boolean inTrench(Pose2d pos) {
         boolean ans = false;
         if (
-            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY())
+            (pos.getY() < FieldConstants.TRENCHES.get(3).getY() || pos.getY() > FieldConstants.TRENCHES.get(9).getY())
             && 
             (
                 (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
                 || 
-                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
+                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(12).getX())
             )
             ) {
             ans = true;
