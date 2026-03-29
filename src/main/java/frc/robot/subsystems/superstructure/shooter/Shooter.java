@@ -115,20 +115,21 @@ public class Shooter extends SubsystemBase {
         if (turretTracking()) {
             turret.setPosition(shotParams.turretAngle());
         }
-        
+            
         if (flywheelTracking()) {
             flywheel.setSpeedRPM(shotParams.flywheelSpeed());
         }
         else {
             flywheel.stop();
         }
-
+    
         if (hoodTracking()) {
             hood.setPosition(shotParams.hoodAngle());
         }
         else {
             hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         }
+
         if (!partiallyTracking()) {
             flywheel.stop();
             hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
@@ -163,7 +164,13 @@ public class Shooter extends SubsystemBase {
         return spinFlywheel;
     }
 
-    public Command setManualStates() {
+    public void setManualStates() {
+        flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
+        hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
+        turret.setPosition(TurretConstants.HUB_POSITION);
+    }
+
+    public Command setManualStatesCommand() {
         return Commands.sequence(
             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
             hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
@@ -325,9 +332,14 @@ public class Shooter extends SubsystemBase {
     public void toggleManualShooting() {
         manual = !manual;
         if (manual) {
+            setTrackTarget(false, false, false);
             flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
             hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
             turret.setPositionCommand(TurretConstants.HUB_POSITION);
+        }
+        else {
+            flywheel.stop();
+            hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         }
     }
 
