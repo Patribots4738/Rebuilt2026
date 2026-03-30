@@ -255,7 +255,7 @@ public class RobotContainer {
             kicker.setPercentCommand(0.0)
         ));
 
-        controller.x().onTrue(shooter.setManualStates());
+        controller.x().onTrue(shooter.toggleManualShootingCommand());
         
         controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
         controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
@@ -361,6 +361,8 @@ public class RobotContainer {
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
         controller.povUp().onTrue(intake.setPercentCommand(IntakeConstants.REVERSE_PERCENT));
+
+        controller.povRight().onTrue(shooter.forceHoodDownCommand());
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));

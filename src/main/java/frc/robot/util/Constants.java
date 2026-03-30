@@ -966,7 +966,7 @@ public final class Constants {
         public static final double MIN_ANGLE_RADIANS = Units.degreesToRadians(0);
         public static final double MAX_ANGLE_RADIANS = Units.degreesToRadians(354); 
 
-        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(0.0)); // TODO: find this value
+        public static final Rotation2d HUB_POSITION = new Rotation2d(Units.degreesToRadians(180.0)); // TODO: find this value
 
         public static final double ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(5);
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
