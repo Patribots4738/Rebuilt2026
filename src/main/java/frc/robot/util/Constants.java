@@ -299,14 +299,13 @@ public final class Constants {
 
         public static final String[] AUTO_NAMES = new String[] {
             //"Double Center Rush Left", //this path has issues
-            "Double Center Rush Right", // this path also has issues
-            "Outpost Center Rush",
-            "Dumby Center",
-            "Cleanup Left",
-            "Depot Center Rush",
-            "Half Center Line Pass Right"
-            // "Right Bump",
-            // "Test",
+            "Double Center Rush Right",
+            "Outpost Center Rush", //maybe if we need it
+            "Center Depot", //this is for really good alliance
+            //"Cleanup Left", // no more clean up autos
+            //"Depot Center Rush", //pathing is bad and also no
+            //"Half Center Line Pass Right" //not gonna work
+            //drive only for testing
             // "Double Center Rush Left Drive Only",
             // "Double Center Rush Right Drive Only",
             // "Outpost Center Rush Drive Only"
@@ -1109,9 +1108,9 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 60;
 
-        public static final double INTAKE_PERCENT = 0.5;
+        public static final double INTAKE_PERCENT = 0.65;
 
-        public static final double REVERSE_PERCENT = - 0.5;
+        public static final double REVERSE_PERCENT = - 0.65;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1129,7 +1128,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 60.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 2.19;
+        public static final double MAX_ANGLE_RADIANS = 2.12;
 
         public static final double STOW_POSITION_RADIANS = 0.3;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;

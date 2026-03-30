@@ -356,7 +356,7 @@ public class RobotContainer {
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
-        controller.povLeft().onTrue(extender.feedShooterToggleCommand().alongWith(intake.setPercentCommand(0.0)));
+        controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
@@ -442,7 +442,7 @@ public class RobotContainer {
     private void prepareNamedCommands() {
         NamedCommands.registerCommand("Shoot", superstructure.fireNoFeedShooterCommand());
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
-        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1   ));
+        NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
         NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(0.0)));
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
@@ -450,6 +450,7 @@ public class RobotContainer {
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
         //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("HalfStowIntake", superstructure.setIntakeState(IntakeState.HALF_STOW));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
         NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));

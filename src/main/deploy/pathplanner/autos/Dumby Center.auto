@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "StopShooting"
+            "name": "StopIntake"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "ClimbPrepMiddle-ClimbMiddle"
+            "name": "Shoot"
           }
         },
         {
