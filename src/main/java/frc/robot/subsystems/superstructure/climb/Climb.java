@@ -20,14 +20,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ClimbConstants;
 import frc.robot.util.Constants.LoggingConstants;
-
-import static edu.wpi.first.units.Units.*;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
 
 public class Climb extends SubsystemBase {
     
@@ -77,10 +72,12 @@ public class Climb extends SubsystemBase {
             io.setNeutral();
         }
 
-        // RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-        //     LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), inputs.positionMeters,
-        //     new Rotation3d()
-        // );
+        RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+            LoggingConstants.CLIMB_OFFSET.getX(),
+            LoggingConstants.CLIMB_OFFSET.getY(),
+            LoggingConstants.CLIMB_OFFSET.getZ() + inputs.positionMeters,
+            new Rotation3d()
+        );
     }
 
     public void setPosition(double position, boolean slam) {
@@ -93,8 +90,10 @@ public class Climb extends SubsystemBase {
         this.slam = slam;
         shouldRunSetpoint = true;
 
-        RobotContainer.components3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
-            LoggingConstants.CLIMB_OFFSET.getX(), LoggingConstants.CLIMB_OFFSET.getY(), position,
+        RobotContainer.desiredComponents3d[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+                LoggingConstants.CLIMB_OFFSET.getX(),
+                LoggingConstants.CLIMB_OFFSET.getY(),
+                LoggingConstants.CLIMB_OFFSET.getZ() + targetState.position,
             new Rotation3d()
         );
     }

@@ -4,36 +4,21 @@
 
 package frc.robot.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.MountPoseConfigs;
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.revrobotics.spark.SparkBase;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Robot;
-import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
@@ -42,6 +27,11 @@ import frc.robot.util.custom.LoggedTunableBoolean;
 import frc.robot.util.custom.LoggedTunableConstant;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.rev.Neo;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -94,8 +84,9 @@ public final class Constants {
 
         public static final int CLIMB_INDEX = 0;
         public static final int EXTENDER_INDEX = 1;
-        public static final int TURRET_INDEX = 2;
-        public static final int HOOD_INDEX = 3;
+        public static final int INTAKE_INDEX = 2;
+        public static final int TURRET_INDEX = 3;
+        public static final int HOOD_INDEX = 4;
 
         public static final Translation3d ROBOT_OFFSET = new Translation3d(
             0.0,
@@ -104,28 +95,36 @@ public final class Constants {
         );
 
         public static final Translation3d CLIMB_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.056,
-            ROBOT_OFFSET.getY() + 0.241,
-            ROBOT_OFFSET.getZ() + 0.2735
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-6),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(-10.5),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(3.875)
         );
 
         public static final Translation3d EXTENDER_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + 0.0,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 0.0
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(13.586952), //extends another 10.5" on X axis positively
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(8.541422)
+        );
+        
+        public static final Translation3d INTAKE_OFFSET = new Translation3d(
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(11.5),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(0.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(6.75)
         );
 
         public static final Translation3d TURRET_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() - 4.5,
-            ROBOT_OFFSET.getY() -4.0,
-            ROBOT_OFFSET.getZ() + 12.594
+            ROBOT_OFFSET.getX() + Units.inchesToMeters(-4.505),
+            ROBOT_OFFSET.getY() + Units.inchesToMeters(4.0),
+            ROBOT_OFFSET.getZ() + Units.inchesToMeters(12.5)
         );
 
         public static final Translation3d HOOD_OFFSET = new Translation3d(
-            ROBOT_OFFSET.getX() + -9.392,
-            ROBOT_OFFSET.getY() + 0.0,
-            ROBOT_OFFSET.getZ() + 17.156
+            TURRET_OFFSET.getX() + Units.inchesToMeters(2.909095),
+            TURRET_OFFSET.getY() + Units.inchesToMeters(0),
+            TURRET_OFFSET.getZ() + Units.inchesToMeters(4.4375)
         );
+        
+        public static final double INTAKE_ROTATION_OFFSET = Units.degreesToRadians(-145);
 
         public static final double PHASE_DELAY = 0.03;
         public static final double PHASE_PER_SECOND = 1.0 / PHASE_DELAY;
@@ -527,11 +526,11 @@ public final class Constants {
         public static final double DRIVING_MOTOR_TORQUE_LIMIT_AMPS = 80.0;
         public static final double TURNING_MOTOR_TORQUE_LIMIT_AMPS = 40.0;
 
-        public static final double DRIVING_P = 20.0; //20.0
-        public static final double DRIVING_I = 6.0; //6
-        public static final double DRIVING_D = 1.5; //1.5
-        public static final double DRIVING_S = 0.0;
-        public static final double DRIVING_V = 0.124; //0.124
+        public static final double DRIVING_P = FieldConstants.IS_REAL ? 20.0 : 7.1535; //20.0
+        public static final double DRIVING_I = FieldConstants.IS_REAL ? 6.0 : 0; //6
+        public static final double DRIVING_D = FieldConstants.IS_REAL ? 1.5 : 0.35846; //1.5
+        public static final double DRIVING_S = FieldConstants.IS_REAL ? 0.0 : 0.037637;
+        public static final double DRIVING_V = FieldConstants.IS_REAL ? 0.124 : 0.74799; //0.124
 
         public static final GainConstants DRIVING_GAINS = new GainConstants(
             DRIVING_P,
@@ -544,10 +543,10 @@ public final class Constants {
 
         // public static final LoggedGainConstants LOGGED_DRIVING_GAINS = new LoggedGainConstants(MK5nSwerveModuleConstants.DRIVING_GAINS, "Swerve/Drive");
 
-        public static final double TURNING_P = 700.0; //225
-        public static final double TURNING_I = 0.0; //13
-        public static final double TURNING_D = 12.0; //8
-        public static final double TURNING_S = 0.0;
+        public static final double TURNING_P = FieldConstants.IS_REAL ? 700.0 : 10000; //225
+        public static final double TURNING_I = FieldConstants.IS_REAL ? 0.0 : 5; //13
+        public static final double TURNING_D = FieldConstants.IS_REAL ? 12.0 : 2500; //8
+        public static final double TURNING_S = FieldConstants.IS_REAL ? 0.0 : 0.0;
 
         public static final GainConstants TURNING_GAINS = new GainConstants(
             TURNING_P,
@@ -935,6 +934,8 @@ public final class Constants {
         
         public static final double VELOCITY_DEADBAND_MPS = 0.2;
         public static final double DEADBAND_METERS = 0.2;
+
+        public static final LoggedTunableConstant LOGGED_TEST_POSITION_DEGREES = new LoggedTunableConstant("Climb/Position", 0.0);
     }
 
     public static final class TurretConstants {
@@ -970,9 +971,9 @@ public final class Constants {
         public static final double PASS_ROTATION_TOLERANCE_RADIANS = Units.degreesToRadians(10);
 
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 300d : 0; 
-        public static final double I = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 25d : 0;
+        public static final double P = FieldConstants.IS_REAL ? 300d : 2250;
+        public static final double I = FieldConstants.IS_REAL ? 0 : 1000;
+        public static final double D = FieldConstants.IS_REAL ? 25d : 1350;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0; 
@@ -1023,12 +1024,12 @@ public final class Constants {
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0.5 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 0.5 : 2.5563E-23;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 0.03566;
+        public static final double S = FieldConstants.IS_REAL ? 0.169921875 : 0.012904;
+        public static final double V = FieldConstants.IS_REAL ? 0.11959999799728394 : 0.7779;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(
@@ -1069,9 +1070,9 @@ public final class Constants {
         public static final double PASS_POSITION_DEADBAND_RADIANS = 0.5;
         
         // TODO: tune these values
-        public static final double P = FieldConstants.IS_REAL ? 5050 : 0;
-        public static final double I = FieldConstants.IS_REAL ? 0: 0;
-        public static final double D = FieldConstants.IS_REAL ? 30 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 5050 : 600;
+        public static final double I = FieldConstants.IS_REAL ? 0: 25;
+        public static final double D = FieldConstants.IS_REAL ? 30 : 250;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0;
         public static final double S = FieldConstants.IS_REAL ? 0 : 0;
         public static final double V = FieldConstants.IS_REAL ? 0 : 0;
@@ -1122,7 +1123,7 @@ public final class Constants {
         public static final double CURRENT_LIMIT = 60.0;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 2.19;
+        public static final double MAX_ANGLE_RADIANS = FieldConstants.IS_REAL ? 2.19 : 2.5;
 
         public static final double STOW_POSITION_RADIANS = 0.2;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
@@ -1134,12 +1135,12 @@ public final class Constants {
 
         public static final double DEADBAND_RADIANS = 0.1;
 
-        public static final double P = FieldConstants.IS_REAL ? 100 : 0;
+        public static final double P = FieldConstants.IS_REAL ? 100 : 38.679;
         public static final double I = FieldConstants.IS_REAL ? 15 : 0;
-        public static final double D = FieldConstants.IS_REAL ? 10 : 0;
-        public static final double A = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double S = FieldConstants.IS_REAL ? 0 : 0;
-        public static final double V = FieldConstants.IS_REAL ? 0 : 0;
+        public static final double D = FieldConstants.IS_REAL ? 10 : 7.6543;
+        public static final double A = FieldConstants.IS_REAL ? 0 : 1.1752;
+        public static final double S = FieldConstants.IS_REAL ? 0 : 0.024287;
+        public static final double V = FieldConstants.IS_REAL ? 0 : 6.1972;
         public static final double G = FieldConstants.IS_REAL ? 0 : 0;
 
         public static final GainConstants GAINS = new GainConstants(

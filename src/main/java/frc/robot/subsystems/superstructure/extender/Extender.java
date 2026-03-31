@@ -5,32 +5,20 @@
 package frc.robot.subsystems.superstructure.extender;
 
 
-
-import edu.wpi.first.units.measure.Voltage;
-import frc.robot.RobotContainer;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.LoggingConstants;
-
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
+import frc.robot.util.Constants.ExtenderConstants;
+import frc.robot.util.Constants.LoggingConstants;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.*;
+import java.util.function.DoubleSupplier;
 
 public class Extender extends SubsystemBase {
 
@@ -78,6 +66,16 @@ public class Extender extends SubsystemBase {
         // ExtenderConstants.LOGGED_GAINS.onChanged(Commands.runOnce(() -> io.setGains(ExtenderConstants.LOGGED_GAINS.get())).ignoringDisable(true));
         // ExtenderConstants.LOGGED_TEST_POSITION.onChanged(Commands.runOnce(() -> testPosition = Units.degreesToRadians(ExtenderConstants.LOGGED_TEST_POSITION.get())).ignoringDisable(true));
         // ExtenderConstants.LOGGED_BRAKE_MODE.onChanged(Commands.runOnce(() -> io.setBrakeMode(ExtenderConstants.LOGGED_BRAKE_MODE.get())).ignoringDisable(true));
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET,
+                new Rotation3d()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(0, LoggingConstants.INTAKE_ROTATION_OFFSET, 0)
+        );
     }
 
     @Override
@@ -94,13 +92,43 @@ public class Extender extends SubsystemBase {
             io.setNeutral();
         }
         
-        RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(LoggingConstants.EXTENDER_OFFSET,  new Rotation3d(0, -inputs.positionRads, 0) );
+        RobotContainer.components3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(inputs.positionRads * 4.25),
+                LoggingConstants.EXTENDER_OFFSET.getY(),
+                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                new Rotation3d()
+        );
+        
+        RobotContainer.components3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(
+                        0,
+                        inputs.positionRads + LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
+        );
     }
 
     public void setPosition(double position) {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
         targetPosition = position;
         shouldRunSetpoint = true;
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(position * 4.25),
+                LoggingConstants.EXTENDER_OFFSET.getY(),
+                LoggingConstants.EXTENDER_OFFSET.getZ(),
+                new Rotation3d()
+        );
+        
+        RobotContainer.desiredComponents3d[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(
+                        0,
+                        position + LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
+        );
     }
 
     public void setNeutral() {

@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -62,9 +63,9 @@ public class RobotContainer {
     private EventLoop testButtonBindingLoop = new EventLoop();
     
     @AutoLogOutput (key = "Draggables/Components3d")
-    public static Pose3d[] components3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    public static Pose3d[] components3d = new Pose3d[5];
     @AutoLogOutput (key = "Draggables/DesiredComponents3d")
-    public static Pose3d[] desiredComponents3d = {new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d()};
+    public static Pose3d[] desiredComponents3d = new Pose3d[5];
 
     private final PatriBoxController driver;
     @SuppressWarnings("unused")
@@ -120,6 +121,8 @@ public class RobotContainer {
         driver = new PatriBoxController(OIConstants.DRIVER_CONTROLLER_PORT, OIConstants.DRIVER_DEADBAND);
         operator = new PatriBoxController(OIConstants.OPERATOR_CONTROLLER_PORT, OIConstants.OPERATOR_DEADBAND);
 
+        updateAllComponents3d();
+        
         // pdh = new PowerDistribution(30, ModuleType.kRev);
         // pdh.setSwitchableChannel(false);
 
@@ -129,7 +132,7 @@ public class RobotContainer {
         // SmartDashboard.putNumber("Total Power", totalPower);
         // voltage = pdh.getVoltage();
         // SmartDashboard.putNumber("Voltage", voltage);
-        
+
         swerve = new Swerve();
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(), 
@@ -439,5 +442,41 @@ public class RobotContainer {
                 System.err.println("Set main thread RT priority");
             })
         ).ignoringDisable(true);
+    }
+    
+    private void updateAllComponents3d() {
+        updateComponents(components3d);
+        
+        updateComponents(desiredComponents3d);
+    }
+    
+    private void updateComponents(Pose3d[] components) {
+        components[LoggingConstants.CLIMB_INDEX] = new Pose3d(
+                LoggingConstants.CLIMB_OFFSET,
+                new Rotation3d()
+        ); // 0 - climb
+        components[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
+                LoggingConstants.EXTENDER_OFFSET,
+                new Rotation3d()
+        ); // 1 - extender
+        components[LoggingConstants.INTAKE_INDEX] = new Pose3d(
+                LoggingConstants.INTAKE_OFFSET,
+                new Rotation3d(
+                        0,
+                        LoggingConstants.INTAKE_ROTATION_OFFSET,
+                        0
+                )
+        ); // 2 - intake
+        components[LoggingConstants.TURRET_INDEX] = new Pose3d(
+                LoggingConstants.TURRET_OFFSET,
+                new Rotation3d()
+        ); // 3 - turret
+        components[LoggingConstants.HOOD_INDEX] = new Pose3d(
+                LoggingConstants.HOOD_OFFSET,
+                new Rotation3d()
+        ).rotateAround(
+                components[LoggingConstants.TURRET_INDEX].getTranslation(),
+                components[LoggingConstants.TURRET_INDEX].getRotation()
+        ); // 4 - hood
     }
 }
