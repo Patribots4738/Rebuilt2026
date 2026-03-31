@@ -37,25 +37,19 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopIntake"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "Shoot"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
                 }
               },
               {
@@ -65,13 +59,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 4.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "name": "HalfStowIntake"
                       }
                     }
                   ]
@@ -81,13 +75,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
+                  "waitTime": 0.1
                 }
               },
               {
@@ -95,6 +89,19 @@
                 "data": {
                   "name": "StopShooting"
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1CLR-CenterLine"
+                }
               },
               {
                 "type": "named",
@@ -106,21 +113,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "BackHubLeft-Center Line"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center Line-1CLRRotated"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampFlywheel"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center Line-1CLR"
+                }
+              }
+            ]
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -128,81 +148,25 @@
                 }
               },
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
-              },
-              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 4.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "name": "HalfStowIntake"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShooting"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "1CLRRotated-BackhubLeft"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BackHubLeft-Center Line"
           }
         }
       ]
