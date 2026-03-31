@@ -257,18 +257,7 @@ public class Shooter extends SubsystemBase {
      * @param index 
      */
     public void setPassIndex(int index) {
-        if (passIndex == -1) {
-            passIndex = 0;
-        }
-        passIndex += index;
-
-        //TODO make sure this works idk if it will probably not im stupid
-        if (PoseCalculations.getZone(robotRelativePose.get()) == PoseCalculations.ZONE.inNeutralZone) {
-            MathUtil.clamp(passIndex, -1, 1);
-        } else {
-            passIndex = 0;
-        }
-
+        passIndex = index;
     }
 
     public void autoSetPassIndex() {
@@ -297,11 +286,12 @@ public class Shooter extends SubsystemBase {
         if (PoseCalculations.inShootingZone(robotRelativePose.get())) {
             target = Target.HUB;
             targetLocation = Target.HUB.location;
+            passIndex = 0;
         } 
-        else if (passIndex == 0) {
-            autoSetPassIndex();
-        }
         else {
+            if (passIndex == 0) {
+                autoSetPassIndex();
+            }
             target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
             targetLocation = target == Target.PASS_LEFT 
                                                 ? Target.PASS_LEFT.location 
