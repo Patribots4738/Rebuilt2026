@@ -301,7 +301,7 @@ public final class Constants {
             //"Double Center Rush Left", //this path has issues
             "Double Center Rush Right",
             "Outpost Center Rush", //maybe if we need it
-            "Center Depot", //this is for really good alliance
+            "Depot Center", //this is for really good alliance
             "Ballout",
             //"Cleanup Left", // no more clean up autos
             //"Depot Center Rush", //pathing is bad and also no

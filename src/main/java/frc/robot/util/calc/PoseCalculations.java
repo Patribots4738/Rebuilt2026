@@ -507,6 +507,6 @@ public class PoseCalculations {
     }
 
     public static boolean fieldHalf(Pose2d pos) {
-        return pos.getX() < (FieldConstants.FIELD_WIDTH / 2);
+        return pos.getY() < (FieldConstants.FIELD_WIDTH / 2);
     }
 }

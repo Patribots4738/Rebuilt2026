@@ -225,6 +225,9 @@ public class RobotContainer {
         // new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose(), swerve.getFieldRelativeVelocity())).and(() -> shooter.isManual())
         //     .whileTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
 
+        new Trigger(() -> PoseCalculations.fieldHalf(swerve.getPose()))
+        .onChange(shooter.setPassIndexCommand(0));
+
     }
 
     private void configureDevBindings(PatriBoxController controller) {
