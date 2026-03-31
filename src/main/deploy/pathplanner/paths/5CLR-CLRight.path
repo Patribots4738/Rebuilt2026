@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.418320645970759,
-        "y": 0.5541847674600957
+        "x": 4.007391722810394,
+        "y": 0.5953705486044272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.116510340581611,
-        "y": 0.743949110462688
+        "x": 5.705581417421246,
+        "y": 0.7851348916070194
       },
       "isLocked": false,
       "linkedName": "5CLR"
@@ -76,7 +76,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 2.0,
     "rotation": 110.0
   },
   "reversed": false,

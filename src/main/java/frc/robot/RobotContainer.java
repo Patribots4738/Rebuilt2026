@@ -112,6 +112,8 @@ public class RobotContainer {
     public static boolean freshCode = true;
     @AutoLogOutput (key = "Draggables/RobotPose2d")
     public static Pose2d robotPose2d = Pose2d.kZero;
+    @AutoLogOutput (key = "Draggables/TurretPose2d")
+    public static Pose2d turretPose2d = Pose2d.kZero;
     @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
     public static SwerveModuleState[] swerveMeasuredStates;
     @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
@@ -147,9 +149,8 @@ public class RobotContainer {
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
-            new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-threeg", false),
-            new VisionIOLimelight("limelight-hailo", true));
+            new VisionIOLimelight("limelight-intake", true), 
+            new VisionIOLimelight("limelight-left", true));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -207,6 +208,8 @@ public class RobotContainer {
         switch(OIConstants.DRIVER_MODE) {
             case DEV:
                 configureDevBindings(driver);
+            case CALIBRATION:
+                configureCalibrationBindings(driver);
                 break;
             default:
                 configureDriverBindings(driver);
@@ -243,30 +246,6 @@ public class RobotContainer {
         // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
-        controller.leftTrigger().onTrue(Commands.parallel(
-            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        ));
-
-        controller.leftBumper().onTrue(Commands.parallel(
-            intake.setPercentCommand(0.0),
-            spindexer.setPercentCommand(0.0),
-            kicker.setPercentCommand(0.0)
-        ));
-
-        controller.x().onTrue(shooter.toggleManualShootingCommand());
-        
-        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
-        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        controller.povDown().onTrue(flywheel.stopCommand());
-        controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
-        
-        controller.x().onTrue(hood.setPositionCommand(0));
-        controller.b().onTrue(hood.setIncrementedPositionCommand());
-        controller.y().onTrue(hood.incrementPositionCommand());
-        controller.a().onTrue(hood.decrementPositionCommand());
 
         // controller.rightBumper().onTrue(extender.feedShooter());
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
@@ -330,8 +309,7 @@ public class RobotContainer {
 
     private void configureDriverBindings(PatriBoxController controller) {
 
-        //controller.start().onTrue(vision.toggleMT1Command());
-        
+        controller.start().onTrue(vision.toggleMT1Command());
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
         controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
@@ -346,8 +324,8 @@ public class RobotContainer {
             superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
                 superstructure.ceaseFireCommand(),
                 shooter::isManual));
-        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(1));
 
         controller.povDown().onTrue(shooter.trackTargetCommand(false, false, false));
 
@@ -372,9 +350,41 @@ public class RobotContainer {
 
     private void configureCalibrationBindings(PatriBoxController controller) {
 
+        controller.leftTrigger().onTrue(Commands.parallel(
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        ));
+
+        controller.leftBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(0.0),
+            spindexer.setPercentCommand(0.0),
+            kicker.setPercentCommand(0.0)
+        ));
+
+        controller.x().onTrue(shooter.toggleManualShootingCommand());
+        
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
+
+
+
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        controller.povDown().onTrue(flywheel.stopCommand());
+        controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
+        
+        controller.x().onTrue(hood.setPositionCommand(0));
+        controller.b().onTrue(hood.setIncrementedPositionCommand());
+        controller.y().onTrue(hood.incrementPositionCommand());
+        controller.a().onTrue(hood.decrementPositionCommand());
     }
 
     public Command getAutonomousCommand() {
+        if (pathPlannerStorage.getSelectedAutoName().equals("Ballout")) {
+            return extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS)
+                    .until(() -> extender.atPosition(ExtenderConstants.HALF_STOW_RADIANS))
+                    .andThen(superstructure.fireNoFeedShooterCommand());
+        }
         return pathPlannerStorage.getSelectedAuto();
     }
 
@@ -429,7 +439,10 @@ public class RobotContainer {
         extender.setBrakeMode(true);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
-        // CommandScheduler.getInstance().schedule(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
+        CommandScheduler.getInstance().schedule(
+            extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+            .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
+            .andThen(shooter.trackTargetCommand(true, false, false)));
 
         //vision.controlRecording(true);
     }
@@ -445,14 +458,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot", superstructure.fireNoFeedShooterCommand());
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
         NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
-        NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(0.0)));
+        NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
         //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
-        NamedCommands.registerCommand("HalfStowIntake", superstructure.setIntakeState(IntakeState.HALF_STOW));
+        NamedCommands.registerCommand("HalfStowIntake", superstructure.setIntakeState(IntakeState.HALF_STOW_WITH_ROLLERS));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
         NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));

@@ -113,11 +113,11 @@ public class Flywheel extends SubsystemBase {
     }
 
     private void decrementSpeed() {
-        incrementedSpeed -= 100;
+        incrementedSpeed -= 50;
     }
 
     private void incrementSpeed() {
-        incrementedSpeed += 100;
+        incrementedSpeed += 50;
     }
 
     public Command decrementSpeedCommand() {

@@ -130,11 +130,11 @@ public class Hood extends SubsystemBase {
     }
 
     private void decrementPosition() {
-        incrementedPosition -= 1;
+        incrementedPosition -= 0.5;
     }
 
     private void incrementPosition() {
-        incrementedPosition += 1;
+        incrementedPosition += 0.5;
     }
 
     public Command decrementPositionCommand() {

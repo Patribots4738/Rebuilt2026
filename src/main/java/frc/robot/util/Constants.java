@@ -302,6 +302,7 @@ public final class Constants {
             "Double Center Rush Right",
             "Outpost Center Rush", //maybe if we need it
             "Center Depot", //this is for really good alliance
+            "Ballout",
             //"Cleanup Left", // no more clean up autos
             //"Depot Center Rush", //pathing is bad and also no
             //"Half Center Line Pass Right" //not gonna work
@@ -874,7 +875,10 @@ public final class Constants {
        public final static int[] OUTPOST_TAGS = new int[] {13, 14, 29, 30};
        public final static int[] TOWER_TAGS =  new int[] {15, 16, 31, 32};
        public final static int[] TRENCH_TAGS = new int[] {1, 6, 7, 12, 17, 22, 23, 28};
-       public final static int[] VALID_TAGS = new int[] {2, 11, 10, 9, 8, 5, 21, 24, 18, 27, 26, 25};
+       public final static int[] VALID_TAGS = new int[] {2, 11, 10, 9, 8, 5, 21, 24, 18, 27, 26, 25, 12, 7, 23, 28};
+       public final static int[] SHOT_CALIBRATION_TAGS = HUB_TAGS;
+       public final static int[] RED_AUTO_TAGS = new int[] {11, 12, 5, 8, 9, 10, 1, 6, 7, 2};
+       public final static int[] BLUE_AUTO_TAGS = new int[] {22, 23, 17, 28, 18, 27, 25, 26, 21, 24};
     }
 
     public static final class ClimbConstants {
@@ -997,12 +1001,16 @@ public final class Constants {
         public static final double ACCELERATION = 1.0;
         public static final double JERK = 0.5;
 
-        public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(0.000, 0.000, 0.000, Rotation3d.kZero);
+        public static final Transform3d TURRET_TO_ROBOT_TRANSFORM3D = new Transform3d(-0.114, 0.102, 0.000, Rotation3d.kZero);
         public static final Transform2d TURRET_TO_ROBOT_TRANSFORM2D = new Transform2d(
             TURRET_TO_ROBOT_TRANSFORM3D.getX(),
             TURRET_TO_ROBOT_TRANSFORM3D.getY(),
             TURRET_TO_ROBOT_TRANSFORM3D.getRotation().toRotation2d()
         );
+
+        public static final double TURRET_TO_REAR_FRAMEBAR_OFFSET = 0.241;
+
+        public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH;
     }
 
     public static final class FlywheelConstants {
@@ -1132,7 +1140,7 @@ public final class Constants {
 
         public static final double STOW_POSITION_RADIANS = 0.3;
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
-        public static final double HALF_STOW_RADIANS = INTAKE_POSITION_RADIANS / 2;
+        public static final double HALF_STOW_RADIANS = 2 * INTAKE_POSITION_RADIANS / 3;
         public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 1.5;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
@@ -1163,6 +1171,9 @@ public final class Constants {
         public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
 
         public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
+
+        public static final double VELOCITY = 1.5;
+        public static final double ACCELERATION = 1.5;
     }
 
     public static final class KickerConstants {
@@ -1224,10 +1235,14 @@ public final class Constants {
 
         public static Rotation3d zeroRotation = new Rotation3d();
 
+        public static double HALF_HUB_WIDTH = 0.5984875;
+
         public static final double FIELD_LENGTH = 16.5890;
         public static final double FIELD_WIDTH = 8.0756;
 
-        public static final double ALLIANCE_SHOT_TOLERANCE = 0.55;
+        public static final double ALLIANCE_SHOT_TOLERANCE = 0.85;
+
+        public static final double OVERSHOOT_COMPENSATION = 0.2;
 
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));

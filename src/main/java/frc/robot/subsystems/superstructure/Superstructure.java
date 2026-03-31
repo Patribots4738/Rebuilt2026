@@ -82,6 +82,7 @@ public class Superstructure {
         NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
         INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
         HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0),
+        HALF_STOW_WITH_ROLLERS(ExtenderConstants.HALF_STOW_RADIANS, IntakeConstants.INTAKE_PERCENT),
         WIGGLE(ExtenderConstants.WIGGLE_RADIANS, IntakeConstants.INTAKE_PERCENT);
 
         public double extenderPosition;

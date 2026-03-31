@@ -97,8 +97,16 @@ public class Vision extends SubsystemBase {
             camera.updateInputs(inputs[i]);
             Logger.processInputs("SubsystemInputs/Vision/Camera" + i, inputs[i]);
 
-            if (Robot.gameMode == GameMode.DISABLED) {
-                camera.setUsedTags(CameraConstants.ALL_TAGS);
+            // if (Robot.gameMode == GameMode.DISABLED) {
+            //     camera.setUsedTags(CameraConstants.ALL_TAGS);
+            // }
+            if (Robot.gameMode == GameMode.AUTONOMOUS || Robot.gameMode == GameMode.DISABLED) {
+                if (Robot.isRedAlliance()) {
+                    camera.setUsedTags(CameraConstants.RED_AUTO_TAGS);
+                }
+                else {
+                    camera.setUsedTags(CameraConstants.BLUE_AUTO_TAGS);
+                }
             }
             else {
                 camera.setUsedTags(CameraConstants.VALID_TAGS);

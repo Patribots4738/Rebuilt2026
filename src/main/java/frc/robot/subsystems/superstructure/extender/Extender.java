@@ -45,6 +45,8 @@ public class Extender extends SubsystemBase {
     private double testPosition;
     private boolean wiggle;
 
+    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(ExtenderConstants.VELOCITY, ExtenderConstants.ACCELERATION));
+
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Extender/FastProfile/Acceleration", ExtenderConstants.FAST_ACCELERATION);

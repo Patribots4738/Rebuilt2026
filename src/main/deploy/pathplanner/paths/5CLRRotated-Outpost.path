@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.083358999037536,
-        "y": 0.6206929740134739
+        "x": 3.24771896053898,
+        "y": 0.7677386363636367
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.148204182368512,
-        "y": 0.6137213099851635
+        "x": 2.312564143869956,
+        "y": 0.7607669723353263
       },
       "isLocked": false,
       "linkedName": "5CLRRotated"
@@ -62,7 +62,7 @@
   "folder": "Starting Line",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -158.86521435129853
   },
   "useDefaultConstraints": true
 }

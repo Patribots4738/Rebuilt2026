@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.418320645970759,
-        "y": 0.5541847674600957
+        "x": 4.007391722810394,
+        "y": 0.5953705486044272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.67070259865255,
-        "y": 0.35902791145332
+        "x": 8.177151106833492,
+        "y": 0.409672762271415
       },
       "isLocked": false,
       "linkedName": "5CLR"
@@ -20,8 +20,8 @@
         "y": 3.1951395572666024
       },
       "prevControl": {
-        "x": 7.679092756828476,
-        "y": 1.2595747864957265
+        "x": 8.329085659287777,
+        "y": 1.3466025024061592
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.557986870897156,
+      "waypointRelativePos": 0.07244318181818186,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.3536931818181819,
       "rotationDegrees": 70.0
     }
   ],
