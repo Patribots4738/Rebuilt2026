@@ -453,17 +453,18 @@ public class PoseCalculations {
      * @param pos
      * @return true if hood conflicts with trench, false otherwise
      */
-	public static boolean shouldPutHoodDown(Pose2d pos, ChassisSpeeds fieldRelativeSpeeds) {
+	public static boolean shouldPutHoodDown(Pose2d pos, ChassisSpeeds robotSpeeds) {
 		Pose2d hoodPose = new Pose2d(
 				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
 				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
 				pos.getRotation()
 		);
 
-        double dx = fieldRelativeSpeeds.vxMetersPerSecond * HoodConstants.STOW_TIME;
-        double dy = fieldRelativeSpeeds.vyMetersPerSecond * HoodConstants.STOW_TIME;
+        double dx = robotSpeeds.vxMetersPerSecond * HoodConstants.STOW_TIME;
+        double dy = robotSpeeds.vyMetersPerSecond * HoodConstants.STOW_TIME;
+        double dOmega = robotSpeeds.omegaRadiansPerSecond * HoodConstants.STOW_TIME;
 
-        pos.transformBy(new Transform2d(dx, dy, pos.getRotation()));
+        pos.exp(new Twist2d(dx, dy, dOmega));
 		return inTrench(hoodPose);
 	}
 	
