@@ -465,6 +465,7 @@ public class PoseCalculations {
         double dOmega = robotSpeeds.omegaRadiansPerSecond * HoodConstants.STOW_TIME;
 
         pos.exp(new Twist2d(dx, dy, dOmega));
+        
 		return inTrench(hoodPose);
 	}
 	
