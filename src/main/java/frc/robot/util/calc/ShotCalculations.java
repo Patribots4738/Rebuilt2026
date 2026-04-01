@@ -2,9 +2,6 @@ package frc.robot.util.calc;
 
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,9 +12,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
 import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
@@ -227,6 +222,7 @@ public class ShotCalculations {
         passingShotFlywheelSpeedMap.put(6.97611, 4100.0);
         passingShotFlywheelSpeedMap.put(7.28091, 4200.0);
         passingShotFlywheelSpeedMap.put(7.58571, 4300.0);
+        passingShotFlywheelSpeedMap.put(14.0,7000.0);
 
         passingTimeOfFlightMap.put(1.03251, 1d);
         passingTimeOfFlightMap.put(1.64211, 0.9);
