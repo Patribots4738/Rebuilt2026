@@ -79,12 +79,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "StopShooting"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.1
@@ -93,7 +87,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Debugging"
+                  "name": "StopShooting"
                 }
               }
             ]
@@ -104,12 +98,6 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Debugging"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
                   "pathName": "1CLR-CenterLine"
@@ -118,19 +106,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Debugging"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "Intake"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Debugging"
                 }
               }
             ]
