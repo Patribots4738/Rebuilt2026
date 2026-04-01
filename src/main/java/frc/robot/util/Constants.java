@@ -1380,6 +1380,19 @@ public final class Constants {
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
         public static final double TRENCH_WIDTH = 1.5772;
+
+        public static final List<Pose2d> TRENCH_CENTERS = new ArrayList<Pose2d>() {{
+            Pose3d redTrench1Center = TRENCH_CENTER_SIDE1_RED;
+            Pose3d redTrench2Center = PoseCalculations.flipPose3dY(TRENCH_CENTER_SIDE1_RED);
+            Pose3d blueTrench1Center = PoseCalculations.mirrorPose3d(redTrench1Center);
+            Pose3d blueTrench2Center = PoseCalculations.flipPose3dY(blueTrench1Center);
+
+            add(redTrench1Center.toPose2d());
+            add(redTrench2Center.toPose2d());
+            add(blueTrench1Center.toPose2d());
+            add(blueTrench2Center.toPose2d());
+
+        }};
         public static final List<Pose2d> TRENCHES = new ArrayList<Pose2d>() {{
             //RED TRENCHES
             //Side 1
