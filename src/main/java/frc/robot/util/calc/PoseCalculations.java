@@ -428,19 +428,8 @@ public class PoseCalculations {
      * @return true if inside trench
      */
     public static boolean inTrench(Pose2d pos) {
-        boolean ans = false;
-        if (
-            (pos.getY() > FieldConstants.TRENCHES.get(3).getY() && pos.getY() < FieldConstants.TRENCHES.get(9).getY())
-            && 
-            (
-                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
-                || 
-                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
-            )
-            ) {
-            ans = true;
-        }
-        return ans;
+        Pose2d trenchCenter = nearest(pos, FieldConstants.TRENCH_CENTERS);
+        return MathUtil.isNear(pos.getX(), trenchCenter.getX(), FieldConstants.TRENCH_WIDTH) && MathUtil.isNear(pos.getY(), trenchCenter.getY(), FieldConstants.TRENCH_LENGTH);
     }
 
     /**
