@@ -1249,7 +1249,7 @@ public final class Constants {
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_LEFT = new Pose2d(4.343, 7.354, new Rotation2d(0.0));
         public static final Pose2d ALLIANCE_LINE_SHOT_RED_RIGHT = new Pose2d(4.312, 0.510, new Rotation2d(0.0));
 
-        
+
         public static final double CENTER_LINE_X = 8.2499;
         public static final double ALLIANCE_LINE_BLUE = 4.0271;
         public static final double ALLIANCE_LINE_RED = 12.5488;
