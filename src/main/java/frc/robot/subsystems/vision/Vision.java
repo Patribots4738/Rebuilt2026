@@ -225,20 +225,22 @@ public class Vision extends SubsystemBase {
             //     }
             // }
 
-            if (maxTagCount > 2 && maxTagArea > 0.10) {
+            if (maxTagCount > 1 && maxTagArea > 0.4) {
                 xyStds = Math.hypot(0.001, 0.002);
-                radStds = 0.002;
-            }
-            else if (maxTagCount > 1 && maxTagArea > 0.10) {
+                radStds = 0.001;
+            } else if (maxTagArea > 1.5) {
+                xyStds = Math.hypot(0.001, 0.001);
+                radStds = 0.001;
+            } else if (maxTagCount > 1 && maxTagArea > 0.10) {
                 // Multiple targets or one huge target 
                 // Trust the vision more
-                xyStds = Math.hypot(0.01, 0.01);
-                radStds = 0.015;
+                xyStds = Math.hypot(0.01, 0.001);
+                radStds = 0.001;
             }
             // 1 target with large area
             else if (maxTagArea > 0.18) {
-                xyStds = Math.hypot(0.02, 0.02);
-                radStds = 0.02;
+                xyStds = Math.hypot(0.004, 0.02);
+                radStds = 0.008;
             } else {
                 return;
             }

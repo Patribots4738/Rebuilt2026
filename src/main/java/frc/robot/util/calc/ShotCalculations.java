@@ -222,7 +222,8 @@ public class ShotCalculations {
         passingShotFlywheelSpeedMap.put(6.97611, 4100.0);
         passingShotFlywheelSpeedMap.put(7.28091, 4200.0);
         passingShotFlywheelSpeedMap.put(7.58571, 4300.0);
-        passingShotFlywheelSpeedMap.put(14.0,7000.0);
+        passingShotFlywheelSpeedMap.put(9.0,5000.0);
+        passingShotFlywheelSpeedMap.put(14.0,5000.0);
 
         passingTimeOfFlightMap.put(1.03251, 1d);
         passingTimeOfFlightMap.put(1.64211, 0.9);

@@ -55,12 +55,6 @@ public class Shooter extends SubsystemBase {
 
     private Set<SubsystemBase> requirements;
 
-    @AutoLogOutput (key = "Subsytems/shooter/EstimatedHoodAngle")
-    private double estimatedHoodAngle = shotParams.hoodAngle();
-
-    @AutoLogOutput (key = "Subsytems/shooter/EsitmatedFlywheelSpeed")
-    private double estimatedFlywheelSpeed = shotParams.flywheelSpeed();
-
     public Shooter(Supplier<Pose2d> robotRelativePose, Supplier<ChassisSpeeds> robotRelativeVelocity, Turret turret, Flywheel flywheel, Hood hood) {
         this.robotRelativePose = robotRelativePose;
         this.robotRelativeVelocity = robotRelativeVelocity;
@@ -117,9 +111,6 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         updateTarget(robotRelativePose.get());
         calculateShotParams();
-        estimatedFlywheelSpeed = shotParams.flywheelSpeed();
-        estimatedHoodAngle = shotParams.hoodAngle();
-        // set turret's param in turret
     
         if (isManual()) {
             setTrackTarget(false, false, false);

@@ -143,7 +143,7 @@ public class Extender extends SubsystemBase {
     
     public Command feedShooterCommand() {
         wiggle = true;
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
     }
 
     public Command feedShooterToggleCommand() {

@@ -70,6 +70,12 @@
                 "data": {
                   "name": "Shoot"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wiggle Intake"
+                }
               }
             ]
           }
