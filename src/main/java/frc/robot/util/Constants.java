@@ -298,7 +298,7 @@ public final class Constants {
                 Units.degreesToRadians(45)));
 
         public static final String[] AUTO_NAMES = new String[] {
-            //"Double Center Rush Left", //this path has issues
+            "Double Center Rush Left", //this path has issues
             "Double Center Rush Right",
             "Outpost Center Rush", //maybe if we need it
             "Depot Center", //this is for really good alliance
@@ -875,7 +875,7 @@ public final class Constants {
        public final static int[] OUTPOST_TAGS = new int[] {13, 14, 29, 30};
        public final static int[] TOWER_TAGS =  new int[] {15, 16, 31, 32};
        public final static int[] TRENCH_TAGS = new int[] {1, 6, 7, 12, 17, 22, 23, 28};
-       public final static int[] VALID_TAGS = new int[] {2, 11, 10, 9, 8, 5, 21, 24, 18, 27, 26, 25, 12, 7, 23, 28};
+       public final static int[] VALID_TAGS = new int[] {2, 11, 10,  9, 8, 5, 21, 24, 18, 27, 26, 25, 12, 7, 23, 28};
        public final static int[] SHOT_CALIBRATION_TAGS = HUB_TAGS;
        public final static int[] RED_AUTO_TAGS = new int[] {11, 12, 5, 8, 9, 10, 1, 6, 7, 2};
        public final static int[] BLUE_AUTO_TAGS = new int[] {22, 23, 17, 28, 18, 27, 25, 26, 21, 24};

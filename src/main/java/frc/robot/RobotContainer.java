@@ -473,6 +473,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
         NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));
         NamedCommands.registerCommand("StowHood", shooter.forceHoodDownCommand());
+        NamedCommands.registerCommand("Debugging", superstructure.printCommand());
 
         // NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         // NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));

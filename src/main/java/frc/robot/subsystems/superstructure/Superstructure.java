@@ -187,4 +187,10 @@ public class Superstructure {
             kicker.setNeutralCommand()
         );
     }
+    public void printing(){
+        System.out.println("This line ran");
+    }
+    public Command printCommand(){
+        return Commands.runOnce(()-> printing());
+    }
 }
