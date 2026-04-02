@@ -444,10 +444,16 @@ public class RobotContainer {
         extender.setBrakeMode(true);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
-        CommandScheduler.getInstance().schedule(
-            extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
-            .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
-            .andThen(shooter.trackTargetCommand(true, false, false)));
+        
+        if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
+            CommandScheduler.getInstance().schedule(
+                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+                .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
+                .andThen(shooter.trackTargetCommand(true, false, false)));
+        }
+        else {
+            CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
+        }
 
         //vision.controlRecording(true);
     }
