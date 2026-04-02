@@ -1383,9 +1383,9 @@ public final class Constants {
             return TOWERS.subList(startindex, startindex + 1);
         }
 
-        public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6204, 0.7672, 0.5651, zeroRotation);
-        public static final double TRENCH_Y_DIM = 1.2851;
-        public static final double TRENCH_X_DIM = 1.1557;
+        public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
+        public static final double TRENCH_LENGTH = 1.1859;
+        public static final double TRENCH_WIDTH = 1.5772;
 
         public static final List<Pose2d> TRENCH_CENTERS = new ArrayList<Pose2d>() {{
             Pose3d redTrench1Center = TRENCH_CENTER_SIDE1_RED;
@@ -1399,7 +1399,6 @@ public final class Constants {
             add(blueTrench2Center.toPose2d());
 
         }};
-        
         public static final List<Pose2d> TRENCHES = new ArrayList<Pose2d>() {{
             //RED TRENCHES
             //Side 1

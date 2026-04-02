@@ -4,6 +4,12 @@
 
 package frc.robot.subsystems.vision;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,14 +21,6 @@ import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
-import frc.robot.util.calc.PoseCalculations;
-import frc.robot.util.calc.PoseCalculations.ZONE;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Vision extends SubsystemBase {
 
@@ -63,11 +61,12 @@ public class Vision extends SubsystemBase {
             inputs[i] = new VisionIOInputsAutoLogged();
         }
         this.poseEstimator = poseEstimator;
+        
     }
 
     @Override
     public void periodic() {
-        boolean shouldUseMT2 = !shouldUseMT1();
+        boolean shouldUseMT2 = false;
         double currentYawDegrees = poseEstimator.getEstimatedPosition().getRotation().getDegrees();
         for (int i = 0; i < cameras.length; i++) {
             VisionIO camera = cameras[i];
@@ -86,7 +85,6 @@ public class Vision extends SubsystemBase {
             camera.setRobotOrientation(currentYawDegrees);
             camera.updateInputs(inputs[i]);
             Logger.processInputs("SubsystemInputs/Vision/Camera" + i, inputs[i]);
-            camera.setUsedTags(CameraConstants.ALL_TAGS);
 
             // if (Robot.gameMode == GameMode.DISABLED) {
             //     camera.setUsedTags(CameraConstants.ALL_TAGS);
@@ -114,13 +112,15 @@ public class Vision extends SubsystemBase {
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT1Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-four").pose);
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT2Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-four").pose);
 
-            // if (alignmentSupplier.get() == AlignmentMode.REEF) {
-            //     int reefTag = closestReefTag();
-            //     // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
-            //     camera.setUsedTags(new int[] { reefTag });
-            // } else {
-            //     camera.setUsedTags(FieldConstants.REEF_TAGS);
-            // }
+
+            //when pose calcs are done fix this to align to starting line and ramp
+          //  if (alignmentSupplier.get() == AlignmentMode.RAMP) {
+           //     int reefTag = closestReefTag();
+                // Logger.recordOutput("Subsystems/Vision/ClosestReefTag", reefTag);
+            ///    camera.setUsedTags(new int[] { reefTag });
+           // } else {
+             //   camera.setUsedTags(FieldConstants.REEF_TAGS);
+           // }
         }
 
         updatePoseEstimator();
@@ -175,14 +175,14 @@ public class Vision extends SubsystemBase {
         }
 
         
-        // Logger.recordOutput("Subsystems/Vision/TagCount", tagCount);
-        // Logger.recordOutput("Subsystems/Vision/TagArea", tagArea);
+        Logger.recordOutput("Subsystems/Vision/TagCount", tagCount);
+        Logger.recordOutput("Subsystems/Vision/TagArea", tagArea);
 
         double xyStds = 0.0;
         double radStds = 0.0;
 
         int maxTagCount = 0;
-        int maxCountIndex = 0;
+        int maxTagIndex = 0;
         double maxTagArea = 0;
 
         // ArrayList<Integer> maxTagCams = new ArrayList<Integer>(); 
@@ -232,15 +232,6 @@ public class Vision extends SubsystemBase {
                 radStds = 0.008;
             } else {
                 return;
-            }
-
-            // update the pose estimator
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
-            if (maxTagCount > 1) {
-                poseEstimator.addVisionMeasurement(inputs[maxCountIndex].robotPose, inputs[maxCountIndex].timestampSeconds);
-            }
-            else {
-                poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
             }
         }
 
@@ -319,9 +310,6 @@ public class Vision extends SubsystemBase {
         return true;
     }
 
-    // private int closestReefTag() {
-    //     return PoseCalculations.getClosestReefSide(poseEstimator.getEstimatedPosition()).getTagId();
-    // }
 
     public Command toggleMT1Command() {
         return runOnce(() -> this.useMT1Override = !this.useMT1Override);
@@ -340,31 +328,4 @@ public class Vision extends SubsystemBase {
         return (!(Robot.exitAuto)) && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION && (Robot.gameMode == GameMode.DISABLED || !rotationUpdated) || useMT1Override;
     }
 
-    public void controlRecording(boolean control, boolean fromBoot) {
-        if (!fromBoot) {
-            if (control) {
-                for (VisionIO camera : cameras) {
-                    if (camera.getIsLL4()) {
-                        camera.startRecording();
-                    }
-                }
-            } else {
-                for (VisionIO camera : cameras) {
-                    if (camera.getIsLL4()) {
-                        camera.endRecording();
-                    }
-                }
-            }
-        } else {
-            for (VisionIO camera : cameras) {
-                if (camera.getIsLL4()) {
-                    camera.endRecording();
-                }
-            }
-        }
-    }
-    
-    public void controlRecording(boolean control) {
-        controlRecording(control, false);
-    }
 }

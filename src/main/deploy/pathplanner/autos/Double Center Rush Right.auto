@@ -57,22 +57,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
                         "waitTime": 4.0
                       }
                     },
                     {
-                      "type": "deadline",
+                      "type": "named",
                       "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "HalfStowIntake"
-                            }
-                          }
-                        ]
+                        "name": "Wiggle Intake"
                       }
                     }
                   ]
@@ -159,15 +152,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
                         "waitTime": 4.0
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "name": "HalfStowIntake"
+                        "name": "Wiggle Intake"
                       }
                     }
                   ]

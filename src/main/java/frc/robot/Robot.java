@@ -16,10 +16,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.KrakenMotorConstants;
 import frc.robot.util.Constants.LoggingConstants;
-// import frc.robot.util.Constants.NeoMotorConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 // import frc.robot.util.hardware.rev.Neo;
 // import frc.robot.util.hardware.rev.NeoPhysicsSim;
@@ -82,7 +80,7 @@ public class Robot extends LoggedRobot {
         robotContainer = new RobotContainer();
         DriverStation.silenceJoystickConnectionWarning(true);
 
-        RobotContainer.threadRTCommand().schedule();
+        CommandScheduler.getInstance().schedule(RobotContainer.threadRTCommand());
     }
 
     /**

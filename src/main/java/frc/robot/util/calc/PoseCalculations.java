@@ -17,13 +17,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Robot;
-import frc.robot.util.Constants;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
@@ -195,16 +193,16 @@ public class PoseCalculations {
         Pose2d newPos = new Pose2d();
         switch(side) {
             case 'L':
-                newPos = new Pose2d((pos.getX() - (FieldConstants.TRENCH_X_DIM / 2)), pos.getY(), pos.getRotation().toRotation2d());
+                newPos = new Pose2d((pos.getX() - FieldConstants.TRENCH_LENGTH), pos.getY(), pos.getRotation().toRotation2d());
             break;
             case 'R':
-                newPos = new Pose2d((pos.getX() + (FieldConstants.TRENCH_X_DIM / 2)), pos.getY(), pos.getRotation().toRotation2d());
+                newPos = new Pose2d((pos.getX() + FieldConstants.TRENCH_LENGTH), pos.getY(), pos.getRotation().toRotation2d());
             break;
             case 'U':
-                newPos = new Pose2d(pos.getX(), (pos.getY() + (FieldConstants.TRENCH_Y_DIM / 2)), pos.getRotation().toRotation2d());
+                newPos = new Pose2d(pos.getX(), (pos.getY() + FieldConstants.TRENCH_WIDTH), pos.getRotation().toRotation2d());
             break;
             case 'D':
-                newPos = new Pose2d(pos.getX(), (pos.getY() - FieldConstants.TRENCH_Y_DIM), pos.getRotation().toRotation2d());
+                newPos = new Pose2d(pos.getX(), (pos.getY() - FieldConstants.TRENCH_WIDTH), pos.getRotation().toRotation2d());
             break;
         }
         return newPos;

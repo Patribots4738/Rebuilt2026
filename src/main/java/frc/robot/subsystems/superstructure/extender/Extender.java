@@ -5,6 +5,11 @@
 package frc.robot.subsystems.superstructure.extender;
 
 
+import java.util.function.DoubleSupplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -15,10 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.LoggingConstants;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
-import java.util.function.DoubleSupplier;
 
 public class Extender extends SubsystemBase {
 
@@ -33,7 +34,7 @@ public class Extender extends SubsystemBase {
     private double testPosition;
     private boolean wiggle;
 
-    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(ExtenderConstants.VELOCITY, ExtenderConstants.ACCELERATION));
+    // private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(ExtenderConstants.VELOCITY, ExtenderConstants.ACCELERATION));
 
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);

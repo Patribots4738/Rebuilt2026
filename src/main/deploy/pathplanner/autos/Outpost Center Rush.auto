@@ -79,12 +79,6 @@
               }
             ]
           }
-        },
-        {
-          "type": "race",
-          "data": {
-            "name": "StopShooting"
-          }
         }
       ]
     }
