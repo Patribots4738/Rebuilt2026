@@ -2,9 +2,6 @@ package frc.robot.util.calc;
 
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,8 +12,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.util.Units;
-import frc.robot.util.Constants.HoodConstants;
+import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
 
@@ -65,71 +61,127 @@ public class ShotCalculations {
         maxDistance = 5.60;
 
         //Hub
-        hubShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(0.035));
-        hubShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(0.10472));
-        hubShotAngleHoodMap.put(1.94691, Rotation2d.fromRadians(0.139626));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 0.604 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.079));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 0.910 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.087));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 1.215 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.10472));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 1.517 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.122173));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 1.829 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.139626));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 2.133 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.148353));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 2.430 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.18326));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 2.735 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.18326));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 3.044 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.191986));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 3.355 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.20944));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 3.661 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.20944));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 3.963 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.20944));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 4.266 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.226893));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 4.574 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.235619));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 4.879 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.253073));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 5.190 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.261799));
+        hubShotAngleHoodMap.put(TurretConstants.SHOT_OFFSET + 5.501 + FieldConstants.OVERSHOOT_COMPENSATION, Rotation2d.fromRadians(0.270526));
+
+
+
+        // hubShotAngleHoodMap.put(1.64211, Rotation2d.fromRadians(0.10472));
+        // hubShotAngleHoodMap.put(1.94691, Rotation2d.fromRadians(0.139626));
         // hubShotAngleHoodMap.put(2.25171, Rotation2d.fromRadians(0.139626));
-        hubShotAngleHoodMap.put(2.55651, Rotation2d.fromRadians(0.15708));
+        // hubShotAngleHoodMap.put(2.55651, Rotation2d.fromRadians(0.15708));
         // hubShotAngleHoodMap.put(2.86131, Rotation2d.fromRadians(0.15708));
-        hubShotAngleHoodMap.put(3.16611, Rotation2d.fromRadians(0.174533));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(136.65), Rotation2d.fromRadians(0.19186));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(148.65), Rotation2d.fromRadians(0.244346));
+        // hubShotAngleHoodMap.put(3.16611, Rotation2d.fromRadians(0.174533));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(136.65), Rotation2d.fromRadians(0.19186));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(148.65), Rotation2d.fromRadians(0.244346));
         // hubShotAngleHoodMap.put(Units.inchesToMeters(160.65), Rotation2d.fromRadians(0.244346));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(172.65), Rotation2d.fromRadians(0.279253));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(172.65), Rotation2d.fromRadians(0.279253));
         // hubShotAngleHoodMap.put(Units.inchesToMeters(184.65), Rotation2d.fromRadians(0.279253));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(196.65), Rotation2d.fromRadians(0.261799));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(196.65), Rotation2d.fromRadians(0.261799));
         // hubShotAngleHoodMap.put(Units.inchesToMeters(208.65), Rotation2d.fromRadians(0.261799));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(220.65), Rotation2d.fromRadians(0.279253));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(232.65), Rotation2d.fromRadians(0.296706));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(244.65), Rotation2d.fromRadians(0.314159));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(220.65), Rotation2d.fromRadians(0.279253));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(232.65), Rotation2d.fromRadians(0.296706));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(244.65), Rotation2d.fromRadians(0.314159));
         // hubShotAngleHoodMap.put(Units.inchesToMeters(256.65), Rotation2d.fromRadians(0.314159));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(268.65), Rotation2d.fromRadians(0.331613));
-        hubShotAngleHoodMap.put(Units.inchesToMeters(280.65), Rotation2d.fromRadians(0.349066));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(268.65), Rotation2d.fromRadians(0.331613));
+        // hubShotAngleHoodMap.put(Units.inchesToMeters(280.65), Rotation2d.fromRadians(0.349066));
         // hubShotAngleHoodMap.put(Units.inchesToMeters(292.65), Rotation2d.fromRadians(0.349066));
 
-        hubShotFlywheelSpeedMap.put(1.03251, 3000.0);
+
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 0.604 + FieldConstants.OVERSHOOT_COMPENSATION, 3150.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 0.910 + FieldConstants.OVERSHOOT_COMPENSATION, 3200.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 1.215 + FieldConstants.OVERSHOOT_COMPENSATION, 3250.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 1.517 + FieldConstants.OVERSHOOT_COMPENSATION, 3250.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 1.829 + FieldConstants.OVERSHOOT_COMPENSATION, 3350.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 2.133 + FieldConstants.OVERSHOOT_COMPENSATION, 3500.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 2.430 + FieldConstants.OVERSHOOT_COMPENSATION, 3500.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 2.735 + FieldConstants.OVERSHOOT_COMPENSATION, 3650.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 3.044 + FieldConstants.OVERSHOOT_COMPENSATION, 3750.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 3.355 + FieldConstants.OVERSHOOT_COMPENSATION, 3800.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 3.661 + FieldConstants.OVERSHOOT_COMPENSATION, 3900.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET +  3.963 + FieldConstants.OVERSHOOT_COMPENSATION, 4000.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 4.266 + FieldConstants.OVERSHOOT_COMPENSATION, 4050.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 4.574 + FieldConstants.OVERSHOOT_COMPENSATION, 4200.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 4.879 + FieldConstants.OVERSHOOT_COMPENSATION, 4250.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 5.190 + FieldConstants.OVERSHOOT_COMPENSATION, 4300.0);
+        hubShotFlywheelSpeedMap.put(TurretConstants.SHOT_OFFSET + 5.501 + FieldConstants.OVERSHOOT_COMPENSATION, 4350.0);
+        
+        // hubShotFlywheelSpeedMap.put(1.03251, 3000.0);
         // hubShotFlywheelSpeedMap.put(1.64211, 3000.0);
         // hubShotFlywheelSpeedMap.put(1.94691, 3000.0);
-        hubShotFlywheelSpeedMap.put(2.25171, 3200.0);
-        hubShotFlywheelSpeedMap.put(2.55651, 3300.0);
-        hubShotFlywheelSpeedMap.put(2.86131, 3400.0);
-        hubShotFlywheelSpeedMap.put(3.16611, 3500.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(136.65), 3400.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(148.65), 3500.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(160.65), 3700.0);
+        // hubShotFlywheelSpeedMap.put(2.25171, 3200.0);
+        // hubShotFlywheelSpeedMap.put(2.55651, 3300.0);
+        // hubShotFlywheelSpeedMap.put(2.86131, 3400.0);
+        // hubShotFlywheelSpeedMap.put(3.16611, 3500.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(136.65), 3400.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(148.65), 3500.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(160.65), 3700.0);
         // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(172.65), 3700.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(184.65), 3800.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(196.65), 3900.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(208.65), 4000.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(220.65), 4100.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(184.65), 3800.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(196.65), 3900.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(208.65), 4000.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(220.65), 4100.0);
         // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(232.65), 4100.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(244.65), 4200.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(256.65), 4300.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(268.65), 4400.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(244.65), 4200.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(256.65), 4300.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(268.65), 4400.0);
         // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(280.65), 4400.0);
-        hubShotFlywheelSpeedMap.put(Units.inchesToMeters(292.65), 4500.0);
+        // hubShotFlywheelSpeedMap.put(Units.inchesToMeters(292.65), 4500.0);
 
-        hubTimeOfFlightMap.put(1.03251, 1.23);
-        hubTimeOfFlightMap.put(1.64211, 0.95);
-        hubTimeOfFlightMap.put(1.94691, 1.23);
-        hubTimeOfFlightMap.put(2.25171, 1.35);
-        hubTimeOfFlightMap.put(2.55651, 1.32);
-        hubTimeOfFlightMap.put(2.86131, 1.4);
-        hubTimeOfFlightMap.put(3.16611, 1.4);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(136.65), 1.44);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(148.65), 1.31);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(160.65), 1.35);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(172.65), 1.32);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(184.65), 1.34);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(196.65), 1.45);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(208.65), 1.5);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(220.65), 1.46);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(232.65), 1.55);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(244.65), 1.44);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(256.65), 1.49);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(268.65), 1.51);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(280.65), 1.5);
-        hubTimeOfFlightMap.put(Units.inchesToMeters(292.65), 1.53);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 0.604 + FieldConstants.OVERSHOOT_COMPENSATION, 1.32 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 0.910 + FieldConstants.OVERSHOOT_COMPENSATION, 1.32 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 1.215 + FieldConstants.OVERSHOOT_COMPENSATION, 1.25 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 1.517 + FieldConstants.OVERSHOOT_COMPENSATION, 1.28 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 1.829 + FieldConstants.OVERSHOOT_COMPENSATION, 1.2975 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 2.133 + FieldConstants.OVERSHOOT_COMPENSATION, 1.3775 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 2.430 + FieldConstants.OVERSHOOT_COMPENSATION, 1.34 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 2.735 + FieldConstants.OVERSHOOT_COMPENSATION, 1.4125 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 3.044 + FieldConstants.OVERSHOOT_COMPENSATION, 1.4225 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 3.355 + FieldConstants.OVERSHOOT_COMPENSATION, 1.425 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 3.661 + FieldConstants.OVERSHOOT_COMPENSATION, 1.415 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET +  3.963 + FieldConstants.OVERSHOOT_COMPENSATION,1.5225 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 4.266 + FieldConstants.OVERSHOOT_COMPENSATION, 1.4525 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 4.574 + FieldConstants.OVERSHOOT_COMPENSATION, 1.4725 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 4.879 + FieldConstants.OVERSHOOT_COMPENSATION, 1.515 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 5.190 + FieldConstants.OVERSHOOT_COMPENSATION, 1.5525 + FieldConstants.TOF_ADJUST);
+        hubTimeOfFlightMap.put(TurretConstants.SHOT_OFFSET + 5.501 + FieldConstants.OVERSHOOT_COMPENSATION, 1.5325 + FieldConstants.TOF_ADJUST);
+
+        // hubTimeOfFlightMap.put(1.03251, 1.23);
+        // hubTimeOfFlightMap.put(1.64211, 0.95);
+        // hubTimeOfFlightMap.put(1.94691, 1.23);
+        // hubTimeOfFlightMap.put(2.25171, 1.35);
+        // hubTimeOfFlightMap.put(2.55651, 1.32);
+        // hubTimeOfFlightMap.put(2.86131, 1.4);
+        // hubTimeOfFlightMap.put(3.16611, 1.4);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(136.65), 1.44);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(148.65), 1.31);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(160.65), 1.35);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(172.65), 1.32);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(184.65), 1.34);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(196.65), 1.45);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(208.65), 1.5);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(220.65), 1.46);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(232.65), 1.55);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(244.65), 1.44);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(256.65), 1.49);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(268.65), 1.51);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(280.65), 1.5);
+        // hubTimeOfFlightMap.put(Units.inchesToMeters(292.65), 1.53);
 
         //Passing
         passingShotAngleHoodMap.put(1.03251, Rotation2d.fromRadians(0.314159));
@@ -170,6 +222,8 @@ public class ShotCalculations {
         passingShotFlywheelSpeedMap.put(6.97611, 4100.0);
         passingShotFlywheelSpeedMap.put(7.28091, 4200.0);
         passingShotFlywheelSpeedMap.put(7.58571, 4300.0);
+        passingShotFlywheelSpeedMap.put(9.0,5000.0);
+        passingShotFlywheelSpeedMap.put(14.0,5000.0);
 
         passingTimeOfFlightMap.put(1.03251, 1d);
         passingTimeOfFlightMap.put(1.64211, 0.9);
@@ -192,7 +246,8 @@ public class ShotCalculations {
     }
 
     public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier, Translation3d target, boolean hub) {
-        // Calculate estimated pose while accounting for phase delay
+        // Calculate estimated pose while accounting for phase delay of one code loop
+        double timeOfFlight;
         Pose2d estimatedPose = robotPoseSupplier.get();
         ChassisSpeeds robotRelativeVelocity = robotRelativeVelocitySupplier.get();
         estimatedPose =
@@ -205,6 +260,13 @@ public class ShotCalculations {
         // Calculate distance from turret to target
         Pose2d turretPosition = estimatedPose.transformBy(TurretConstants.TURRET_TO_ROBOT_TRANSFORM2D);
         double turretToTargetDistance = target.toTranslation2d().getDistance(turretPosition.getTranslation());
+
+        timeOfFlight = hub ? hubTimeOfFlightMap.get(turretToTargetDistance) : passingTimeOfFlightMap.get(turretToTargetDistance);
+        estimatedPose.exp(
+            new Twist2d(
+                robotRelativeVelocity.vxMetersPerSecond * timeOfFlight,
+                robotRelativeVelocity.vyMetersPerSecond * timeOfFlight,
+                robotRelativeVelocity.omegaRadiansPerSecond * timeOfFlight));
 
         // Calculate field relative turret velocity
         ChassisSpeeds robotVelocity = robotRelativeVelocitySupplier.get();
@@ -221,7 +283,6 @@ public class ShotCalculations {
                         - TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getY() * Math.sin(robotAngle));
 
         // Account for imparted velocity by robot (turret) to offset
-        double timeOfFlight;
         Pose2d lookaheadPose = turretPosition;
         double lookaheadTurretToTargetDistance = turretToTargetDistance;
         for (int i = 0; i < 20; i++) {
@@ -236,7 +297,7 @@ public class ShotCalculations {
         }
 
         // Calculate parameters accounted for imparted velocity
-        turretAngle = target.toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle();
+        turretAngle = target.toTranslation2d().minus(lookaheadPose.getTranslation()).getAngle().minus(robotPoseSupplier.get().getRotation());
         hoodAngleRadians = hub ? hubShotAngleHoodMap.get(lookaheadTurretToTargetDistance).getRadians() : passingShotAngleHoodMap.get(lookaheadTurretToTargetDistance).getRadians();
         if (lastTurretAngle == null) lastTurretAngle = turretAngle;
         if (Double.isNaN(lastHoodAngleRadians)) lastHoodAngleRadians = hoodAngleRadians;

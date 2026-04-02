@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5978103616813293,
-        "y": 0.6187292277614858
+        "x": 4.007391722810394,
+        "y": 0.5953705486044272
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.720081325071167,
-        "y": 0.7387658736145313
+        "x": 6.1296626862002315,
+        "y": 0.7154071944574727
       },
       "isLocked": false,
       "linkedName": "5CLR"
@@ -66,7 +66,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

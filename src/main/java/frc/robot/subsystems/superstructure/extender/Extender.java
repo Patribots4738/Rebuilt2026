@@ -33,6 +33,8 @@ public class Extender extends SubsystemBase {
     private double testPosition;
     private boolean wiggle;
 
+    private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(ExtenderConstants.VELOCITY, ExtenderConstants.ACCELERATION));
+
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
     // private LoggedTunableNumber fastAcceleration = new LoggedTunableNumber("Extender/FastProfile/Acceleration", ExtenderConstants.FAST_ACCELERATION);
@@ -169,7 +171,7 @@ public class Extender extends SubsystemBase {
     
     public Command feedShooterCommand() {
         wiggle = true;
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.WIGGLE_RADIANS), Commands.waitSeconds(0.2), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
     }
 
     public Command feedShooterToggleCommand() {
@@ -209,6 +211,10 @@ public class Extender extends SubsystemBase {
     
     public double getVoltage() {
         return inputs.appliedOutputVolts;
+    }
+
+    public void setBrakeMode(boolean brake) {
+        io.setBrakeMode(brake);
     }
     
     // public Command quasistatic(SysIdRoutine.Direction direction) {

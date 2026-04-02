@@ -28,6 +28,10 @@ public interface VisionIO {
     public default void setUseMegaTag2(boolean megaTag2) {}
 
     public default void setUsedTags(int[] tagIds) {}
+
+    public default double getAverageTagDistance(){
+        return 0.0;
+    }
     
     public default boolean getIsLL4() {
         return false;

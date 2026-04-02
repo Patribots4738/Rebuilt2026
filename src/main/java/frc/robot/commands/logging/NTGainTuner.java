@@ -11,23 +11,23 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.util.Constants.KrakenMotorConstants;
-import frc.robot.util.Constants.NeoMotorConstants;
+// import frc.robot.util.Constants.NeoMotorConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
-import frc.robot.util.hardware.rev.Neo;
+// import frc.robot.util.hardware.rev.Neo;
 
 public class NTGainTuner extends Command {
     
     NetworkTable table = NetworkTableInstance.getDefault().getTable("Calibration");
-    Map<List<Neo>, Map<NetworkTableEntry, Double>> neoEntries = new HashMap<>();
+    // Map<List<Neo>, Map<NetworkTableEntry, Double>> neoEntries = new HashMap<>();
     Map<List<Kraken>, Map<NetworkTableEntry, Double>> krakenEntries = new HashMap<>();
 
     public NTGainTuner() {
         // Initialize the motor group map
-        Map<String, List<Neo>> neoMotorGroups = NeoMotorConstants.initializeMotorGroupMap();
+        // Map<String, List<Neo>> neoMotorGroups = NeoMotorConstants.initializeMotorGroupMap();
         Map<String, List<Kraken>> krakenMotorGroups = KrakenMotorConstants.initializeMotorGroupMap();
 
         // Initialize the NetworkTableEntries for the PID values of each motor group
-        initializeMotorEntries(neoMotorGroups, krakenMotorGroups);
+        initializeMotorEntries(krakenMotorGroups);
     }
 
     @Override
@@ -35,49 +35,49 @@ public class NTGainTuner extends Command {
         return true;
     }
 
-    private void initializeMotorEntries(Map<String, List<Neo>> neoMotorGroups, Map<String, List<Kraken>> krakenMotorGroups) {
+    private void initializeMotorEntries(Map<String, List<Kraken>> krakenMotorGroups) {
         // Loop through each motor group
-        for (int i = 0; i < neoMotorGroups.size(); i++) {
+        // for (int i = 0; i < neoMotorGroups.size(); i++) {
 
-            // Get the name of the current motor group
-            String groupName = neoMotorGroups.keySet().toArray()[i].toString();
+        //     // Get the name of the current motor group
+        //     String groupName = neoMotorGroups.keySet().toArray()[i].toString();
 
-            // Get the NetworkTableEntries for the PID values of the current motor group
-            NetworkTableEntry pEntry = table.getEntry(groupName + "/0-P");
-            NetworkTableEntry iEntry = table.getEntry(groupName + "/1-I");
-            NetworkTableEntry dEntry = table.getEntry(groupName + "/2-D");
-            NetworkTableEntry ffEntry = table.getEntry(groupName + "/3-FF");
-            NetworkTableEntry iZoneEntry = table.getEntry(groupName + "/4-IZone");
+        //     // Get the NetworkTableEntries for the PID values of the current motor group
+        //     NetworkTableEntry pEntry = table.getEntry(groupName + "/0-P");
+        //     NetworkTableEntry iEntry = table.getEntry(groupName + "/1-I");
+        //     NetworkTableEntry dEntry = table.getEntry(groupName + "/2-D");
+        //     NetworkTableEntry ffEntry = table.getEntry(groupName + "/3-FF");
+        //     NetworkTableEntry iZoneEntry = table.getEntry(groupName + "/4-IZone");
 
-            // Get the first motor of the current motor group
-            List<Neo> motorGroup = neoMotorGroups.get(groupName);
-            Neo motor = motorGroup.get(0);
+        //     // Get the first motor of the current motor group
+        //     List<Neo> motorGroup = neoMotorGroups.get(groupName);
+        //     Neo motor = motorGroup.get(0);
 
-            // Get the PID values of the first motor
-            double pValue = motor.getP();
-            double iValue = motor.getI();
-            double dValue = motor.getD();
-            double ffValue = motor.getFF();
-            double iZoneValue = motor.getIZone();
+        //     // Get the PID values of the first motor
+        //     double pValue = motor.getP();
+        //     double iValue = motor.getI();
+        //     double dValue = motor.getD();
+        //     double ffValue = motor.getFF();
+        //     double iZoneValue = motor.getIZone();
 
-            // Set the PID values in the NetworkTableEntries
-            pEntry.setDouble(pValue);
-            iEntry.setDouble(iValue);
-            dEntry.setDouble(dValue);
-            ffEntry.setDouble(ffValue);
-            iZoneEntry.setDouble(iZoneValue);
+        //     // Set the PID values in the NetworkTableEntries
+        //     pEntry.setDouble(pValue);
+        //     iEntry.setDouble(iValue);
+        //     dEntry.setDouble(dValue);
+        //     ffEntry.setDouble(ffValue);
+        //     iZoneEntry.setDouble(iZoneValue);
 
-            // Create a map of NetworkTableEntries and their corresponding PID values
-            Map<NetworkTableEntry, Double> motorEntries = new HashMap<>();
-            motorEntries.put(pEntry, pValue);
-            motorEntries.put(iEntry, iValue);
-            motorEntries.put(dEntry, dValue);
-            motorEntries.put(ffEntry, ffValue);
-            motorEntries.put(iZoneEntry, iZoneValue);
+        //     // Create a map of NetworkTableEntries and their corresponding PID values
+        //     Map<NetworkTableEntry, Double> motorEntries = new HashMap<>();
+        //     motorEntries.put(pEntry, pValue);
+        //     motorEntries.put(iEntry, iValue);
+        //     motorEntries.put(dEntry, dValue);
+        //     motorEntries.put(ffEntry, ffValue);
+        //     motorEntries.put(iZoneEntry, iZoneValue);
 
-            // Add the motor group and its corresponding NetworkTableEntries to the entries map
-            neoEntries.put(motorGroup, motorEntries);
-        }
+        //     // Add the motor group and its corresponding NetworkTableEntries to the entries map
+        //     neoEntries.put(motorGroup, motorEntries);
+        // }
 
         for (int i = 0; i < krakenMotorGroups.size(); i++) {
 
@@ -129,41 +129,41 @@ public class NTGainTuner extends Command {
     @Override
     public void execute() {
         // Loop through all of the entries and update the values
-        for (Map.Entry<List<Neo>, Map<NetworkTableEntry, Double>> entry : neoEntries.entrySet()) {
-            updateNeoValues(entry);
-        }
+        // for (Map.Entry<List<Neo>, Map<NetworkTableEntry, Double>> entry : neoEntries.entrySet()) {
+        //     updateNeoValues(entry);
+        // }
         for (Map.Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry : krakenEntries.entrySet()) {
             updateKrakenValues(entry);
         }
     }
 
-    private void updateNeoValues(Map.Entry<List<Neo>, Map<NetworkTableEntry, Double>> entry) {
-        for (Map.Entry<NetworkTableEntry, Double> entry2 : entry.getValue().entrySet()) {
-            double NTValue = entry2.getKey().getDouble(entry2.getValue());
-            if (NTValue != entry2.getValue()) {
-                String entryPath = entry2.getKey().getName();
-                // We are given a full path like "/Calibration//FrontLeftTurn/3-FF"
-                // We just want that "FF" part
-                String lastPart = entryPath.substring(entryPath.lastIndexOf("-") + 1);
+    // private void updateNeoValues(Map.Entry<List<Neo>, Map<NetworkTableEntry, Double>> entry) {
+    //     for (Map.Entry<NetworkTableEntry, Double> entry2 : entry.getValue().entrySet()) {
+    //         double NTValue = entry2.getKey().getDouble(entry2.getValue());
+    //         if (NTValue != entry2.getValue()) {
+    //             String entryPath = entry2.getKey().getName();
+    //             // We are given a full path like "/Calibration//FrontLeftTurn/3-FF"
+    //             // We just want that "FF" part
+    //             String lastPart = entryPath.substring(entryPath.lastIndexOf("-") + 1);
                 
-                if (lastPart.equals("IZone")) {
-                    if (NTValue > 99) {
-                        NTValue = Double.POSITIVE_INFINITY;
-                    } else if (NTValue < 0) {
-                        NTValue = 0;
-                    }
-                    if (NTValue == entry2.getValue()) {
-                        return;
-                    }
-                    entry2.setValue(NTValue);
-                }
+    //             if (lastPart.equals("IZone")) {
+    //                 if (NTValue > 99) {
+    //                     NTValue = Double.POSITIVE_INFINITY;
+    //                 } else if (NTValue < 0) {
+    //                     NTValue = 0;
+    //                 }
+    //                 if (NTValue == entry2.getValue()) {
+    //                     return;
+    //                 }
+    //                 entry2.setValue(NTValue);
+    //             }
 
-                // Update the last known value for future comparisons
-                entry2.setValue(NTValue);
-                updateSpark(entry.getKey(), lastPart, NTValue);
-            }
-        }
-    }
+    //             // Update the last known value for future comparisons
+    //             entry2.setValue(NTValue);
+    //             updateSpark(entry.getKey(), lastPart, NTValue);
+    //         }
+    //     }
+    // }
 
     private void updateKrakenValues(Map.Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry) {
         for (Map.Entry<NetworkTableEntry, Double> entry2 : entry.getValue().entrySet()) {
@@ -182,36 +182,36 @@ public class NTGainTuner extends Command {
         }
     }
 
-    /**
-     * Updates the PID values of the motors, which is called by {@link #updateValues()}.
-     * 
-     * @param motorList the list of motors to update
-     * @param name      the name of the PID value to update
-     * @param NTValue   the new value to set
-     */
-    private void updateSpark(List<Neo> motorList, String name, double NTValue) {
-        // Find out if it was P, I, D, FF, or IZone and update the value
-        for (Neo motor : motorList) {
-            switch (name) {
-                case "P":
-                    motor.setP(NTValue);
-                    break;
-                case "I":
-                    motor.setI(NTValue);
-                    break;
-                case "D":
-                    motor.setD(NTValue);
-                    break;
-                case "FF":
-                    motor.setFF(NTValue);
-                    break;
-                case "IZone":
-                    motor.setIZone(NTValue);
-                    break;
-            }
-        }
-        System.err.println("Updated " + getKeyByValue(NeoMotorConstants.NEO_MOTOR_GROUPS, motorList) + "'s " + name + " to " + NTValue);
-    }
+    // /**
+    //  * Updates the PID values of the motors, which is called by {@link #updateValues()}.
+    //  * 
+    //  * @param motorList the list of motors to update
+    //  * @param name      the name of the PID value to update
+    //  * @param NTValue   the new value to set
+    //  */
+    // private void updateSpark(List<Neo> motorList, String name, double NTValue) {
+    //     // Find out if it was P, I, D, FF, or IZone and update the value
+    //     for (Neo motor : motorList) {
+    //         switch (name) {
+    //             case "P":
+    //                 motor.setP(NTValue);
+    //                 break;
+    //             case "I":
+    //                 motor.setI(NTValue);
+    //                 break;
+    //             case "D":
+    //                 motor.setD(NTValue);
+    //                 break;
+    //             case "FF":
+    //                 motor.setFF(NTValue);
+    //                 break;
+    //             case "IZone":
+    //                 motor.setIZone(NTValue);
+    //                 break;
+    //         }
+    //     }
+    //     System.err.println("Updated " + getKeyByValue(NeoMotorConstants.NEO_MOTOR_GROUPS, motorList) + "'s " + name + " to " + NTValue);
+    // }
 
     private void updateTalon(List<Kraken> motorList, String name, double NTValue) {
         for (Kraken motor : motorList) {

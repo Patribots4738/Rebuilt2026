@@ -30,121 +30,128 @@
               {
                 "type": "path",
                 "data": {
+                  "pathName": "CLRight-5CLR"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 6.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "waitTime": 4.0
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "HalfStowIntake"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "StopShooting"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5CLR-Center Line"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
                   "pathName": "Center Line-5CLR"
                 }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
+              },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    }
-                  ]
+                  "name": "RampFlywheel"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "StopShooting"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "5CLRRotated-BackHubRight"
+                  "waitTime": 6.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BackHubRight-Center Line"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Center Line-5CLRRotated"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 5.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShooting"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "5CLRRotated-BackHubRight"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
+                  "name": "Shoot"
                 }
               },
               {
@@ -152,27 +159,21 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 4.0
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "Shoot"
+                        "name": "HalfStowIntake"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BackHubRight-Center Line"
           }
         }
       ]

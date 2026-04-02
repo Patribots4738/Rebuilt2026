@@ -80,7 +80,6 @@ public class Flywheel extends SubsystemBase {
         }
     }
 
-    
     public void setNeutral() {
         shouldRunSetpoint = false;
     }
@@ -118,12 +117,12 @@ public class Flywheel extends SubsystemBase {
         return inputs.speedRPM;
     }
 
-    public void decrementSpeed() {
-        incrementedSpeed -= 100;
+    private void decrementSpeed() {
+        incrementedSpeed -= 50;
     }
 
-    public void incrementSpeed() {
-        incrementedSpeed += 100;
+    private void incrementSpeed() {
+        incrementedSpeed += 50;
     }
 
     public Command decrementSpeedCommand() {
@@ -163,7 +162,7 @@ public class Flywheel extends SubsystemBase {
     }
 
     public Command setSpeedRPMCommand(DoubleSupplier speedSupplier) {
-        return runOnce(() -> setSpeedRPM(speedSupplier.getAsDouble()));
+        return run(() -> setSpeedRPM(speedSupplier.getAsDouble()));
     }
 
     public Command setSpeedRPMCommand(double speed) {

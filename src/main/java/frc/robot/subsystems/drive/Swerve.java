@@ -53,6 +53,7 @@ import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.MK5nSwerveModuleConstants;
+import frc.robot.util.Constants.TurretConstants;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -298,6 +299,7 @@ public class Swerve extends SubsystemBase {
             resetEncoders();
         } else {
             RobotContainer.robotPose2d = currentPose;
+            RobotContainer.turretPose2d = currentPose.transformBy(TurretConstants.TURRET_TO_ROBOT_TRANSFORM2D);
         }
 
         Logger.recordOutput("Subsystems/Swerve/ChassisSpeeds", speeds);
@@ -472,6 +474,10 @@ public class Swerve extends SubsystemBase {
 
     public ChassisSpeeds getRobotRelativeVelocity() {
         return speeds;
+    }
+
+    public ChassisSpeeds getFieldRelativeVelocity() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(speeds, this.getPose().getRotation());
     }
 
     /**

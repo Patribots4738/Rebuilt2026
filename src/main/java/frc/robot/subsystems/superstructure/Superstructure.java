@@ -5,7 +5,6 @@ import java.util.Set;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.superstructure.climb.Climb;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
@@ -83,6 +82,7 @@ public class Superstructure {
         NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
         INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
         HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0),
+        HALF_STOW_WITH_ROLLERS(ExtenderConstants.HALF_STOW_RADIANS, IntakeConstants.INTAKE_PERCENT),
         WIGGLE(ExtenderConstants.WIGGLE_RADIANS, IntakeConstants.INTAKE_PERCENT);
 
         public double extenderPosition;
@@ -141,10 +141,12 @@ public class Superstructure {
     }
 
     public Command ceaseFireCommand() {
-        return Commands.sequence(
-                    shooter.disarmShooterCommand(),
-                    setHopperState(HopperState.OFF),
-                    setIntakeState(IntakeState.INTAKE)
+        return Commands.parallel(
+                    shooter.disarmShooterCommand(true),
+                    spindexer.setPercentCommand(0.0),
+                    kicker.setPercentCommand(0.0),
+                    intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+                    extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS)
                 );
     }
 
@@ -184,5 +186,11 @@ public class Superstructure {
             spindexer.setNeutralCommand(),
             kicker.setNeutralCommand()
         );
+    }
+    public void printing(){
+        System.out.println("This line ran");
+    }
+    public Command printCommand(){
+        return Commands.runOnce(()-> printing());
     }
 }

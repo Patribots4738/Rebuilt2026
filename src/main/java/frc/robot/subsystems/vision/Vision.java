@@ -15,6 +15,9 @@ import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
+import frc.robot.util.calc.PoseCalculations;
+import frc.robot.util.calc.PoseCalculations.ZONE;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -78,11 +81,35 @@ public class Vision extends SubsystemBase {
                 camera.setThrottle(CameraConstants.ENABLED_THROTTLE);
             }
 
+
             camera.setUseMegaTag2(shouldUseMT2);
             camera.setRobotOrientation(currentYawDegrees);
             camera.updateInputs(inputs[i]);
             Logger.processInputs("SubsystemInputs/Vision/Camera" + i, inputs[i]);
             camera.setUsedTags(CameraConstants.ALL_TAGS);
+
+            // if (Robot.gameMode == GameMode.DISABLED) {
+            //     camera.setUsedTags(CameraConstants.ALL_TAGS);
+            // }
+            if (Robot.gameMode == GameMode.AUTONOMOUS || Robot.gameMode == GameMode.DISABLED) {
+                if (Robot.isRedAlliance()) {
+                    camera.setUsedTags(CameraConstants.RED_AUTO_TAGS);
+                }
+                else {
+                    camera.setUsedTags(CameraConstants.BLUE_AUTO_TAGS);
+                }
+            }
+            else {
+                camera.setUsedTags(CameraConstants.VALID_TAGS);
+            }
+
+
+            // if (Robot.gameMode == GameMode.AUTONOMOUS) {
+            //     camera.setUsedTags(CameraConstants.ALL_TAGS);
+            // }
+            // else {
+            //     camera.setUsedTags(CameraConstants.HUB_TAGS);
+            // }
 
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT1Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-four").pose);
             // Logger.recordOutput("Subsystems/Vision/Camera" + i + "MT2Pose", LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-four").pose);
@@ -98,24 +125,55 @@ public class Vision extends SubsystemBase {
 
         updatePoseEstimator();
     }
+    
+    /**
+     * Finds the most reliable camera depending on how far the tags are
+     * from the center of the FOV
+     * 
+     * @return index of the camera we want to use
+     */
+    private int chooseCamera() {
+        double minTagDistance = Integer.MAX_VALUE;
+        int camIndex = 0;
+        // what happens if no cameras have tags
+
+        // TODO: if we are using megatag one, only use tags that are less than 2-3 meters away
+        for (int i = 0; i < cameras.length; i++) {
+            if (cameras[i].getAverageTagDistance() == -1) {}
+            else if (cameras[i].getAverageTagDistance() < minTagDistance) {
+                minTagDistance = cameras[i].getAverageTagDistance();
+                camIndex = i;
+            }
+        }
+
+        Logger.recordOutput("Subsystems/Vision/camIndex", camIndex);
+        Logger.recordOutput("Subsystems/Vision/minTagDistance", minTagDistance);
+
+        return camIndex;
+    }
 
     private void updatePoseEstimator() {
         int[] tagCount = new int[cameras.length];
         double[] tagArea = new double[cameras.length];
-        ArrayList<Integer> twoTagIndex = new ArrayList<Integer>();
 
         List<Integer> camerasToUpdate = new ArrayList<>();
 
-        for (int i = 0; i < cameras.length; i++) {
-            boolean updateCamera = cameraHasTarget(i);
-            // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
-            if (updateCamera) {
-                camerasToUpdate.add(i);
-                tagCount[i] = inputs[i].tagIds.length;
-                tagArea[i] = inputs[i].averageTA;
+        if (Robot.gameMode == GameMode.DISABLED) {
+            for (int i = 0; i < cameras.length; i++) {
+                // TODO: test this
+                boolean updateCamera = cameraHasTarget(i) && !(shouldUseMT1() && inputs[i].averageTD > 2);
+                // Logger.recordOutput("Subsystems/Vision/UpdateCamera" + i, updateCamera);
+                if (updateCamera) {
+                    camerasToUpdate.add(i);
+                    tagCount[i] = inputs[i].tagIds.length;
+                    tagArea[i] = (tagArea[i] * (camerasToUpdate.size() - 1) + inputs[i].averageTA) / camerasToUpdate.size();
+                }
             }
         }
-        // System.out.println("# Updated cams" + camerasToUpdate.size());
+        else {
+            camerasToUpdate.add(this.chooseCamera());
+        }
+
         
         // Logger.recordOutput("Subsystems/Vision/TagCount", tagCount);
         // Logger.recordOutput("Subsystems/Vision/TagArea", tagArea);
@@ -126,32 +184,52 @@ public class Vision extends SubsystemBase {
         int maxTagCount = 0;
         int maxCountIndex = 0;
         double maxTagArea = 0;
-        int maxAreaIndex = 0;
+
+        // ArrayList<Integer> maxTagCams = new ArrayList<Integer>(); 
 
         if (camerasToUpdate.size() > 0) {
-            // first find the greatest tag count and area
-            for (int i = 0; i < camerasToUpdate.size(); i++) {
+            // first find the greatest tag count 
+            // create a new list of cameras with that many tags
+            // then go through that list and use cameras that have the greates tag area over the rest
 
+            // camera filtering
+            for (int i = 0; i < camerasToUpdate.size(); i++) {
                 if (inputs[camerasToUpdate.get(i)].tagIds.length > maxTagCount) { // find the max tag count
                     maxTagCount = inputs[camerasToUpdate.get(i)].tagIds.length;
-                    maxCountIndex = camerasToUpdate.get(i);
                 }
                 if (inputs[camerasToUpdate.get(i)].averageTA > maxTagArea) { // find the max tag area
                     maxTagArea = inputs[camerasToUpdate.get(i)].averageTA;
-                    maxAreaIndex = camerasToUpdate.get(i);
                 }
             }
 
-            if (maxTagCount > 1 && maxTagArea > 0.08) {
+            // for (int i = 0; i < camerasToUpdate.size(); i++) {
+            //     if (inputs[camerasToUpdate.get(i)].tagIds.length > maxTagCount) { // find the max tag count
+            //         maxTagCams.add(camerasToUpdate.get(i));
+            //     }
+            // }
+
+            // for (int cam : maxTagCams) {
+            //     if (camerasToUpdate.get(cam) > maxTagArea) {
+            //         maxAreaIndex = maxTagCams.get(cam);
+            //     }
+            // }
+
+            if (maxTagCount > 1 && maxTagArea > 0.4) {
+                xyStds = Math.hypot(0.001, 0.002);
+                radStds = 0.001;
+            } else if (maxTagArea > 1.5) {
+                xyStds = Math.hypot(0.001, 0.001);
+                radStds = 0.001;
+            } else if (maxTagCount > 1 && maxTagArea > 0.10) {
                 // Multiple targets or one huge target 
                 // Trust the vision more
-                xyStds = Math.hypot(0.005, 0.005);
-                radStds = 0.007;
+                xyStds = Math.hypot(0.01, 0.001);
+                radStds = 0.001;
             }
             // 1 target with large area
-            else if (maxTagArea > 0.14) {
-                xyStds = Math.hypot(0.009, 0.009);
-                radStds = 0.01;
+            else if (maxTagArea > 0.18) {
+                xyStds = Math.hypot(0.004, 0.02);
+                radStds = 0.008;
             } else {
                 return;
             }
@@ -165,6 +243,15 @@ public class Vision extends SubsystemBase {
                 poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
             }
         }
+
+            // update the pose estimator
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStds, xyStds, radStds));
+            for (int cam : camerasToUpdate) {
+                poseEstimator.addVisionMeasurement(inputs[cam].robotPose, inputs[cam].timestampSeconds);
+            }
+            Logger.recordOutput("Subsystems/Vision/xyStds", xyStds);
+            Logger.recordOutput("Subsystems/Vision/radStds", radStds);
+            // poseEstimator.addVisionMeasurement(inputs[maxAreaIndex].robotPose, inputs[maxAreaIndex].timestampSeconds);
 
 
         // cheese

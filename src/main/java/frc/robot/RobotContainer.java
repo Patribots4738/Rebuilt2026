@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj.util.Color;
@@ -14,6 +13,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
@@ -43,10 +43,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.util.Constants.*;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
-import frc.robot.util.custom.PatriBoxController;
-import org.littletonrobotics.junction.AutoLogOutput;
-
-import java.util.Set;
+import frc.robot.util.calc.PoseCalculations;
 import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
@@ -100,6 +97,8 @@ public class RobotContainer {
     public static boolean freshCode = true;
     @AutoLogOutput (key = "Draggables/RobotPose2d")
     public static Pose2d robotPose2d = Pose2d.kZero;
+    @AutoLogOutput (key = "Draggables/TurretPose2d")
+    public static Pose2d turretPose2d = Pose2d.kZero;
     @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
     public static SwerveModuleState[] swerveMeasuredStates;
     @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
@@ -137,8 +136,8 @@ public class RobotContainer {
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
-            new VisionIOLimelight("limelight-left", true), 
-            new VisionIOLimelight("limelight-threeg", false));
+            new VisionIOLimelight("limelight-intake", true), 
+            new VisionIOLimelight("limelight-left", true));
         // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
@@ -196,6 +195,8 @@ public class RobotContainer {
         switch(OIConstants.DRIVER_MODE) {
             case DEV:
                 configureDevBindings(driver);
+            case CALIBRATION:
+                configureCalibrationBindings(driver);
                 break;
             default:
                 configureDriverBindings(driver);
@@ -207,6 +208,12 @@ public class RobotContainer {
         // new Trigger(shooter::isReady && shooter::aimingAtHub)
         //         .onTrue(swerve.setDriveMultiplierCommand(DriveConstants.SHOOTING_DRIVE_MULTIPLIER))
         //         .onFalse(swerve.setDriveMultiplierCommand(DriveConstants.DEFAULT_DRIVE_MULTIPLIER));
+
+        // new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose(), swerve.getFieldRelativeVelocity())).and(() -> shooter.isManual())
+        //     .whileTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+
+        new Trigger(() -> PoseCalculations.fieldHalf(swerve.getPose()))
+        .onChange(shooter.setPassIndexCommand(0));
 
     }
 
@@ -229,30 +236,6 @@ public class RobotContainer {
         // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
 
-        controller.leftTrigger().onTrue(Commands.parallel(
-            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        ));
-
-        controller.leftBumper().onTrue(Commands.parallel(
-            intake.setPercentCommand(0.0),
-            spindexer.setPercentCommand(0.0),
-            kicker.setPercentCommand(0.0)
-        ));
-
-        controller.x().onTrue(shooter.setManualStates());
-        
-        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
-        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
-        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
-        controller.povDown().onTrue(flywheel.stopCommand());
-        controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
-        
-        controller.x().onTrue(hood.setPositionCommand(0));
-        controller.b().onTrue(hood.setIncrementedPositionCommand());
-        controller.y().onTrue(hood.incrementPositionCommand());
-        controller.a().onTrue(hood.decrementPositionCommand());
 
         // controller.rightBumper().onTrue(extender.feedShooter());
         // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
@@ -317,7 +300,6 @@ public class RobotContainer {
     private void configureDriverBindings(PatriBoxController controller) {
 
         controller.start().onTrue(vision.toggleMT1Command());
-        
 
         controller.leftTrigger().onTrue(superstructure.toggleIntakeCommand());
         controller.leftBumper().onTrue(superstructure.stowClimbAndIntake());
@@ -327,23 +309,32 @@ public class RobotContainer {
                 superstructure.setHopperState(HopperState.FORWARD),
                 superstructure.fireNoFeedShooterCommand(),
                 shooter::isManual));
-        controller.rightTrigger().toggleOnFalse(
+        controller.rightTrigger().onFalse(
             Commands.either(
-                superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
+            superstructure.setHopperState(HopperState.OFF).andThen(superstructure.setIntakeState(IntakeState.NO_SPIN)),
                 superstructure.ceaseFireCommand(),
                 shooter::isManual));
-        controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.rightStick().onTrue(shooter.setPassIndexCommand(-1));
+        controller.leftStick().onTrue(shooter.setPassIndexCommand(1));
 
-        shooter.trackTargetCommand(false, false, false);
+        controller.povDown().onTrue(shooter.trackTargetCommand(false, false, false));
+
+        // controller.y().onTrue(shooter.enableManualCommand())
+        //                 .onFalse(shooter.disableManualCommand());
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
-        controller.povLeft().onTrue(extender.feedShooterToggleCommand().alongWith(intake.setPercentCommand(0.0)));
+        controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
         controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
+
+        controller.povUp().onTrue(intake.setPercentCommand(IntakeConstants.REVERSE_PERCENT));
+
+        controller.povRight().onTrue(shooter.forceHoodDownCommand());
+
+        controller.b().onTrue(extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
@@ -353,9 +344,41 @@ public class RobotContainer {
 
     private void configureCalibrationBindings(PatriBoxController controller) {
 
+        controller.leftTrigger().onTrue(Commands.parallel(
+            intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
+            kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
+        ));
+
+        controller.leftBumper().onTrue(Commands.parallel(
+            intake.setPercentCommand(0.0),
+            spindexer.setPercentCommand(0.0),
+            kicker.setPercentCommand(0.0)
+        ));
+
+        controller.x().onTrue(shooter.toggleManualShootingCommand());
+        
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
+
+
+
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.incrementSpeedCommand());
+        controller.povDown().onTrue(flywheel.stopCommand());
+        controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
+        
+        controller.x().onTrue(hood.setPositionCommand(0));
+        controller.b().onTrue(hood.setIncrementedPositionCommand());
+        controller.y().onTrue(hood.incrementPositionCommand());
+        controller.a().onTrue(hood.decrementPositionCommand());
     }
 
     public Command getAutonomousCommand() {
+        if (pathPlannerStorage.getSelectedAutoName().equals("Ballout")) {
+            return extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS)
+                    .until(() -> extender.atPosition(ExtenderConstants.HALF_STOW_RADIANS))
+                    .andThen(superstructure.fireNoFeedShooterCommand());
+        }
         return pathPlannerStorage.getSelectedAuto();
     }
 
@@ -397,36 +420,62 @@ public class RobotContainer {
     public void onDisabled() {
         // Stops bot in sim after auto (noramlly motors auto turn off when disabled)
         swerve.stopDriving();
-        hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
+        CommandScheduler.getInstance().schedule(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
+        CommandScheduler.getInstance().schedule(superstructure.ceaseFireCommand());
+        extender.setBrakeMode(false);
         pathPlannerStorage.configureAutoChooser();
-        vision.controlRecording(false, freshCode);
+
+        //vision.controlRecording(false, freshCode);
     }
 
     public void onEnabled() {
         gameModeStart = Robot.currentTimestamp;
+        extender.setBrakeMode(true);
         CommandScheduler.getInstance().schedule(pathPlannerStorage.updatePathViewerCommand());
         freshCode = false;
-        vision.controlRecording(true);
+
+        // vision.controlRecording(true);
+        
+        if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
+            CommandScheduler.getInstance().schedule(
+                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+                .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
+                .andThen(shooter.trackTargetCommand(true, false, false)));
+        }
+        else {
+            CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
+        }
+    }
+
+    public void settleRobot() {
+        shooter.setTrackTarget(true, false, false);
+        shooter.stow();
+        spindexer.setPercent(0.0);
+        kicker.setPercent(0.0);
     }
 
     private void prepareNamedCommands() {
-        NamedCommands.registerCommand("Shoot", Commands.sequence(superstructure.fireNoFeedShooterCommand()));
+        NamedCommands.registerCommand("Shoot", superstructure.fireNoFeedShooterCommand());
         NamedCommands.registerCommand("PassLeft", shooter.setPassIndexCommand(1));
         NamedCommands.registerCommand("PassRight", shooter.setPassIndexCommand(-1));
-        NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(0.0)));
+        NamedCommands.registerCommand("Wiggle Intake", extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
         NamedCommands.registerCommand("ShootUntilEmptyHopper", shooter.armShooterCommand());
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
         //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
+        NamedCommands.registerCommand("HalfStowIntake", superstructure.setIntakeState(IntakeState.HALF_STOW_WITH_ROLLERS));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));
+        NamedCommands.registerCommand("StowHood", shooter.forceHoodDownCommand());
+        NamedCommands.registerCommand("Debugging", superstructure.printCommand());
 
         // NamedCommands.registerCommand("TowerAlignLeft", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), -1));
         // NamedCommands.registerCommand("TowerAlignRight", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 1));
-        // NamedCommands.registerCommand("TowerAlignCenter", alignment.autonoumusTowerAlignmentCommand(swerve.getPose(), 0));
+        // NamedCommands.registerCommand("TowerAlignCenter", alignment.pautonoumusTowerAlignmentCommand(swerve.getPose(), 0));
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));

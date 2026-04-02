@@ -1,8 +1,13 @@
 package frc.robot.util.hardware.limelight;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.util.hardware.limelight.LimelightHelpers.PoseEstimate;
 import frc.robot.util.hardware.limelight.LimelightHelpers.RawFiducial;
 
@@ -112,6 +117,14 @@ public class Limelight {
 
     public RawFiducial[] getRawFiducials() {
         return latestPoseEstimate != null ? latestPoseEstimate.rawFiducials : new RawFiducial[0];
+    }
+
+    public double getTX(){
+        return LimelightHelpers.getTX(name);
+    }
+
+    public double getTY(){
+        return LimelightHelpers.getTY(name);
     }
 
     public boolean getUseMT2() {

@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7070356111645812,
+        "y": 6.140981713185755
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4064841987105652,
+        "y": 5.5463016197923745
+      },
+      "isLocked": false,
+      "linkedName": "DepoFront"
+    },
+    {
+      "anchor": {
+        "x": 2.817237728585178,
+        "y": 4.376852743022137
+      },
+      "prevControl": {
+        "x": 2.341638357512919,
+        "y": 4.796712572541159
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ClimbPrepMiddle"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Depot",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

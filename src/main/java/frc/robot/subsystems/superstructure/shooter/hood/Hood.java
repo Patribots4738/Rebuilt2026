@@ -113,7 +113,7 @@ public class Hood extends SubsystemBase {
     }
 
     public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
+        return run(() -> setPosition(positionSupplier.getAsDouble()));
     }
 
     public Command setPositionCommand(double position) {
@@ -128,12 +128,12 @@ public class Hood extends SubsystemBase {
     //     return Commands.runOnce(() -> setTestPosition());
     // }
 
-    public void decrementPosition() {
-        incrementedPosition -= 1;
+    private void decrementPosition() {
+        incrementedPosition -= 0.5;
     }
 
-    public void incrementPosition() {
-        incrementedPosition += 1;
+    private void incrementPosition() {
+        incrementedPosition += 0.5;
     }
 
     public Command decrementPositionCommand() {
@@ -194,7 +194,7 @@ public class Hood extends SubsystemBase {
         io.runCharacterization(input);
     }
 
-    public void setCurrent(double amps) {
+    private void setCurrent(double amps) {
         io.setCurrent(amps);
     }
 
@@ -202,7 +202,7 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> setCurrent(amps));
     }
     
-    public void toggleForcedDown() {
+    private void toggleForcedDown() {
         forceDown = !forceDown;
     }
 

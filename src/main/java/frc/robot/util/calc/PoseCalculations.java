@@ -17,11 +17,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Robot;
+import frc.robot.util.Constants;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 public class PoseCalculations {
@@ -292,6 +297,19 @@ public class PoseCalculations {
     }
 
     /**
+     * Returns whether or not we are in an area that we can shoot at the hub
+     * which is an area slightly bigger than the alliance zone since the robot needs to be partially
+     * in the alliance zone to score
+     * 
+     * @param pos of the robot
+     * @return if we are in a shooting zone
+     */
+    public static boolean inShootingZone(Pose2d pos) {
+        return (Robot.isRedAlliance() && pos.getX() > FieldConstants.ALLIANCE_LINE_RED - FieldConstants.ALLIANCE_SHOT_TOLERANCE) 
+            || (!Robot.isRedAlliance() && pos.getX() < FieldConstants.ALLIANCE_LINE_BLUE + FieldConstants.ALLIANCE_SHOT_TOLERANCE);
+    }
+
+    /**
      * Returns a new pose translated forward along its rotation.
      *
      * @param pos original pose
@@ -410,19 +428,8 @@ public class PoseCalculations {
      * @return true if inside trench
      */
     public static boolean inTrench(Pose2d pos) {
-        boolean ans = false;
-        if (
-            (pos.getY() < FieldConstants.TRENCHES.get(3).getY() || pos.getY() > FieldConstants.TRENCHES.get(9).getY())
-            && 
-            (
-                (pos.getX() > FieldConstants.TRENCHES.get(1).getX() && pos.getX() < FieldConstants.TRENCHES.get(2).getX())
-                || 
-                (pos.getX() > FieldConstants.TRENCHES.get(11).getX() && pos.getX() < FieldConstants.TRENCHES.get(12).getX())
-            )
-            ) {
-            ans = true;
-        }
-        return ans;
+        Pose2d trenchCenter = nearest(pos, FieldConstants.TRENCH_CENTERS);
+        return MathUtil.isNear(pos.getX(), trenchCenter.getX(), FieldConstants.TRENCH_WIDTH) && MathUtil.isNear(pos.getY(), trenchCenter.getY(), FieldConstants.TRENCH_LENGTH);
     }
 
     /**
@@ -435,12 +442,19 @@ public class PoseCalculations {
      * @param pos
      * @return true if hood conflicts with trench, false otherwise
      */
-	public static boolean shouldPutHoodDown(Pose2d pos) {
+	public static boolean shouldPutHoodDown(Pose2d pos, ChassisSpeeds robotSpeeds) {
 		Pose2d hoodPose = new Pose2d(
 				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
 				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
 				pos.getRotation()
 		);
+
+        double dx = robotSpeeds.vxMetersPerSecond * HoodConstants.STOW_TIME;
+        double dy = robotSpeeds.vyMetersPerSecond * HoodConstants.STOW_TIME;
+        double dOmega = robotSpeeds.omegaRadiansPerSecond * HoodConstants.STOW_TIME;
+
+        pos.exp(new Twist2d(dx, dy, dOmega));
+        
 		return inTrench(hoodPose);
 	}
 	
@@ -482,6 +496,6 @@ public class PoseCalculations {
     }
 
     public static boolean fieldHalf(Pose2d pos) {
-        return pos.getX() < (FieldConstants.FIELD_WIDTH / 2);
+        return pos.getY() < (FieldConstants.FIELD_WIDTH / 2);
     }
 }
