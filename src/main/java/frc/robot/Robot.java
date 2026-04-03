@@ -95,6 +95,7 @@ public class Robot extends LoggedRobot {
         Robot.previousTimestamp = Robot.currentTimestamp;
         Robot.currentTimestamp = Timer.getFPGATimestamp();
         CommandScheduler.getInstance().run();
+        Robot.alliance = DriverStation.getAlliance();
         // robotContainer.refreshPDHData();
     }
 

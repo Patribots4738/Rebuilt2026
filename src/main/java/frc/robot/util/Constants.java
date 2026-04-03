@@ -49,12 +49,12 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.SIMBOT;
+        private static RobotType robotType = RobotType.COMPBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
                 System.out.println("Incorrect robot type selected, changing to real robot");
-                robotType = RobotType.DEVBOT;
+                robotType = RobotType.COMPBOT;
             }
             return robotType;
         }
@@ -300,8 +300,8 @@ public final class Constants {
             "Double Center Rush Left", //this path has issues
             "Double Center Rush Right",
             "Outpost Center Rush", //maybe if we need it
-            "Depot Center", //this is for really good alliance
-            "Ballout",
+            "Depot Center" //this is for really good alliance
+            // "Ballout",
             //"Cleanup Left", // no more clean up autos
             //"Depot Center Rush", //pathing is bad and also no
             //"Half Center Line Pass Right" //not gonna work
@@ -486,10 +486,10 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.206787;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.367432;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275391;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.331299;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.204590;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.366943;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.274902;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329346;
 
 
         // inversions for different motors may be needed for dual type
@@ -878,8 +878,8 @@ public final class Constants {
        public final static int[] TRENCH_TAGS = new int[] {1, 6, 7, 12, 17, 22, 23, 28};
        public final static int[] VALID_TAGS = new int[] {2, 11, 10,  9, 8, 5, 21, 24, 18, 27, 26, 25, 12, 7, 23, 28};
        public final static int[] SHOT_CALIBRATION_TAGS = HUB_TAGS;
-       public final static int[] RED_AUTO_TAGS = new int[] {11, 12, 5, 8, 9, 10, 1, 6, 7, 2};
-       public final static int[] BLUE_AUTO_TAGS = new int[] {22, 23, 17, 28, 18, 27, 25, 26, 21, 24};
+       public final static int[] RED_AUTO_TAGS = new int[] {11, 12, 5, 8, 9, 10, 1, 6, 7, 2, 4, 3};
+       public final static int[] BLUE_AUTO_TAGS = new int[] {22, 23, 17, 28, 18, 27, 25, 26, 21, 24, 19, 20};
     }
 
     public static final class ClimbConstants {
@@ -1245,7 +1245,7 @@ public final class Constants {
 
         public static final double ALLIANCE_SHOT_TOLERANCE = 0.85;
 
-        public static final double OVERSHOOT_COMPENSATION = 0.2;
+        public static final double OVERSHOOT_COMPENSATION = - 0.5;
 
         public static final double TOF_ADJUST = 0.43; // 0.45
 
@@ -1276,16 +1276,25 @@ public final class Constants {
             }
         }
 
-        public static final Translation3d HUB_RED = new Translation3d(4.6209, 4.041, 1.8288);
-        
+        public static final Translation3d HUB_BLUE = new Translation3d(4.6209, 4.041, 1.8288);
+        public static final Translation3d HUB_RED = PoseCalculations.mirrorTranslation3d(HUB_BLUE);
+        // public static final Translation3d HUB_RED = new Translation3d(11.9681, 4.0346, 1.8288);
+
         public static final List<Translation3d> HUBS = new ArrayList<Translation3d>() {{
             add(HUB_RED);
-            add(PoseCalculations.mirrorTranslation3d(HUB_RED));
+            add(HUB_BLUE);
         }};
 
         public static final Translation3d GET_HUB() {
-            int index = Robot.isRedAlliance() ? 0 : 1;
-            return HUBS.get(index);
+            // int index = Robot.isRedAlliance() ? 0 : 1;
+            // return HUBS.get(index);
+            if (Robot.isRedAlliance()) {
+                return HUB_BLUE;
+            }
+            else {
+                return HUB_RED;
+            }
+            // return Robot.isRedAlliance() ? HUB_RED : HUB_BLUE;
         }
         
         // public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(4.0566, 5.5642, 0);
@@ -1293,13 +1302,13 @@ public final class Constants {
         public static final Translation3d PASS_RIGHT_LOCATION = PoseCalculations.flipTranslation3dY(PASS_LEFT_LOCATION);
 
         public static final List<Translation3d> PASS_LEFT_LOCATIONS = new ArrayList<Translation3d>() {{
-            add(PASS_LEFT_LOCATION);
             add(PoseCalculations.mirrorTranslation3d(PASS_LEFT_LOCATION));
+            add(PASS_LEFT_LOCATION);
         }};
 
         public static final List<Translation3d> PASS_RIGHT_LOCATIONS = new ArrayList<Translation3d>() {{
-            add(PASS_RIGHT_LOCATION);
             add(PoseCalculations.mirrorTranslation3d(PASS_RIGHT_LOCATION));
+            add(PASS_RIGHT_LOCATION);
         }};
 
         public static final Translation3d GET_PASS_LEFT() {
@@ -1310,6 +1319,22 @@ public final class Constants {
         public static final Translation3d GET_PASS_RIGHT() {
             int index = Robot.isRedAlliance() ? 0 : 1;
             return PASS_RIGHT_LOCATIONS.get(index);
+        }
+
+        public enum Target {
+            //Robot.isRedAlliance() ? HUB_RED : HUB_BLUE
+            HUB(GET_HUB(), "Hub"),
+            PASS_LEFT(FieldConstants.GET_PASS_LEFT(), "Pass Left"),
+            PASS_RIGHT(FieldConstants.GET_PASS_RIGHT(), "Pass Right"),
+            NONE(new Translation3d(0.0, 0.0, 0.0), "None");
+
+            public Translation3d location;
+            public String name;
+
+            Target(Translation3d location, String name) {
+                this.location = location;
+                this.name = name;
+            }
         }
 
         public static final Pose2d OUTPOST_RED = new Pose2d(0.6378, 0.0, Rotation2d.fromDegrees(0.0));
