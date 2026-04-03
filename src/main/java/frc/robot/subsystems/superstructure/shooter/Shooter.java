@@ -47,6 +47,9 @@ public class Shooter extends SubsystemBase {
     private boolean manual = false;
     private Target target;
 
+    @AutoLogOutput (key = "Subsystems/Shooter/inTrench")
+    private boolean inTrench = false;
+
     private ShootingParameters shotParams = new ShootingParameters(true, new Rotation2d(), 0, 0, 0, 0);
 
     private final Turret turret;
@@ -116,6 +119,7 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         updateTarget(robotRelativePose.get());
         calculateShotParams();
+        inTrench = PoseCalculations.inTrench(robotRelativePose.get());
     
         if (isManual()) {
             setTrackTarget(false, false, false);
