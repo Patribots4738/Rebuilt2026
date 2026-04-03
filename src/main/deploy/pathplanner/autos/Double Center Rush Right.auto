@@ -63,9 +63,16 @@
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "deadline",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Wiggle Intake"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
