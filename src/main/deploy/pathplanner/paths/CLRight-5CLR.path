@@ -32,22 +32,26 @@
     },
     {
       "anchor": {
-        "x": 4.007391722810394,
-        "y": 0.5953705486044272
+        "x": 3.24771896053898,
+        "y": 0.7677386363636367
       },
       "prevControl": {
-        "x": 5.298835418671799,
-        "y": -0.01236766121270405
+        "x": 4.539162656400385,
+        "y": 0.16000042654650548
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "5CLR"
+      "linkedName": "5CLRRotated"
     }
   ],
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8210227272727262,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.684659090909096,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
@@ -63,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -158.86521435129853
   },
   "reversed": false,
   "folder": "Center Line",

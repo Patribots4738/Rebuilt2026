@@ -1245,7 +1245,8 @@ public final class Constants {
 
         public static final double ALLIANCE_SHOT_TOLERANCE = 0.85;
 
-        public static final double OVERSHOOT_COMPENSATION = - 0.5;
+        public static final double OVERSHOOT_COMPENSATION = - 0.33; // comp
+        // public static final double OVERSHOOT_COMPENSATION = 2.0; // home
 
         public static final double TOF_ADJUST = 0.43; // 0.45
 
@@ -1298,7 +1299,7 @@ public final class Constants {
         }
         
         // public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(4.0566, 5.5642, 0);
-        public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(2, 2, 0);
+        public static final Translation3d PASS_LEFT_LOCATION = new Translation3d(2, 3, 0);
         public static final Translation3d PASS_RIGHT_LOCATION = PoseCalculations.flipTranslation3dY(PASS_LEFT_LOCATION);
 
         public static final List<Translation3d> PASS_LEFT_LOCATIONS = new ArrayList<Translation3d>() {{

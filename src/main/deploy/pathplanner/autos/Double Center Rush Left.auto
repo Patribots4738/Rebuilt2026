@@ -94,7 +94,7 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -121,18 +121,12 @@
                 "data": {
                   "pathName": "Center Line-1CLR"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RampFlywheel"
-                }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {

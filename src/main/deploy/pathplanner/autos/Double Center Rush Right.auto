@@ -101,7 +101,7 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -120,19 +120,13 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
                   "pathName": "Center Line-5CLR"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "RampFlywheel"
                 }
               }
             ]
