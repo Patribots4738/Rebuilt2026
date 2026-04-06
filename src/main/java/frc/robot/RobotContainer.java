@@ -482,11 +482,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopShooting", superstructure.ceaseFireCommand());
         NamedCommands.registerCommand("Track", shooter.trackTargetCommand(true, true, false));
         //NamedCommands.registerCommand("ClimbUp", superstructure.setClimbState(ClimbState.READY));
-        //NamedCommands.registerCommand("ClimbDown", superstructure.setClimbState(ClimbState.UP));
+        //NamedCommands.registerCommand("ClimbDown", superstructure.setPClimbState(ClimbState.UP));
         NamedCommands.registerCommand("Intake", superstructure.setIntakeState(IntakeState.INTAKE));
         NamedCommands.registerCommand("HalfStowIntake", superstructure.setIntakeState(IntakeState.HALF_STOW_WITH_ROLLERS));
         NamedCommands.registerCommand("StopIntake", superstructure.setIntakeState(IntakeState.NO_SPIN));
         NamedCommands.registerCommand("IntakeStow", superstructure.setIntakeState(IntakeState.STOW));
+        NamedCommands.registerCommand("IntakeBlip", extender.blipCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
         NamedCommands.registerCommand("RampFlywheel", shooter.setTrackFlywheelCommand(true));
         NamedCommands.registerCommand("StowHood", shooter.forceHoodDownCommand());
         NamedCommands.registerCommand("Debugging", superstructure.printCommand());
