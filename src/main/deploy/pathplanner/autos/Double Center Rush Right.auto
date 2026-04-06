@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -57,9 +57,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "deadline",
                       "data": {
-                        "waitTime": 4.0
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 4.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeBlip"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -153,9 +166,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "deadline",
                       "data": {
-                        "waitTime": 4.0
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 4.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeBlip"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

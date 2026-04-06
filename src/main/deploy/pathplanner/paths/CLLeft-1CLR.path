@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.502849448269912,
-        "y": 5.335993784549848
+        "x": 7.983012512030799,
+        "y": 5.491039461020211
       },
       "isLocked": false,
       "linkedName": "Center Line Left"
@@ -48,6 +48,10 @@
     {
       "waypointRelativePos": 0.9090909090909085,
       "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.7500000000000009,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
@@ -68,7 +72,7 @@
   "reversed": false,
   "folder": "Center Line",
   "idealStartingState": {
-    "velocity": 2.0,
+    "velocity": 0.0,
     "rotation": -115.0
   },
   "useDefaultConstraints": true

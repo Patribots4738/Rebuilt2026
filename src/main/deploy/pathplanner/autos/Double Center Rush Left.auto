@@ -5,7 +5,7 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -24,9 +24,16 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CLLeft-1CLR"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CLLeft-1CLR"
+                }
+              }
+            ]
           }
         },
         {
@@ -50,9 +57,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "deadline",
                       "data": {
-                        "waitTime": 4.0
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 4.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeBlip"
+                            }
+                          }
+                        ]
                       }
                     },
                     {
@@ -146,9 +166,22 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "deadline",
                       "data": {
-                        "waitTime": 4.0
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 4.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "IntakeBlip"
+                            }
+                          }
+                        ]
                       }
                     },
                     {

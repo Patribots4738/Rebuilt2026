@@ -1145,6 +1145,7 @@ public final class Constants {
         public static final double INTAKE_POSITION_RADIANS = MAX_ANGLE_RADIANS;
         public static final double HALF_STOW_RADIANS = 2 * INTAKE_POSITION_RADIANS / 3;
         public static final double WIGGLE_RADIANS = MAX_ANGLE_RADIANS - 1.5;
+        public static final double BLIP_RADIANS = 4 * INTAKE_POSITION_RADIANS / 5;
 
         public static final double POSITION_CONVERSION_FACTOR = 2.0 * Math.PI;
         public static final double VELOCITY_CONVERSION_FACTOR = 2.0 * Math.PI;

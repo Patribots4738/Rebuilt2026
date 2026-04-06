@@ -72,7 +72,7 @@
   "reversed": false,
   "folder": "Center Line",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 0.0,
     "rotation": 110.0
   },
   "useDefaultConstraints": true

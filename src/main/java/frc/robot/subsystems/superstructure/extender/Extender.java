@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.ExtenderConstants;
+import frc.robot.util.Constants.IntakeConstants;
 import frc.robot.util.Constants.LoggingConstants;
 
 public class Extender extends SubsystemBase {
@@ -180,6 +181,10 @@ public class Extender extends SubsystemBase {
         return Commands.either(setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), 
             feedShooterCommand(),
             () -> !wiggle);
+    }
+
+    public Command blipCommand() {
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.BLIP_RADIANS), Commands.waitSeconds(0.25), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(0.25));
     }
 
     public Command halfStowCommand() {
