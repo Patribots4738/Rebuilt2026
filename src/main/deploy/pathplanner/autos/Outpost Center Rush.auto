@@ -79,6 +79,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooting"
+          }
         }
       ]
     }

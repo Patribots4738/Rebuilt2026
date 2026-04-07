@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.164254090467216,
-        "y": 8.082367661214157
+        "x": 7.003878729547642,
+        "y": 8.24274302213667
       },
       "isLocked": false,
       "linkedName": "1CLRRotated"
@@ -30,8 +30,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.3068181818181818,
-      "rotationDegrees": -173.42362257212562
+      "waypointRelativePos": 0.05539772727272656,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 0.2187499999999999,
+      "rotationDegrees": 180.0
     },
     {
       "waypointRelativePos": 0.5468750000000002,

@@ -7,7 +7,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 1.0
           }
         },
         {
@@ -30,16 +30,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "DepotFront-ClimbPrepMiddle"
-                }
-              }
-            ]
+            "pathName": "DepotFront1-DepotFront2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotFront2-ClimbPrepMiddle"
           }
         },
         {
@@ -63,7 +62,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 3.0
                             }
                           },
                           {
@@ -82,7 +81,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 4.0
                             }
                           },
                           {

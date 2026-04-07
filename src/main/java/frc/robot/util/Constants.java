@@ -49,7 +49,7 @@ public final class Constants {
 
     public static final class LoggingConstants {
         
-        private static RobotType robotType = RobotType.COMPBOT;
+        private static RobotType robotType = RobotType.DEVBOT;
 
         public static RobotType getRobot() {
             if (!FieldConstants.IS_SIMULATION && robotType == RobotType.SIMBOT) {
@@ -684,7 +684,7 @@ public final class Constants {
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
+        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
 
     }
 

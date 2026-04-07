@@ -248,6 +248,19 @@ public class RobotContainer {
             ), swerve)
         );
 
+        controller.povLeft().onTrue(extender.feedShooterCommand());
+
+        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(4000));
+
+        controller.povDown().onTrue(
+            spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT)
+            .alongWith(kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)));
+
+        controller.a().onTrue(spindexer.setPercentCommand(0.0)
+            .alongWith(kicker.setPercentCommand(0.0)));
+
+        controller.b().onTrue(flywheel.stopCommand());
+
         // controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
         // controller.leftBumper().onTrue(intake.setPercentCommand(0));
 
@@ -375,10 +388,8 @@ public class RobotContainer {
         ));
 
         controller.x().onTrue(shooter.toggleManualShootingCommand());
-        
+
         controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
-
-
 
         controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
         controller.povRight().onTrue(flywheel.incrementSpeedCommand());
@@ -455,15 +466,15 @@ public class RobotContainer {
 
         // vision.controlRecording(true);
         
-        if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
-            CommandScheduler.getInstance().schedule(
-                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
-                .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
-                .andThen(shooter.trackTargetCommand(true, false, false)));
-        }
-        else {
-            CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
-        }
+        // if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
+        //     CommandScheduler.getInstance().schedule(
+        //         extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+        //         .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
+        //         .andThen(shooter.trackTargetCommand(true, false, false)));
+        // }
+        // else {
+        //     CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
+        // }
     }
 
     public void settleRobot() {
