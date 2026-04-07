@@ -14,10 +14,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.subsystems.superstructure.shooter.flywheel.Flywheel;
 import frc.robot.subsystems.superstructure.shooter.hood.Hood;
 import frc.robot.subsystems.superstructure.shooter.turret.Turret;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.Constants.FieldConstants.Target;
 import frc.robot.util.Constants.FlywheelConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.TurretConstants;
@@ -64,6 +66,7 @@ public class Shooter extends SubsystemBase {
 
         
         target = Target.HUB;
+        // targetLocation = Target.HUB.location;
         targetLocation = FieldConstants.GET_HUB();
         calculateShotParams();
 
@@ -87,21 +90,6 @@ public class Shooter extends SubsystemBase {
         //         hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
         //         () -> this.hoodTracking())
         // );
-    }
-
-    public enum Target {
-        HUB(FieldConstants.GET_HUB(), "Hub"),
-        PASS_LEFT(FieldConstants.GET_PASS_LEFT(), "Pass Left"),
-        PASS_RIGHT(FieldConstants.GET_PASS_RIGHT(), "Pass Right"),
-        NONE(new Translation3d(0.0, 0.0, 0.0), "None");
-
-        public Translation3d location;
-        public String name;
-
-        Target(Translation3d location, String name) {
-            this.location = location;
-            this.name = name;
-        }
     }
 
     @Override
@@ -145,6 +133,7 @@ public class Shooter extends SubsystemBase {
 
         Logger.recordOutput("Subsystems/Shooter/ShotParamFlywheelSpeed", shotParams.flywheelSpeed());
         Logger.recordOutput("Subsystems/Shooter/Target", target.name);
+        Logger.recordOutput("Subsystems/Shooter/TargetLocation", targetLocation);
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
@@ -250,7 +239,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void autoSetPassIndex() {
-        passIndex = PoseCalculations.fieldHalf(robotRelativePose.get()) ? 1 : -1;
+        if (Robot.isRedAlliance()) {
+            passIndex = PoseCalculations.fieldHalf(robotRelativePose.get()) ? 1 : -1;
+        }
+        else {
+            passIndex = PoseCalculations.fieldHalf(robotRelativePose.get()) ? -1 : 1;
+        }
     }
 
     public Command setPassIndexCommand(int index) {
@@ -274,7 +268,8 @@ public class Shooter extends SubsystemBase {
     public void updateTarget(Pose2d robotPose) {
         if (PoseCalculations.inShootingZone(robotRelativePose.get())) {
             target = Target.HUB;
-            targetLocation = Target.HUB.location;
+            // targetLocation = Target.HUB.location;
+            targetLocation = getHub();
             passIndex = 0;
         } 
         else {
@@ -282,9 +277,12 @@ public class Shooter extends SubsystemBase {
                 autoSetPassIndex();
             }
             target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
+            //  targetLocation = target == Target.PASS_LEFT 
+            //                                     ? Target.PASS_LEFT.location 
+            //                                     : Target.PASS_RIGHT.location;
             targetLocation = target == Target.PASS_LEFT 
-                                                ? Target.PASS_LEFT.location 
-                                                : Target.PASS_RIGHT.location;
+                                                ? FieldConstants.GET_PASS_LEFT() 
+                                                : FieldConstants.GET_PASS_RIGHT();
         }
 
 
@@ -378,5 +376,14 @@ public class Shooter extends SubsystemBase {
 
     public boolean isManual() {
         return manual;
+    }
+
+    public Translation3d getHub() {
+        if (Robot.isRedAlliance()) {
+                return FieldConstants.HUB_RED;
+            }
+            else {
+                return FieldConstants.HUB_BLUE;
+            }
     }
 }

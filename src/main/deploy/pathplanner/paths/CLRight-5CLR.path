@@ -8,46 +8,50 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.124343411403039,
-        "y": 1.7909764373834611
+        "x": 7.518768046198268,
+        "y": 1.7095572666025018
       },
       "isLocked": false,
       "linkedName": "Center Line Right"
     },
     {
       "anchor": {
-        "x": 6.514311838306063,
-        "y": 0.5869297401347444
+        "x": 7.746669874879693,
+        "y": 0.32526467757459043
       },
       "prevControl": {
-        "x": 7.035281351724663,
-        "y": 0.9039747153711141
+        "x": 8.320644850818095,
+        "y": 0.6966602502406158
       },
       "nextControl": {
-        "x": 6.0571026818782965,
-        "y": 0.30868722892466816
+        "x": 7.297316186859429,
+        "y": 0.03450640885559614
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.007391722810394,
-        "y": 0.5953705486044272
+        "x": 3.24771896053898,
+        "y": 0.7677386363636367
       },
       "prevControl": {
-        "x": 5.391147418553298,
-        "y": 0.5424863165260181
+        "x": 4.539162656400385,
+        "y": 0.16000042654650548
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "5CLR"
+      "linkedName": "5CLRRotated"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.4971590909090915,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.8210227272727262,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.684659090909096,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
@@ -63,12 +67,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -158.86521435129853
   },
   "reversed": false,
   "folder": "Center Line",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 0.0,
     "rotation": 110.0
   },
   "useDefaultConstraints": true
