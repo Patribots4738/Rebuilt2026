@@ -427,7 +427,7 @@ public class PoseCalculations {
      */
     public static boolean inTrench(Pose2d pos) {
         Pose2d trenchCenter = nearest(pos, FieldConstants.TRENCH_CENTERS);
-        return MathUtil.isNear(pos.getX(), trenchCenter.getX(), FieldConstants.TRENCH_WIDTH) && MathUtil.isNear(pos.getY(), trenchCenter.getY(), FieldConstants.TRENCH_LENGTH);
+        return MathUtil.isNear(trenchCenter.getX(), pos.getX(), FieldConstants.TRENCH_WIDTH) && MathUtil.isNear(trenchCenter.getY(), pos.getY(), FieldConstants.TRENCH_LENGTH);
     }
 
     /**

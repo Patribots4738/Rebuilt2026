@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import frc.robot.util.calc.PoseCalculations;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -26,6 +28,7 @@ public class Hood extends SubsystemBase {
     private boolean forceDown = false;
     private double percentOutput = 0.0;
     private double incrementedPosition = 0.0; //dergees
+
     
     private double targetPosition;
     // private double testPosition;

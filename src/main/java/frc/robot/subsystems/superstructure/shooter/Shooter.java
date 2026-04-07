@@ -124,7 +124,7 @@ public class Shooter extends SubsystemBase {
         //         flywheel.stop();
         //     }
         
-        //     if (hoodTracking()) {
+        //     if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
         //         hood.setPosition(shotParams.hoodAngle());
         //     }
         //     else {
@@ -145,7 +145,6 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
-        Logger.recordOutput("Subsystems/Shooter/ALLIANCE", Robot.isRedAlliance() ? "RED" : "BLUE");
 
     }
 
@@ -277,7 +276,7 @@ public class Shooter extends SubsystemBase {
         if (PoseCalculations.inShootingZone(robotRelativePose.get())) {
             target = Target.HUB;
             // targetLocation = Target.HUB.location;
-            targetLocation = getHub();
+            targetLocation = FieldConstants.GET_HUB();
             passIndex = 0;
         } 
         else {
@@ -384,14 +383,5 @@ public class Shooter extends SubsystemBase {
 
     public boolean isManual() {
         return manual;
-    }
-
-    public Translation3d getHub() {
-        if (Robot.isRedAlliance()) {
-                return FieldConstants.HUB_RED;
-            }
-            else {
-                return FieldConstants.HUB_BLUE;
-            }
     }
 }
