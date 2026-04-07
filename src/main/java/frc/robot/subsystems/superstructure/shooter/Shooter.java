@@ -4,11 +4,9 @@ import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -28,12 +26,6 @@ import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.calc.ShotCalculations.ShootingParameters;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-import frc.robot.util.custom.ActiveConditionalCommand;
 
 public class Shooter extends SubsystemBase {
 
@@ -124,7 +116,7 @@ public class Shooter extends SubsystemBase {
                 flywheel.stop();
             }
         
-            if (hoodTracking()) {
+            if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
                 hood.setPosition(shotParams.hoodAngle());
             }
             else {
@@ -145,7 +137,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
-        Logger.recordOutput("Subsystems/Shooter/ALLIANCE", Robot.isRedAlliance() ? "RED" : "BLUE");
+        Logger.recordOutput("Subsystems/Shooter/Hood/ShouldForceDown", PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get()));
 
     }
 

@@ -152,7 +152,7 @@ public class Flywheel extends SubsystemBase {
     // public void runCalculatedSpeed() {
     //     setSpeedRPM(calculatedSpeed);
     // }
-
+    
     // public Command runCalculateSpeedCommand() {
     //     return setSpeedRPMCommand(() -> calculatedSpeed);
     // }

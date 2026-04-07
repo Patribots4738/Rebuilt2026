@@ -51,7 +51,6 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.Constants.*;
 import frc.robot.util.Constants.ExtenderConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.IntakeConstants;
@@ -392,11 +391,11 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        if (pathPlannerStorage.getSelectedAutoName().equals("Ballout")) {
-            return extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS)
-                    .until(() -> extender.atPosition(ExtenderConstants.HALF_STOW_RADIANS))
-                    .andThen(superstructure.fireNoFeedShooterCommand());
-        }
+        // if (pathPlannerStorage.getSelectedAutoName().equals("Ballout")) {
+        //     return extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS)
+        //             .until(() -> extender.atPosition(ExtenderConstants.HALF_STOW_RADIANS))
+        //             .andThen(superstructure.fireNoFeedShooterCommand());
+        // }
         return pathPlannerStorage.getSelectedAuto();
     }
 
