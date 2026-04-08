@@ -684,7 +684,7 @@ public final class Constants {
             CALIBRATION
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.DEV;
+        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
 
     }
 
@@ -1013,7 +1013,7 @@ public final class Constants {
 
         public static final double TURRET_TO_REAR_FRAMEBAR_OFFSET = 0.241;
 
-        public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH;
+        public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH + 0.0;
     }
 
     public static final class FlywheelConstants {
@@ -1200,8 +1200,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.5;
-        public static final double FORWARD_PERCENT = 0.5;
+        public static final double REVERSE_PERCENT = -0.7;
+        public static final double FORWARD_PERCENT = 0.7;
         
         // public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
@@ -1246,8 +1246,8 @@ public final class Constants {
 
         public static final double ALLIANCE_SHOT_TOLERANCE = 0.85;
 
-        public static final double OVERSHOOT_COMPENSATION = - 0.33; // comp
-        // public static final double OVERSHOOT_COMPENSATION = 2.0; // home
+        // public static final double OVERSHOOT_COMPENSATION = - 0.33; // comp
+        public static final double OVERSHOOT_COMPENSATION = 0.0; // home
 
         public static final double TOF_ADJUST = 0.43; // 0.45
 
@@ -1291,10 +1291,10 @@ public final class Constants {
             // int index = Robot.isRedAlliance() ? 0 : 1;
             // return HUBS.get(index);
             if (Robot.isRedAlliance()) {
-                return HUB_BLUE;
+                return HUB_RED;
             }
             else {
-                return HUB_RED;
+                return HUB_BLUE;
             }
             // return Robot.isRedAlliance() ? HUB_RED : HUB_BLUE;
         }

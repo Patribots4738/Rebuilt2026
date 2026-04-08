@@ -105,38 +105,38 @@ public class Shooter extends SubsystemBase {
         updateTarget(robotRelativePose.get());
         calculateShotParams();
     
-        // if (isManual()) {
-        //     setTrackTarget(false, false, false);
-        //     flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
-        //     hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
-        //     turret.setPosition(TurretConstants.HUB_POSITION);
-        //     // System.out.println("MANUAL");
-        // }
-        // else {
-        //     if (turretTracking()) {
-        //         turret.setPosition(shotParams.turretAngle());
-        //     }
+        if (isManual()) {
+            setTrackTarget(false, false, false);
+            flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
+            hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
+            turret.setPosition(TurretConstants.HUB_POSITION);
+            // System.out.println("MANUAL");
+        }
+        else {
+            if (turretTracking()) {
+                turret.setPosition(shotParams.turretAngle());
+            }
                 
-        //     if (flywheelTracking()) {
-        //         flywheel.setSpeedRPM(shotParams.flywheelSpeed());
-        //     }
-        //     else {
-        //         flywheel.stop();
-        //     }
+            if (flywheelTracking()) {
+                flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+            }
+            else {
+                flywheel.stop();
+            }
         
-        //     if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
-        //         hood.setPosition(shotParams.hoodAngle());
-        //     }
-        //     else {
-        //         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
-        //     }
+            if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
+                hood.setPosition(shotParams.hoodAngle());
+            }
+            else {
+                hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+            }
 
-        //     if (!partiallyTracking()) {
-        //         flywheel.stop();
-        //         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
-        //         target = Target.NONE;
-        //     }
-        // }
+            if (!partiallyTracking()) {
+                flywheel.stop();
+                hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+                target = Target.NONE;
+            }
+        }
 
 
         Logger.recordOutput("Subsystems/Shooter/ShotParamFlywheelSpeed", shotParams.flywheelSpeed());
