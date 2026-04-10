@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
     private boolean aimTurret = false;
-    @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
+    @AutoLogOutput(key = "Subsystems/Shooter/Tra%ckFlywheel")
     private boolean spinFlywheel = false;
     @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
     private boolean aimHood = false;
@@ -105,38 +105,40 @@ public class Shooter extends SubsystemBase {
         updateTarget(robotRelativePose.get());
         calculateShotParams();
     
-        // if (isManual()) {
-        //     setTrackTarget(false, false, false);
-        //     flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
-        //     hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
-        //     turret.setPosition(TurretConstants.HUB_POSITION);
-        //     // System.out.println("MANUAL");
-        // }
-        // else {
-        //     if (turretTracking()) {
-        //         turret.setPosition(shotParams.turretAngle());
-        //     }
+        if (isManual()) {
+            setTrackTarget(false, false, false);
+            flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
+            hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
+            turret.setPosition(TurretConstants.HUB_POSITION);
+            // System.out.println("MANUAL");
+        }
+        else {
+            if (turretTracking()) {
+                turret.setPosition(shotParams.turretAngle());
+            }
                 
-        //     if (flywheelTracking()) {
-        //         flywheel.setSpeedRPM(shotParams.flywheelSpeed());
-        //     }
-        //     else {
-        //         flywheel.stop();
-        //     }
+            if (flywheelTracking()) {
+                flywheel.setSpeedRPM(shotParams.flywheelSpeed());
+            }
+            else if (partiallyTracking()) {
+                flywheel.setSpeedRPM(1000);
+            }
+            else {
+                flywheel.stop();
+            }
         
-        //     if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
-        //         hood.setPosition(shotParams.hoodAngle());
-        //     }
-        //     else {
-        //         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
-        //     }
-
-        //     if (!partiallyTracking()) {
-        //         flywheel.stop();
-        //         hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
-        //         target = Target.NONE;
-        //     }
-        // }
+            if (hoodTracking() && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get())) {
+                hood.setPosition(shotParams.hoodAngle());
+            }
+            else {
+                hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+            }
+            if (!partiallyTracking()) {
+                flywheel.stop();
+                hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
+                target = Target.NONE;
+            }
+        }
 
 
         Logger.recordOutput("Subsystems/Shooter/ShotParamFlywheelSpeed", shotParams.flywheelSpeed());
@@ -145,6 +147,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/ShotOffset", ShotCalculations.getShotOffset());
 
     }
 
@@ -153,7 +156,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean fullyTracking() {
-        return aimHood && aimTurret && spinFlywheel;
+        return aimHood && aimTurret && spinFlywheel && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get());
     }
 
     public boolean hoodTracking() {

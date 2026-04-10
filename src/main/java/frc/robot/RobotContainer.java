@@ -29,6 +29,7 @@ import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
 import frc.robot.commands.drive.Drive;
+import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -61,6 +62,7 @@ import frc.robot.util.Constants.SpindexerConstants;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.PoseCalculations;
+import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
@@ -205,7 +207,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        // CommandScheduler.getInstance().schedule(new NTGainTuner());
+        CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {
@@ -214,6 +216,9 @@ public class RobotContainer {
                 configureDevBindings(driver);
             case CALIBRATION:
                 configureCalibrationBindings(driver);
+            case TUNING:
+                configureDriverBindings(driver);
+                configureShotTuningBindings(operator);
                 break;
             default:
                 configureDriverBindings(driver);
@@ -247,9 +252,13 @@ public class RobotContainer {
             ), swerve)
         );
 
-        controller.povLeft().onTrue(extender.feedShooterCommand());
 
-        controller.povUp().onTrue(flywheel.setSpeedRPMCommand(4000));
+        controller.povUp().onTrue(flywheel.incrementSpeedCommand());
+        controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
+        controller.povRight().onTrue(flywheel.stopCommand());
+
+        controller.x().onTrue(hood.incrementPositionCommand());
+        controller.y().onTrue(hood.decrementPositionCommand());
 
         controller.povDown().onTrue(
             spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT)
@@ -257,9 +266,6 @@ public class RobotContainer {
 
         controller.a().onTrue(spindexer.setPercentCommand(0.0)
             .alongWith(kicker.setPercentCommand(0.0)));
-
-        controller.b().onTrue(flywheel.stopCommand());
-
         // controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
         // controller.leftBumper().onTrue(intake.setPercentCommand(0));
 
@@ -372,6 +378,14 @@ public class RobotContainer {
         // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
     }
 
+    private void configureShotTuningBindings(PatriBoxController controller) {
+        controller.povUp().onTrue(Commands.runOnce(() -> ShotCalculations.incrementShotOffset(0.1)));
+        controller.povDown().onTrue(Commands.runOnce(() -> ShotCalculations.decrementShotOffset(0.1)));
+
+        controller.y().onTrue(Commands.runOnce(() -> ShotCalculations.incrementShotOffset(0.01)));
+        controller.a().onTrue(Commands.runOnce(() -> ShotCalculations.decrementShotOffset(0.01)));
+    }
+
     private void configureCalibrationBindings(PatriBoxController controller) {
 
         controller.leftTrigger().onTrue(Commands.parallel(
@@ -465,15 +479,15 @@ public class RobotContainer {
 
         // vision.controlRecording(true);
         
-        // if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
-        //     CommandScheduler.getInstance().schedule(
-        //         extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
-        //         .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
-        //         .andThen(shooter.trackTargetCommand(true, false, false)));
-        // }
-        // else {
-        //     CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
-        // }
+        if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
+            CommandScheduler.getInstance().schedule(
+                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+                .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
+                .andThen(shooter.trackTargetCommand(true, false, false)));
+        }
+        else {
+            CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));
+        }
     }
 
     public void settleRobot() {
