@@ -300,8 +300,8 @@ public final class Constants {
             "Double Center Rush Left", //this path has issues
             "Double Center Rush Right",
             "Outpost Center Rush", //maybe if we need it
-            "Depot Center" //this is for really good alliance
-            // "Ballout",
+            "Depot Center", //this is for really good alliance
+            "Ballout"
             //"Cleanup Left", // no more clean up autos
             //"Depot Center Rush", //pathing is bad and also no
             //"Half Center Line Pass Right" //not gonna work
@@ -681,10 +681,11 @@ public final class Constants {
         public enum DriverMode {
             SINGLE,
             DEV,
-            CALIBRATION
+            CALIBRATION,
+            TUNING
         }
 
-        public static final DriverMode DRIVER_MODE = DriverMode.SINGLE;
+        public static final DriverMode DRIVER_MODE = DriverMode.TUNING;
 
     }
 
@@ -1013,7 +1014,7 @@ public final class Constants {
 
         public static final double TURRET_TO_REAR_FRAMEBAR_OFFSET = 0.241;
 
-        public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH + 0.0;
+        public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH + 0.15;
     }
 
     public static final class FlywheelConstants {
@@ -1029,14 +1030,14 @@ public final class Constants {
         public static final double VELOCITY_DEADBAND_RPM = 125; 
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
-        public static final double EJECT_RPM = 30.0;
+        public static final double EJECT_RPM =2000.0;
         public static final double HUB_RPM = 3200.0; // TODO: find this value
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
-        public static final double P = FieldConstants.IS_REAL ? 0.5 : 2.5563E-23;
+        public static final double P = FieldConstants.IS_REAL ? 0.005 : 2.5563E-23;
         public static final double I = FieldConstants.IS_REAL ? 0 : 0;
         public static final double D = FieldConstants.IS_REAL ? 0 : 0;
         public static final double A = FieldConstants.IS_REAL ? 0 : 0.03566;
@@ -1069,7 +1070,7 @@ public final class Constants {
         public static final double GEAR_RATIO = 32.45;
 
         public static final double MIN_ANGLE_RADIANS = 0.0;
-        public static final double MAX_ANGLE_RADIANS = 0.45099; 
+        public static final double MAX_ANGLE_RADIANS = 0.42; 
         
         public static final double STOW_POSITION_RADIANS = 0.0;
         public static final double EJECT_POSITION_RADIANS = 0.5;
@@ -1200,8 +1201,8 @@ public final class Constants {
         public static final double DEADBAND_RADIANS = 0.0;
 
         public static final double IDLE_PERCENT = 0.0;
-        public static final double REVERSE_PERCENT = -0.7;
-        public static final double FORWARD_PERCENT = 0.7;
+        public static final double REVERSE_PERCENT = -0.5;
+        public static final double FORWARD_PERCENT = 0.5;
         
         // public static final LoggedTunableConstant LOGGED_KICKER_PERCENT = new LoggedTunableConstant("Hopper/Kicker/PercentOutput", 0.0);
     }
@@ -1248,6 +1249,7 @@ public final class Constants {
 
         // public static final double OVERSHOOT_COMPENSATION = - 0.33; // comp
         public static final double OVERSHOOT_COMPENSATION = 0.0; // home
+        public static final LoggedTunableConstant LOGGED_OVERSHOOT_COMPENSATION = new LoggedTunableConstant("Shooter/ShotOffset", OVERSHOOT_COMPENSATION);
 
         public static final double TOF_ADJUST = 0.43; // 0.45
 
@@ -1412,7 +1414,7 @@ public final class Constants {
 
         public static final Pose3d TRENCH_CENTER_SIDE1_RED = new Pose3d(4.6145, 0.5566, 0.5651, zeroRotation);
         public static final double TRENCH_LENGTH = 1.1859;
-        public static final double TRENCH_WIDTH = 1.5772;
+        public static final double TRENCH_WIDTH = 0.35;
 
         public static final List<Pose2d> TRENCH_CENTERS = new ArrayList<Pose2d>() {{
             Pose3d redTrench1Center = TRENCH_CENTER_SIDE1_RED;

@@ -62,7 +62,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 3.0
+                              "waitTime": 8.0
                             }
                           },
                           {
@@ -81,13 +81,13 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 4.0
+                              "waitTime": 11.0
                             }
                           },
                           {
                             "type": "named",
                             "data": {
-                              "name": "IntakeStow"
+                              "name": "StopIntake"
                             }
                           }
                         ]

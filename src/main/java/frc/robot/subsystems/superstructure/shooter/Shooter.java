@@ -39,7 +39,7 @@ public class Shooter extends SubsystemBase {
 
     @AutoLogOutput(key = "Subsystems/Shooter/AimTurret")
     private boolean aimTurret = false;
-    @AutoLogOutput(key = "Subsystems/Shooter/TrackFlywheel")
+    @AutoLogOutput(key = "Subsystems/Shooter/Tra%ckFlywheel")
     private boolean spinFlywheel = false;
     @AutoLogOutput(key = "Subsystems/Shooter/AimHood")
     private boolean aimHood = false;
@@ -120,6 +120,9 @@ public class Shooter extends SubsystemBase {
             if (flywheelTracking()) {
                 flywheel.setSpeedRPM(shotParams.flywheelSpeed());
             }
+            else if (partiallyTracking()) {
+                flywheel.setSpeedRPM(1000);
+            }
             else {
                 flywheel.stop();
             }
@@ -130,7 +133,6 @@ public class Shooter extends SubsystemBase {
             else {
                 hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
             }
-
             if (!partiallyTracking()) {
                 flywheel.stop();
                 hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
@@ -145,6 +147,7 @@ public class Shooter extends SubsystemBase {
         Logger.recordOutput("Subsystems/Shooter/Turret/AtTargetPosition", turret.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Hood/AtTargetPosition", hood.atTargetPosition(this::aimingAtHub));
         Logger.recordOutput("Subsystems/Shooter/Flywheel/AtTargetSpeed", flywheel.atTargetSpeed(this::aimingAtHub));
+        Logger.recordOutput("Subsystems/Shooter/ShotOffset", ShotCalculations.getShotOffset());
 
     }
 
@@ -153,7 +156,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean fullyTracking() {
-        return aimHood && aimTurret && spinFlywheel;
+        return aimHood && aimTurret && spinFlywheel && !PoseCalculations.shouldPutHoodDown(robotRelativePose.get(), robotRelativeVelocity.get());
     }
 
     public boolean hoodTracking() {

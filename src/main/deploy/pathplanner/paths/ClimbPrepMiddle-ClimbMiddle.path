@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0828873917228106,
-        "y": 4.444379210779596
+        "x": 1.922512030798845,
+        "y": 5.153407122232916
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8328874482086772,
-        "y": 4.444211154449089
+        "x": 1.6725120872847117,
+        "y": 5.153239065902409
       },
       "isLocked": false,
       "linkedName": "ClimbPrepMiddle"
@@ -62,7 +62,7 @@
   "folder": "Climb",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -171.41637851988602
   },
   "useDefaultConstraints": true
 }
