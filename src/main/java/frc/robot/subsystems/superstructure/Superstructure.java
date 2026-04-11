@@ -78,20 +78,22 @@ public class Superstructure {
     }
 
     public enum IntakeState {
-        STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0),
-        NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0),
-        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT),
-        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0),
-        HALF_STOW_WITH_ROLLERS(ExtenderConstants.HALF_STOW_RADIANS, IntakeConstants.INTAKE_PERCENT),
-        WIGGLE(ExtenderConstants.WIGGLE_RADIANS, IntakeConstants.INTAKE_PERCENT),
-        BLIP(ExtenderConstants.BLIP_RADIANS, IntakeConstants.INTAKE_PERCENT);
+        STOW(ExtenderConstants.STOW_POSITION_RADIANS, 0.0, false),
+        NO_SPIN(ExtenderConstants.INTAKE_POSITION_RADIANS, 0.0, false),
+        INTAKE(ExtenderConstants.INTAKE_POSITION_RADIANS, IntakeConstants.INTAKE_PERCENT, false),
+        HALF_STOW(ExtenderConstants.HALF_STOW_RADIANS, 0.0, false),
+        HALF_STOW_WITH_ROLLERS(ExtenderConstants.HALF_STOW_RADIANS, IntakeConstants.INTAKE_PERCENT, false),
+        WIGGLE(ExtenderConstants.WIGGLE_RADIANS, IntakeConstants.INTAKE_PERCENT, true),
+        BLIP(ExtenderConstants.BLIP_RADIANS, IntakeConstants.INTAKE_PERCENT, true);
 
         public double extenderPosition;
         public double intakePercent;
+        public boolean runFast;
 
-        IntakeState(double extenderPosition, double intakePercent) {
+        IntakeState(double extenderPosition, double intakePercent, boolean runFast) {
             this.extenderPosition = extenderPosition;
             this.intakePercent = intakePercent;
+            this.runFast = runFast;
         }
     }
 
@@ -109,7 +111,7 @@ public class Superstructure {
 
     public Command setIntakeState(IntakeState state) {
         return Commands.sequence(intake.setPercentCommand(() -> state.intakePercent),
-                            extender.setPositionCommand(() -> state.extenderPosition));
+                            extender.setPositionCommand(() -> state.extenderPosition, () -> state.runFast));
     }
 
     // public Command setClimbState(ClimbState state) {
@@ -147,7 +149,7 @@ public class Superstructure {
                     spindexer.setPercentCommand(0.0),
                     kicker.setPercentCommand(0.0),
                     intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT),
-                    extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS)
+                    extender.setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, false)
                 );
     }
 

@@ -14,6 +14,7 @@ public interface ExtenderIO {
         public double appliedOutputVolts = 0.0;
         public double torqueCurrentAmps = 0.0;
         public double temperatureCelsius = 0.0;
+        public double velocityRadsPerSec = 0.0;
     }
 
     public default void updateInputs(ExtenderIOInputs inputs) {}

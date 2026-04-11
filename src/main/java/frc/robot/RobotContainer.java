@@ -207,15 +207,17 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
-        CommandScheduler.getInstance().schedule(new NTGainTuner());
+        // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
     private void configureButtonBindings() {
         switch(OIConstants.DRIVER_MODE) {
             case DEV:
                 configureDevBindings(driver);
+                break;
             case CALIBRATION:
                 configureCalibrationBindings(driver);
+                break;
             case TUNING:
                 configureDriverBindings(driver);
                 configureShotTuningBindings(operator);
@@ -360,9 +362,9 @@ public class RobotContainer {
 
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
-        controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
+        controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
-        controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS));
+        controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
@@ -481,9 +483,9 @@ public class RobotContainer {
         
         if (extender.getPosition() < ExtenderConstants.STOW_POSITION_RADIANS) {
             CommandScheduler.getInstance().schedule(
-                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS)
+                extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS, true)
                 .until(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS))
-                .andThen(shooter.trackTargetCommand(true, false, false)));
+                .andThen(shooter.trackTargetCommand(true, false, false)).onlyIf(() -> extender.atPosition(ExtenderConstants.STOW_POSITION_RADIANS)));
         }
         else {
             CommandScheduler.getInstance().schedule(shooter.trackTargetCommand(true, false, false));

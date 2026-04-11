@@ -39,6 +39,7 @@ public class ExtenderIOKraken implements ExtenderIO {
         inputs.appliedOutputVolts = motor.getVoltageAsDouble();
         inputs.torqueCurrentAmps = motor.getTorqueCurrentAsDouble();
         inputs.temperatureCelsius = motor.getTemperatureAsDouble();
+        inputs.velocityRadsPerSec = motor.getVelocityAsDouble();
     }
 
     @Override
