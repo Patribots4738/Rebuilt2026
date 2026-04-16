@@ -5,6 +5,7 @@
 package frc.robot.subsystems.superstructure.extender;
 
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -13,6 +14,9 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,11 +35,17 @@ public class Extender extends SubsystemBase {
     @AutoLogOutput (key = "Subsystems/Extender/ShouldRunSetpoint")
     private boolean shouldRunSetpoint = false;
 
+    private State targetState = new State(0, 0);
+    private State setpoint = new State(0, 0);
+
     // private final SysIdRoutine extenderRoutine;
     private double testPosition;
     private boolean wiggle;
 
-    // private TrapezoidProfile profile = new TrapezoidProfile(new Constraints(ExtenderConstants.VELOCITY, ExtenderConstants.ACCELERATION));
+    private TrapezoidProfile slowProfile = new TrapezoidProfile(new Constraints(ExtenderConstants.SLOW_VELOCITY, ExtenderConstants.SLOW_ACCELERATION));
+    private TrapezoidProfile fastProfile = new TrapezoidProfile(new Constraints(ExtenderConstants.FAST_VELOCITY, ExtenderConstants.FAST_ACCELERATION));
+
+    boolean shouldRunFast = true;
 
 
     // private LoggedTunableNumber fastVelocity = new LoggedTunableNumber("Extender/FastProfile/Velocity", ExtenderConstants.FAST_VELOCITY);
@@ -91,7 +101,10 @@ public class Extender extends SubsystemBase {
         Logger.recordOutput("Subsystems/Extender/TargetPosition", targetPosition);
 
         if (shouldRunSetpoint) {
-            io.setPosition(targetPosition);
+            // io.setPosition(targetPosition);
+
+            setpoint = (shouldRunFast ? fastProfile : slowProfile).calculate(0.02, setpoint, targetState);
+            io.setPosition(setpoint.position);
         } else {
             io.setNeutral();
         }
@@ -113,10 +126,17 @@ public class Extender extends SubsystemBase {
         );
     }
 
-    public void setPosition(double position) {
+    public void setPosition(double position, boolean runFast) {
         position = MathUtil.clamp(position, ExtenderConstants.MIN_ANGLE_RADIANS, ExtenderConstants.MAX_ANGLE_RADIANS);
-        targetPosition = position;
-        shouldRunSetpoint = true;
+        // targetPosition = position;
+
+        if (position != targetState.position) {
+            setpoint.position = inputs.positionRads;
+            setpoint.velocity = inputs.velocityRadsPerSec;
+        }
+        targetState.position = position;
+        shouldRunSetpoint = true; 
+        shouldRunFast = runFast;
         
         RobotContainer.desiredComponents3d[LoggingConstants.EXTENDER_INDEX] = new Pose3d(
                 LoggingConstants.EXTENDER_OFFSET.getX() + Units.inchesToMeters(position * 4.25),
@@ -139,20 +159,20 @@ public class Extender extends SubsystemBase {
         shouldRunSetpoint = false;
     }
 
-    public Command setTestPositionCommand() {
-        return Commands.runOnce(() -> this.setTestPosition());
+    // public Command setTestPositionCommand() {
+    //     return Commands.runOnce(() -> this.setTestPosition());
+    // }
+
+    // public void setTestPosition() {
+    //     this.setPosition(testPosition);
+    // }
+
+    public Command setPositionCommand(DoubleSupplier positionSupplier, BooleanSupplier runFast) {
+        return runOnce(() -> setPosition(positionSupplier.getAsDouble(), runFast.getAsBoolean()));
     }
 
-    public void setTestPosition() {
-        this.setPosition(testPosition);
-    }
-
-    public Command setPositionCommand(DoubleSupplier positionSupplier) {
-        return runOnce(() -> setPosition(positionSupplier.getAsDouble()));
-    }
-
-    public Command setPositionCommand(double position) {
-        return setPositionCommand(() -> position);
+    public Command setPositionCommand(double position, boolean runFast) {
+        return setPositionCommand(() -> position, () -> runFast);
     }
 
     public Command setNeutralCommand() {
@@ -164,31 +184,31 @@ public class Extender extends SubsystemBase {
     }
 
     public Command retractExtender() {
-        return setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS);
+        return setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS, false);
     }
 
     public Command extendExtender() {
-        return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS);
+        return setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, false);
     }
     
     public Command feedShooterCommand() {
         wiggle = true;
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS), Commands.waitSeconds(1), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(1));
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, true), Commands.waitSeconds(0.75), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, true), Commands.waitSeconds(1));
     }
 
     public Command feedShooterToggleCommand() {
         wiggle = !wiggle;
-        return Commands.either(setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), 
+        return Commands.either(setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, true), 
             feedShooterCommand(),
             () -> !wiggle);
     }
 
     public Command blipCommand() {
-        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.BLIP_RADIANS), Commands.waitSeconds(0.25), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS), Commands.waitSeconds(0.25));
+        return Commands.repeatingSequence(setPositionCommand(ExtenderConstants.BLIP_RADIANS, true), Commands.waitSeconds(0.25), setPositionCommand(ExtenderConstants.INTAKE_POSITION_RADIANS, true), Commands.waitSeconds(0.25));
     }
 
     public Command halfStowCommand() {
-        return setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS);
+        return setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false);
     }
 
     public boolean atPosition(double position) {

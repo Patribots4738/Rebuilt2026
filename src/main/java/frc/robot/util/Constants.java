@@ -486,10 +486,10 @@ public final class Constants {
 
         public static final SwerveGearing CURRENT_GEARING = SwerveGearing.R2;
 
-        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.204590;
-        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.366943;
-        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.274902;
-        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.329346;
+        public static final double FRONT_LEFT_TURN_ENCODER_OFFSET = -0.205566;
+        public static final double FRONT_RIGHT_TURN_ENCODER_OFFSET = 0.366699;
+        public static final double REAR_LEFT_TURN_ENCODER_OFFSET = 0.275635;
+        public static final double REAR_RIGHT_TURN_ENCODER_OFFSET = 0.330322;
 
 
         // inversions for different motors may be needed for dual type
@@ -1030,8 +1030,9 @@ public final class Constants {
         public static final double VELOCITY_DEADBAND_RPM = 125; 
         public static final double PASS_VELOCITY_DEADBAND_RPM = 120;
 
-        public static final double EJECT_RPM =2000.0;
+        public static final double EJECT_RPM = 2000.0;
         public static final double HUB_RPM = 3200.0; // TODO: find this value
+        public static final double IDLE_RPM = 2000.0;
 
         public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
 
@@ -1173,12 +1174,15 @@ public final class Constants {
 
         // public static final LoggedGainConstants LOGGED_GAINS = new LoggedGainConstants(ExtenderConstants.GAINS, "Extender/ExtenderGains");
 
-        // public static final LoggedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
+        // public static final LogegedTunableConstant LOGGED_TEST_POSITION = new LoggedTunableConstant("Extender/ExtenderPositionDegrees", MIN_ANGLE_RADIANS);
 
         // public static final LoggedTunableBoolean LOGGED_BRAKE_MODE = new LoggedTunableBoolean("Extender/BrakeExtender", ExtenderConstants.BRAKE_MOTOR);
 
-        // public static final double VELOCITY = 1.5;
-        // public static final double ACCELERATION = 1.5;
+        public static final double SLOW_VELOCITY = 10.0;
+        public static final double SLOW_ACCELERATION = 15.0;
+
+        public static final double FAST_VELOCITY = 20.0;
+        public static final double FAST_ACCELERATION = 35.0;
     }
 
     public static final class KickerConstants {
@@ -1248,8 +1252,8 @@ public final class Constants {
         public static final double ALLIANCE_SHOT_TOLERANCE = 0.85;
 
         // public static final double OVERSHOOT_COMPENSATION = - 0.33; // comp
-        public static final double OVERSHOOT_COMPENSATION = 0.0; // home
-        public static final LoggedTunableConstant LOGGED_OVERSHOOT_COMPENSATION = new LoggedTunableConstant("Shooter/ShotOffset", OVERSHOOT_COMPENSATION);
+        public static final double OVERSHOOT_COMPENSATION = 1.23; // home
+        // public static final LoggedTunableConstant LOGGED_OVERSHOOT_COMPENSATION = new LoggedTunableConstant("Shooter/ShotOffset", OVERSHOOT_COMPENSATION);
 
         public static final double TOF_ADJUST = 0.43; // 0.45
 

@@ -121,7 +121,7 @@ public class Shooter extends SubsystemBase {
                 flywheel.setSpeedRPM(shotParams.flywheelSpeed());
             }
             else if (partiallyTracking()) {
-                flywheel.setSpeedRPM(1000);
+                flywheel.setSpeedRPM(FlywheelConstants.IDLE_RPM);
             }
             else {
                 flywheel.stop();
