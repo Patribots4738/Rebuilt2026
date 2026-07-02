@@ -15,8 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
-
-
+// Thank you 6328! We took inspiration from your ShotCalculator code and modified it. <3
 public class ShotCalculations {
 
     private final static LinearFilter tAngleFilter = LinearFilter.movingAverage((int) (0.1 / LoggingConstants.PHASE_DELAY));
