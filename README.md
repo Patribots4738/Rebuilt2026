@@ -25,7 +25,8 @@ Thanks for checking us out, & be sure to star this repository if you find anythi
 
 ## Simulation and Testing
 
-### PID Tuning with Elastic
+### PID Tuning with Network Tables
+> When tuning PID, shooter speeds, and hood angle, we can change the values in `Elastic` using `NTGainTuner`, network tables, and `LoggedTunableNumber`. This allows us to dynamically change the values without redeploying our code constantly, making tuning faster, easier, and more accurate.
 
 ### Log Replay Using AdvantageKit
 
@@ -48,8 +49,14 @@ We use `MK5N` swerve modules from `Swerve Drive Specialties` with a `Pigeon 2.0`
 ### Autonomous Routines
 > We use `PathPlanner` to construct a modular autonomous. In `PathPlanner`, we use named waypoints, scheduled commands, & bezier curves to generate a singular auto path between a starting position, preferable shooting position, or note location. We then link multiple auto paths together to make one predetermined autonomous. Using note detection & logic, we are able to make quick decisions on whether or not we got the note, or if we should skip trying to get a note that isn't there.
 
-### Multitarget Shooter Tracking & Automated Switching
+### Shooter Tracking
+> Our turret, hood, and flywheel subsystems are coordinated by the `Shooter` class. The turret and hood are defaulted to always be tracking a target, while the flywheel only spins up to speed when the driver holds down the trigger to shoot. Our class `ShotCalculations`, created with [6328 - Mechanical Advantage](<https://github.com/Mechanical-Advantage>)'s shooter aiming logic as a reference, uses the robot's current `Pose2d` and trigonometry to find the angle that the turret needs to be at in order to point at the Hub. We calculate the hood angle and flywheel speed using an interpolation map that has tested values we tuned on the robot. We added on to this logic to incorporate multiple targets and shooting while driving!
+
+### Automated Target Switching
+> There are three targets the robot can aim at and `ShotCalculations` uses the robot's current location on the field to choose a target. If the robot is in the "shooting zone", an area tht is slightly larger than the Alliance Zone in order to be able to shooter under the Trench, then the target is the Hub. If the robot is not in the shooting zone, then the target will either be in front of the left or right driver station to be able to pass Fuel back to the Alliance Zone. If the robot is in the right side of the field and crosses into the left side of the field, then the passing target will automatically switch to the left side. However, the driver can toggle off tracking and use the shooter subsystems by manually aiming.
+
 ### Automatic Hood Stow
+> The hood is at risk of colliding with the Trench when extended. Therefore we use the current pose and velocity of the robot to estimate where the robot will be in 0.02 seconds, and if the estimated position is underneath the Trench, we automatically stow the hood. We also apply an offset to account for the shooter tower's displacement from the center of the robot.
 
 ## Teleoperated 
 ### Joystick Axis Remapping
