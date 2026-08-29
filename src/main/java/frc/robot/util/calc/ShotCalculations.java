@@ -1,20 +1,17 @@
 package frc.robot.util.calc;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.interpolation.InverseInterpolator;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.LoggingConstants;
 import frc.robot.util.Constants.TurretConstants;
+import org.wpilib.math.filter.LinearFilter;
+import org.wpilib.math.geometry.*;
+import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
+import org.wpilib.math.interpolation.InterpolatingTreeMap;
+import org.wpilib.math.interpolation.InverseInterpolator;
+import org.wpilib.math.kinematics.ChassisVelocities;
+
+import java.util.function.Supplier;
+
 // Thank you 6328! We took inspiration from your ShotCalculator code and modified it. <3
 public class ShotCalculations {
 
@@ -246,40 +243,40 @@ public class ShotCalculations {
         passingTimeOfFlightMap.put(7.58571, 1.45);
     }
 
-    public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> robotRelativeVelocitySupplier, Translation3d target, boolean hub) {
+    public static ShootingParameters getParameters(Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisVelocities> robotRelativeVelocitySupplier, Translation3d target, boolean hub) {
         // Calculate estimated pose while accounting for phase delay of one code loop
         double timeOfFlight;
         Pose2d estimatedPose = robotPoseSupplier.get();
-        ChassisSpeeds robotRelativeVelocity = robotRelativeVelocitySupplier.get();
+        ChassisVelocities robotRelativeVelocity = robotRelativeVelocitySupplier.get();
         estimatedPose =
-            estimatedPose.exp(
+            estimatedPose.plus(
                 new Twist2d(
-                    robotRelativeVelocity.vxMetersPerSecond * LoggingConstants.PHASE_DELAY,
-                    robotRelativeVelocity.vyMetersPerSecond * LoggingConstants.PHASE_DELAY,
-                    robotRelativeVelocity.omegaRadiansPerSecond * LoggingConstants.PHASE_DELAY));
+                    robotRelativeVelocity.vx * LoggingConstants.PHASE_DELAY,
+                    robotRelativeVelocity.vy * LoggingConstants.PHASE_DELAY,
+                    robotRelativeVelocity.omega * LoggingConstants.PHASE_DELAY).exp());
 
         // Calculate distance from turret to target
         Pose2d turretPosition = estimatedPose.transformBy(TurretConstants.TURRET_TO_ROBOT_TRANSFORM2D);
         double turretToTargetDistance = target.toTranslation2d().getDistance(turretPosition.getTranslation());
 
         timeOfFlight = hub ? hubTimeOfFlightMap.get(turretToTargetDistance + shotOffset) : passingTimeOfFlightMap.get(turretToTargetDistance);
-        estimatedPose.exp(
+        estimatedPose.plus(
             new Twist2d(
-                robotRelativeVelocity.vxMetersPerSecond * timeOfFlight,
-                robotRelativeVelocity.vyMetersPerSecond * timeOfFlight,
-                robotRelativeVelocity.omegaRadiansPerSecond * timeOfFlight));
+                robotRelativeVelocity.vx * timeOfFlight,
+                robotRelativeVelocity.vy * timeOfFlight,
+                robotRelativeVelocity.omega * timeOfFlight).exp());
 
         // Calculate field relative turret velocity
-        ChassisSpeeds robotVelocity = robotRelativeVelocitySupplier.get();
+        ChassisVelocities robotVelocity = robotRelativeVelocitySupplier.get();
         double robotAngle = estimatedPose.getRotation().getRadians();
         double turretVelocityX =
-            robotVelocity.vxMetersPerSecond
-                + robotVelocity.omegaRadiansPerSecond
+            robotVelocity.vx
+                + robotVelocity.omega
                     * (TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getY() * Math.cos(robotAngle)
                         - TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getX() * Math.sin(robotAngle));
         double turretVelocityY =
-            robotVelocity.vyMetersPerSecond
-                + robotVelocity.omegaRadiansPerSecond
+            robotVelocity.vy
+                + robotVelocity.omega
                     * (TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getX() * Math.cos(robotAngle)
                         - TurretConstants.TURRET_TO_ROBOT_TRANSFORM3D.getY() * Math.sin(robotAngle));
 

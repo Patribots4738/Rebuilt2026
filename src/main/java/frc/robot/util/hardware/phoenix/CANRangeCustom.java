@@ -1,24 +1,19 @@
 package frc.robot.util.hardware.phoenix;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.CANrangeConfiguration;
-import com.ctre.phoenix6.configs.CANrangeConfigurator;
-import com.ctre.phoenix6.configs.FovParamsConfigs;
-import com.ctre.phoenix6.configs.ProximityParamsConfigs;
-import com.ctre.phoenix6.configs.ToFParamsConfigs;
+import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.signals.UpdateModeValue;
-
-import edu.wpi.first.units.measure.Distance;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.CANRangeConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.GeneralHardwareConstants;
+import org.wpilib.units.measure.Distance;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class CANRangeCustom extends CANrange {
 

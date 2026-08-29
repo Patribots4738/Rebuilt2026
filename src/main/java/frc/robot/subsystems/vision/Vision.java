@@ -4,23 +4,22 @@
 
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
 import frc.robot.util.Constants.CameraConstants;
 import frc.robot.util.Constants.OIConstants;
 import frc.robot.util.Constants.OIConstants.DriverMode;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.driverstation.internal.DriverStationBackend;
+import org.wpilib.math.estimator.SwerveDrivePoseEstimator;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.linalg.VecBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Vision extends SubsystemBase {
 
@@ -71,7 +70,7 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < cameras.length; i++) {
             VisionIO camera = cameras[i];
 
-            if ((Robot.gameMode == GameMode.DISABLED && !DriverStation.isFMSAttached() && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION) || (OIConstants.DRIVER_MODE == DriverMode.CALIBRATION && (!enabledThrottleOverride || disableFour && i == 0))) {
+            if ((Robot.gameMode == GameMode.DISABLED && !DriverStationBackend.isFMSAttached() && OIConstants.DRIVER_MODE != DriverMode.CALIBRATION) || (OIConstants.DRIVER_MODE == DriverMode.CALIBRATION && (!enabledThrottleOverride || disableFour && i == 0))) {
                 // If robot is disabled, only process some frames
                 // This should minimize overheating issues with the LL4
                 camera.setThrottle(CameraConstants.DISABLED_THROTTLE);

@@ -1,16 +1,11 @@
 package frc.robot.util.custom;
 
-
-
 /**
  * PID constants used to create PID controllers
  * This class is special becuase of its overloaded constructors
  * It just helps keep everything organized
  */
 public class GainConstants {
-
-    
-    
     // Generic
     private double P; 
     private double I;
@@ -172,5 +167,4 @@ public class GainConstants {
         this.D = D;
         return this;
     }
-
 }

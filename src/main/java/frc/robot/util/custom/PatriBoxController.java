@@ -1,20 +1,21 @@
 package frc.robot.util.custom;
 
-import java.util.function.DoubleSupplier;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.Robot.GameMode;
-import frc.robot.util.Constants.OIConstants;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.CommandGamepad;
+import org.wpilib.driverstation.GenericHID.RumbleType;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.util.MathUtil;
 
-public class PatriBoxController extends CommandXboxController {
+import java.util.function.DoubleSupplier;
 
-    private double deadband;
+import static frc.robot.util.calc.OICalc.toCircle;
+
+public class PatriBoxController extends CommandGamepad {
+
+    private final double deadband;
 
     public PatriBoxController(int port, double deadband) {
         super(port);
@@ -59,62 +60,6 @@ public class PatriBoxController extends CommandXboxController {
                 MathUtil.applyDeadband(-super.getRightY(), deadband));
     }
 
-    // All calculations can be referenced here
-    // https://www.desmos.com/calculator/e07raajzh5
-    private Translation2d toCircle(double x, double y) {
-
-        Translation2d intercept;
-        Translation2d output;
-
-        double slope = y / x;
-
-        if (slope == 0 || Double.isNaN(slope) || Double.isInfinite(slope)) {
-
-            output = new Translation2d(x, y);
-            return output;
-
-        } else if (0 > slope && slope >= -OIConstants.CONTROLLER_CORNER_SLOPE_2) {
-
-            intercept = new Translation2d(-1, -slope);
-
-        } else if (-OIConstants.CONTROLLER_CORNER_SLOPE_1 < slope && slope < -OIConstants.CONTROLLER_CORNER_SLOPE_2) {
-
-            double intersectionX = (1.7) / (slope - 1);
-            double intersectionY = (intersectionX + 1.7);
-
-            intercept = new Translation2d(intersectionX, intersectionY);
-
-        } else if (slope < -OIConstants.CONTROLLER_CORNER_SLOPE_1 || slope > OIConstants.CONTROLLER_CORNER_SLOPE_1) {
-
-            intercept = new Translation2d(1 / slope, 1);
-
-        } else if (OIConstants.CONTROLLER_CORNER_SLOPE_1 > slope && slope > OIConstants.CONTROLLER_CORNER_SLOPE_2) {
-
-            double intersectionX = (1.7) / (slope + 1);
-            double intersectionY = -intersectionX + 1.7;
-
-            intercept = new Translation2d(intersectionX, intersectionY);
-
-        } else if (0 < slope && slope <= OIConstants.CONTROLLER_CORNER_SLOPE_2) {
-
-            intercept = new Translation2d(1, slope);
-
-        } else {
-
-            intercept = new Translation2d(0, 0);
-
-            System.out.println("Error... Slope = " + slope);
-
-        }
-
-        double distance = getDistance(x, y, intercept.getX(), intercept.getY());
-
-        distance = (distance > 1) ? 1 : distance;
-
-        output = new Translation2d(Math.signum(x) * distance, new Rotation2d(Math.atan(y / x)));
-        return output;
-    }
-
     private double getDistance(double x1, double y1, double x2, double y2) {
         return Math.sqrt(
                 (Math.pow(x1, 2) + Math.pow(y1, 2)) /
@@ -132,9 +77,12 @@ public class PatriBoxController extends CommandXboxController {
     }
 
     public void setRumble(double rumble) {
-        if (Robot.gameMode == GameMode.TELEOP)
-            this.getHID().setRumble(RumbleType.kBothRumble, rumble);
-        else if (Robot.gameMode == GameMode.DISABLED)
-            this.getHID().setRumble(RumbleType.kBothRumble, 0);
+        if (Robot.gameMode == GameMode.TELEOP) {
+            this.getHID().setRumble(RumbleType.LEFT_RUMBLE, rumble);
+            this.getHID().setRumble(RumbleType.RIGHT_RUMBLE, rumble);
+        } else if (Robot.gameMode == GameMode.DISABLED) {
+            this.getHID().setRumble(RumbleType.LEFT_RUMBLE, 0);
+            this.getHID().setRumble(RumbleType.RIGHT_RUMBLE, 0);
+        }
     }
 }

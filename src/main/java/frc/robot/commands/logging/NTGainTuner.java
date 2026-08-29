@@ -1,18 +1,19 @@
 package frc.robot.commands.logging;
 
+import frc.robot.util.Constants.KrakenMotorConstants;
+import frc.robot.util.hardware.phoenix.Kraken;
+import org.wpilib.command2.Command;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableEntry;
+import org.wpilib.networktables.NetworkTableInstance;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.util.Constants.KrakenMotorConstants;
 // import frc.robot.util.Constants.NeoMotorConstants;
-import frc.robot.util.hardware.phoenix.Kraken;
 // import frc.robot.util.hardware.rev.Neo;
 
 public class NTGainTuner extends Command {
@@ -132,7 +133,7 @@ public class NTGainTuner extends Command {
         // for (Map.Entry<List<Neo>, Map<NetworkTableEntry, Double>> entry : neoEntries.entrySet()) {
         //     updateNeoValues(entry);
         // }
-        for (Map.Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry : krakenEntries.entrySet()) {
+        for (Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry : krakenEntries.entrySet()) {
             updateKrakenValues(entry);
         }
     }
@@ -165,8 +166,8 @@ public class NTGainTuner extends Command {
     //     }
     // }
 
-    private void updateKrakenValues(Map.Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry) {
-        for (Map.Entry<NetworkTableEntry, Double> entry2 : entry.getValue().entrySet()) {
+    private void updateKrakenValues(Entry<List<Kraken>, Map<NetworkTableEntry, Double>> entry) {
+        for (Entry<NetworkTableEntry, Double> entry2 : entry.getValue().entrySet()) {
             double NTValue = entry2.getKey().getDouble(entry2.getValue());
             if (NTValue != entry2.getValue()) {
                 String entryPath = entry2.getKey().getName();

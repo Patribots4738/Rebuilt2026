@@ -1,13 +1,11 @@
 package frc.robot.subsystems.vision;
 
-import java.util.ArrayList;
-import java.lang.Double;
-import java.util.Arrays;
-import java.util.Comparator;
-
 import frc.robot.util.hardware.limelight.Limelight;
 import frc.robot.util.hardware.limelight.LimelightHelpers;
 import frc.robot.util.hardware.limelight.LimelightHelpers.RawFiducial;
+
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class VisionIOLimelight implements VisionIO {
     

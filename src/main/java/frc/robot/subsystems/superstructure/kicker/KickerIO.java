@@ -1,6 +1,5 @@
 package frc.robot.subsystems.superstructure.kicker;
 
-import frc.robot.util.custom.GainConstants;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface KickerIO {

@@ -1,8 +1,7 @@
 package frc.robot.subsystems.drive.module;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import frc.robot.util.custom.GainConstants;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface ModuleIO {
 
@@ -41,7 +40,7 @@ public interface ModuleIO {
 
     default void runTurnCharacterization(double input) {}
 
-    default void runDriveVelocity(double velocity, double feedforwad) {}
+    default void runDriveVelocity(double velocity, double feedforward) {}
 
     default void setTurnPosition(double position) {}
 

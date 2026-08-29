@@ -1,35 +1,10 @@
 package frc.robot;
 
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.pathplanner.lib.auto.NamedCommands;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Threads;
-import edu.wpi.first.wpilibj.event.EventLoop;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.characterization.FeedForwardCharacterization;
 import frc.robot.commands.characterization.StaticCharacterization;
 import frc.robot.commands.characterization.WheelRadiusCharacterization;
 import frc.robot.commands.drive.Drive;
-import frc.robot.commands.logging.NTGainTuner;
 import frc.robot.commands.managers.HDCTuner;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.subsystems.superstructure.Superstructure;
@@ -52,18 +27,30 @@ import frc.robot.subsystems.superstructure.spindexer.Spindexer;
 import frc.robot.subsystems.superstructure.spindexer.SpindexerIOKraken;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.KickerConstants;
-import frc.robot.util.Constants.LoggingConstants;
-import frc.robot.util.Constants.OIConstants;
-import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.Constants.*;
 import frc.robot.util.auto.Alignment;
 import frc.robot.util.auto.PathPlannerStorage;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.PatriBoxController;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.Trigger;
+import org.wpilib.driverstation.POVDirection;
+import org.wpilib.event.EventLoop;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.kinematics.SwerveModuleVelocity;
+import org.wpilib.smartdashboard.*;
+import org.wpilib.util.Color;
+import org.wpilib.util.Color8Bit;
+
+import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
 
@@ -76,7 +63,7 @@ public class RobotContainer {
 //     @AutoLogOutput (key = "PowerDistributionHub/Voltage")
 //     private double voltage;
 
-    private EventLoop testButtonBindingLoop = new EventLoop();
+    private final EventLoop testButtonBindingLoop = new EventLoop();
     
     @AutoLogOutput (key = "Draggables/Components3d")
     public static Pose3d[] components3d = new Pose3d[5];
@@ -93,7 +80,6 @@ public class RobotContainer {
     private final Swerve swerve;
     @SuppressWarnings("unused")
     private final Vision vision;
-//     private final Climb climb;
     private final Flywheel flywheel;
     private final Turret turret;
     private final Hood hood;
@@ -108,7 +94,7 @@ public class RobotContainer {
 
     public static Field2d field2d = new Field2d();
 
-    private PathPlannerStorage pathPlannerStorage;
+    private final PathPlannerStorage pathPlannerStorage;
     private static HDCTuner HDCTuner;
 
     // Draggables
@@ -119,9 +105,9 @@ public class RobotContainer {
     @AutoLogOutput (key = "Draggables/TurretPose2d")
     public static Pose2d turretPose2d = Pose2d.kZero;
     @AutoLogOutput (key = "Draggables/SwerveMeasuredStates")
-    public static SwerveModuleState[] swerveMeasuredStates;
+    public static SwerveModuleVelocity[] swerveMeasuredStates;
     @AutoLogOutput (key = "Draggables/SwerveDesiredStates")
-    public static SwerveModuleState[] swerveDesiredStates;
+    public static SwerveModuleVelocity[] swerveDesiredStates;
     @AutoLogOutput (key = "Draggables/GameModeStart")
     public static double gameModeStart = 0;
     @AutoLogOutput (key = "Draggables/AutoStartingPose")
@@ -130,7 +116,7 @@ public class RobotContainer {
     public static Pose3d robotPose3d = new Pose3d();
     public static Mechanism2d mech = new Mechanism2d(10, 10);
     public static MechanismRoot2d hoodPivot = mech.getRoot("Hood", 0, 0);
-    public static MechanismLigament2d hoodMechanism = new MechanismLigament2d("hoodMechanism", 10, 0, 2, new Color8Bit(Color.kPurple));
+    public static MechanismLigament2d hoodMechanism = new MechanismLigament2d("hoodMechanism", 10, 0, 2, new Color8Bit(Color.PURPLE));
 
     public RobotContainer() {
 
@@ -157,7 +143,6 @@ public class RobotContainer {
             new VisionIOLimelight("limelight-right", true), 
             new VisionIOLimelight("limelight-intake", true), 
             new VisionIOLimelight("limelight-left", true));
-        // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -178,8 +163,8 @@ public class RobotContainer {
 
         swerve.setDefaultCommand(new Drive(
                 swerve,
-                () -> driver.getLeftY(),
-                () -> driver.getLeftX(),
+		        driver::getLeftY,
+		        driver::getLeftX,
                 () -> -driver.getRightX() / 1.6,
                 robotRelativeSupplier,
                 () -> (robotRelativeSupplier.getAsBoolean() && Robot.isRedAlliance())
@@ -238,11 +223,9 @@ public class RobotContainer {
 
         new Trigger(() -> PoseCalculations.fieldHalf(swerve.getPose()))
         .onChange(shooter.setPassIndexCommand(0));
-
     }
 
     private void configureDevBindings(PatriBoxController controller) {
-
         controller.start().onTrue(
             Commands.runOnce(() -> swerve.resetOdometry(
                 new Pose2d(
@@ -254,19 +237,18 @@ public class RobotContainer {
             ), swerve)
         );
 
-
         controller.povUp().onTrue(flywheel.incrementSpeedCommand());
         controller.povLeft().onTrue(flywheel.decrementSpeedCommand());
         controller.povRight().onTrue(flywheel.stopCommand());
 
-        controller.x().onTrue(hood.incrementPositionCommand());
-        controller.y().onTrue(hood.decrementPositionCommand());
+        controller.westFace().onTrue(hood.incrementPositionCommand());
+        controller.northFace().onTrue(hood.decrementPositionCommand());
 
         controller.povDown().onTrue(
             spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT)
             .alongWith(kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)));
 
-        controller.a().onTrue(spindexer.setPercentCommand(0.0)
+        controller.southFace().onTrue(spindexer.setPercentCommand(0.0)
             .alongWith(kicker.setPercentCommand(0.0)));
         // controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
         // controller.leftBumper().onTrue(intake.setPercentCommand(0));
@@ -360,11 +342,11 @@ public class RobotContainer {
         // controller.y().onTrue(shooter.enableManualCommand())
         //                 .onFalse(shooter.disableManualCommand());
 
-        controller.y().onTrue(shooter.toggleManualShootingCommand());
+        controller.northFace().onTrue(shooter.toggleManualShootingCommand());
 
         controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
-        controller.x().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false));
+        controller.eastFace().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false));
 
         controller.rightStick().and(controller.leftStick()).onTrue(superstructure.killCommand());
 
@@ -372,7 +354,7 @@ public class RobotContainer {
 
         controller.povRight().onTrue(shooter.forceHoodDownCommand());
 
-        controller.b().onTrue(extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
+        controller.eastFace().onTrue(extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
 
         // uncomment these when we have climb
         // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
@@ -384,8 +366,8 @@ public class RobotContainer {
         controller.povUp().onTrue(Commands.runOnce(() -> ShotCalculations.incrementShotOffset(0.1)));
         controller.povDown().onTrue(Commands.runOnce(() -> ShotCalculations.decrementShotOffset(0.1)));
 
-        controller.y().onTrue(Commands.runOnce(() -> ShotCalculations.incrementShotOffset(0.01)));
-        controller.a().onTrue(Commands.runOnce(() -> ShotCalculations.decrementShotOffset(0.01)));
+        controller.northFace().onTrue(Commands.runOnce(() -> ShotCalculations.incrementShotOffset(0.01)));
+        controller.southFace().onTrue(Commands.runOnce(() -> ShotCalculations.decrementShotOffset(0.01)));
     }
 
     private void configureCalibrationBindings(PatriBoxController controller) {
@@ -402,7 +384,7 @@ public class RobotContainer {
             kicker.setPercentCommand(0.0)
         ));
 
-        controller.x().onTrue(shooter.toggleManualShootingCommand());
+        controller.westFace().onTrue(shooter.toggleManualShootingCommand());
 
         controller.povUp().onTrue(flywheel.setSpeedRPMCommand(1000));
 
@@ -411,10 +393,10 @@ public class RobotContainer {
         controller.povDown().onTrue(flywheel.stopCommand());
         controller.rightBumper().onTrue(flywheel.setIncrementSpeedCommand());
         
-        controller.x().onTrue(hood.setPositionCommand(0));
-        controller.b().onTrue(hood.setIncrementedPositionCommand());
-        controller.y().onTrue(hood.incrementPositionCommand());
-        controller.a().onTrue(hood.decrementPositionCommand());
+        controller.westFace().onTrue(hood.setPositionCommand(0));
+        controller.eastFace().onTrue(hood.setIncrementedPositionCommand());
+        controller.northFace().onTrue(hood.incrementPositionCommand());
+        controller.southFace().onTrue(hood.decrementPositionCommand());
     }
 
     public Command getAutonomousCommand() {
@@ -427,16 +409,16 @@ public class RobotContainer {
     }
 
     private void configureHDCBindings(PatriBoxController controller) {
-        controller.pov(0, 270, testButtonBindingLoop)
+        controller.pov(0, POVDirection.LEFT, testButtonBindingLoop)
                 .onTrue(HDCTuner.controllerDecrementCommand());
 
-        controller.pov(0, 90, testButtonBindingLoop)
+        controller.pov(0, POVDirection.RIGHT, testButtonBindingLoop)
                 .onTrue(HDCTuner.controllerIncrementCommand());
 
-        controller.pov(0, 0, testButtonBindingLoop)
+        controller.pov(0, POVDirection.UP, testButtonBindingLoop)
                 .onTrue(HDCTuner.increaseCurrentConstantCommand(.1));
 
-        controller.pov(0, 180, testButtonBindingLoop)
+        controller.pov(0, POVDirection.DOWN, testButtonBindingLoop)
                 .onTrue(HDCTuner.increaseCurrentConstantCommand(-.1));
 
         controller.rightBumper(testButtonBindingLoop)
@@ -445,13 +427,13 @@ public class RobotContainer {
         controller.leftBumper(testButtonBindingLoop)
                 .onTrue(HDCTuner.constantDecrementCommand());
 
-        controller.a(testButtonBindingLoop)
+        controller.southFace(testButtonBindingLoop)
                 .onTrue(HDCTuner.logCommand());
 
-        controller.x(testButtonBindingLoop)
+        controller.westFace(testButtonBindingLoop)
                 .onTrue(HDCTuner.multiplyPIDCommand(2));
 
-        controller.b(testButtonBindingLoop)
+        controller.eastFace(testButtonBindingLoop)
                 .onTrue(HDCTuner.multiplyPIDCommand(.5));
     }
 
@@ -524,18 +506,6 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("ClimbOrNoClimbThroughDepot", pathPlannerStorage.climbOrNoClimb("ThroughDepot"));
         NamedCommands.registerCommand("ClimbOrNoClimbOutpost", pathPlannerStorage.climbOrNoClimb("Outpost"));
-    }
-
-    // https://www.chiefdelphi.com/t/auto-init-overrun/494848/33
-    public static Command threadRTCommand() {
-        return Commands.sequence(
-            // Wait 20 seconds to dodge any additional initialization after robotInit()
-            Commands.waitSeconds(20),
-            Commands.runOnce(() -> {
-                Threads.setCurrentThreadPriority(true, 10);
-                System.err.println("Set main thread RT priority");
-            })
-        ).ignoringDisable(true);
     }
     
     private void updateAllComponents3d() {

@@ -1,12 +1,9 @@
 package frc.robot.subsystems.superstructure.spindexer;
 
-import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
 
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.util.Constants.SpindexerConstants;
+import java.util.function.DoubleSupplier;
 
 public class Spindexer extends SubsystemBase {
 

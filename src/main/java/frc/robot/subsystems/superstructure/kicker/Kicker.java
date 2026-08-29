@@ -4,29 +4,13 @@
 
 package frc.robot.subsystems.superstructure.kicker;
 
-import edu.wpi.first.units.measure.Voltage;
-import frc.robot.util.Constants.KickerConstants;
-import frc.robot.subsystems.superstructure.intake.IntakeIO;
 import frc.robot.util.Constants.FieldConstants;
-import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.IntakeConstants;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.math.filter.Debouncer;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-
-import static edu.wpi.first.units.Units.*;
+import java.util.function.DoubleSupplier;
 
 public class Kicker extends SubsystemBase {
 	

@@ -1,26 +1,21 @@
 package frc.robot.subsystems.superstructure;
 
-import java.util.Set;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.superstructure.extender.Extender;
 import frc.robot.subsystems.superstructure.intake.Intake;
 import frc.robot.subsystems.superstructure.kicker.Kicker;
 import frc.robot.subsystems.superstructure.shooter.Shooter;
 import frc.robot.subsystems.superstructure.spindexer.Spindexer;
-import frc.robot.util.Constants.ClimbConstants;
-import frc.robot.util.Constants.ExtenderConstants;
-import frc.robot.util.Constants.IntakeConstants;
-import frc.robot.util.Constants.KickerConstants;
-import frc.robot.util.Constants.SpindexerConstants;
+import frc.robot.util.Constants.*;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.Subsystem;
+
+import java.util.Set;
 
 public class Superstructure {
 
     private final Extender extender;
     private final Intake intake;
-    // private final Climb climb;
     private final Spindexer spindexer;
     private final Shooter shooter;
     private final Kicker kicker;

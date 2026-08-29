@@ -8,24 +8,18 @@
  */
 package frc.robot.util.calc;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Robot;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
 import frc.robot.util.Constants.LoggingConstants;
+import org.wpilib.math.geometry.*;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.util.MathUtil;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class PoseCalculations {
 
@@ -440,18 +434,18 @@ public class PoseCalculations {
      * @param pos
      * @return true if hood conflicts with trench, false otherwise
      */
-	public static boolean shouldPutHoodDown(Pose2d pos, ChassisSpeeds robotSpeeds) {
+	public static boolean shouldPutHoodDown(Pose2d pos, ChassisVelocities robotSpeeds) {
 		Pose2d hoodPose = new Pose2d(
 				pos.getX() + LoggingConstants.HOOD_OFFSET.getX(),
 				pos.getY() + LoggingConstants.HOOD_OFFSET.getY(),
 				pos.getRotation()
 		);
 
-        double dx = robotSpeeds.vxMetersPerSecond * HoodConstants.STOW_TIME;
-        double dy = robotSpeeds.vyMetersPerSecond * HoodConstants.STOW_TIME;
-        double dOmega = robotSpeeds.omegaRadiansPerSecond * HoodConstants.STOW_TIME;
+        double dx = robotSpeeds.vx * HoodConstants.STOW_TIME;
+        double dy = robotSpeeds.vy * HoodConstants.STOW_TIME;
+        double dOmega = robotSpeeds.omega * HoodConstants.STOW_TIME;
 
-        pos.exp(new Twist2d(dx, dy, dOmega));
+        pos.plus(new Twist2d(dx, dy, dOmega).exp());
         
 		return inTrench(hoodPose);
 	}

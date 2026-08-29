@@ -1,9 +1,6 @@
 package frc.robot.subsystems.superstructure.shooter.hood;
 
-import frc.robot.util.Constants.CANConstants;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.HoodConstants;
-import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;

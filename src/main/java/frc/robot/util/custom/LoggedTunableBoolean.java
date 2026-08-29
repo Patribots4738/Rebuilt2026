@@ -2,9 +2,9 @@ package frc.robot.util.custom;
 
 import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.button.Trigger;
+import org.wpilib.driverstation.internal.DriverStationBackend;
 
 public class LoggedTunableBoolean extends LoggedNetworkBoolean {
 
@@ -20,7 +20,7 @@ public class LoggedTunableBoolean extends LoggedNetworkBoolean {
     }
 
     public boolean ifChanged() {
-        return get() != previousValue && !DriverStation.isFMSAttached();
+        return get() != previousValue && !DriverStationBackend.isFMSAttached();
     }
 
     public Trigger onChanged() {

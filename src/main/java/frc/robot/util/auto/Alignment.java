@@ -1,20 +1,20 @@
 package frc.robot.util.auto;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import org.littletonrobotics.junction.AutoLogOutput;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.subsystems.drive.Swerve;
 import frc.robot.util.Constants.AutoConstants;
 import frc.robot.util.Constants.DriveConstants;
 import frc.robot.util.Constants.FieldConstants;
+import frc.robot.util.calc.ChassisVelocityCalculations;
 import frc.robot.util.calc.PoseCalculations;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
+import org.wpilib.math.trajectory.TrapezoidProfile.State;
+import org.wpilib.math.util.MathUtil;
 
 import java.util.function.Supplier;
 
@@ -45,7 +45,7 @@ public class Alignment {
 
     public void resetHDC() {
         // Reset error and integral terms of HDC's PID controller
-        AutoConstants.TELE_HDC.getThetaController().reset(swerve.getPose().getRotation().getRadians(), swerve.getRobotRelativeVelocity().omegaRadiansPerSecond);
+        AutoConstants.TELE_HDC.getThetaController().reset(swerve.getPose().getRotation().getRadians(), swerve.getRobotRelativeVelocity().omega);
         AutoConstants.TELE_HDC.getXController().reset();
         AutoConstants.TELE_HDC.getYController().reset();
     }
@@ -79,7 +79,7 @@ public class Alignment {
         autoInput /= swerve.getMaxLinearVelocity();
 
         // Combine speeds and normalize them between -1 and 1
-        return MathUtil.clamp(
+        return Math.clamp(
             controllerInput + autoInput,
             -1,
             1
@@ -91,26 +91,26 @@ public class Alignment {
         autoInput /= swerve.getMaxLinearVelocity();
 
         // Combine speeds and normalize them between -1 and 1
-        return MathUtil.clamp(
+        return Math.clamp(
             autoInput,
             -1,
             1
         );
     }
     
-    public ChassisSpeeds normalizeChassisSpeeds(ChassisSpeeds autoSpeeds, ChassisSpeeds controllerSpeeds) {
-        return new ChassisSpeeds(
-            MathUtil.applyDeadband((normalizeTwoSpeeds(controllerSpeeds.vyMetersPerSecond, autoSpeeds.vyMetersPerSecond)), 0.005),
-            -MathUtil.applyDeadband((normalizeTwoSpeeds(controllerSpeeds.vxMetersPerSecond, autoSpeeds.vxMetersPerSecond)), 0.005),
-            MathUtil.applyDeadband(autoSpeeds.omegaRadiansPerSecond / swerve.getMaxAngularVelocity(), 0.005)
+    public ChassisVelocities normalizeChassisVelocities(ChassisVelocities autoSpeeds, ChassisVelocities controllerSpeeds) {
+        return new ChassisVelocities(
+            MathUtil.applyDeadband((normalizeTwoSpeeds(controllerSpeeds.vy, autoSpeeds.vy)), 0.005),
+            -MathUtil.applyDeadband((normalizeTwoSpeeds(controllerSpeeds.vx, autoSpeeds.vx)), 0.005),
+            MathUtil.applyDeadband(autoSpeeds.omega / swerve.getMaxAngularVelocity(), 0.005)
         );
     }
 
-    public ChassisSpeeds normalizeChassisSpeeds(ChassisSpeeds autoSpeeds) {
-        ChassisSpeeds normalizedSpeeds = new ChassisSpeeds(
-            MathUtil.applyDeadband((normalizeSpeed(autoSpeeds.vyMetersPerSecond)), 0.01),
-            -MathUtil.applyDeadband((normalizeSpeed(autoSpeeds.vxMetersPerSecond)), 0.01),
-            MathUtil.applyDeadband(autoSpeeds.omegaRadiansPerSecond / swerve.getMaxAngularVelocity(), 0.005));
+    public ChassisVelocities normalizeChassisVelocities(ChassisVelocities autoSpeeds) {
+        ChassisVelocities normalizedSpeeds = new ChassisVelocities(
+            MathUtil.applyDeadband((normalizeSpeed(autoSpeeds.vy)), 0.01),
+            -MathUtil.applyDeadband((normalizeSpeed(autoSpeeds.vx)), 0.01),
+            MathUtil.applyDeadband(autoSpeeds.omega / swerve.getMaxAngularVelocity(), 0.005));
         // Logger.recordOutput("Subsystems/Swerve/NormalizedSpeeds", normalizedSpeeds);
         return normalizedSpeeds;
     }
@@ -125,16 +125,16 @@ public class Alignment {
         return new Pose2d(profileStartingPose.getX() + xOffset, profileStartingPose.getY() + yOffset, targetPose.getRotation());
     }
 
-    public ChassisSpeeds getProfiledAutoSpeeds(Pose2d position) {
+    public ChassisVelocities getProfiledAutoSpeeds(Pose2d position) {
         Pose2d currentPose = swerve.getPose();
         if (targetXY.position == 0 || !swerve.getDesiredPose().equals(position)) {
             // First run of alignment or change of target pose, set up profile
             xySetpoint.position = 0;
             double distanceToTarget = currentPose.getTranslation().getDistance(position.getTranslation());
             targetXY.position = distanceToTarget;
-            ChassisSpeeds robotSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(swerve.getRobotRelativeVelocity(), currentPose.getRotation());
-            double vx = robotSpeeds.vxMetersPerSecond;
-            double vy = robotSpeeds.vyMetersPerSecond;
+            ChassisVelocities robotSpeeds = ChassisVelocityCalculations.fromRobotRelativeSpeeds(swerve.getRobotRelativeVelocity(), currentPose.getRotation());
+            double vx = robotSpeeds.vx;
+            double vy = robotSpeeds.vy;
             // Get magnitude of velocity vector
             double vMagnitude = Math.hypot(vx, vy);
             // Get direction of velocity vector with the origin at the robot
@@ -145,7 +145,7 @@ public class Alignment {
             double theta = vTheta - pTheta;
             // Project velocity vector onto direction of position vector by calculating 
             // a new component of the velocity vector that acts in the direction of pTheta
-            xySetpoint.velocity = MathUtil.clamp(vMagnitude * Math.cos(theta), 0, swerve.getMaxLinearVelocity());
+            xySetpoint.velocity = Math.clamp(vMagnitude * Math.cos(theta), 0, swerve.getMaxLinearVelocity());
             // Logger.recordOutput("Subsystems/Swerve/SetpointStartVelocity", xySetpoint.velocity);
             profileStartingPose = currentPose;
         }
@@ -155,9 +155,9 @@ public class Alignment {
         return AutoConstants.TELE_HDC.calculate(swerve.getPose(), position, 0, position.getRotation());
     }
 
-    public ChassisSpeeds getControllerSpeeds(double controllerX, double controllerY) {
+    public ChassisVelocities getControllerSpeeds(double controllerX, double controllerY) {
         return
-            ChassisSpeeds.fromFieldRelativeSpeeds(
+            ChassisVelocityCalculations.fromFieldRelativeSpeeds(
                 controllerY * (Robot.isRedAlliance() ? -1 : 1), 
                 controllerX * (Robot.isRedAlliance() ? 1 : -1), 
                 0, 
@@ -165,7 +165,7 @@ public class Alignment {
             );
     }
 
-    public ChassisSpeeds getTowerAlignmentSpeeds() {
+    public ChassisVelocities getTowerAlignmentSpeeds() {
         boolean behindTower = PoseCalculations.behindTower(swerve.getPose());
 
         double xOffset = behindTower
@@ -208,18 +208,18 @@ public class Alignment {
         double distance = DriveConstants.FULL_ROBOT_LENGTH_METERS / 2;
         Pose2d desiredPose = PoseCalculations.getPoseWithDistance(node, distance);
 
-        ChassisSpeeds autoSpeeds = getProfiledAutoSpeeds(desiredPose);
+        ChassisVelocities autoSpeeds = getProfiledAutoSpeeds(desiredPose);
 
         return autoSpeeds;
     }
 
-    public ChassisSpeeds getAllianceLineAlignmentSpeeds() {
+    public ChassisVelocities getAllianceLineAlignmentSpeeds() {
         Pose2d node = PoseCalculations.nearest(swerve.getPose(), FieldConstants.ALLIANCE_LINE_LIST);
 
         double distance = DriveConstants.FULL_ROBOT_LENGTH_METERS / 2;
         Pose2d desiredPose = PoseCalculations.getPoseWithDistance(node, distance);
 
-        ChassisSpeeds autoSpeeds = getProfiledAutoSpeeds(desiredPose);
+        ChassisVelocities autoSpeeds = getProfiledAutoSpeeds(desiredPose);
 
         return autoSpeeds;
     }
@@ -234,14 +234,14 @@ public class Alignment {
         return Commands.runOnce(() -> updateIndex(increment));
     }
 
-    public Command autoAlignmentCommand(AlignmentMode mode, Supplier<ChassisSpeeds> autoSpeeds, Supplier<ChassisSpeeds> controllerSpeeds, boolean resetAlignment) {
+    public Command autoAlignmentCommand(AlignmentMode mode, Supplier<ChassisVelocities> autoSpeeds, Supplier<ChassisVelocities> controllerSpeeds, boolean resetAlignment) {
         return 
             Commands.sequence(
                 resetHDCCommand(),
                 Commands.runOnce(() -> this.alignmentMode = mode),
                 swerve.getDriveCommand(
                 () -> 
-                    normalizeChassisSpeeds(
+                    normalizeChassisVelocities(
                         autoSpeeds.get(), 
                         controllerSpeeds.get()
                     ), 
@@ -258,13 +258,13 @@ public class Alignment {
             });
     }
 
-    public Command autoAlignmentCommand(AlignmentMode mode, Supplier<ChassisSpeeds> autoSpeeds, boolean resetAlignment) {
+    public Command autoAlignmentCommand(AlignmentMode mode, Supplier<ChassisVelocities> autoSpeeds, boolean resetAlignment) {
         return 
             Commands.sequence(
                 resetHDCCommand(),
                 Commands.runOnce(() -> this.alignmentMode = mode),
                 swerve.getDriveCommand(
-                    () -> normalizeChassisSpeeds(autoSpeeds.get()),
+                    () -> normalizeChassisVelocities(autoSpeeds.get()),
                     () -> false
                 )
             ).finallyDo(() -> {

@@ -3,15 +3,11 @@ package frc.robot.subsystems.superstructure.kicker;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.hardware.CANrange;
-
-import edu.wpi.first.units.measure.Distance;
 import frc.robot.util.Constants.CANConstants;
-import frc.robot.util.Constants.CANRangeConstants;
 import frc.robot.util.Constants.KickerConstants;
-import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.Kraken;
 import frc.robot.util.hardware.phoenix.Kraken.ControlPreference;
-import frc.robot.util.hardware.phoenix.CANRangeCustom;
+import org.wpilib.units.measure.Distance;
 
 public class KickerIOKraken implements KickerIO {
 

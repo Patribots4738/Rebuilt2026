@@ -1,3 +1,5 @@
+> [!WARNING]
+> This is the `2027` branch, where our codebase is running on the 2027 WPILib beta. This code should not be deployed to the robot and exists solely as a reference point for 2027's robot code. For the 2026 codebase, please check out the `main` branch.
 
 [![Game Manual](https://i.ytimg.com/vi/0JaguGctF1A/maxresdefault.jpg)](https://firstfrc.blob.core.windows.net/frc2026/Manual/2026GameManual.pdf)
 
@@ -69,4 +71,3 @@ We use `MK5N` swerve modules from `Swerve Drive Specialties` with a `Pigeon 2.0`
 ## Major Class Functions 
 
 ## Controls
-

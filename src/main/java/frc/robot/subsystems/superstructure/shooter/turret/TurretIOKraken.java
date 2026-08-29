@@ -1,8 +1,5 @@
 package frc.robot.subsystems.superstructure.shooter.turret;
 
-import frc.robot.Robot;
-import frc.robot.util.Constants.CANConstants;
-import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.TurretConstants;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.hardware.phoenix.CANCoderCustom;

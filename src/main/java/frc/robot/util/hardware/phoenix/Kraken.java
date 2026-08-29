@@ -1,65 +1,34 @@
 package frc.robot.util.hardware.phoenix;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
-
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
-import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.SlotConfigs;
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.controls.*;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Celsius;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.units.measure.Temperature;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.util.Constants.CANConstants;
 import frc.robot.util.Constants.FieldConstants;
 import frc.robot.util.Constants.GeneralHardwareConstants;
 import frc.robot.util.Constants.KrakenMotorConstants;
 import frc.robot.util.custom.GainConstants;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.math.system.Models;
+import org.wpilib.math.util.Units;
+import org.wpilib.simulation.DCMotorSim;
+import org.wpilib.system.RobotController;
+import org.wpilib.units.measure.*;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
+import static org.wpilib.units.Units.Rotations;
+import static org.wpilib.units.Units.RotationsPerSecond;
 
 public class Kraken extends TalonFX {
 
@@ -903,21 +872,22 @@ public class Kraken extends TalonFX {
         if (FieldConstants.IS_SIMULATION) {
             if (motorType == 44) {
                 motorSimModel = 
-                new DCMotorSim(
-                    LinearSystemId.createDCMotorSystem(
-                        useFOC ? DCMotor.getKrakenX44Foc(1) : DCMotor.getKrakenX44(1), 
-                        0.001, 
-                        1), 
-                    useFOC ? DCMotor.getKrakenX44Foc(1) : DCMotor.getKrakenX44(1));
-            }
-            else {
+                    new DCMotorSim(
+                        Models.singleJointedArmFromPhysicalConstants(
+                            useFOC ? DCMotor.getKrakenX44Foc(1) : DCMotor.getKrakenX44(1),
+                            0.001,
+                            1),
+                        useFOC ? DCMotor.getKrakenX44Foc(1) : DCMotor.getKrakenX44(1));
+            } else if (motorType == 60) {
                 motorSimModel = 
                     new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
+                        Models.singleJointedArmFromPhysicalConstants(
                             useFOC ? DCMotor.getKrakenX60Foc(1) : DCMotor.getKrakenX60(1), 
                             0.001, 
                             1), 
                         useFOC ? DCMotor.getKrakenX60Foc(1) : DCMotor.getKrakenX60(1));
+            } else {
+                throw new IllegalArgumentException("Invalid motor type: " + motorType);
             }
         }
     }
@@ -934,9 +904,8 @@ public class Kraken extends TalonFX {
         motorSimModel.setInputVoltage(motorVoltage);
         motorSimModel.update(0.020);
 
-        sim.setRawRotorPosition(motorSimModel.getAngularPositionRotations());
-        sim.setRotorVelocity(Units.radiansToRotations(motorSimModel.getAngularVelocityRadPerSec()));
-
+        sim.setRawRotorPosition(Units.radiansToRotations(motorSimModel.getAngularPosition()));
+        sim.setRotorVelocity(Units.radiansToRotations(motorSimModel.getAngularVelocity()));
     }
 
     public StatusCode configureMotionMagic(double cruiseVelocity, double acceleration, double jerk) {
@@ -961,7 +930,7 @@ public class Kraken extends TalonFX {
      * @return the status code indicating the success or failure of the operation
      */
     private StatusCode applyGains(GainConstants appliedGains, int slot) {
-        slot = MathUtil.clamp(slot, 0, 2);
+        slot = Math.clamp(slot, 0, 2);
         gains[slot] = appliedGains;
         slotConfigs.SlotNumber = slot;
         slotConfigs.kP = appliedGains.getP();
