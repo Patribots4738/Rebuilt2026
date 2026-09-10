@@ -114,7 +114,7 @@ public class Flywheel extends SubsystemBase {
      * @return speed RPM
      */
     public double getSpeedRPM() {
-        return inputs.speedRPM;
+        return inputs.leaderSpeedRPM;
     }
 
     private void decrementSpeed() {
@@ -191,7 +191,7 @@ public class Flywheel extends SubsystemBase {
     }
     
     public double getVoltage() {
-        return inputs.appliedOutputVolts;
+        return inputs.leaderAppliedOutputVolts;
     }
     
     // public Command quasistatic(SysIdRoutine.Direction direction) {

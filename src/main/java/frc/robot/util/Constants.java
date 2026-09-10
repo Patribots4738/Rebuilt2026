@@ -1017,8 +1017,9 @@ public final class Constants {
         public static final double SHOT_OFFSET = TURRET_TO_REAR_FRAMEBAR_OFFSET + FieldConstants.HALF_HUB_WIDTH + 0.15;
     }
 
-    public static final class FlywheelConstants {
-        public static final int CAN_ID = 20;
+public static final class FlywheelConstants {
+        public static final int LEADER_CAN_ID = 20;
+        public static final int FOLLOWER_CAN_ID = 21;
         public static final int MOTOR_TYPE = 60;
 
         public static final boolean BRAKE_MOTOR = false;

@@ -8,14 +8,23 @@ public interface FlywheelIO {
     @AutoLog
     class FlywheelIOInputs {
 
-        public boolean motorConnected = false;
-        public double percentOutput = 0.0;
-        public double targetSpeedRPM = 0.0;
-        public double speedRPM = 0.0;
-        public double appliedOutputVolts = 0.0;
-        public double torqueCurrentAmps = 0.0;
-        public double temperatureCelsius = 0.0;
-        public double positionRadians = 0.0;
+        public boolean leaderConnected = false;
+        public double leaderPercentOutput = 0.0;
+        public double leaderTargetSpeedRPM = 0.0;
+        public double leaderAppliedOutputVolts = 0.0;
+        public double leaderTorqueCurrentAmps = 0.0;
+        public double leaderTemperatureCelsius = 0.0;
+        public double leaderPositionRadians = 0.0;
+        public double leaderSpeedRPM = 0.0;
+
+        public boolean followerConnected = false;
+        public double followerPercentOutput = 0.0;
+        public double followerTargetSpeedRPM = 0.0;
+        public double followerAppliedOutputVolts = 0.0;
+        public double followerTorqueCurrentAmps = 0.0;
+        public double followerTemperatureCelsius = 0.0;
+        public double followerPositionRadians = 0.0;
+        public double followerSpeedRPM = 0.0;
     }
 
     public default void updateInputs(FlywheelIOInputs inputs) {}
