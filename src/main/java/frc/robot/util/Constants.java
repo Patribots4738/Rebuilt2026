@@ -9,7 +9,7 @@ import com.ctre.phoenix6.configs.MountPoseConfigs;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import frc.robot.Robot;
-import frc.robot.util.calc.HolonomicDriveController;
+import frc.robot.util.calc.PatrinomicDriveController;
 import frc.robot.util.calc.PoseCalculations;
 import frc.robot.util.custom.GainConstants;
 import frc.robot.util.custom.LoggedTunableBoolean;
@@ -277,7 +277,7 @@ public final class Constants {
                 setIZone(Units.degreesToRadians(45));
             }};
 
-        public static HolonomicDriveController TELE_HDC = new HolonomicDriveController(
+        public static PatrinomicDriveController TELE_HDC = new PatrinomicDriveController(
             XY_PID,
             XY_PID,
             THETA_PID

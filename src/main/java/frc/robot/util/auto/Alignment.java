@@ -152,7 +152,7 @@ public class Alignment {
         swerve.setDesiredPose(position);
         position = getProfiledPosition(currentPose, position);
         //Logger.recordOutput("Subsystems/Swerve/StepPosition", position);
-        return AutoConstants.TELE_HDC.calculate(swerve.getPose(), position, 0, position.getRotation());
+        return AutoConstants.TELE_HDC.calculateNextPosition(swerve.getPose(), position, 0, position.getRotation());
     }
 
     public ChassisVelocities getControllerSpeeds(double controllerX, double controllerY) {
