@@ -957,7 +957,6 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true; 
         public static final boolean CANCODER_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
-
         public static final double ABSOLUTE_ENCODER_OFFSET = -0.686768;
         public static final double MOTOR_GEAR_RATIO = 50.0;
         public static final double MOTOR_TO_ENCODER_GEAR_RATIO = 5.0;
@@ -1025,6 +1024,9 @@ public final class Constants {
         public static final boolean MOTOR_INVERTED = true;
         public static final double CURRENT_LIMIT = 50;
 
+        public static final boolean USE_ONE_SHOT = true;
+        public static final boolean USE_FOC = true;
+
         public static final double GEAR_RATIO = 1.0;
 
         public static final double VELOCITY_DEADBAND_RPM = 125; 
@@ -1034,7 +1036,9 @@ public final class Constants {
         public static final double HUB_RPM = 3200.0; // TODO: find this value
         public static final double IDLE_RPM = 2000.0;
 
-        public static final double CIRCUMFERENCE_METERS = Units.inchesToMeters(4 * Math.PI);
+        public static final double RADIUS_METERS = Units.inchesToMeters(2);
+        public static final double CIRCUMFERENCE_METERS = 2.0 * RADIUS_METERS * Math.PI;
+        public static final double MASS_KG = 1.0; // TODO: find this value
 
         // TODO: tune these values
         // if it's not in sim use first values else use second values: note to self delete this afterwards
