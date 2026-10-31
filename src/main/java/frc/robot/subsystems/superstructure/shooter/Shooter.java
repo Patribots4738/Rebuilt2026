@@ -74,30 +74,8 @@ public class Shooter extends SubsystemBase {
 
         
         target = Target.HUB;
-        // targetLocation = Target.HUB.location;
         targetLocation = FieldConstants.GET_HUB();
         calculateShotParams();
-
-        // turret.setDefaultCommand(
-        //     new ActiveConditionalCommand(
-        //             turret.setPositionCommand(() -> shotParams.turretAngle()),
-        //             turret.setNeutralCommand(), 
-        //             () -> this.turretTracking()).alongWith(Commands.print("Turret default"))
-        // );
-
-        // flywheel.setDefaultCommand(
-        //     new ActiveConditionalCommand(
-        //         flywheel.setSpeedRPMCommand(() -> shotParams.flywheelSpeed()),
-        //         flywheel.stopCommand(), 
-        //         () -> this.flywheelTracking())
-        // );
-
-        // hood.setDefaultCommand(
-        //     new ActiveConditionalCommand(
-        //         hood.setPositionCommand(() -> shotParams.hoodAngle()),
-        //         hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
-        //         () -> this.hoodTracking())
-        // );
     }
 
     @Override
@@ -110,7 +88,6 @@ public class Shooter extends SubsystemBase {
             flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
             hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
             turret.setPosition(TurretConstants.HUB_POSITION);
-            // System.out.println("MANUAL");
         }
         else {
             if (turretTracking()) {
@@ -278,7 +255,6 @@ public class Shooter extends SubsystemBase {
     public void updateTarget(Pose2d robotPose) {
         if (PoseCalculations.inShootingZone(robotRelativePose.get())) {
             target = Target.HUB;
-            // targetLocation = Target.HUB.location;
             targetLocation = FieldConstants.GET_HUB();
             passIndex = 0;
         } 
@@ -287,9 +263,6 @@ public class Shooter extends SubsystemBase {
                 autoSetPassIndex();
             }
             target = passIndex == -1 ? Target.PASS_LEFT : Target.PASS_RIGHT;
-            //  targetLocation = target == Target.PASS_LEFT 
-            //                                     ? Target.PASS_LEFT.location 
-            //                                     : Target.PASS_RIGHT.location;
             targetLocation = target == Target.PASS_LEFT 
                                                 ? FieldConstants.GET_PASS_LEFT() 
                                                 : FieldConstants.GET_PASS_RIGHT();
@@ -337,52 +310,11 @@ public class Shooter extends SubsystemBase {
 
     public void toggleManualShooting() {
         manual = !manual;
-        // if (manual) {
-        //     setTrackTarget(false, false, false);
-        //     flywheel.setSpeedRPM(FlywheelConstants.HUB_RPM);
-        //     hood.setPosition(HoodConstants.HUB_POSITION_RADIANS);
-        //     turret.setPositionCommand(TurretConstants.HUB_POSITION);
-        // }
-        // else {
-        //     flywheel.stop();
-        //     hood.setPosition(HoodConstants.STOW_POSITION_RADIANS);
-        // }
     }
 
     public Command toggleManualShootingCommand() {
         return runOnce(() -> this.toggleManualShooting());
     }
-
-    // public Command setManualShootingCommand(boolean manual) {
-    //     return Commands.runOnce(() -> this.manual = manual);
-    // }
-
-    // public Command toggleManualShootingCommand() {
-    //     return Commands.parallel(
-    //             this.setManualShootingCommand(true),
-    //             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
-    //             hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
-    //             turret.setPositionCommand(TurretConstants.HUB_POSITION),
-    //             Commands.print("Turret manual")
-    //     ).repeatedly();
-    // }
-
-    // public Command enableManualCommand() {
-    //     return Commands.parallel(
-    //             this.setManualShootingCommand(true),
-    //             flywheel.setSpeedRPMCommand(FlywheelConstants.HUB_RPM),
-    //             hood.setPositionCommand(HoodConstants.HUB_POSITION_RADIANS),
-    //             turret.setPositionCommand(TurretConstants.HUB_POSITION));
-    // }
-
-    // public Command disableManualCommand() {
-    //     return Commands.parallel(
-    //             this.setManualShootingCommand(false),
-    //             flywheel.stopCommand(),
-    //             hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS),
-    //             turret.setNeutralCommand());
-    // }
-
 
     public boolean isManual() {
         return manual;
