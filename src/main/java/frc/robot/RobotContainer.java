@@ -66,16 +66,6 @@ import frc.robot.util.calc.ShotCalculations;
 import frc.robot.util.custom.PatriBoxController;
 
 public class RobotContainer {
-
-//     private PowerDistribution pdh;
-
-//     @AutoLogOutput (key = "PowerDistributionHub/TotalCurrent")
-//     private double totalCurrent;
-//     @AutoLogOutput (key = "PowerDistributionHub/TotalPower")
-//     private double totalPower;
-//     @AutoLogOutput (key = "PowerDistributionHub/Voltage")
-//     private double voltage;
-
     private EventLoop testButtonBindingLoop = new EventLoop();
     
     @AutoLogOutput (key = "Draggables/Components3d")
@@ -141,23 +131,12 @@ public class RobotContainer {
 
         updateAllComponents3d();
         
-        // pdh = new PowerDistribution(30, ModuleType.kRev);
-        // pdh.setSwitchableChannel(false);
-
-        // totalCurrent = pdh.getTotalCurrent();
-        // SmartDashboard.putNumber("Total Current", totalCurrent);
-        // totalPower = pdh.getTotalPower();
-        // SmartDashboard.putNumber("Total Power", totalPower);
-        // voltage = pdh.getVoltage();
-        // SmartDashboard.putNumber("Voltage", voltage);
-
         swerve = new Swerve();
         alignment = new Alignment(swerve);
         vision = new Vision(swerve.getPoseEstimator(), 
             new VisionIOLimelight("limelight-right", true), 
             new VisionIOLimelight("limelight-intake", true), 
             new VisionIOLimelight("limelight-left", true));
-        // climb = new Climb(new ClimbIOKraken());
         extender = new Extender(new ExtenderIOKraken());
         intake = new Intake(new IntakeIOKraken());
         spindexer = new Spindexer(new SpindexerIOKraken());
@@ -169,7 +148,6 @@ public class RobotContainer {
         superstructure = new Superstructure(extender, intake, shooter, spindexer, kicker);
 
         SmartDashboard.putData(field2d);
-        // SmartDashboard.putData("Mech2d", mech);
 
         driver.back().toggleOnTrue(
                 Commands.runOnce(() -> fieldRelativeToggle = !fieldRelativeToggle)
@@ -207,6 +185,7 @@ public class RobotContainer {
                 swerve::runTurnCharacterization,
                 swerve::getTurnCharacterizationVelocity));
 
+        // TODO: this should be commented when not in use since this can lead to loop overruns
         // CommandScheduler.getInstance().schedule(new NTGainTuner());
     }
 
@@ -228,14 +207,11 @@ public class RobotContainer {
     }
 
     private void configureTimedEvents() {
-        // slow down the robot if we are aiming at the hub once the shooter is up to speed 
-        // new Trigger(shooter::isReady && shooter::aimingAtHub)
-        //         .onTrue(swerve.setDriveMultiplierCommand(DriveConstants.SHOOTING_DRIVE_MULTIPLIER))
-        //         .onFalse(swerve.setDriveMultiplierCommand(DriveConstants.DEFAULT_DRIVE_MULTIPLIER));
+        // force the hood to stow when going under the trench so it doesn't get damaged
+        new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose(), swerve.getFieldRelativeVelocity())).and(() -> shooter.isManual())
+            .whileTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
 
-        // new Trigger(() -> PoseCalculations.shouldPutHoodDown(swerve.getPose(), swerve.getFieldRelativeVelocity())).and(() -> shooter.isManual())
-        //     .whileTrue(hood.setPositionCommand(HoodConstants.STOW_POSITION_RADIANS));
-
+        // switch the passing target when the robot crosses the center line
         new Trigger(() -> PoseCalculations.fieldHalf(swerve.getPose()))
         .onChange(shooter.setPassIndexCommand(0));
 
@@ -268,71 +244,6 @@ public class RobotContainer {
 
         controller.a().onTrue(spindexer.setPercentCommand(0.0)
             .alongWith(kicker.setPercentCommand(0.0)));
-        // controller.leftTrigger().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
-        // controller.leftBumper().onTrue(intake.setPercentCommand(0));
-
-        // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
-
-
-        // controller.rightBumper().onTrue(extender.feedShooter());
-        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-
-        // controller.rightBumper().onTrue(hood.toggleForcedDownCommand());
-
-        // controller.rightTrigger().onTrue(extender.setPositionCommand(ExtenderConstants.STOW_POSITION_RADIANS));
-        // controller.rightBumper().onTrue(extender.setPositionCommand(ExtenderConstants.MAX_ANGLE_RADIANS));
-        
-        // controller.leftTrigger().onTrue(Commands.parallel(
-        //     spindexer.setPercentCommand(SpindexerConstants.FEED_PERCENT),
-        //     kicker.setPercentCommand(KickerConstants.FORWARD_PERCENT)
-        // ));
-
-        // controller.leftBumper().onTrue(Commands.parallel(
-        //     intake.setPercentCommand(0.0),
-        //     spindexer.setPercentCommand(0.0),
-        //     kicker.setPercentCommand(0.0)
-        // ));
-
-        // controller.y().onTrue(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT));
-        
-        // controller.x().onTrue(extender.feedShooterCommand());
-
-        // controller.a().onTrue(shooter.armShooterCommand());
-        // controller.b().whileTrue(superstructure.fireCommand());
-
-        // controller.povDown().onTrue(hood.setPositionCommand(0.0));
-
-        // controller.rightStick().onTrue(shooter.setPassIndexCommand(1));
-        // controller.leftStick().onTrue(shooter.setPassIndexCommand(-1));
-        // controller.rightTrigger().whileTrue(
-        //     new ActiveConditionalCommand(
-        //         superstructure.fireCommand(), 
-        //         Commands.sequence(
-        //             shooter.armShooterCommand(), 
-        //             Commands.waitUntil(() -> shooter.isReadyToShoot()),
-        //             superstructure.fireCommand()),
-        //         () -> shooter.isReadyToShoot()
-        //     )
-        // );
-
-
-        // controller.rightTrigger().toggleOnFalse(superstructure.ceaseFireCommand());
-        
-
-        //flywheel
-        // controller.a().onTrue(flywheel.dynamic(SysIdRoutine.Direction.kForward));
-        // controller.b().onTrue(flywheel.dynamic(SysIdRoutine.Direction.kReverse));
-
-        // controller.x().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kForward));
-        // controller.y().onTrue(flywheel.quasistatic(SysIdRoutine.Direction.kReverse));
-
-
-        // swerve
-        // controller.leftBumper().whileTrue(swerve.getSetWheelsX());
-        // controller.rightBumper().whileTrue(swerve.getSetWheelsO());
-        // controller.b().whileTrue(swerve.driveCharacterization());
-        // controller.y().whileTrue(swerve.getSetWheelsZero());
     }
 
     private void configureDriverBindings(PatriBoxController controller) {
@@ -356,10 +267,7 @@ public class RobotContainer {
         controller.leftStick().onTrue(shooter.setPassIndexCommand(1));
 
         controller.povDown().onTrue(shooter.trackTargetCommand(false, false, false));
-
-        // controller.y().onTrue(shooter.enableManualCommand())
-        //                 .onFalse(shooter.disableManualCommand());
-
+        
         controller.y().onTrue(shooter.toggleManualShootingCommand());
 
         controller.povLeft().onTrue(extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS, false).alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
@@ -373,11 +281,6 @@ public class RobotContainer {
         controller.povRight().onTrue(shooter.forceHoodDownCommand());
 
         controller.b().onTrue(extender.feedShooterCommand().alongWith(intake.setPercentCommand(IntakeConstants.INTAKE_PERCENT)));
-
-        // uncomment these when we have climb
-        // controller.povUp().onTrue(superstructure.setClimbState(ClimbState.READY));
-        // controller.povDown().and(controller.povRight().negate()).onTrue(superstructure.setClimbState(ClimbState.STOW));
-        // controller.povDown().and(controller.povRight()).onTrue(superstructure.setClimbState(ClimbState.UP));
     }
 
     private void configureShotTuningBindings(PatriBoxController controller) {
@@ -418,11 +321,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        // if (pathPlannerStorage.getSelectedAutoName().equals("Ballout")) {
-        //     return extender.setPositionCommand(ExtenderConstants.HALF_STOW_RADIANS)
-        //             .until(() -> extender.atPosition(ExtenderConstants.HALF_STOW_RADIANS))
-        //             .andThen(superstructure.fireNoFeedShooterCommand());
-        // }
         return pathPlannerStorage.getSelectedAuto();
     }
 
@@ -454,12 +352,6 @@ public class RobotContainer {
         controller.b(testButtonBindingLoop)
                 .onTrue(HDCTuner.multiplyPIDCommand(.5));
     }
-
-//     public void refreshPDHData() {
-//         totalCurrent = pdh.getTotalCurrent();
-//         totalPower = pdh.getTotalPower();
-//         voltage = pdh.getVoltage();
-//     }
 
     public void onDisabled() {
         // Stops bot in sim after auto (noramlly motors auto turn off when disabled)
